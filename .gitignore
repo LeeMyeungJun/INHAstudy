@@ -1,0 +1,15 @@
+*.opendb
+*.cln
+*.db
+*.filters
+*.exe
+*.ilk
+*.log
+*.obj
+*.pdb
+*.idb
+*.tlog
+*.lastbuildstate
+*.suo
+*.ipch
+*.pch

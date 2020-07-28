@@ -1,0 +1,68 @@
+Win32 API 함수들모여있는것
+MFC  우리가지금 타이핑해서 만들엇잖아 . 기본적으로 컨트롤들이 제공이된다 
+
+GUI기반 : 텍스트로만보여주는게아니라 뭔가 보여준다 ..
+이벤트기반: 그리기이벤트 , 키보드입력이벤트 , 마우스이동이벤트 , 등등 x: 이벤트를 작성가능한지
+멀티스레드 기반:
+
+프로젝트생성할떄 Empty projcet 이친구는 껴줌  SDL은 안낌
+
+winMain이 main이야 
+
+CALLBACK == WINAPI다  26p 아래 
+
+29p
+정리
+31p 위쪽
+35p 중요
+
+char str[15] = "안녕asd"; 한글만 2바이트
+WCHAR str[15] = L"안녕asd"; 유니코드로  변환해서출력 2바이트씩 영어도 
+TCHAR str[15] = _T"안녕asd"; 유니코드와 멀티바이트를 둘다지원해줌.
+
+브러시,테두리 89
+69p WM PAINT 다시호출시키기. InvalidateRgn() <<
+InvalidateRect()
+
+
+GetClientRect = 윈도우 영역의 크기를 구한다 . 응용 102p
+ 
+
+WM_SIZE 창의 크기가 달라질떄마다 발생함. 
+
+
+SetTimer 104p 
+함수로 쓰는방법 void CALLBACK 함수이름()
+
+마우스 메시지 107p
+LOWORD = x
+HIWORD = y 107페이지 아래 좌표관련함수
+
+래스터란 Invalidatte로 PAINT를 부르는게아니라 .  115p
+선하나에서는 문제가없는데 . 도형 두개가 겹쳐지는 교차점이 있다면 그부분도 사라짐. 
+
+GetClientRect() 함수 화면의 크기를 구함 97p
+
+
+
+
+//폰트스타일 바꾸기
+hFont = CreateFont(50, 0, 0, 0, 0, 0, 0, 0, HANGEUL_CHARSET, 0, 0, 0,VARIABLE_PITCH | FF_ROMAN, TEXT("궁서"));
+
+oldFont = (HFONT)SelectObject(hdc, hFont);
+TextOut(hdc, 180, 100, str, lstrlen(str));
+SelectObject(hdc, oldFont);
+DeleteObject(hFont);
+
+
+//상자 투명화 
+hBrush = (HBRUSH)GetStockObject(NULL_BRUSH); //상자 안에를 투명화시킨다. 
+oldBrush = (HBRUSH)SelectObject(hdc, hBrush);
+
+SelectObject(hdc, oldBrush);
+DeleteObject(hBrush);
+
+
+GetWindowRect() : 윈도우의 현재 위치와 크기를 구해준다. (left, top, right, bottom)좌표를 넘겨주며, 전체화면을 기준으로 한 좌표값이 된다.
+
+GetClientRect() : 윈도우의 작업 영역 크기를 계산해주는 함수다. left, top은 항상 0이면서 나머지 두 좌표는 right, top 이다. (곧 그리기 영역의 크기가 된다.)
