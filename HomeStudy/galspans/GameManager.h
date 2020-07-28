@@ -60,14 +60,12 @@ public:
 //		return *ins;
 //	}
 
+//static GameManager& GetInstance()
+//{
+//	static GameManager *instance = new GameManager();
+//	return *instance;
+//}
 
-
-
-	//static GameManager& GetInstance()
-	//{
-	//	static GameManager *instance = new GameManager();
-	//	return *instance;
-	//}
 
 }; 
 

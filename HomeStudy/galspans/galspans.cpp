@@ -34,6 +34,7 @@ void DrawBitmapDoubleBuffering(HWND hWnd, HDC hdc);
 void DeleteBitmap();
 */
 
+
 // Forward declarations of functions included in this code module:
 ATOM                MyRegisterClass(HINSTANCE hInstance);
 BOOL                InitInstance(HINSTANCE, int);
@@ -128,19 +129,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	case WM_CREATE:
 		{
 			g_GameManager = GameManager::GetInstance();
-			SetTimer(hWnd,1, 1000, NULL);
-			
-			/*		SetTimer(hWnd, 111, 100, NULL);
-			GetClientRect(hWnd, &rectView);
-			GetWindowRect(hWnd, &rectView2);
-			polyCont.push_back({ 500, 300 });
-			polyCont.push_back({ 700, 300 });
-			polyCont.push_back({ 700, 400 });
-			polyCont.push_back({ 500, 400 });
-			moveT = polyCont[3];
-			tmp = moveT;
-			player.setPosition(polyCont[3]);*/
-
+			SetTimer(hWnd,1, 100, NULL);
 		}
 		break;
     case WM_COMMAND:
@@ -178,6 +167,16 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			InvalidateRect(hWnd, NULL, true);
 		}
 		break;
+	case WM_KEYDOWN:
+		{
+			g_GameManager->Update(message, wParam, lParam);
+		}
+		break;
+	case WM_KEYUP:
+		{
+			g_GameManager->Update(message, wParam, lParam);
+		}
+		break;
 	case WM_TIMER:
 		{
 			g_GameManager->Update(message, wParam, lParam); 
@@ -186,7 +185,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			
 			break;
 		}
-		
     case WM_DESTROY:
 
 		KillTimer(0,0);

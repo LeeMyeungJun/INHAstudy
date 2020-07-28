@@ -1,25 +1,23 @@
 #pragma once
 
 class BitMap;
-//class Player;
+class PlayerManager;
 
 #define SCREEN_WIDTH 900
 #define SCREEN_HEIGHT 800
 
 class GameScene : public Scene
 {
-
+private:
+	POINT ptPotion; //±∏∏€∂’±‚øÎµµ.
 public:
 	GameScene();
 	~GameScene();
 
-	
+	PlayerManager * m_Player;
 	BitMap * m_Bitmap;
 	std::vector<POINT> vecPolygon;
-	//Player * player;
 
-
-	POINT ptPotion;
 
 	void Init(void);
 	void Update(UINT message, WPARAM wParam, LPARAM lParam);
@@ -31,7 +29,7 @@ public:
 	HBITMAP hNewBitmap;
 	
 
-	bool bLand[SCREEN_WIDTH][SCREEN_HEIGHT] = {false}; //∏‘¿∫∂•¿∫ true∑Œ «ÿ¡›Ω√¥Ÿ.
+	bool bLand[SCREEN_WIDTH][SCREEN_HEIGHT]; //∏‘¿∫∂•¿∫ true∑Œ «ÿ¡›Ω√¥Ÿ.
 	
 };
 

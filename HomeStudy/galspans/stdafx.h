@@ -29,6 +29,7 @@
 
 //Manager
 #include "GameManager.h"
+#include "PlayerManager.h"
 #include "BitMap.h"
 //Font
 #include "FontManager.h"
@@ -54,7 +55,7 @@
 
 #define SCREEN_WIDTH 900
 #define SCREEN_HEIGHT 800
-
+#define CHARACTER_SIZE 5
 
 
 // TODO: reference additional headers your program requires here

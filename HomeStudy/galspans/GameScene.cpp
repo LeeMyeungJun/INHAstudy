@@ -5,20 +5,19 @@
 GameScene::GameScene()
 {
 	m_Bitmap = new BitMap;
-//	player = new Player;
-	m_SceneUI = m_GameUI;
-	hOldBitmap = NULL;
-	hNewBitmap = NULL;
-	
+	m_Player = new PlayerManager;
 
-	
+	m_SceneUI = m_GameUI;
+
+	hOldBitmap = NULL;
+	hNewBitmap = NULL;	
 }
 
 
 GameScene::~GameScene()
 {
 	delete m_Bitmap;
-//	delete player;
+	delete m_Player;
 }
 
 void GameScene::Init(void)
@@ -29,20 +28,85 @@ void GameScene::Init(void)
 	vecPolygon.push_back({ 200,100 });
 	vecPolygon.push_back({ 200,200 });
 	vecPolygon.push_back({ 100,200 });
-//	player->PlayerPotion = { 100,100 };
-	bLand[SCREEN_WIDTH][SCREEN_HEIGHT] = { false };
+
+	
+	for (int i = 100; i <= 200; i++)
+	{
+		for (int j = 100; j <= 200; j++)
+		{
+			bLand[i][j] = false;
+		}
+	}
+
+	m_Player->ptPosition.x = 100;
+	m_Player->ptPosition.y = 100;
+
+
 }
 
 void GameScene::Update(UINT message, WPARAM wParam, LPARAM lParam)
 {
+
+	switch (message)
+	{
+		case WM_KEYDOWN:
+		{
+			if (GetKeyState(VK_RIGHT) & 0x8000)
+			{
+				m_Player->ptPosition.x += 1;
+				if (GetKeyState(VK_UP) & 0x8000)
+				{
+					m_Player->ptPosition.y -= 1;
+				}
+				else if (GetKeyState(VK_DOWN) & 0x8000)
+				{
+					m_Player->ptPosition.y += 1;
+				}
+			}
+			else if (GetKeyState(VK_LEFT) & 0x8000)
+			{
+				m_Player->ptPosition.x -= 1;
+				if (GetKeyState(VK_UP) & 0x8000)
+				{
+					m_Player->ptPosition.y -= 1;
+				}
+				else if (GetKeyState(VK_DOWN) & 0x8000)
+				{
+					m_Player->ptPosition.y += 1;
+				}
+			}
+			else if (GetKeyState(VK_UP) & 0x8000)
+			{
+				m_Player->ptPosition.y -= 1;
+			}
+			else if (GetKeyState(VK_DOWN) & 0x8000)
+			{
+				m_Player->ptPosition.y += 1;
+			}
+		}
+		break;
+	}
+
+
+
+
+
 }
 
 void GameScene::Render(HWND hWnd, HDC hdc)
 {
+
+	HDC tempDC;
+	HBRUSH myBrush, oldBrush;
+
+
+	/*사진부분*/
 	m_Bitmap->DrawBitmapDoubleBuffering(hWnd, hdc);
+
+
+	/*구멍뚫기부분*/
 	{
-		HDC tempDC;
-		HBRUSH myBrush, oldBrush;
+		
 
 		tempDC = CreateCompatibleDC(hdc);
 
@@ -74,17 +138,15 @@ void GameScene::Render(HWND hWnd, HDC hdc)
 		DeleteDC(tempDC);
 	}
 	
-	
+	/*플레이어 부분 */
+	myBrush = (HBRUSH)CreateSolidBrush(RGB(255, 0, 0));
+	oldBrush = (HBRUSH)SelectObject(hdc, myBrush);
 
-/*
-	HBRUSH hBrushCircle = CreateSolidBrush(RGB(255, 0, 255));
-	HBRUSH oldBrush = (HBRUSH)SelectObject(hMemDC, hBrushCircle);
-	Ellipse(hMemDC, 400, 200, 450, 250);
-	SelectObject(hMemDC2, oldBrush);
-	DeleteObject(hBrushCircle);
+	m_Player->DrawPlayerCharacter(hdc);
 
-	TransparentBlt(hdc, 200, 100, bx, by, hMemDC2, 0, 0, bx, by, RGB(255, 0, 255));*/
-	
+	SelectObject(hdc, oldBrush);
+	DeleteObject(myBrush);
+
 }
 
 void GameScene::Free(void)
