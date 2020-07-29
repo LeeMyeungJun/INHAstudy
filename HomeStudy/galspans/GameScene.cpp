@@ -2,8 +2,10 @@
 
 
 const int PlayerSpeed = 1;
+extern GameManager * g_GameManager;
 GameScene::GameScene()
 {
+	m_GameUI = new GameUI;
 	m_Bitmap = new BitMap;
 	m_Player = new PlayerManager;
 	m_SceneUI = m_GameUI;
@@ -17,6 +19,7 @@ GameScene::~GameScene()
 {
 	delete m_Bitmap;
 	delete m_Player;
+	delete m_GameUI;
 }
 
 void GameScene::Init(void)
@@ -46,6 +49,7 @@ void GameScene::Init(void)
 void GameScene::Update(UINT message, WPARAM wParam, LPARAM lParam)
 {
 	PlayerMove(message);
+	g_GameManager->SceneChange(Scene_enum::SCENE_END);
 	
 }
 

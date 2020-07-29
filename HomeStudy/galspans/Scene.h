@@ -11,9 +11,14 @@ class Scene
 {
 public:
 	UI		* m_SceneUI = nullptr;
-	MenuUI	* m_MenuUI = new MenuUI;
-	GameUI  * m_GameUI = new GameUI;
-	EndUI	* m_EndUI = new EndUI;
+	//MenuUI	* m_MenuUI = new MenuUI;
+	//GameUI  * m_GameUI = new GameUI;
+	//EndUI	* m_EndUI = new EndUI;
+	MenuUI	* m_MenuUI  = nullptr;
+	GameUI  * m_GameUI = nullptr;
+	EndUI	* m_EndUI = nullptr;
+
+	
 
 	
 

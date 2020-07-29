@@ -4,6 +4,7 @@ extern GameManager * g_GameManager;
 
 MenuScene::MenuScene()
 {
+	m_MenuUI = new MenuUI;
 	m_SceneUI = m_MenuUI;
 	Init();
 }
@@ -11,6 +12,7 @@ MenuScene::MenuScene()
 
 MenuScene::~MenuScene()
 {
+	delete m_MenuUI;
 }
 
 void MenuScene::Init(void)
