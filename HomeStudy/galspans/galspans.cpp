@@ -14,27 +14,6 @@ WCHAR szTitle[MAX_LOADSTRING];                  // The title bar text
 WCHAR szWindowClass[MAX_LOADSTRING];            // the main window class name
 extern GameManager * g_GameManager;
 
-/*수정버전
-HBITMAP hDoubleBufferImage;
-bool sizeChangeFlag = 0;
-RECT rectView;
-RECT rectView2;
-HBITMAP hBackImage, hBackImage2;
-BITMAP bitBack, bitBack2;
-vector<POINT> polyCont;
-vector<POINT> moveCont;
-POINT ptPool[1360];
-POINT moveT, tmp;
-movingPoint player;
-TCHAR sKeyState[128];
-VOID CALLBACK KeyStateProc(HWND, UINT, UINT, DWORD);
-HBITMAP hTransparentImage;
-BITMAP bitTransparent;
-void DrawBitmapDoubleBuffering(HWND hWnd, HDC hdc);
-void DeleteBitmap();
-*/
-
-
 // Forward declarations of functions included in this code module:
 ATOM                MyRegisterClass(HINSTANCE hInstance);
 BOOL                InitInstance(HINSTANCE, int);

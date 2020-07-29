@@ -11,5 +11,5 @@ UI::UI()
 
 UI::~UI()
 {
-	//delete FontSetting;
+
 }

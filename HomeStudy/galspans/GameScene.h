@@ -14,9 +14,12 @@ public:
 	GameScene();
 	~GameScene();
 
+
 	PlayerManager * m_Player;
 	BitMap * m_Bitmap;
+
 	std::vector<POINT> vecPolygon;
+	std::vector<POINT> vecTemp;
 
 
 	void Init(void);
@@ -24,6 +27,8 @@ public:
 	void Render(HWND hWnd, HDC hdc);
 	void Free(void);
 
+	void PlayerMove(UINT message);
+	bool PlayerInsideCheck(int x, int y);
 	
 	HBITMAP hOldBitmap;
 	HBITMAP hNewBitmap;

@@ -6,7 +6,6 @@ GameScene::GameScene()
 {
 	m_Bitmap = new BitMap;
 	m_Player = new PlayerManager;
-
 	m_SceneUI = m_GameUI;
 
 	hOldBitmap = NULL;
@@ -22,7 +21,7 @@ GameScene::~GameScene()
 
 void GameScene::Init(void)
 {
-	
+	vecTemp.clear();
 	vecPolygon.clear();
 	vecPolygon.push_back({ 100,100 });
 	vecPolygon.push_back({ 200,100 });
@@ -46,51 +45,8 @@ void GameScene::Init(void)
 
 void GameScene::Update(UINT message, WPARAM wParam, LPARAM lParam)
 {
-
-	switch (message)
-	{
-		case WM_KEYDOWN:
-		{
-			if (GetKeyState(VK_RIGHT) & 0x8000)
-			{
-				m_Player->ptPosition.x += 1;
-				if (GetKeyState(VK_UP) & 0x8000)
-				{
-					m_Player->ptPosition.y -= 1;
-				}
-				else if (GetKeyState(VK_DOWN) & 0x8000)
-				{
-					m_Player->ptPosition.y += 1;
-				}
-			}
-			else if (GetKeyState(VK_LEFT) & 0x8000)
-			{
-				m_Player->ptPosition.x -= 1;
-				if (GetKeyState(VK_UP) & 0x8000)
-				{
-					m_Player->ptPosition.y -= 1;
-				}
-				else if (GetKeyState(VK_DOWN) & 0x8000)
-				{
-					m_Player->ptPosition.y += 1;
-				}
-			}
-			else if (GetKeyState(VK_UP) & 0x8000)
-			{
-				m_Player->ptPosition.y -= 1;
-			}
-			else if (GetKeyState(VK_DOWN) & 0x8000)
-			{
-				m_Player->ptPosition.y += 1;
-			}
-		}
-		break;
-	}
-
-
-
-
-
+	PlayerMove(message);
+	
 }
 
 void GameScene::Render(HWND hWnd, HDC hdc)
@@ -151,4 +107,68 @@ void GameScene::Render(HWND hWnd, HDC hdc)
 
 void GameScene::Free(void)
 {
+}
+
+void GameScene::PlayerMove(UINT message)
+{
+	switch (message)
+	{
+	case WM_KEYDOWN:
+	{
+		if (GetKeyState(VK_RIGHT) & 0x8000)
+		{
+			if (PlayerInsideCheck(m_Player->ptPosition.x + 1, m_Player->ptPosition.y))
+			{
+				m_Player->ptPosition.x += 1;
+				if (GetKeyState(VK_UP) & 0x8000)
+				{
+					m_Player->ptPosition.y -= 1;
+				}
+				else if (GetKeyState(VK_DOWN) & 0x8000)
+				{
+					m_Player->ptPosition.y += 1;
+				}
+			}
+		}
+		else if (GetKeyState(VK_LEFT) & 0x8000)
+		{
+			m_Player->ptPosition.x -= 1;
+			if (GetKeyState(VK_UP) & 0x8000)
+			{
+				m_Player->ptPosition.y -= 1;
+			}
+			else if (GetKeyState(VK_DOWN) & 0x8000)
+			{
+				m_Player->ptPosition.y += 1;
+			}
+		}
+		else if (GetKeyState(VK_UP) & 0x8000)
+		{
+			m_Player->ptPosition.y -= 1;
+		}
+		else if (GetKeyState(VK_DOWN) & 0x8000)
+		{
+			m_Player->ptPosition.y += 1;
+		}
+	}
+	break;
+	}
+
+}
+
+bool GameScene::PlayerInsideCheck(int x, int y)
+{
+	int crosses = 0;
+	for (int i = 0; i < vecTemp.size(); i++) {
+		int j = (i + 1) % vecTemp.size();
+		//점 B가 선분 (p[i], p[j])의 y좌표 사이에 있음
+		if ((vecTemp[i].y > y) != (vecTemp[j].y > y)) {
+			//atX는 점 B를 지나는 수평선과 선분 (p[i], p[j])의 교점
+			double atX = (vecTemp[j].x - vecTemp[i].x)*(y - vecTemp[i].y) / (vecTemp[j].y - vecTemp[i].y) + vecTemp[i].x;
+			//atX가 오른쪽 반직선과의 교점이 맞으면 교점의 개수를 증가시킨다.
+			if (x < atX)
+				crosses++;
+		}
+	} //true면 안에있다는뜻
+	return crosses % 2 > 0;
 }
