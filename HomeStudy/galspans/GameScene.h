@@ -28,7 +28,7 @@ public:
 	void Free(void);
 
 	void PlayerMove(UINT message);
-	bool PlayerInsideCheck(int x, int y);
+	bool PlayerInsideCheck();
 	
 	HBITMAP hOldBitmap;
 	HBITMAP hNewBitmap;

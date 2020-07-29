@@ -9,5 +9,6 @@ public:
 
 public:
 	POINT ptPosition;
+	int slope;
 };
 

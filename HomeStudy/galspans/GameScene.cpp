@@ -1,7 +1,7 @@
 #include "stdafx.h"
 
 
-
+const int PlayerSpeed = 1;
 GameScene::GameScene()
 {
 	m_Bitmap = new BitMap;
@@ -62,8 +62,6 @@ void GameScene::Render(HWND hWnd, HDC hdc)
 
 	/*구멍뚫기부분*/
 	{
-		
-
 		tempDC = CreateCompatibleDC(hdc);
 
 		if (hNewBitmap == NULL)
@@ -85,6 +83,11 @@ void GameScene::Render(HWND hWnd, HDC hdc)
 
 		/*구멍뚫을부분 */
 		Polygon(tempDC, &vecPolygon[0], vecPolygon.size());
+		if (vecTemp.size() > 2)
+		{
+			Polygon(tempDC, &vecTemp[0], vecTemp.size());
+		}
+		
 		/*여기까지 */
 		SelectObject(tempDC, oldBrush);
 		DeleteObject(myBrush);
@@ -117,38 +120,52 @@ void GameScene::PlayerMove(UINT message)
 	{
 		if (GetKeyState(VK_RIGHT) & 0x8000)
 		{
-			if (PlayerInsideCheck(m_Player->ptPosition.x + 1, m_Player->ptPosition.y))
+			if (PlayerInsideCheck())
 			{
-				m_Player->ptPosition.x += 1;
-				if (GetKeyState(VK_UP) & 0x8000)
-				{
-					m_Player->ptPosition.y -= 1;
-				}
-				else if (GetKeyState(VK_DOWN) & 0x8000)
-				{
-					m_Player->ptPosition.y += 1;
-				}
+				m_Player->ptPosition.x -= PlayerSpeed;
+			}
+			else
+			{
+				m_Player->ptPosition.x += PlayerSpeed;
 			}
 		}
 		else if (GetKeyState(VK_LEFT) & 0x8000)
 		{
-			m_Player->ptPosition.x -= 1;
-			if (GetKeyState(VK_UP) & 0x8000)
+			if (PlayerInsideCheck())
 			{
-				m_Player->ptPosition.y -= 1;
+				m_Player->ptPosition.x += PlayerSpeed;
 			}
-			else if (GetKeyState(VK_DOWN) & 0x8000)
+			else
 			{
-				m_Player->ptPosition.y += 1;
-			}
+				m_Player->ptPosition.x -= PlayerSpeed;
+			}		
 		}
 		else if (GetKeyState(VK_UP) & 0x8000)
 		{
-			m_Player->ptPosition.y -= 1;
+			if (PlayerInsideCheck())
+			{
+				m_Player->ptPosition.y += PlayerSpeed;
+			}
+			else
+			{
+				m_Player->ptPosition.y -= PlayerSpeed;
+			}	
 		}
 		else if (GetKeyState(VK_DOWN) & 0x8000)
 		{
-			m_Player->ptPosition.y += 1;
+			if (PlayerInsideCheck())
+			{
+				m_Player->ptPosition.y -= PlayerSpeed;
+			}
+			else
+			{
+				m_Player->ptPosition.y += PlayerSpeed;
+			}
+			
+		}
+		else if (GetKeyState(VK_SPACE) & 0x8000)
+		{
+			vecTemp.push_back({ m_Player->ptPosition.x ,m_Player->ptPosition.y });
 		}
 	}
 	break;
@@ -156,17 +173,29 @@ void GameScene::PlayerMove(UINT message)
 
 }
 
-bool GameScene::PlayerInsideCheck(int x, int y)
+bool GameScene::PlayerInsideCheck()
 {
 	int crosses = 0;
-	for (int i = 0; i < vecTemp.size(); i++) {
-		int j = (i + 1) % vecTemp.size();
+	int i = 0, j = 0;
+	//for (i = 0; i < vecPolygon.size(); i++)
+	//{
+	//	for (j = 0; j < vecPolygon.size(); j++)
+	//	{
+	//		if (m_Player->ptPosition.x == vecPolygon[i].x && (m_Player->ptPosition.y == vecPolygon[j].y))
+	//		{
+	//			return false;
+	//		}
+	//			
+	//	}
+	//}
+	for ( i = 0; i < vecPolygon.size(); i++) {
+		int j = (i + 1) % vecPolygon.size();
 		//점 B가 선분 (p[i], p[j])의 y좌표 사이에 있음
-		if ((vecTemp[i].y > y) != (vecTemp[j].y > y)) {
+		if ((vecPolygon[i].y > m_Player->ptPosition.y) != (vecPolygon[j].y > m_Player->ptPosition.y)) {
 			//atX는 점 B를 지나는 수평선과 선분 (p[i], p[j])의 교점
-			double atX = (vecTemp[j].x - vecTemp[i].x)*(y - vecTemp[i].y) / (vecTemp[j].y - vecTemp[i].y) + vecTemp[i].x;
+			double atX = (vecPolygon[j].x - vecPolygon[i].x)*(m_Player->ptPosition.y - vecPolygon[i].y) / (vecPolygon[j].y - vecPolygon[i].y) + vecPolygon[i].x;
 			//atX가 오른쪽 반직선과의 교점이 맞으면 교점의 개수를 증가시킨다.
-			if (x < atX)
+			if (m_Player->ptPosition.x <= atX)
 				crosses++;
 		}
 	} //true면 안에있다는뜻
