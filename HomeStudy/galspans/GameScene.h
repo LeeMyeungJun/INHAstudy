@@ -9,7 +9,11 @@ class PlayerManager;
 class GameScene : public Scene
 {
 public:
-	
+	enum CHECKLINE
+	{
+		START_LINE,
+		END_LINE
+	};
 
 	
 
@@ -39,8 +43,14 @@ public:
 	void PlayerLineCheck();
 
 
-	bool bMoveFlag;
-	bool bDrawFlag;
+	bool bOutMoveFlag;
+
+	bool bDrawFlag; //지울것 테스트용이였음
+
+	int arrStartEndCheck[2];
+
+
+
 	
 	HBITMAP hOldBitmap;
 	HBITMAP hNewBitmap;

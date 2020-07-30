@@ -5,6 +5,7 @@
 
 const int PlayerSpeed = 2;
 extern GameManager * g_GameManager;
+using namespace std;
 GameScene::GameScene()
 {
 	m_GameUI = new GameUI;
@@ -58,10 +59,14 @@ void GameScene::Init(void)
 	m_Player->ptTemp.x = 0;
 	m_Player->ptTemp.y = 0;
 
-	bMoveFlag = false;
+	bOutMoveFlag = false;
 	bDrawFlag = false;
 
-}
+	arrStartEndCheck[START_LINE] = 0;
+	arrStartEndCheck[END_LINE] = 0;
+
+	
+}	
 
 void GameScene::Update(UINT message, WPARAM wParam, LPARAM lParam)
 {
@@ -95,7 +100,6 @@ void GameScene::Update(UINT message, WPARAM wParam, LPARAM lParam)
 
 void GameScene::Render(HWND hWnd, HDC hdc)
 {
-
 	HDC tempDC;
 	HBRUSH myBrush, oldBrush;
 
@@ -179,21 +183,7 @@ void GameScene::PlayerMove(UINT message)
 		break;
 	}
 
-	if (GetKeyState(VK_SPACE) & 0x8000 && bMoveFlag == false && LandEmptyCheck(tempY, tempX))
-	{
-
-		/*꼬리끼리 부딛혀서 돌아오게할거면 여기서 만들어주면됨
-		플레이어 씬에서 POINT 변수 하나더가져오삼 지금은안함*/
-		
-		m_Player->ptPosition.x = tempX;
-		m_Player->ptPosition.y = tempY;
-		bMoveFlag = true;
-
-		vecTemp.push_back({ m_Player->ptPosition.x ,m_Player->ptPosition.y }); //최초 출발점을 찍어준다 .
-		PlayerFirstDirection(message); //최초 기울기 체크
-		
-	}
-	else if (LandBorderCheck(tempY, tempX))
+	if (LandBorderCheck(tempY, tempX))
 	{
 		/*
 		if(bMoveFlag == true)
@@ -202,10 +192,17 @@ void GameScene::PlayerMove(UINT message)
 		bMoveFlag = false; 펄스로다시바꿔줘야홤
 		}
 		*/
+
 		m_Player->ptPosition.x = tempX;
 		m_Player->ptPosition.y = tempY;
 	}
-	else if (bMoveFlag) //이미밖이여서 기울기체크를해줘야한다.
+	else if (LandEmptyCheck(tempY, tempX) && GetKeyState(VK_SPACE) & 0x8000)
+	{
+		m_Player->ptPosition.x = tempX;
+		m_Player->ptPosition.y = tempY;
+		bOutMoveFlag = true;
+	}
+	else if (bOutMoveFlag) //이미밖이여서 기울기체크를해줘야한다.
 	{
 		switch (message)
 		{
@@ -232,6 +229,8 @@ void GameScene::PlayerMove(UINT message)
 		m_Player->ptPosition.y = tempY;
 
 	}
+
+	PlayerLineCheck();
 }
 
 
@@ -270,20 +269,59 @@ bool GameScene::LandBorderCheck(int y,int x)
 {
 	if (arrLand[y][x] == 'a')
 	{
-		if (bMoveFlag && vecTemp.size() > 3)
+		if (bOutMoveFlag && vecTemp.size() > 3)
 		{
 			//여기에 합치는공식 
-			bDrawFlag = true;
-		}
+			//bDrawFlag = true;
+			arrStartEndCheck[END_LINE] = m_Player->PlayerLinePosition;
 
+			//vector<int> test;
+			//test.push_back(1);
+			//test.push_back(2);
+			//test.push_back(3);
+			//test.push_back(4);
+			//test.push_back(5);
+			//test.insert(test.begin()+1,999 ); // 0 1 2 3 4 5 가잇을떄 0다음 에 넣어라.
+			//test.erase(test.begin()+1);//0 1 2 3 4 5 라있을떄 1번쨰를 지워라 . 
+
+			if (arrStartEndCheck[START_LINE] == arrStartEndCheck[END_LINE])
+			{
+
+			}
+			else
+			{
+//				vecPolygon.erase(vecPolygon.begin() + arrStartEndCheck[END_LINE]);
+				for (int i = vecTemp.size()-1; i >= 0 ; i--)
+				{
+				//	vecPolygon.insert(vecPolygon.begin() + arrStartEndCheck[END_LINE],vecTemp[i]);
+				}
+			}
+
+
+		}
 		return true;
 	}
-		
 	return false;
 }
 
 void GameScene::PlayerLineCheck()
 {
-
+	for (int i = 0; i < vecPolygon.size() - 1; i++)
+	{
+		if (vecPolygon[i].y == m_Player->ptPosition.y && vecPolygon[i + 1].y == m_Player->ptPosition.y)
+		{
+			m_Player->PlayerLinePosition = i;
+			break;
+		}
+		else if (vecPolygon[i].x == m_Player->ptPosition.x && vecPolygon[i + 1].x == m_Player->ptPosition.x) 
+		{
+			m_Player->PlayerLinePosition = i;
+			break;
+		}
+		else
+		{
+			m_Player->PlayerLinePosition = -1;
+		}
+	}
 
 }
