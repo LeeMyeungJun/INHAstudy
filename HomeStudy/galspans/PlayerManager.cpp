@@ -2,7 +2,7 @@
 
 
 
-PlayerManager::PlayerManager():slope(0)
+PlayerManager::PlayerManager():iDirection(0), tempDirection(0),PlayerLinePosition(0)
 {
 	ptPosition = { 0 , 0 };
 }

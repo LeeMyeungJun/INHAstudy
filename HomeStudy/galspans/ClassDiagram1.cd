@@ -10,21 +10,21 @@
   <Class Name="EndScene" Collapsed="true">
     <Position X="2.75" Y="4.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAQAAAAAAAAAACAAAAAAAAAAAAAAAAAABBACAAAAAAI=</HashCode>
+      <HashCode>AAQAAAAAAAAAACAAIAAAAAAAAAAAEAAABBACAAAAAAI=</HashCode>
       <FileName>EndScene.h</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="EndUI" Collapsed="true">
     <Position X="2.75" Y="1.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAEAAAAAAAIAAAAAAAACAAAAAAACAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAAAEAAAAAAAIAAAAAAAAiAAAAAAACAAEAAAA=</HashCode>
       <FileName>EndUI.h</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="FontManager" Collapsed="true">
     <Position X="9.25" Y="0.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAEAAAEAAAAgAAAAAQAAAAgAAAQACAAASAogAAAAAE=</HashCode>
+      <HashCode>AAAEBAAEAAAAgAAAAAQAAAAgAAAQACAAASAogAAAAAE=</HashCode>
       <FileName>FontManager.h</FileName>
     </TypeIdentifier>
   </Class>
@@ -38,7 +38,7 @@
   <Class Name="GameScene" Collapsed="true">
     <Position X="5" Y="4.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAQAEAAAQAAAAEEAAAAEBAAAAIAAAAAAADACACAAAAI=</HashCode>
+      <HashCode>AAQAEAAAAAAAAEEAAAAEBAAAAIAAAAAAADACBAAAAAI=</HashCode>
       <FileName>GameScene.h</FileName>
     </TypeIdentifier>
   </Class>
@@ -73,7 +73,7 @@
   <Class Name="PlayerManager" Collapsed="true">
     <Position X="9.25" Y="1.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAIAABAAABAAAAAAAAAAIAAAAAAAAAAAAAAAQAAAAAA=</HashCode>
+      <HashCode>AAIAABAAABAAAAAAEAAAIAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>PlayerManager.h</FileName>
     </TypeIdentifier>
   </Class>

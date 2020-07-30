@@ -8,6 +8,11 @@ class PlayerManager;
 
 class GameScene : public Scene
 {
+public:
+	
+
+	
+
 private:
 	POINT ptPotion; //±¸¸Û¶Õ±â¿ëµµ.
 public:
@@ -28,13 +33,20 @@ public:
 	void Free(void);
 
 	void PlayerMove(UINT message);
-	bool PlayerInsideCheck();
+	void PlayerFirstDirection(UINT message);
+	bool LandBorderCheck(int,int);
+	bool LandEmptyCheck(int, int);
+	void PlayerLineCheck();
+
+
+	bool bMoveFlag;
+	bool bDrawFlag;
 	
 	HBITMAP hOldBitmap;
 	HBITMAP hNewBitmap;
 	
 
-	bool bLand[SCREEN_WIDTH][SCREEN_HEIGHT]; //¸ÔÀº¶¥Àº true·Î ÇØÁÝ½Ã´Ù.
+	char arrLand[SCREEN_WIDTH][SCREEN_HEIGHT];//a.Å×µÎ¸® b.³»ºÎ c.¾È¸ÔÀº¶¥ d.²¿¸®
 	
 };
 
