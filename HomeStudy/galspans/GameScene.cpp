@@ -224,7 +224,7 @@ void GameScene::PlayerMove(UINT message)
 		m_Player->ptPosition.x = tempX;
 		m_Player->ptPosition.y = tempY;
 		
-		if (bOutMoveFlag && vecPoint.size() >2)
+		if (bOutMoveFlag && vecPoint.size() >1)
 		{
 			//여기에 합치는공식 
 			PlayerLineCheck();
@@ -232,15 +232,8 @@ void GameScene::PlayerMove(UINT message)
 			vecPoint.push_back({ m_Player->ptPosition.x ,m_Player->ptPosition.y });
 			std::vector<POINT> vecTemp(vecPolygon);
 
-			//vector<int> test;
-			//test.push_back(1);
-			//test.push_back(2);
-			//test.push_back(3);
-			//test.push_back(4);
-			//test.push_back(5);
-			//test.insert(test.begin()+1,999 ); // 0 1 2 3 4 5 가잇을떄 0다음 에 넣어라.
-			//test.erase(test.begin()+1);//0 1 2 3 4 5 라있을떄 1번쨰를 지워라 . 
 			int temp = 0;
+
 
 			if (arrStartEndCheck[START_LINE] != arrStartEndCheck[END_LINE])
 			{
@@ -248,6 +241,7 @@ void GameScene::PlayerMove(UINT message)
 				{
 					vecTemp.erase(vecTemp.begin() + arrStartEndCheck[START_LINE] + 1, vecTemp.begin() + arrStartEndCheck[END_LINE] + 1);
 					temp = arrStartEndCheck[START_LINE];
+
 					reverse(vecPoint.begin(), vecPoint.end());
 				}
 				else
@@ -256,22 +250,42 @@ void GameScene::PlayerMove(UINT message)
 					temp = arrStartEndCheck[END_LINE];
 				}
 			}
-			else
+			else if (arrStartEndCheck[START_LINE] == arrStartEndCheck[END_LINE])
 			{
-				reverse(vecPoint.begin(), vecPoint.end());
+				if (vecPoint[0].y == vecPoint[vecPoint.size() - 1].y)
+				{
+					if (vecPoint[0].x < vecPoint[vecPoint.size() - 1].x)
+					{
+						reverse(vecPoint.begin(), vecPoint.end());// 시계방향이면 하고 아니면 하지마
+
+					}
+					//크지않다면 왼쪽방향이면 리버스 해줄필요없다 . 
+				}
+				else if (vecPoint[0].x == vecPoint[vecPoint.size() - 1].x)
+				{
+					if (vecPoint[0].y < vecPoint[vecPoint.size() - 1].y)
+					{
+						reverse(vecPoint.begin(), vecPoint.end());// 시계방향이면 하고 아니면 하지마
+					}
+				}
+
 				temp = arrStartEndCheck[START_LINE];
 			}
+
+		
 
 			for (int i = 0; i < vecPoint.size(); i++)
 			{
 				vecTemp.insert(vecTemp.begin() + temp + 1, vecPoint[i]);
 			}
 
+			
 			vecPolygon = vecTemp;
+			RebuildLand();
 			bOutMoveFlag = false;
 			vecTemp.clear();
 			vecPoint.clear();
-			RebuildLand();
+			
 
 		}
 	}
@@ -366,31 +380,56 @@ bool GameScene::LandBorderCheck(int y,int x)
 }
 
 void GameScene::PlayerLineCheck()
-{
+ {
 	for (int i = 0; i < vecPolygon.size(); i++)
 	{
 		if (i + 1 >= vecPolygon.size())
 		{
 			if (vecPolygon[i].y == m_Player->ptPosition.y && vecPolygon[0].y == m_Player->ptPosition.y)
 			{
-				m_Player->PlayerLinePosition = i;
-				break;
+				if (vecPolygon[i].x <= m_Player->ptPosition.x && vecPolygon[0].x >= m_Player->ptPosition.x)
+				{
+					m_Player->PlayerLinePosition = i;
+					break;
+				}
+				if (vecPolygon[i].x >= m_Player->ptPosition.x && vecPolygon[0].x <= m_Player->ptPosition.x)
+				{
+					m_Player->PlayerLinePosition = i;
+					break;
+				}
+			
 			}
 			else if (vecPolygon[i].x == m_Player->ptPosition.x && vecPolygon[0].x == m_Player->ptPosition.x)
 			{
-				m_Player->PlayerLinePosition = i;
-				break;
+				if (vecPolygon[i].y <= m_Player->ptPosition.y && vecPolygon[0].y >= m_Player->ptPosition.y)
+				{
+					m_Player->PlayerLinePosition = i;
+					break;
+				}	
+				else if (vecPolygon[i].y >= m_Player->ptPosition.y && vecPolygon[0].y <= m_Player->ptPosition.y)
+				{
+					m_Player->PlayerLinePosition = i;
+					break;
+				}
 			}
 		}
 		else if (vecPolygon[i].y == m_Player->ptPosition.y && vecPolygon[i + 1].y == m_Player->ptPosition.y)
 		{
-			m_Player->PlayerLinePosition = i;
-			break;
+			if ((vecPolygon[i].x <= m_Player->ptPosition.x && vecPolygon[i + 1].x >= m_Player->ptPosition.x) || (vecPolygon[i].x >= m_Player->ptPosition.x && vecPolygon[i + 1].x <= m_Player->ptPosition.x))
+			{
+				m_Player->PlayerLinePosition = i;
+				break;
+			}
+			
 		}
 		else if (vecPolygon[i].x == m_Player->ptPosition.x && vecPolygon[i + 1].x == m_Player->ptPosition.x) 
 		{
-			m_Player->PlayerLinePosition = i;
-			break;
+			if ((vecPolygon[i].y <= m_Player->ptPosition.y && vecPolygon[i +1].y >= m_Player->ptPosition.y) || (vecPolygon[i].y >= m_Player->ptPosition.y && vecPolygon[i + 1].y <= m_Player->ptPosition.y))
+			{
+				m_Player->PlayerLinePosition = i;
+				break;
+			}
+			
 		}
 		else
 		{
@@ -402,51 +441,81 @@ void GameScene::PlayerLineCheck()
 
 void GameScene::RebuildLand()
 {
+	//다 지운다. 
+	memset(arrLand, 'c', sizeof(arrLand));
+	
 
-	for (int i = 100; i <= 200; i++)
+	int length = 0, i , j;
+	for ( i = 0; i < vecPolygon.size(); i++)
 	{
-		for (int j = 100; j <= 200; j++)
+		if (i+1 == vecPolygon.size())
 		{
-			if (i == 100 || i == 200 || j == 100 || j == 200)
+			if (vecPolygon[i].x == vecPolygon[0].x)
 			{
-				arrLand[i][j] = 'a';
+				if (vecPolygon[i].y < vecPolygon[0].y)
+				{
+					length = vecPolygon[0].y - vecPolygon[i].y;
+
+					for (j = 0; j <= length; j++)
+					{
+						arrLand[vecPolygon[i].y + j][vecPolygon[i].x] = 'a';
+					}
+				}
+				else
+				{
+					length = vecPolygon[i].y - vecPolygon[0].y;
+
+					for (int j = 0; j <= length; j++)
+					{
+						arrLand[vecPolygon[0].y + j][vecPolygon[i].x] = 'a';
+					}
+				}
+			}
+		}
+		else if (vecPolygon[i].x == vecPolygon[i + 1].x)
+		{
+			if (vecPolygon[i].y < vecPolygon[i + 1].y)
+			{
+				length = vecPolygon[i + 1].y - vecPolygon[i].y;
+
+				for (j = 0; j <= length; j++)
+				{
+					arrLand[vecPolygon[i].y + j][vecPolygon[i].x ] = 'a';
+				}
 			}
 			else
 			{
-				continue;
-			}
-		}
-	}
-	
-	int length = 0;
-	for (int i = 0; i < vecPolygon.size() - 1; i++)
-	{
-		if (vecPolygon[i].x == vecPolygon[i + 1].x)
-		{
+				length = vecPolygon[i].y - vecPolygon[i + 1].y;
 
+				for (int j = 0; j <= length; j++)
+				{
+					arrLand[vecPolygon[i + 1].y + j][vecPolygon[i].x] = 'a';
+				}
+			}
 		}
 		else if(vecPolygon[i].y == vecPolygon[i+1].y)
 		{
 			if (vecPolygon[i].x < vecPolygon[i + 1].x)
 			{
 				length = vecPolygon[i + 1].x - vecPolygon[i].x;
-				for (int j = 0; j < length; j++)
+				for (j = 0; j <= length; j++)
 				{
 					arrLand[vecPolygon[i].y][vecPolygon[i].x + j] = 'a';
 				}
 			}
 			else
 			{
-				//length = vecPolygon[i].x - vecPolygon[i + 1].x;
-				//for (int j = 0; j < length; j++)
-				//{
-				//	arrLand[vecPolygon[i].y][vecPolygon[i + 1].x + j] = 'a';
-				//}
+				length = vecPolygon[i].x - vecPolygon[i + 1].x;
+				for (int j = 0; j <= length; j++)
+				{
+					arrLand[vecPolygon[i].y][vecPolygon[i + 1].x + j] = 'a';
+				}
 
 			}
 
 
 		}
+		
 			
 
 	}
