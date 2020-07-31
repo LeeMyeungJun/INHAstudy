@@ -28,7 +28,9 @@ public:
 	BitMap * m_Bitmap;
 
 	std::vector<POINT> vecPolygon;
-	std::vector<POINT> vecTemp;
+	std::vector<POINT> vecPoint;
+
+
 
 
 	void Init(void);
@@ -38,9 +40,12 @@ public:
 
 	void PlayerMove(UINT message);
 	void PlayerFirstDirection(UINT message);
+	void PlayerDirectionCheck(UINT message);
 	bool LandBorderCheck(int,int);
 	bool LandEmptyCheck(int, int);
 	void PlayerLineCheck();
+	void RebuildLand();
+
 
 
 	bool bOutMoveFlag;

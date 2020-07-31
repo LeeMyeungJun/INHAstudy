@@ -133,9 +133,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             PAINTSTRUCT ps;
             HDC hdc = BeginPaint(hWnd, &ps);
             // TODO: Add any drawing code that uses hdc here...
-			//SetBkMode(hdc, TRANSPARENT); 글자배경색 투명으로만듬
-
+			SetBkMode(hdc, TRANSPARENT); //글자배경색 투명으로만듬
 			g_GameManager->Render(hWnd,hdc);
+
+
 
             EndPaint(hWnd, &ps);
         }

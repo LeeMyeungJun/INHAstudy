@@ -17,6 +17,12 @@ BitMap::~BitMap()
 
 void BitMap::DrawBitmapDoubleBuffering(HWND hwnd, HDC hdc)
 {
+
+	//HBITMAP hDoubleBufferImage;
+	//RECT rectView;
+	//HBITMAP hBackImage;
+	//BITMAP bitBack;
+
 	GetClientRect(hwnd, &rectView);
 
 	HDC hMemDC;
@@ -48,15 +54,6 @@ void BitMap::DrawBitmapDoubleBuffering(HWND hwnd, HDC hdc)
 
 	SelectObject(hMemDC, hOldBitmap);
 	StretchBlt(hdc, 0, 0, rectView.right, rectView.bottom, hMemDC, 0, 0, rectView.right, rectView.bottom, SRCCOPY);
-
-
-
-
-
-
-
-
-
 	DeleteDC(hMemDC);
 
 }
