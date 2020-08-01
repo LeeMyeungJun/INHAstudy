@@ -5,8 +5,13 @@ private:
 	HBITMAP hDoubleBufferImage;
 	RECT rectView;
 
-	HBITMAP hBackImage;
-	BITMAP bitBack;
+	HBITMAP hBackImage1;
+	BITMAP bitBack1;
+
+	HBITMAP hBackImage2;
+	BITMAP bitBack2;
+
+	HBITMAP tempImage;
 
 
 public:

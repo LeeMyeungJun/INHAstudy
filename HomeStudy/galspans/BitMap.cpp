@@ -7,6 +7,7 @@ BitMap::BitMap()
 	init();
 	CreateBitmap();
 	hDoubleBufferImage = NULL;
+	tempImage = hBackImage1;
 	
 }
 
@@ -17,12 +18,6 @@ BitMap::~BitMap()
 
 void BitMap::DrawBitmapDoubleBuffering(HWND hwnd, HDC hdc)
 {
-
-	//HBITMAP hDoubleBufferImage;
-	//RECT rectView;
-	//HBITMAP hBackImage;
-	//BITMAP bitBack;
-
 	GetClientRect(hwnd, &rectView);
 
 	HDC hMemDC;
@@ -39,9 +34,10 @@ void BitMap::DrawBitmapDoubleBuffering(HWND hwnd, HDC hdc)
 	hOldBitmap = (HBITMAP)SelectObject(hMemDC, hDoubleBufferImage);
 
 	hMemDC2 = CreateCompatibleDC(hMemDC);	//이미지 찢어짐 방지
-	hOldBitmap2 = (HBITMAP)SelectObject(hMemDC2, hBackImage);
-	bx = bitBack.bmWidth;
-	by = bitBack.bmHeight;
+	hOldBitmap2 = (HBITMAP)SelectObject(hMemDC2, tempImage); //여기 사진넣기
+
+	bx = bitBack1.bmWidth;
+	by = bitBack1.bmHeight;
 
 	BitBlt(hMemDC, 0, 0, bx, by, hMemDC2, 0, 0, SRCCOPY);
 	SelectObject(hMemDC2, hOldBitmap2);
@@ -62,15 +58,18 @@ void BitMap::CreateBitmap()
 {
 	//1 이미지생성
 	{
-		hBackImage = (HBITMAP)LoadImage(NULL, TEXT("images/수지.bmp"),IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
-		GetObject(hBackImage, sizeof(BITMAP), &bitBack);
+		hBackImage1 = (HBITMAP)LoadImage(NULL, TEXT("images/수지.bmp"),IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
+		GetObject(hBackImage1, sizeof(BITMAP), &bitBack1);
+
+		hBackImage2 = (HBITMAP)LoadImage(NULL, TEXT("images/kungfu.bmp"), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
+		GetObject(hBackImage1, sizeof(BITMAP), &bitBack2);
 	}
 
 }
 
 void BitMap::DeleteBitmap()
 {
-	DeleteObject(hBackImage);
+	DeleteObject(hBackImage1);
 }
 
 void BitMap::init()

@@ -57,9 +57,6 @@ void GameManager::SceneChange(Scene_enum nextScene)
 		m_Scene = m_GameScene;
 		m_Scene_enum = Scene_enum::SCENE_GAME;
 		break;
-	case Scene_enum::SCENE_NEXT_STAGE:
-		m_Scene_enum = Scene_enum::SCENE_NEXT_STAGE;
-		break;
 	case Scene_enum::SCENE_END:
 		if (m_EndScene == nullptr)
 			m_EndScene = new EndScene;

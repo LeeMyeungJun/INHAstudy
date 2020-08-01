@@ -11,7 +11,6 @@ enum class Scene_enum : size_t
 	SCENE_NONE,
 	SCENE_MENU,
 	SCENE_GAME,
-	SCENE_NEXT_STAGE,
 	SCENE_END,
 	SCENE_EXIT
 };

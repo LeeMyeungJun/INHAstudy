@@ -55,7 +55,7 @@ public:
 	bool bOutMoveFlag;
 
 	bool bDrawFlag; //지울것 테스트용이였음
-	bool bLeftFlag;
+
 
 
 	int arrStartEndCheck[2];
