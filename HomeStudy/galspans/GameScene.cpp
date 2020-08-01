@@ -60,6 +60,7 @@ void GameScene::Init(void)
 
 	bOutMoveFlag = false;
 	bDrawFlag = false;
+	bLeftFlag = false;
 
 	arrStartEndCheck[START_LINE] = 0;
 	arrStartEndCheck[END_LINE] = 0;
@@ -102,10 +103,9 @@ void GameScene::Render(HWND hWnd, HDC hdc)
 	HDC tempDC;
 	HBRUSH myBrush, oldBrush;
 
-	
-
 	/*사진부분*/
 	m_Bitmap->DrawBitmapDoubleBuffering(hWnd, hdc);
+
 
 
 	/*구멍뚫기부분*/
@@ -115,10 +115,13 @@ void GameScene::Render(HWND hWnd, HDC hdc)
 		if (hNewBitmap == NULL)
 			hNewBitmap = CreateCompatibleBitmap(hdc, SCREEN_WIDTH, SCREEN_HEIGHT); //초기화를해준다 처음들어가면 사이즈만큼
 
+		
 		hOldBitmap = (HBITMAP)SelectObject(tempDC, hNewBitmap);
 
 		myBrush = (HBRUSH)CreateSolidBrush(RGB(255, 255, 0));
 		oldBrush = (HBRUSH)SelectObject(tempDC, myBrush);
+
+		
 
 		Rectangle(tempDC, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
 
@@ -232,17 +235,88 @@ void GameScene::PlayerMove(UINT message)
 			vecPoint.push_back({ m_Player->ptPosition.x ,m_Player->ptPosition.y });
 			std::vector<POINT> vecTemp(vecPolygon);
 
+			std::vector<POINT> vecArea(vecPolygon);
+			std::vector<POINT> vecPointTemp(vecPoint);
+
+
 			int temp = 0;
+			int areaOne = 0;
+			int areaTwo = 0;
+			
+
+			{
+				
+
+				vecArea.erase(vecArea.begin(), vecArea.begin() + arrStartEndCheck[START_LINE] + 1);
+				reverse(vecPointTemp.begin(), vecPointTemp.end());
+				for (int i = 0; i < vecPointTemp.size(); i++)
+				{
+					vecArea.push_back(vecPointTemp[i]);
+				}
+				
+				vecArea.insert(vecArea.begin() + vecArea.size(), vecArea[0]);
+			
+
+				for (int i = 0; i < vecArea.size()-1; i++)
+				{
+					areaTwo += ((vecArea[i].x * vecArea[i + 1].y) / 2 - (vecArea[i + 1].x * vecArea[i].y) / 2);
+
+				}
+
+				if (areaOne == 0)
+				{
+					areaOne = areaTwo;
+				}
+
+
+
+				vecArea = vecPolygon;
+				vecArea.erase(vecArea.begin() + arrStartEndCheck[START_LINE] + 1, vecArea.begin() + arrStartEndCheck[END_LINE] + 1);
+				temp = arrStartEndCheck[START_LINE];
+				//reverse(vecPointTemp.begin(), vecPointTemp.end());
+				for (int i = 0; i < vecPoint.size(); i++)
+				{
+					vecArea.insert(vecArea.begin() + temp + 1, vecPoint[i]);
+
+				}
+				vecArea.insert(vecArea.begin() + vecArea.size(), vecArea[0]);
+
+
+				for (int i = 0; i < vecArea.size()-1; i++)
+				{
+					areaTwo += ((vecArea[i].x * vecArea[i + 1].y) / 2 - (vecArea[i + 1].x * vecArea[i].y) / 2);
+
+				}
+
+			
+
+
+
+
+			}
 
 
 			if (arrStartEndCheck[START_LINE] != arrStartEndCheck[END_LINE])
 			{
-				if (arrStartEndCheck[START_LINE] + 1 < arrStartEndCheck[END_LINE] + 1)
+				if (arrStartEndCheck[START_LINE] < arrStartEndCheck[END_LINE])
 				{
-					vecTemp.erase(vecTemp.begin() + arrStartEndCheck[START_LINE] + 1, vecTemp.begin() + arrStartEndCheck[END_LINE] + 1);
-					temp = arrStartEndCheck[START_LINE];
 
+
+
+					if (areaOne < areaTwo)
+					{
+						vecTemp.erase(vecTemp.begin() , vecTemp.begin() + arrStartEndCheck[START_LINE] +1 );
+						bLeftFlag = true;
+					}
+					else
+					{
+						vecTemp.erase(vecTemp.begin() + arrStartEndCheck[START_LINE] + 1, vecTemp.begin() + arrStartEndCheck[END_LINE] + 1);
+						
+					}
 					reverse(vecPoint.begin(), vecPoint.end());
+					
+					temp = arrStartEndCheck[START_LINE];
+					
 				}
 				else
 				{
@@ -273,11 +347,26 @@ void GameScene::PlayerMove(UINT message)
 			}
 
 		
-
-			for (int i = 0; i < vecPoint.size(); i++)
+			if (!bLeftFlag)
 			{
-				vecTemp.insert(vecTemp.begin() + temp + 1, vecPoint[i]);
+				for (int i = 0; i < vecPoint.size(); i++)
+				{
+					vecTemp.insert(vecTemp.begin() + temp + 1 , vecPoint[i]);
+			
+				}
+				
 			}
+			else
+			{
+				for (int i = 0; i < vecPoint.size(); i++)
+				{
+					vecTemp.push_back(vecPoint[i]);
+				}
+				bLeftFlag = false;
+			}
+
+
+			
 
 			
 			vecPolygon = vecTemp;
@@ -521,3 +610,4 @@ void GameScene::RebuildLand()
 	}
 
 }
+

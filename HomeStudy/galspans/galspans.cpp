@@ -108,7 +108,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	case WM_CREATE:
 		{
 			g_GameManager = GameManager::GetInstance();
-			SetTimer(hWnd,1, 30, NULL);
+			SetTimer(hWnd,1, 40, NULL);
 		}
 		break;
     case WM_COMMAND:

@@ -6,6 +6,7 @@ class PlayerManager;
 #define SCREEN_WIDTH 900
 #define SCREEN_HEIGHT 800
 
+using namespace std;
 class GameScene : public Scene
 {
 public:
@@ -33,6 +34,9 @@ public:
 
 
 
+
+
+
 	void Init(void);
 	void Update(UINT message, WPARAM wParam, LPARAM lParam);
 	void Render(HWND hWnd, HDC hdc);
@@ -51,6 +55,8 @@ public:
 	bool bOutMoveFlag;
 
 	bool bDrawFlag; //지울것 테스트용이였음
+	bool bLeftFlag;
+
 
 	int arrStartEndCheck[2];
 
