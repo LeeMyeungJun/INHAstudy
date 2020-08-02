@@ -21,8 +21,8 @@ public:
 	POINT ptPosition;
 	POINT ptTemp; //꼬리부딛혓을떄 돌아가게하려는 저장 변수
 
-	int iDirection; //< LEFT 0  UP 1 RIGHT 2 DOWN 3
-	int tempDirection;
+	int iDirection; //< LEFT 0  UP 1 RIGHT 2 DOWN 3  방향 저장하는곳.
+	int tempDirection; //현재움직이는방향
 
 	int PlayerLinePosition;
 };

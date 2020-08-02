@@ -16,6 +16,12 @@ public:
 		END_LINE
 	};
 
+	enum STAGE
+	{
+		STAGE_ONE,
+		STAGE_TWO
+	};
+
 	
 
 private:
@@ -25,11 +31,7 @@ public:
 	~GameScene();
 
 
-	PlayerManager * m_Player;
-	BitMap * m_Bitmap;
 
-	std::vector<POINT> vecPolygon;
-	std::vector<POINT> vecPoint;
 
 
 
@@ -49,23 +51,30 @@ public:
 	bool LandEmptyCheck(int, int);
 	void PlayerLineCheck();
 	void RebuildLand();
+	void DrawBitmapDoubleBuffering(HWND hwnd, HDC hdc);
+	void PolygonArea();
 
-
-
+	size_t stage;
 	bool bOutMoveFlag;
-
 	bool bDrawFlag; //지울것 테스트용이였음
-
-
-
 	int arrStartEndCheck[2];
+	PlayerManager * m_Player;
+
+	BitMap * m_Bitmap;
+
+
+	std::vector<POINT> vecPolygon;
+	std::vector<POINT> vecPoint;
+	float fArea;
 
 
 
-	
-	HBITMAP hOldBitmap;
-	HBITMAP hNewBitmap;
-	
+	HBITMAP hDoubleBufferImage;
+	RECT rectView;
+
+	BitMap MapSetting;
+	HBITMAP tempImage;
+	BITMAP tempBack;
 
 	char arrLand[SCREEN_WIDTH][SCREEN_HEIGHT];//a.테두리 b.내부 c.안먹은땅 d.꼬리
 	

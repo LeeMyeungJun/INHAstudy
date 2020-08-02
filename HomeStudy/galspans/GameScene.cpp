@@ -14,9 +14,9 @@ GameScene::GameScene()
 	m_Bitmap = new BitMap;
 	m_Player = new PlayerManager;
 	m_SceneUI = m_GameUI;
+	hDoubleBufferImage = NULL;
 
-	hOldBitmap = NULL;
-	hNewBitmap = NULL;	
+	stage = STAGE_ONE;
 }
 
 
@@ -31,18 +31,18 @@ void GameScene::Init(void)
 {
 	vecPoint.clear();
 	vecPolygon.clear();
-	
+
 	vecPolygon.push_back({ 0,0 });
 	vecPolygon.push_back({ 100,0 });
 	vecPolygon.push_back({ 100,100 });
 	vecPolygon.push_back({ 0,100 });
 	memset(arrLand, 'c', sizeof(arrLand));
-	
+
 	for (int i = 0; i <= 100; i++)
 	{
 		for (int j = 0; j <= 100; j++)
-		{	
-			if (i ==0 || i == 100 || j == 0 || j == 100)
+		{
+			if (i == 0 || i == 100 || j == 0 || j == 100)
 			{
 				arrLand[i][j] = 'a';
 			}
@@ -61,13 +61,31 @@ void GameScene::Init(void)
 	m_Player->ptTemp.y = 0;
 
 	bOutMoveFlag = false;
-
+	fArea = 100 * 100;
 
 	arrStartEndCheck[START_LINE] = 0;
 	arrStartEndCheck[END_LINE] = 0;
 
-	
-}	
+	switch (stage)
+	{
+	case STAGE_ONE:
+	{
+		tempImage = MapSetting.hBackImage1;
+		tempBack = MapSetting.bitBack1;
+	}
+	break;
+	case STAGE_TWO:
+	{
+		tempImage = MapSetting.hBackImage2;
+		tempBack = MapSetting.bitBack2;
+	}
+	break;
+	}
+
+	hDoubleBufferImage = NULL;
+
+
+}
 
 void GameScene::Update(UINT message, WPARAM wParam, LPARAM lParam)
 {
@@ -95,143 +113,88 @@ void GameScene::Update(UINT message, WPARAM wParam, LPARAM lParam)
 	break;
 	}
 
+	int test = (fabs(fArea) / (rectView.right * rectView.bottom)) * 100;
+	if (test > 75)
+	{
+		stage++;
+		if (stage > STAGE_TWO)
+			g_GameManager->SceneChange(Scene_enum::SCENE_END);
+		Init();
+	}
+	
+	
 }
 
 void GameScene::Render(HWND hWnd, HDC hdc)
 {
-	m_Bitmap->DrawBitmapDoubleBuffering(hWnd, hdc);
-
-
-	HDC tempDC;
-//	HDC tempDC2;
-
-	HBRUSH myBrush, oldBrush;
-
-	//HBITMAP hOldBitmap;
-	//HBITMAP hNewBitmap;
-	/*사진부분*/
-
-
-
-	/*구멍뚫기부분*/
-	{
-		tempDC = CreateCompatibleDC(hdc);
-
-		if (hNewBitmap == NULL)
-			hNewBitmap = CreateCompatibleBitmap(hdc, SCREEN_WIDTH, SCREEN_HEIGHT); //초기화를해준다 처음들어가면 사이즈만큼
-
-		
-		hOldBitmap = (HBITMAP)SelectObject(tempDC, hNewBitmap);
-
-		myBrush = (HBRUSH)CreateSolidBrush(RGB(255, 255, 0));
-		oldBrush = (HBRUSH)SelectObject(tempDC, myBrush);
-
-		Rectangle(tempDC, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
-
-		SelectObject(tempDC, oldBrush);
-		DeleteObject(myBrush);
-
-
-		myBrush = (HBRUSH)CreateSolidBrush(RGB(255, 50, 255));
-		oldBrush = (HBRUSH)SelectObject(tempDC, myBrush);
-
-		/*구멍뚫을부분 */
-		Polygon(tempDC, &vecPolygon[0], vecPolygon.size());
-		/*여기까지 */
-		SelectObject(tempDC, oldBrush);
-		DeleteObject(myBrush);
-
-		TransparentBlt(hdc, 0, 0, SCREEN_WIDTH- 50, SCREEN_HEIGHT- 50, tempDC, 0, 0, SCREEN_WIDTH - 50, SCREEN_HEIGHT - 50, RGB(255, 50, 255));
-
-		DeleteDC(tempDC);
-	}
+	GetClientRect(hWnd, &rectView);
+	/*그리기*/
+	DrawBitmapDoubleBuffering(hWnd, hdc);
 	
-	{
-		//tempDC = CreateCompatibleDC(hdc);
-
-		//if (hNewBitmap == NULL)
-		//	hNewBitmap = CreateCompatibleBitmap(hdc, SCREEN_WIDTH, SCREEN_HEIGHT); //초기화를해준다 처음들어가면 사이즈만큼
-
-
-		//hOldBitmap = (HBITMAP)SelectObject(tempDC, hNewBitmap);
-
-		//tempDC2 = CreateCompatibleDC(tempDC);	//이미지 찢어짐 방지
-		//hOldBitmap2 = (HBITMAP)SelectObject(tempDC2, hBackImage);
-
-
-
-		//myBrush = (HBRUSH)CreateSolidBrush(RGB(255, 255, 0));
-		//oldBrush = (HBRUSH)SelectObject(tempDC, myBrush);
-
-		//Rectangle(tempDC, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
-
-		//SelectObject(tempDC, oldBrush);
-		//DeleteObject(myBrush);
-
-
-		//myBrush = (HBRUSH)CreateSolidBrush(RGB(255, 50, 255));
-		//oldBrush = (HBRUSH)SelectObject(tempDC, myBrush);
-
-		///*구멍뚫을부분 */
-		//Polygon(tempDC, &vecPolygon[0], vecPolygon.size());
-		///*여기까지 */
-		//SelectObject(tempDC, oldBrush);
-		//DeleteObject(myBrush);
-
-		//TransparentBlt(hdc, 0, 0, SCREEN_WIDTH - 50, SCREEN_HEIGHT - 50, tempDC, 0, 0, SCREEN_WIDTH - 50, SCREEN_HEIGHT - 50, RGB(255, 50, 255));
-
-		//DeleteDC(tempDC);
-	}
-
-
-
-
-
-
-
-
-
-
-
-
-
 	/*플레이어 부분 */
+	HBRUSH myBrush, oldBrush;
 	myBrush = (HBRUSH)CreateSolidBrush(RGB(255, 0, 0));
 	oldBrush = (HBRUSH)SelectObject(hdc, myBrush);
 
 	m_Player->DrawPlayerCharacter(hdc);
+	
+
+	for (int i = 0; i < vecPoint.size(); i++)
+	{
+		//if (vecPoint.size() ==1)
+		//{
+		//	MoveToEx(hdc, vecPoint[0].x, vecPoint[0].y, NULL);
+		//	LineTo(hdc, m_Player->ptPosition.x, m_Player->ptPosition.y);
+		//}
+
+		
+
+		if (i == vecPoint.size() - 1)
+		{
+			MoveToEx(hdc, vecPoint[i].x, vecPoint[i].y, NULL);
+			LineTo(hdc, m_Player->ptPosition.x, m_Player->ptPosition.y);
+
+		}
+		else
+		{
+			MoveToEx(hdc, vecPoint[i].x, vecPoint[i].y, NULL);
+			LineTo(hdc, vecPoint[i+1].x, vecPoint[i+1].y);
+
+		}
+
+		
+		
+	}
 
 	SelectObject(hdc, oldBrush);
 	DeleteObject(myBrush);
 
 
-	TCHAR tcharx[30];
-	TCHAR tchary[30];
+	
+	//TCHAR tcharx[30];
+	//TCHAR tchary[30];
 
-	TCHAR tcharm[30];
-	TCHAR tcharl[30];
-
-
-	TCHAR tchars[30];
-	TCHAR tchare[30];
-
-
-	_ltow(m_Player->ptPosition.x, tcharx, 10);
-	_ltow(m_Player->ptPosition.y, tchary, 10);
-
-	_ltow(m_Player->iDirection, tcharm, 10);
-	_ltow(m_Player->PlayerLinePosition, tcharl, 10);
-	_ltow(arrStartEndCheck[START_LINE], tchars, 10);
-	_ltow(arrStartEndCheck[END_LINE], tchare, 10);
+	//TCHAR tcharm[30];
+	//TCHAR tcharl[30];
+	//TCHAR tchars[30];
+	//TCHAR tchare[30];
 
 
-	TextOut(hdc, 10, 30, tcharx, lstrlen(tcharx));
-	TextOut(hdc, 10, 50, tchary, lstrlen(tchary));
+	//_ltow(m_Player->ptPosition.x, tcharx, 10);
+	//_ltow(m_Player->ptPosition.y, tchary, 10);
+	//_ltow(m_Player->iDirection, tcharm, 10);
+	//_ltow(m_Player->PlayerLinePosition, tcharl, 10);
+	//_ltow(arrStartEndCheck[START_LINE], tchars, 10);
+	//_ltow(arrStartEndCheck[END_LINE], tchare, 10);
 
-	TextOut(hdc, 10, 70, tcharm, lstrlen(tcharm));
-	TextOut(hdc, 10, 90, tcharl, lstrlen(tcharl));
-	TextOut(hdc, 10, 110, tchars, lstrlen(tchars));
-	TextOut(hdc, 10, 130, tchare, lstrlen(tchare));
+
+	//TextOut(hdc, 10, 30, tcharx, lstrlen(tcharx));
+	//TextOut(hdc, 10, 50, tchary, lstrlen(tchary));
+
+	//TextOut(hdc, 10, 70, tcharm, lstrlen(tcharm));
+	//TextOut(hdc, 10, 90, tcharl, lstrlen(tcharl));
+	//TextOut(hdc, 10, 110, tchars, lstrlen(tchars));
+	//TextOut(hdc, 10, 130, tchare, lstrlen(tchare));
 
 }
 
@@ -261,113 +224,117 @@ void GameScene::PlayerMove(UINT message)
 		break;
 	}
 
-	//if(tempY <0 || tempY >r)
-
-	if (LandBorderCheck(tempY, tempX))
+	if ( tempX >= rectView.left && tempX <=rectView.right && tempY <= rectView.bottom && tempY >= rectView.top)
 	{
-		/*
-		if(bMoveFlag == true)
+ 		if (LandBorderCheck(tempY, tempX))
 		{
-		나갔다가 돌아온것. 판정
-		bMoveFlag = false; 펄스로다시바꿔줘야홤
-		}
-		*/
 
-		m_Player->ptPosition.x = tempX;
-		m_Player->ptPosition.y = tempY;
-		
-		if (bOutMoveFlag && vecPoint.size() >1)
-		{
-			//여기에 합치는공식 
-			PlayerLineCheck();
-			arrStartEndCheck[END_LINE] = m_Player->PlayerLinePosition;
-			vecPoint.push_back({ m_Player->ptPosition.x ,m_Player->ptPosition.y });
-			std::vector<POINT> vecTemp(vecPolygon);
+			m_Player->ptPosition.x = tempX;
+			m_Player->ptPosition.y = tempY;
 
-			int temp = 0;
-
-
-			if (arrStartEndCheck[START_LINE] != arrStartEndCheck[END_LINE])
+			if (bOutMoveFlag )
 			{
-				if (arrStartEndCheck[START_LINE] < arrStartEndCheck[END_LINE])
+				//넓이
+				//여기에 합치는공식 
+				PlayerLineCheck();
+				arrStartEndCheck[END_LINE] = m_Player->PlayerLinePosition;
+				vecPoint.push_back({ m_Player->ptPosition.x ,m_Player->ptPosition.y });
+				std::vector<POINT> vecTemp(vecPolygon);
+
+				int temp = 0;
+
+
+				if (arrStartEndCheck[START_LINE] != arrStartEndCheck[END_LINE])
 				{
-					vecTemp.erase(vecTemp.begin() + arrStartEndCheck[START_LINE] + 1, vecTemp.begin() + arrStartEndCheck[END_LINE] + 1);
-						
-					reverse(vecPoint.begin(), vecPoint.end());
-					
+					if (arrStartEndCheck[START_LINE] < arrStartEndCheck[END_LINE])
+					{
+						vecTemp.erase(vecTemp.begin() + arrStartEndCheck[START_LINE] + 1, vecTemp.begin() + arrStartEndCheck[END_LINE] + 1);
+
+						reverse(vecPoint.begin(), vecPoint.end());
+
+						temp = arrStartEndCheck[START_LINE];
+
+					}
+					else
+					{
+						vecTemp.erase(vecTemp.begin() + arrStartEndCheck[END_LINE] + 1, vecTemp.begin() + arrStartEndCheck[START_LINE] + 1);
+						temp = arrStartEndCheck[END_LINE];
+					}
+				}
+				else if (arrStartEndCheck[START_LINE] == arrStartEndCheck[END_LINE])
+				{
+					if (vecPoint[0].y == vecPoint[vecPoint.size() - 1].y)
+					{
+						if (vecPoint[0].x > vecPoint[vecPoint.size() - 1].x)
+						{
+							reverse(vecPoint.begin(), vecPoint.end());// 시계방향이면 하고 아니면 하지마
+
+						}
+					}
+					else if (vecPoint[0].x == vecPoint[vecPoint.size() - 1].x)
+					{
+						if (vecPoint[0].y < vecPoint[vecPoint.size() - 1].y)
+						{
+							reverse(vecPoint.begin(), vecPoint.end());// 시계방향이면 하고 아니면 하지마
+						}
+					}
+
 					temp = arrStartEndCheck[START_LINE];
-					
-				}
-				else
-				{
-					vecTemp.erase(vecTemp.begin() + arrStartEndCheck[END_LINE] + 1, vecTemp.begin() + arrStartEndCheck[START_LINE] + 1);
-					temp = arrStartEndCheck[END_LINE];
-				}
-			}
-			else if (arrStartEndCheck[START_LINE] == arrStartEndCheck[END_LINE])
-			{
-				if (vecPoint[0].y == vecPoint[vecPoint.size() - 1].y)
-				{
-					if (vecPoint[0].x < vecPoint[vecPoint.size() - 1].x)
-					{
-						reverse(vecPoint.begin(), vecPoint.end());// 시계방향이면 하고 아니면 하지마
-
-					}
-				}
-				else if (vecPoint[0].x == vecPoint[vecPoint.size() - 1].x)
-				{
-					if (vecPoint[0].y < vecPoint[vecPoint.size() - 1].y)
-					{
-						reverse(vecPoint.begin(), vecPoint.end());// 시계방향이면 하고 아니면 하지마
-					}
 				}
 
-				temp = arrStartEndCheck[START_LINE];
-			}
 
-		
 				for (int i = 0; i < vecPoint.size(); i++)
 				{
-					vecTemp.insert(vecTemp.begin() + temp + 1 , vecPoint[i]);
-			
+					vecTemp.insert(vecTemp.begin() + temp + 1, vecPoint[i]);
+
 				}
-			vecPolygon = vecTemp;
-			RebuildLand();
-			bOutMoveFlag = false;
-			vecTemp.clear();
-			vecPoint.clear();
-		}
-	}
-	else if (LandEmptyCheck(tempY, tempX) && GetKeyState(VK_SPACE) & 0x8000 && !bOutMoveFlag)
-	{
-		PlayerLineCheck();
-		arrStartEndCheck[START_LINE] = m_Player->PlayerLinePosition;
-		vecPoint.push_back({ m_Player->ptPosition.x ,m_Player->ptPosition.y });
-		m_Player->ptPosition.x = tempX;
-		m_Player->ptPosition.y = tempY;
-		arrLand[tempY][tempX] = 'a';
-		bOutMoveFlag = true;
-		PlayerFirstDirection(message);
-		
-	}
-	else if (bOutMoveFlag) //이미밖이여서 기울기체크를해줘야한다.
-	{
-		PlayerDirectionCheck(message);
+				vecPolygon = vecTemp;
+				RebuildLand();
+				bOutMoveFlag = false;
+				vecTemp.clear();
+				vecPoint.clear();
 
-		if (m_Player->tempDirection != m_Player->iDirection)
+				PolygonArea();
+			}
+		}
+		else if (LandEmptyCheck(tempY, tempX) && GetKeyState(VK_SPACE) & 0x8000 && !bOutMoveFlag)
 		{
+			PlayerLineCheck();
+			arrStartEndCheck[START_LINE] = m_Player->PlayerLinePosition;
 			vecPoint.push_back({ m_Player->ptPosition.x ,m_Player->ptPosition.y });
-			m_Player->iDirection = m_Player->tempDirection;
-		}
+			arrLand[m_Player->ptPosition.x][m_Player->ptPosition.y] = 'd'; //꼬리 첫부분
+			m_Player->ptPosition.x = tempX;
+			m_Player->ptPosition.y = tempY;
+			arrLand[m_Player->ptPosition.x][m_Player->ptPosition.y] = 'd'; //꼬리 앞으로나가는부분
+			bOutMoveFlag = true;
+			PlayerFirstDirection(message);
 
-		m_Player->ptPosition.x = tempX;
-		m_Player->ptPosition.y = tempY;
-		arrLand[tempY][tempX] = 'a';
+		}
+		else if (bOutMoveFlag) //이미밖이여서 기울기체크를해줘야한다.
+		{
+			
+			if (arrLand[tempY][tempX] != 'd')
+			{
+				PlayerDirectionCheck(message);
+
+				if (m_Player->tempDirection != m_Player->iDirection)
+				{
+					vecPoint.push_back({ m_Player->ptPosition.x ,m_Player->ptPosition.y });
+					m_Player->iDirection = m_Player->tempDirection;
+				}
+
+				m_Player->ptPosition.x = tempX;
+				m_Player->ptPosition.y = tempY;
+				arrLand[tempY][tempX] = 'd';
+			}
+		
+
+		}
 
 	}
 
 	//800 , 900
-	PlayerLineCheck();
+//	PlayerLineCheck();
 }
 
 void GameScene::PlayerFirstDirection(UINT message)
@@ -569,6 +536,117 @@ void GameScene::RebuildLand()
 			
 
 	}
+
+}
+
+void GameScene::DrawBitmapDoubleBuffering(HWND hwnd, HDC hdc)
+{
+	GetClientRect(hwnd, &rectView);
+
+
+	HDC hMemDC;
+	HBITMAP hOldBitmap;
+
+	HDC hMemDC2;
+	HBITMAP hOldBitmap2;
+	int bx = 0, by = 0;
+
+
+	hMemDC = CreateCompatibleDC(hdc);
+	if (hDoubleBufferImage == NULL)
+		hDoubleBufferImage = CreateCompatibleBitmap(hdc, rectView.right, rectView.bottom); //초기화를해준다 처음들어가면 사이즈만큼
+
+	hOldBitmap = (HBITMAP)SelectObject(hMemDC, hDoubleBufferImage);
+
+	//사진부분 
+	{  
+		hMemDC2 = CreateCompatibleDC(hMemDC);	//이미지 찢어짐 방지
+		hOldBitmap2 = (HBITMAP)SelectObject(hMemDC2, tempImage); //여기 사진넣기
+
+		bx = tempBack.bmWidth;
+		by = tempBack.bmHeight;
+
+		BitBlt(hMemDC, 0, 0, bx, by, hMemDC2, 0, 0, SRCCOPY);
+
+		SelectObject(hMemDC2, hOldBitmap2);
+
+		DeleteObject(hOldBitmap2);
+		DeleteDC(hMemDC2); 
+		
+	}
+	
+	{
+		HBITMAP hDoubleTemp = NULL;
+
+		if (hDoubleTemp == NULL)
+			hDoubleTemp = CreateCompatibleBitmap(hMemDC, rectView.right, rectView.bottom); //초기화를해준다 처음들어가면 사이즈만큼
+
+		hMemDC2 = CreateCompatibleDC(hMemDC); //똑같이만들어
+		hOldBitmap2 = (HBITMAP)SelectObject(hMemDC2, hDoubleTemp); //도화자에 그릴준비
+		
+		HBRUSH myBrush, oldBrush;
+		myBrush = (HBRUSH)CreateSolidBrush(RGB(255, 255, 0));
+		oldBrush = (HBRUSH)SelectObject(hMemDC2, myBrush);
+
+		Rectangle(hMemDC2, 0, 0, rectView.right, rectView.bottom); //화면전체출력 가리기용도 . 
+
+		SelectObject(hMemDC2, oldBrush);
+		DeleteObject(myBrush);
+		myBrush = (HBRUSH)CreateSolidBrush(RGB(255, 50, 255));
+		oldBrush = (HBRUSH)SelectObject(hMemDC2, myBrush);
+
+		/*구멍뚫을부분 */
+		Polygon(hMemDC2, &vecPolygon[0], vecPolygon.size());
+		/*여기까지 */
+
+		SelectObject(hMemDC2, oldBrush);
+		DeleteObject(myBrush);
+		
+		//BitBlt(hMemDC, 0, 0, rectView.right, rectView.bottom, hMemDC2, 0, 0, SRCCOPY);
+
+		TransparentBlt(hMemDC, 0, 0, rectView.right, rectView.bottom, hMemDC2, 0, 0, rectView.right, rectView.bottom, RGB(255, 50, 255)); //hMemDC에 HMemDC2에 쓴것을 쓰겟다 . 255 50 255 색깔만뺴고.
+		SelectObject(hMemDC2, hOldBitmap2);
+
+		DeleteObject(hOldBitmap2);
+		DeleteDC(hMemDC2);
+		
+	}
+
+	//TransparentBlt(hdc, 0, 0, rectView.right, rectView.bottom, hMemDC, 0, 0, rectView.right, rectView.bottom, RGB(255, 50, 255)); //hMemDC에 HMemDC2에 쓴것을 쓰겟다 . 255 50 255 색깔만뺴고.
+
+	StretchBlt(hdc, 0, 0, rectView.right, rectView.bottom, hMemDC, 0, 0, rectView.right, rectView.bottom, SRCCOPY); //hMemDC에 쓴것을 hdc에 쓰겟다. 
+
+	SelectObject(hMemDC, hOldBitmap);
+
+
+	DeleteDC(hMemDC);
+
+
+
+
+}
+
+void GameScene::PolygonArea()
+{
+	vector<POINT> vecTempArea;
+	vecTempArea = vecPolygon;
+	
+	vecTempArea.insert(vecTempArea.begin()+vecTempArea.size(), vecTempArea.front());
+
+	//double x[10002];
+	//double y[10002];
+	//int n;
+	//int cnt = 0;
+	//cin >> n;
+
+	
+	for (int i = 0; i < vecTempArea.size()-1; i++)
+		fArea += (((float)vecTempArea[i].x * (float)vecTempArea[i + 1].y) / 2 - ((float)vecTempArea[i + 1].x * (float)vecTempArea[i].y) / 2);
+
+	//실수절대값 fabs
+//	printf("%.1lf", fabs(fArea));
+
+
 
 }
 

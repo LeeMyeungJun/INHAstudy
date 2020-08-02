@@ -565,7 +565,7 @@ void DrawBitMapDoubleBuffering(HWND hWnd, HDC hdc)
 	BitBlt(hdc, 0, 0, rectView.right, rectView.bottom, hMemDC, 0, 0, SRCCOPY);
 	SelectObject(hMemDC, h01Bitmap);
 
-
+	DeleteDC(hMemDC);
 
 }
 

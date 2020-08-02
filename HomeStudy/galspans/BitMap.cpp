@@ -6,51 +6,65 @@ BitMap::BitMap()
 {
 	init();
 	CreateBitmap();
-	hDoubleBufferImage = NULL;
-	tempImage = hBackImage1;
 	
+	//tempImage = hBackImage1;
+
 }
 
 
 BitMap::~BitMap()
 {
+
 }
 
 void BitMap::DrawBitmapDoubleBuffering(HWND hwnd, HDC hdc)
 {
-	GetClientRect(hwnd, &rectView);
+	//GetClientRect(hwnd, &rectView);
+	//HDC hMemDC;
+	//HBITMAP hOldBitmap;
+	//int bx = 0, by = 0;
+	//HDC hMemDC2;
+	//HBITMAP hOldBitmap2;
+	//hMemDC = CreateCompatibleDC(hdc);
+	//if (hDoubleBufferImage == NULL)
+	//	hDoubleBufferImage = CreateCompatibleBitmap(hdc, rectView.right, rectView.bottom); //초기화를해준다 처음들어가면 사이즈만큼
+	//hOldBitmap = (HBITMAP)SelectObject(hMemDC, hDoubleBufferImage);
+	//hMemDC2 = CreateCompatibleDC(hMemDC);	//이미지 찢어짐 방지
+	//hOldBitmap2 = (HBITMAP)SelectObject(hMemDC2, tempImage); //여기 사진넣기
 
-	HDC hMemDC;
-	HBITMAP hOldBitmap;
-	int bx = 0, by = 0;
+	//bx = bitBack1.bmWidth;
+	//by = bitBack1.bmHeight;
 
-	HDC hMemDC2;
-	HBITMAP hOldBitmap2;
+	//BitBlt(hMemDC, 0, 0, bx, by, hMemDC2, 0, 0, SRCCOPY);
 
-	hMemDC = CreateCompatibleDC(hdc);
-	if (hDoubleBufferImage == NULL)
-		hDoubleBufferImage = CreateCompatibleBitmap(hdc, rectView.right, rectView.bottom); //초기화를해준다 처음들어가면 사이즈만큼
+	////수정시작부분 
+	//HBRUSH myBrush, oldBrush;
+	//myBrush = (HBRUSH)CreateSolidBrush(RGB(255, 255, 0));
+	//oldBrush = (HBRUSH)SelectObject(hMemDC2, myBrush);
 
-	hOldBitmap = (HBITMAP)SelectObject(hMemDC, hDoubleBufferImage);
+	//Rectangle(hMemDC2, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
 
-	hMemDC2 = CreateCompatibleDC(hMemDC);	//이미지 찢어짐 방지
-	hOldBitmap2 = (HBITMAP)SelectObject(hMemDC2, tempImage); //여기 사진넣기
+	//myBrush = (HBRUSH)CreateSolidBrush(RGB(255, 50, 255));
+	//oldBrush = (HBRUSH)SelectObject(hMemDC2, myBrush);
 
-	bx = bitBack1.bmWidth;
-	by = bitBack1.bmHeight;
+	////Polygon(hMemDC2, &AdapterGameScene->vecPolygon[0], AdapterGameScene->vecPolygon.size());
 
-	BitBlt(hMemDC, 0, 0, bx, by, hMemDC2, 0, 0, SRCCOPY);
-	SelectObject(hMemDC2, hOldBitmap2);
-	StretchBlt(hdc, 0, 0, rectView.right, rectView.bottom, hMemDC2, 0, 0, rectView.right, rectView.bottom, SRCCOPY);
-	DeleteObject(hMemDC2);
+	////수정끝
+
+	//SelectObject(hMemDC2, hOldBitmap2);
+	//StretchBlt(hdc, 0, 0, rectView.right, rectView.bottom, hMemDC2, 0, 0, rectView.right, rectView.bottom, SRCCOPY);
+	//DeleteObject(hMemDC2);
 
 
-	BitBlt(hdc, 0, 0, rectView.right, rectView.bottom,
-		hMemDC, 0, 0, SRCCOPY);
 
-	SelectObject(hMemDC, hOldBitmap);
-	StretchBlt(hdc, 0, 0, rectView.right, rectView.bottom, hMemDC, 0, 0, rectView.right, rectView.bottom, SRCCOPY);
-	DeleteDC(hMemDC);
+	//BitBlt(hdc, 0, 0, rectView.right, rectView.bottom,
+	//	hMemDC, 0, 0, SRCCOPY);
+
+	//SelectObject(hMemDC, hOldBitmap);
+	//StretchBlt(hdc, 0, 0, rectView.right, rectView.bottom, hMemDC, 0, 0, rectView.right, rectView.bottom, SRCCOPY);
+	//DeleteDC(hMemDC);
+
+
 
 }
 
@@ -61,7 +75,7 @@ void BitMap::CreateBitmap()
 		hBackImage1 = (HBITMAP)LoadImage(NULL, TEXT("images/수지.bmp"),IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
 		GetObject(hBackImage1, sizeof(BITMAP), &bitBack1);
 
-		hBackImage2 = (HBITMAP)LoadImage(NULL, TEXT("images/kungfu.bmp"), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
+		hBackImage2 = (HBITMAP)LoadImage(NULL, TEXT("images/fom.bmp"), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
 		GetObject(hBackImage1, sizeof(BITMAP), &bitBack2);
 	}
 
