@@ -3,7 +3,7 @@
 //	int iDirection; //< LEFT 0  UP 1 RIGHT 2 DOWN 3
 // 배열 a.테두리 c.안먹은땅 d.꼬리
 
-const int PlayerSpeed = 2;
+const int PlayerSpeed = 10;
 
 
 extern GameManager * g_GameManager;
@@ -65,6 +65,7 @@ void GameScene::Init(void)
 
 	arrStartEndCheck[START_LINE] = 0;
 	arrStartEndCheck[END_LINE] = 0;
+	
 
 	switch (stage)
 	{
@@ -114,7 +115,7 @@ void GameScene::Update(UINT message, WPARAM wParam, LPARAM lParam)
 	}
 
 	int test = (fabs(fArea) / (rectView.right * rectView.bottom)) * 100;
-	if (test > 75)
+	if (test > 110)
 	{
 		stage++;
 		if (stage > STAGE_TWO)
@@ -147,7 +148,6 @@ void GameScene::Render(HWND hWnd, HDC hdc)
 		//	LineTo(hdc, m_Player->ptPosition.x, m_Player->ptPosition.y);
 		//}
 
-		
 
 		if (i == vecPoint.size() - 1)
 		{
@@ -169,27 +169,24 @@ void GameScene::Render(HWND hWnd, HDC hdc)
 	SelectObject(hdc, oldBrush);
 	DeleteObject(myBrush);
 
-
-	
-	//TCHAR tcharx[30];
-	//TCHAR tchary[30];
+	TCHAR tcharx[30];
+	TCHAR tchary[30];
 
 	//TCHAR tcharm[30];
 	//TCHAR tcharl[30];
 	//TCHAR tchars[30];
 	//TCHAR tchare[30];
 
-
-	//_ltow(m_Player->ptPosition.x, tcharx, 10);
-	//_ltow(m_Player->ptPosition.y, tchary, 10);
+	_ltow(m_Player->ptPosition.x, tcharx, 10);
+	_ltow(m_Player->ptPosition.y, tchary, 10);
 	//_ltow(m_Player->iDirection, tcharm, 10);
 	//_ltow(m_Player->PlayerLinePosition, tcharl, 10);
 	//_ltow(arrStartEndCheck[START_LINE], tchars, 10);
 	//_ltow(arrStartEndCheck[END_LINE], tchare, 10);
 
 
-	//TextOut(hdc, 10, 30, tcharx, lstrlen(tcharx));
-	//TextOut(hdc, 10, 50, tchary, lstrlen(tchary));
+	TextOut(hdc, 700, 30, tcharx, lstrlen(tcharx));
+	TextOut(hdc, 700, 50, tchary, lstrlen(tchary));
 
 	//TextOut(hdc, 10, 70, tcharm, lstrlen(tcharm));
 	//TextOut(hdc, 10, 90, tcharl, lstrlen(tcharl));
@@ -200,7 +197,7 @@ void GameScene::Render(HWND hWnd, HDC hdc)
 
 void GameScene::Free(void)
 {
-
+	stage = STAGE_ONE;
 }
 
 void GameScene::PlayerMove(UINT message)
@@ -228,21 +225,28 @@ void GameScene::PlayerMove(UINT message)
 	{
  		if (LandBorderCheck(tempY, tempX))
 		{
-
-			m_Player->ptPosition.x = tempX;
-			m_Player->ptPosition.y = tempY;
-
+			
 			if (bOutMoveFlag )
 			{
 				//넓이
 				//여기에 합치는공식 
+				
+
+				PlayerDirectionCheck(message);
+				if (m_Player->tempDirection != m_Player->iDirection)
+				{
+					vecPoint.push_back({ m_Player->ptPosition.x ,m_Player->ptPosition.y });
+					m_Player->iDirection = m_Player->tempDirection;
+				}
+
+				m_Player->ptPosition.x = tempX;
+				m_Player->ptPosition.y = tempY;
 				PlayerLineCheck();
 				arrStartEndCheck[END_LINE] = m_Player->PlayerLinePosition;
 				vecPoint.push_back({ m_Player->ptPosition.x ,m_Player->ptPosition.y });
 				std::vector<POINT> vecTemp(vecPolygon);
 
 				int temp = 0;
-
 
 				if (arrStartEndCheck[START_LINE] != arrStartEndCheck[END_LINE])
 				{
@@ -265,11 +269,54 @@ void GameScene::PlayerMove(UINT message)
 				{
 					if (vecPoint[0].y == vecPoint[vecPoint.size() - 1].y)
 					{
-						if (vecPoint[0].x > vecPoint[vecPoint.size() - 1].x)
-						{
-							reverse(vecPoint.begin(), vecPoint.end());// 시계방향이면 하고 아니면 하지마
 
+
+						for (int i = 0; i < vecPolygon.size(); i++)
+						{
+							if (i + 1 >= vecPolygon.size())
+							{
+								if (vecPolygon[i].y == m_Player->ptPosition.y && vecPolygon[0].y == m_Player->ptPosition.y)
+								{
+									if (vecPolygon[i].x <= m_Player->ptPosition.x && vecPolygon[0].x >= m_Player->ptPosition.x)
+									{
+										m_Player->PlayerLinePosition = i;
+										break;
+									}
+									if (vecPolygon[i].x >= m_Player->ptPosition.x && vecPolygon[0].x <= m_Player->ptPosition.x)
+									{
+										m_Player->PlayerLinePosition = i;
+										break;
+									}
+
+								}
+							}
+							else if (vecPolygon[i].y == m_Player->ptPosition.y && vecPolygon[i + 1].y == m_Player->ptPosition.y)
+							{
+								//윗변 
+								if ((vecPolygon[i].x <= m_Player->ptPosition.x && vecPolygon[i + 1].x >= m_Player->ptPosition.x) )
+								{
+									if (vecPoint[0].x < vecPoint[vecPoint.size() - 1].x)
+									{
+										reverse(vecPoint.begin(), vecPoint.end());// 시계방향이면 하고 아니면 하지마
+										break;
+									}
+									
+								}
+								else if ((vecPolygon[i].x >= m_Player->ptPosition.x && vecPolygon[i + 1].x <= m_Player->ptPosition.x))
+								{
+									if (vecPoint[0].x > vecPoint[vecPoint.size() - 1].x)
+									{
+										reverse(vecPoint.begin(), vecPoint.end());// 시계방향이면 하고 아니면 하지마
+										break;
+									}
+								}
+
+							}
+
+				
 						}
+
+
 					}
 					else if (vecPoint[0].x == vecPoint[vecPoint.size() - 1].x)
 					{
@@ -296,8 +343,16 @@ void GameScene::PlayerMove(UINT message)
 
 				PolygonArea();
 			}
+			else
+			{
+				m_Player->ptPosition.x = tempX;
+				m_Player->ptPosition.y = tempY;
+			}
+
+			
+
 		}
-		else if (LandEmptyCheck(tempY, tempX) && GetKeyState(VK_SPACE) & 0x8000 && !bOutMoveFlag)
+		else if (LandEmptyCheck(tempY, tempX) && GetKeyState(VK_SPACE) & 0x8000 && !bOutMoveFlag && !PolygonInsideCheck({tempX,tempY}))
 		{
 			PlayerLineCheck();
 			arrStartEndCheck[START_LINE] = m_Player->PlayerLinePosition;
@@ -333,8 +388,7 @@ void GameScene::PlayerMove(UINT message)
 
 	}
 
-	//800 , 900
-//	PlayerLineCheck();
+
 }
 
 void GameScene::PlayerFirstDirection(UINT message)
@@ -648,5 +702,24 @@ void GameScene::PolygonArea()
 
 
 
+}
+
+bool GameScene::PolygonInsideCheck(POINT p)
+{
+	//bool isInside(vector2 B, const polygon& p) {
+		//crosses는 점q와 오른쪽 반직선과 다각형과의 교점의 개수
+		int crosses = 0;
+		for (int i = 0; i < vecPolygon.size(); i++) {
+			int j = (i + 1) % vecPolygon.size();
+			//점 B가 선분 (p[i], p[j])의 y좌표 사이에 있음
+			if ((vecPolygon[i].y > p.y) != (vecPolygon[j].y > p.y)) {
+				//atX는 점 B를 지나는 수평선과 선분 (p[i], p[j])의 교점
+				double atX = (vecPolygon[j].x - vecPolygon[i].x)*(p.y - vecPolygon[i].y) / (vecPolygon[j].y - vecPolygon[i].y) + vecPolygon[i].x;
+				//atX가 오른쪽 반직선과의 교점이 맞으면 교점의 개수를 증가시킨다.
+				if (p.x < atX)
+					crosses++;
+			}
+		}
+		return crosses % 2 > 0;
 }
 

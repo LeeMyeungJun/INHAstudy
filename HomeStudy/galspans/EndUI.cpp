@@ -16,6 +16,7 @@ EndUI::~EndUI()
 
 void EndUI::Init(void)
 {
+
 }
 
 void EndUI::draw(HDC hdc)

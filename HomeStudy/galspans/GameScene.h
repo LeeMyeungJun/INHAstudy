@@ -53,6 +53,8 @@ public:
 	void RebuildLand();
 	void DrawBitmapDoubleBuffering(HWND hwnd, HDC hdc);
 	void PolygonArea();
+	bool PolygonInsideCheck(POINT);
+
 
 	size_t stage;
 	bool bOutMoveFlag;
@@ -76,7 +78,7 @@ public:
 	HBITMAP tempImage;
 	BITMAP tempBack;
 
-	char arrLand[SCREEN_WIDTH][SCREEN_HEIGHT];//a.Å×µÎ¸® b.³»ºÎ c.¾È¸ÔÀº¶¥ d.²¿¸®
+	char arrLand[SCREEN_HEIGHT][SCREEN_WIDTH];//a.Å×µÎ¸® b.³»ºÎ c.¾È¸ÔÀº¶¥ d.²¿¸®
 	
 };
 
