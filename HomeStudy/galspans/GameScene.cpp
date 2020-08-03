@@ -19,7 +19,6 @@ GameScene::GameScene()
 	stage = STAGE_ONE;
 }
 
-
 GameScene::~GameScene()
 {
 	delete m_Bitmap;
@@ -205,32 +204,38 @@ void GameScene::PlayerMove(UINT message)
 	LONG tempX = m_Player->ptPosition.x;
 	LONG tempY = m_Player->ptPosition.y;
 
+//	int  iCheckX= 0 , iCheckY = 0;
+
 	switch (message)
 	{
 	case VK_RIGHT :
 		tempX += PlayerSpeed;
+	//	iCheckX = 1;
 		break;
 	case VK_LEFT:
 		tempX -= PlayerSpeed;
+	//	iCheckX = -1;
 		break;
 	case VK_UP:
 		tempY -= PlayerSpeed;
+	//	iCheckY = -1;
 		break;
 	case VK_DOWN:
 		tempY += PlayerSpeed;
+	//	iCheckY = 1;
 		break;
 	}
 
+
 	if ( tempX >= rectView.left && tempX <=rectView.right && tempY <= rectView.bottom && tempY >= rectView.top)
 	{
- 		if (LandBorderCheck(tempY, tempX))
+ 		if (LandBorderCheck(tempY, tempX ))
 		{
 			
 			if (bOutMoveFlag )
 			{
 				//넓이
 				//여기에 합치는공식 
-				
 
 				PlayerDirectionCheck(message);
 				if (m_Player->tempDirection != m_Player->iDirection)
@@ -387,8 +392,6 @@ void GameScene::PlayerMove(UINT message)
 		}
 
 	}
-
-
 }
 
 void GameScene::PlayerFirstDirection(UINT message)
@@ -440,13 +443,19 @@ bool GameScene::LandEmptyCheck(int y , int x)
 	return false;
 }
 
+
 //테두리 체크
-bool GameScene::LandBorderCheck(int y,int x) 
-{
+bool GameScene::LandBorderCheck(int y, int x)
+ {
+
 	if (arrLand[y][x] == 'a')
 	{
 		return true;
 	}
+	
+
+
+	
 	return false;
 }
 

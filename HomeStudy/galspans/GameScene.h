@@ -69,8 +69,6 @@ public:
 	std::vector<POINT> vecPoint;
 	float fArea;
 
-
-
 	HBITMAP hDoubleBufferImage;
 	RECT rectView;
 
