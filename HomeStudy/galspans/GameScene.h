@@ -58,7 +58,7 @@ public:
 
 	size_t stage;
 	bool bOutMoveFlag;
-	bool bDrawFlag; //지울것 테스트용이였음
+	bool bAreaFlag;
 	int arrStartEndCheck[2];
 	PlayerManager * m_Player;
 
