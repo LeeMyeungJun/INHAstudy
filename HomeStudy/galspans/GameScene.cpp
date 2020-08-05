@@ -19,6 +19,7 @@ GameScene::GameScene()
 	stage = STAGE_ONE;
 }
 
+
 GameScene::~GameScene()
 {
 	delete m_Bitmap;
@@ -60,12 +61,11 @@ void GameScene::Init(void)
 	m_Player->ptTemp.y = 0;
 
 	bOutMoveFlag = false;
-	bAreaFlag = false;
 	fArea = 100 * 100;
 
 	arrStartEndCheck[START_LINE] = 0;
 	arrStartEndCheck[END_LINE] = 0;
-	
+
 
 	switch (stage)
 	{
@@ -115,20 +115,15 @@ void GameScene::Update(UINT message, WPARAM wParam, LPARAM lParam)
 	}
 
 	int test = (fabs(fArea) / (rectView.right * rectView.bottom)) * 100;
-	if (bAreaFlag)
+	if (test > 110)
 	{
-		if (test > 110)
-		{
-			stage++;
-			if (stage > STAGE_TWO)
-				g_GameManager->SceneChange(Scene_enum::SCENE_END);
-			Init();
-		}
-		bAreaFlag = false;
+		stage++;
+		if (stage > STAGE_TWO)
+			g_GameManager->SceneChange(Scene_enum::SCENE_END);
+		Init();
 	}
-	
-	
-	
+
+
 }
 
 void GameScene::Render(HWND hWnd, HDC hdc)
@@ -136,17 +131,22 @@ void GameScene::Render(HWND hWnd, HDC hdc)
 	GetClientRect(hWnd, &rectView);
 	/*그리기*/
 	DrawBitmapDoubleBuffering(hWnd, hdc);
-	
+
 	/*플레이어 부분 */
 	HBRUSH myBrush, oldBrush;
 	myBrush = (HBRUSH)CreateSolidBrush(RGB(255, 0, 0));
 	oldBrush = (HBRUSH)SelectObject(hdc, myBrush);
 
 	m_Player->DrawPlayerCharacter(hdc);
-	
+
 
 	for (int i = 0; i < vecPoint.size(); i++)
 	{
+		//if (vecPoint.size() ==1)
+		//{
+		//	MoveToEx(hdc, vecPoint[0].x, vecPoint[0].y, NULL);
+		//	LineTo(hdc, m_Player->ptPosition.x, m_Player->ptPosition.y);
+		//}
 
 
 		if (i == vecPoint.size() - 1)
@@ -158,12 +158,12 @@ void GameScene::Render(HWND hWnd, HDC hdc)
 		else
 		{
 			MoveToEx(hdc, vecPoint[i].x, vecPoint[i].y, NULL);
-			LineTo(hdc, vecPoint[i+1].x, vecPoint[i+1].y);
+			LineTo(hdc, vecPoint[i + 1].x, vecPoint[i + 1].y);
 
 		}
 
-		
-		
+
+
 	}
 
 	SelectObject(hdc, oldBrush);
@@ -202,38 +202,36 @@ void GameScene::Free(void)
 
 void GameScene::PlayerMove(UINT message)
 {
-   	LONG tempX = m_Player->ptPosition.x;
- 	LONG tempY = m_Player->ptPosition.y;
+	LONG tempX = m_Player->ptPosition.x;
+	LONG tempY = m_Player->ptPosition.y;
 
-	int  iCheckX= 0 , iCheckY = 0;
-
+	int iCheckX = 0, iCheckY = 0;
 	switch (message)
 	{
-	case VK_RIGHT :
- 		tempX += PlayerSpeed;
-		iCheckX = 2;
+	case VK_RIGHT:
+		tempX += PlayerSpeed;
+		iCheckX = 1;
 		break;
 	case VK_LEFT:
 		tempX -= PlayerSpeed;
-		iCheckX = -2;
+		iCheckX = -1;
 		break;
 	case VK_UP:
 		tempY -= PlayerSpeed;
-		iCheckY = -2;
+		iCheckY = -1;
 		break;
 	case VK_DOWN:
 		tempY += PlayerSpeed;
-		iCheckY = 2;
+		iCheckY = 1;
 		break;
 	}
 
-
-	if ( tempX >= rectView.left && tempX <=rectView.right && tempY <= rectView.bottom && tempY >= rectView.top)
+	if (tempX >= rectView.left && tempX <= rectView.right && tempY <= rectView.bottom && tempY >= rectView.top)
 	{
- 		if (LandBorderCheck(tempY, tempX ))
+		if (LandBorderCheck(tempY, tempX))
 		{
-			
-			if (bOutMoveFlag )
+
+			if (bOutMoveFlag)
 			{
 				//넓이
 				//여기에 합치는공식 
@@ -275,18 +273,38 @@ void GameScene::PlayerMove(UINT message)
 				{
 					if (vecPoint[0].y == vecPoint[vecPoint.size() - 1].y)
 					{
+
+
 						for (int i = 0; i < vecPolygon.size(); i++)
 						{
-							if (vecPolygon[i].y == m_Player->ptPosition.y && vecPolygon[i + 1].y == m_Player->ptPosition.y)
+							if (i + 1 >= vecPolygon.size())
+							{
+								if (vecPolygon[i].y == m_Player->ptPosition.y && vecPolygon[0].y == m_Player->ptPosition.y)
+								{
+									if (vecPolygon[i].x <= m_Player->ptPosition.x && vecPolygon[0].x >= m_Player->ptPosition.x)
+									{
+										m_Player->PlayerLinePosition = i;
+										break;
+									}
+									if (vecPolygon[i].x >= m_Player->ptPosition.x && vecPolygon[0].x <= m_Player->ptPosition.x)
+									{
+										m_Player->PlayerLinePosition = i;
+										break;
+									}
+
+								}
+							}
+							else if (vecPolygon[i].y == m_Player->ptPosition.y && vecPolygon[i + 1].y == m_Player->ptPosition.y)
 							{
 								//윗변 
-								if ((vecPolygon[i].x <= m_Player->ptPosition.x && vecPolygon[i + 1].x >= m_Player->ptPosition.x) )
+								if ((vecPolygon[i].x <= m_Player->ptPosition.x && vecPolygon[i + 1].x >= m_Player->ptPosition.x))
 								{
 									if (vecPoint[0].x < vecPoint[vecPoint.size() - 1].x)
 									{
 										reverse(vecPoint.begin(), vecPoint.end());// 시계방향이면 하고 아니면 하지마
 										break;
 									}
+
 								}
 								else if ((vecPolygon[i].x >= m_Player->ptPosition.x && vecPolygon[i + 1].x <= m_Player->ptPosition.x))
 								{
@@ -298,21 +316,23 @@ void GameScene::PlayerMove(UINT message)
 								}
 
 							}
+
+
 						}
 
 
 					}
 					else if (vecPoint[0].x == vecPoint[vecPoint.size() - 1].x)
 					{
-						for (int i = 0; i < vecPolygon.size()-1; i++)
+						for (int i = 0; i < vecPolygon.size() - 1; i++)
 						{
-							
+
 							//오른쪽
-							if ((vecPolygon[i].y <= m_Player->ptPosition.y && vecPolygon[i + 1].y >= m_Player->ptPosition.y) && vecPolygon[i].x == m_Player->ptPosition.x && vecPolygon[i+1].x == m_Player->ptPosition.x)
+							if ((vecPolygon[i].y <= m_Player->ptPosition.y && vecPolygon[i + 1].y >= m_Player->ptPosition.y) && vecPolygon[i].x == m_Player->ptPosition.x && vecPolygon[i + 1].x == m_Player->ptPosition.x)
 							{
 								if (vecPoint[0].y > vecPoint[vecPoint.size() - 1].y)
 								{
-									
+
 								}
 								else
 								{
@@ -324,7 +344,7 @@ void GameScene::PlayerMove(UINT message)
 							{
 								if (vecPoint[0].y < vecPoint[vecPoint.size() - 1].y)
 								{
-								
+
 								}
 								else
 								{
@@ -333,10 +353,11 @@ void GameScene::PlayerMove(UINT message)
 								}
 							}
 
-							
+
 						}
 
 					}
+
 
 					temp = arrStartEndCheck[START_LINE];
 				}
@@ -350,28 +371,65 @@ void GameScene::PlayerMove(UINT message)
 				vecPolygon = vecTemp;
 				RebuildLand();
 				bOutMoveFlag = false;
-				bAreaFlag = true;
 				vecTemp.clear();
 				vecPoint.clear();
-				
 
 				PolygonArea();
 			}
-    			else if (GetKeyState(VK_SPACE) & 0x8000 && !PolygonInsideCheck({ tempX,tempY }) && !PolygonInsideCheck({ m_Player->ptPosition.x + iCheckX,m_Player->ptPosition.y + iCheckY })) //1칸이동을위한
+			else if (!LandBorderCheck(m_Player->ptPosition.y + iCheckY, m_Player->ptPosition.x + iCheckX) && GetKeyState(VK_SPACE) & 0x8000 && !PolygonInsideCheck({ m_Player->ptPosition.x + iCheckX ,m_Player->ptPosition.y + iCheckY }))
 			{
-				
-					PlayerLineCheck();
-					arrStartEndCheck[START_LINE] = m_Player->PlayerLinePosition;
+
+				PlayerDirectionCheck(message);
+				if (m_Player->tempDirection != m_Player->iDirection)
+				{
 					vecPoint.push_back({ m_Player->ptPosition.x ,m_Player->ptPosition.y });
-					arrLand[m_Player->ptPosition.x][m_Player->ptPosition.y] = 'd'; //꼬리 첫부분
-					m_Player->ptPosition.x = tempX;
-					m_Player->ptPosition.y = tempY;
-					arrLand[m_Player->ptPosition.x][m_Player->ptPosition.y] = 'd'; //꼬리 앞으로나가는부분
-					bOutMoveFlag = true;
-					PlayerFirstDirection(message);
+					m_Player->iDirection = m_Player->tempDirection;
+				}
+				PlayerLineCheck();
+				arrStartEndCheck[START_LINE] = m_Player->PlayerLinePosition;
+
+				m_Player->ptPosition.x = tempX;
+				m_Player->ptPosition.y = tempY;
+				PlayerLineCheck();
+				arrStartEndCheck[END_LINE] = m_Player->PlayerLinePosition;
+				vecPoint.push_back({ m_Player->ptPosition.x ,m_Player->ptPosition.y });
+				std::vector<POINT> vecTemp(vecPolygon);
+
+				int temp = 0;
+
+				if (arrStartEndCheck[START_LINE] != arrStartEndCheck[END_LINE])
+				{
+					if (arrStartEndCheck[START_LINE] < arrStartEndCheck[END_LINE])
+					{
+						vecTemp.erase(vecTemp.begin() + arrStartEndCheck[START_LINE] + 1, vecTemp.begin() + arrStartEndCheck[END_LINE] + 1);
+
+						reverse(vecPoint.begin(), vecPoint.end());
+
+						temp = arrStartEndCheck[START_LINE];
+
+					}
+					else
+					{
+						vecTemp.erase(vecTemp.begin() + arrStartEndCheck[END_LINE] + 1, vecTemp.begin() + arrStartEndCheck[START_LINE] + 1);
+						temp = arrStartEndCheck[END_LINE];
+					}
+				}
+
+
+				for (int i = 0; i < vecPoint.size(); i++)
+				{
+					vecTemp.insert(vecTemp.begin() + temp + 1, vecPoint[i]);
+
+				}
+				vecPolygon = vecTemp;
+				RebuildLand();
+				vecTemp.clear();
+				vecPoint.clear();
+
+				PolygonArea();
 
 			}
-			else if (arrLand[m_Player->ptPosition.y + iCheckY][m_Player->ptPosition.x + iCheckX] != 'a')
+			else if (!LandBorderCheck(m_Player->ptPosition.y + iCheckY, m_Player->ptPosition.x + iCheckX))
 			{
 
 			}
@@ -379,28 +437,27 @@ void GameScene::PlayerMove(UINT message)
 			{
 				m_Player->ptPosition.x = tempX;
 				m_Player->ptPosition.y = tempY;
-			
 			}
 
-			
+
 
 		}
-		else if (LandEmptyCheck(tempY, tempX) && GetKeyState(VK_SPACE) & 0x8000 && !bOutMoveFlag && !PolygonInsideCheck({tempX,tempY}))
+		else if (LandEmptyCheck(tempY, tempX) && GetKeyState(VK_SPACE) & 0x8000 && !bOutMoveFlag && !PolygonInsideCheck({ tempX,tempY }))
 		{
 			PlayerLineCheck();
 			arrStartEndCheck[START_LINE] = m_Player->PlayerLinePosition;
 			vecPoint.push_back({ m_Player->ptPosition.x ,m_Player->ptPosition.y });
-			arrLand[m_Player->ptPosition.x][m_Player->ptPosition.y] = 'd'; //꼬리 첫부분
+			arrLand[m_Player->ptPosition.y][m_Player->ptPosition.x] = 'd'; //꼬리 첫부분
 			m_Player->ptPosition.x = tempX;
 			m_Player->ptPosition.y = tempY;
-			arrLand[m_Player->ptPosition.x][m_Player->ptPosition.y] = 'd'; //꼬리 앞으로나가는부분
+			arrLand[m_Player->ptPosition.y][m_Player->ptPosition.x] = 'd'; //꼬리 앞으로나가는부분
 			bOutMoveFlag = true;
 			PlayerFirstDirection(message);
 
 		}
 		else if (bOutMoveFlag) //이미밖이여서 기울기체크를해줘야한다.
 		{
-			
+
 			if (arrLand[tempY][tempX] != 'd')
 			{
 				PlayerDirectionCheck(message);
@@ -415,11 +472,13 @@ void GameScene::PlayerMove(UINT message)
 				m_Player->ptPosition.y = tempY;
 				arrLand[tempY][tempX] = 'd';
 			}
-		
+
 
 		}
 
 	}
+
+
 }
 
 void GameScene::PlayerFirstDirection(UINT message)
@@ -464,28 +523,25 @@ void GameScene::PlayerDirectionCheck(UINT message)
 	}
 }
 
-bool GameScene::LandEmptyCheck(int y , int x)
+bool GameScene::LandEmptyCheck(int y, int x)
 {
 	if (arrLand[y][x] == 'c')
 		return true;
 	return false;
 }
 
-
 //테두리 체크
 bool GameScene::LandBorderCheck(int y, int x)
- {
-
+{
 	if (arrLand[y][x] == 'a')
 	{
 		return true;
 	}
-	
 	return false;
 }
 
 void GameScene::PlayerLineCheck()
- {
+{
 	for (int i = 0; i < vecPolygon.size(); i++)
 	{
 		if (i + 1 >= vecPolygon.size())
@@ -502,7 +558,7 @@ void GameScene::PlayerLineCheck()
 					m_Player->PlayerLinePosition = i;
 					break;
 				}
-			
+
 			}
 			else if (vecPolygon[i].x == m_Player->ptPosition.x && vecPolygon[0].x == m_Player->ptPosition.x)
 			{
@@ -510,7 +566,7 @@ void GameScene::PlayerLineCheck()
 				{
 					m_Player->PlayerLinePosition = i;
 					break;
-				}	
+				}
 				else if (vecPolygon[i].y >= m_Player->ptPosition.y && vecPolygon[0].y <= m_Player->ptPosition.y)
 				{
 					m_Player->PlayerLinePosition = i;
@@ -525,16 +581,16 @@ void GameScene::PlayerLineCheck()
 				m_Player->PlayerLinePosition = i;
 				break;
 			}
-			
+
 		}
-		else if (vecPolygon[i].x == m_Player->ptPosition.x && vecPolygon[i + 1].x == m_Player->ptPosition.x) 
+		else if (vecPolygon[i].x == m_Player->ptPosition.x && vecPolygon[i + 1].x == m_Player->ptPosition.x)
 		{
-			if ((vecPolygon[i].y <= m_Player->ptPosition.y && vecPolygon[i +1].y >= m_Player->ptPosition.y) || (vecPolygon[i].y >= m_Player->ptPosition.y && vecPolygon[i + 1].y <= m_Player->ptPosition.y))
+			if ((vecPolygon[i].y <= m_Player->ptPosition.y && vecPolygon[i + 1].y >= m_Player->ptPosition.y) || (vecPolygon[i].y >= m_Player->ptPosition.y && vecPolygon[i + 1].y <= m_Player->ptPosition.y))
 			{
 				m_Player->PlayerLinePosition = i;
 				break;
 			}
-			
+
 		}
 		else
 		{
@@ -542,18 +598,18 @@ void GameScene::PlayerLineCheck()
 		}
 	}
 
- }
+}
 
 void GameScene::RebuildLand()
 {
 	//다 지운다. 
 	memset(arrLand, 'c', sizeof(arrLand));
-	
 
-	int length = 0, i , j;
-	for ( i = 0; i < vecPolygon.size(); i++)
+
+	int length = 0, i, j;
+	for (i = 0; i < vecPolygon.size(); i++)
 	{
-		if (i+1 == vecPolygon.size())
+		if (i + 1 == vecPolygon.size())
 		{
 			if (vecPolygon[i].x == vecPolygon[0].x)
 			{
@@ -585,7 +641,7 @@ void GameScene::RebuildLand()
 
 				for (j = 0; j <= length; j++)
 				{
-					arrLand[vecPolygon[i].y + j][vecPolygon[i].x ] = 'a';
+					arrLand[vecPolygon[i].y + j][vecPolygon[i].x] = 'a';
 				}
 			}
 			else
@@ -598,7 +654,7 @@ void GameScene::RebuildLand()
 				}
 			}
 		}
-		else if(vecPolygon[i].y == vecPolygon[i+1].y)
+		else if (vecPolygon[i].y == vecPolygon[i + 1].y)
 		{
 			if (vecPolygon[i].x < vecPolygon[i + 1].x)
 			{
@@ -620,8 +676,8 @@ void GameScene::RebuildLand()
 
 
 		}
-		
-			
+
+
 
 	}
 
@@ -647,7 +703,7 @@ void GameScene::DrawBitmapDoubleBuffering(HWND hwnd, HDC hdc)
 	hOldBitmap = (HBITMAP)SelectObject(hMemDC, hDoubleBufferImage);
 
 	//사진부분 
-	{  
+	{
 		hMemDC2 = CreateCompatibleDC(hMemDC);	//이미지 찢어짐 방지
 		hOldBitmap2 = (HBITMAP)SelectObject(hMemDC2, tempImage); //여기 사진넣기
 
@@ -659,10 +715,10 @@ void GameScene::DrawBitmapDoubleBuffering(HWND hwnd, HDC hdc)
 		SelectObject(hMemDC2, hOldBitmap2);
 
 		DeleteObject(hOldBitmap2);
-		DeleteDC(hMemDC2); 
-		
+		DeleteDC(hMemDC2);
+
 	}
-	
+
 	{
 		HBITMAP hDoubleTemp = NULL;
 
@@ -671,7 +727,7 @@ void GameScene::DrawBitmapDoubleBuffering(HWND hwnd, HDC hdc)
 
 		hMemDC2 = CreateCompatibleDC(hMemDC); //똑같이만들어
 		hOldBitmap2 = (HBITMAP)SelectObject(hMemDC2, hDoubleTemp); //도화자에 그릴준비
-		
+
 		HBRUSH myBrush, oldBrush;
 		myBrush = (HBRUSH)CreateSolidBrush(RGB(255, 255, 0));
 		oldBrush = (HBRUSH)SelectObject(hMemDC2, myBrush);
@@ -689,7 +745,7 @@ void GameScene::DrawBitmapDoubleBuffering(HWND hwnd, HDC hdc)
 
 		SelectObject(hMemDC2, oldBrush);
 		DeleteObject(myBrush);
-		
+
 		//BitBlt(hMemDC, 0, 0, rectView.right, rectView.bottom, hMemDC2, 0, 0, SRCCOPY);
 
 		TransparentBlt(hMemDC, 0, 0, rectView.right, rectView.bottom, hMemDC2, 0, 0, rectView.right, rectView.bottom, RGB(255, 50, 255)); //hMemDC에 HMemDC2에 쓴것을 쓰겟다 . 255 50 255 색깔만뺴고.
@@ -697,7 +753,7 @@ void GameScene::DrawBitmapDoubleBuffering(HWND hwnd, HDC hdc)
 
 		DeleteObject(hOldBitmap2);
 		DeleteDC(hMemDC2);
-		
+
 	}
 
 	//TransparentBlt(hdc, 0, 0, rectView.right, rectView.bottom, hMemDC, 0, 0, rectView.right, rectView.bottom, RGB(255, 50, 255)); //hMemDC에 HMemDC2에 쓴것을 쓰겟다 . 255 50 255 색깔만뺴고.
@@ -718,8 +774,8 @@ void GameScene::PolygonArea()
 {
 	vector<POINT> vecTempArea;
 	vecTempArea = vecPolygon;
-	
-	vecTempArea.insert(vecTempArea.begin()+vecTempArea.size(), vecTempArea.front());
+
+	vecTempArea.insert(vecTempArea.begin() + vecTempArea.size(), vecTempArea.front());
 
 	//double x[10002];
 	//double y[10002];
@@ -727,12 +783,12 @@ void GameScene::PolygonArea()
 	//int cnt = 0;
 	//cin >> n;
 
-	
-	for (int i = 0; i < vecTempArea.size()-1; i++)
+
+	for (int i = 0; i < vecTempArea.size() - 1; i++)
 		fArea += (((float)vecTempArea[i].x * (float)vecTempArea[i + 1].y) / 2 - ((float)vecTempArea[i + 1].x * (float)vecTempArea[i].y) / 2);
 
 	//실수절대값 fabs
-//	printf("%.1lf", fabs(fArea));
+	//	printf("%.1lf", fabs(fArea));
 
 
 
@@ -741,19 +797,19 @@ void GameScene::PolygonArea()
 bool GameScene::PolygonInsideCheck(POINT p)
 {
 	//bool isInside(vector2 B, const polygon& p) {
-		//crosses는 점q와 오른쪽 반직선과 다각형과의 교점의 개수
-		int crosses = 0;
-		for (int i = 0; i < vecPolygon.size(); i++) {
-			int j = (i + 1) % vecPolygon.size();
-			//점 B가 선분 (p[i], p[j])의 y좌표 사이에 있음
-			if ((vecPolygon[i].y > p.y) != (vecPolygon[j].y > p.y)) {
-				//atX는 점 B를 지나는 수평선과 선분 (p[i], p[j])의 교점
-				double atX = (vecPolygon[j].x - vecPolygon[i].x)*(p.y - vecPolygon[i].y) / (vecPolygon[j].y - vecPolygon[i].y) + vecPolygon[i].x;
-				//atX가 오른쪽 반직선과의 교점이 맞으면 교점의 개수를 증가시킨다.
-				if (p.x < atX)
-					crosses++;
-			}
+	//crosses는 점q와 오른쪽 반직선과 다각형과의 교점의 개수
+	int crosses = 0;
+	for (int i = 0; i < vecPolygon.size(); i++) {
+		int j = (i + 1) % vecPolygon.size();
+		//점 B가 선분 (p[i], p[j])의 y좌표 사이에 있음
+		if ((vecPolygon[i].y > p.y) != (vecPolygon[j].y > p.y)) {
+			//atX는 점 B를 지나는 수평선과 선분 (p[i], p[j])의 교점
+			double atX = (vecPolygon[j].x - vecPolygon[i].x)*(p.y - vecPolygon[i].y) / (vecPolygon[j].y - vecPolygon[i].y) + vecPolygon[i].x;
+			//atX가 오른쪽 반직선과의 교점이 맞으면 교점의 개수를 증가시킨다.
+			if (p.x < atX)
+				crosses++;
 		}
-		return crosses % 2 > 0;
+	}
+	return crosses % 2 > 0;
 }
 
