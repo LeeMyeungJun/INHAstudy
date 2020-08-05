@@ -2,9 +2,12 @@
 
 class BitMap;
 class PlayerManager;
+class Monster;
 
 #define SCREEN_WIDTH 900
 #define SCREEN_HEIGHT 800
+
+#define MONSTER_COUNT 5
 
 using namespace std;
 class GameScene : public Scene
@@ -58,13 +61,16 @@ public:
 
 	size_t stage;
 	bool bOutMoveFlag;
-	bool bWin; //지울것 테스트용이였음
+	bool bWin; 
 	int arrStartEndCheck[2];
 	PlayerManager * m_Player;
-
 	BitMap * m_Bitmap;
+	Monster * m_Monster;
+	FontManager font;
 
 
+
+	std::vector<Monster*> vecMonster;
 	std::vector<POINT> vecPolygon;
 	std::vector<POINT> vecPoint;
 	float fArea;

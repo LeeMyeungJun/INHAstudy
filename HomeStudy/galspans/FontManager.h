@@ -3,6 +3,7 @@ class FontManager
 {
 	enum FONT_SIZE : size_t
 	{
+		FONT_GAME_SIZE = 150,
 		FONT_TITLE_SIZE = 72,
 		FONT_COMMON_SIZE = 48,
 		FONT_END_SIZE = 35
@@ -16,6 +17,7 @@ public:
 	HFONT TitleFont;
 	HFONT CommonFont;
 	HFONT EndFont;
+	HFONT GameFont;
 
 	HBRUSH LineBrush;
 	HBRUSH BlockBrush;

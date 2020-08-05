@@ -16,7 +16,14 @@ GameScene::GameScene()
 	m_SceneUI = m_GameUI;
 	hDoubleBufferImage = NULL;
 
+	
 	stage = STAGE_ONE;
+	for (int i = 0; i < MONSTER_COUNT; i++)
+	{
+		m_Monster = new Monster(i*100+100, 200);
+		vecMonster.push_back(m_Monster);
+	}
+	
 }
 
 
@@ -114,7 +121,6 @@ void GameScene::Update(UINT message, WPARAM wParam, LPARAM lParam)
 	break;
 	}
 
-	
 	if (bWin)
 	{
 		stage++;
@@ -125,82 +131,97 @@ void GameScene::Update(UINT message, WPARAM wParam, LPARAM lParam)
 		
 	}
 
+	for (int i = 0; i < vecMonster.size(); i++)
+	{
+		vecMonster[i]->Update();
+	}
 	
 
 }
 
 void GameScene::Render(HWND hWnd, HDC hdc)
 {
-	GetClientRect(hWnd, &rectView);
-
-	/*그리기*/
-	DrawBitmapDoubleBuffering(hWnd, hdc);
-
-	/*플레이어 부분 */
-	HBRUSH myBrush, oldBrush;
-	myBrush = (HBRUSH)CreateSolidBrush(RGB(255, 0, 0));
-	oldBrush = (HBRUSH)SelectObject(hdc, myBrush);
-
-	m_Player->DrawPlayerCharacter(hdc);
-
-
-	for (int i = 0; i < vecPoint.size(); i++)
+	
 	{
-		//if (vecPoint.size() ==1)
-		//{
-		//	MoveToEx(hdc, vecPoint[0].x, vecPoint[0].y, NULL);
-		//	LineTo(hdc, m_Player->ptPosition.x, m_Player->ptPosition.y);
-		//}
+		GetClientRect(hWnd, &rectView);
+
+		/*그리기*/
+		DrawBitmapDoubleBuffering(hWnd, hdc);
+
+		/*플레이어 부분 */
+		HBRUSH myBrush, oldBrush;
+		myBrush = (HBRUSH)CreateSolidBrush(RGB(255, 0, 0));
+		oldBrush = (HBRUSH)SelectObject(hdc, myBrush);
+
+		m_Player->DrawPlayerCharacter(hdc);
 
 
-		if (i == vecPoint.size() - 1)
+		for (int i = 0; i < vecPoint.size(); i++)
 		{
-			MoveToEx(hdc, vecPoint[i].x, vecPoint[i].y, NULL);
-			LineTo(hdc, m_Player->ptPosition.x, m_Player->ptPosition.y);
+			//if (vecPoint.size() ==1)
+			//{
+			//	MoveToEx(hdc, vecPoint[0].x, vecPoint[0].y, NULL);
+			//	LineTo(hdc, m_Player->ptPosition.x, m_Player->ptPosition.y);
+			//}
+
+
+			if (i == vecPoint.size() - 1)
+			{
+				MoveToEx(hdc, vecPoint[i].x, vecPoint[i].y, NULL);
+				LineTo(hdc, m_Player->ptPosition.x, m_Player->ptPosition.y);
+
+			}
+			else
+			{
+				MoveToEx(hdc, vecPoint[i].x, vecPoint[i].y, NULL);
+				LineTo(hdc, vecPoint[i + 1].x, vecPoint[i + 1].y);
+
+			}
+
+
 
 		}
-		else
-		{
-			MoveToEx(hdc, vecPoint[i].x, vecPoint[i].y, NULL);
-			LineTo(hdc, vecPoint[i + 1].x, vecPoint[i + 1].y);
 
-		}
+		SelectObject(hdc, oldBrush);
+		DeleteObject(myBrush);
+
+		HFONT oldFont = (HFONT)SelectObject(hdc,font.GameFont);
+		TCHAR tcPercent[30];
 
 
+		//TCHAR tcharx[30];
+		//TCHAR tchary[30];
+		//TCHAR tcharm[30];
+		//TCHAR tcharl[30];
+		//TCHAR tchars[30];
+		//TCHAR tchare[30];
 
+		_ltow(GamePercent, tcPercent, 10);
+		//_ltow(m_Player->ptPosition.x, tcharx, 10);
+		//_ltow(m_Player->ptPosition.y, tchary, 10);
+		//_ltow(m_Player->iDirection, tcharm, 10);
+		//_ltow(m_Player->PlayerLinePosition, tcharl, 10);
+		//_ltow(arrStartEndCheck[START_LINE], tchars, 10);
+		//_ltow(arrStartEndCheck[END_LINE], tchare, 10);
+
+		//m_rc_GamePercent = { 350,750,450,850 };
+		TextOut(hdc, 350, 400, tcPercent, lstrlen(tcPercent));
+		//TextOut(hdc, 700, 30, tcharx, lstrlen(tcharx));
+		//TextOut(hdc, 700, 50, tchary, lstrlen(tchary));
+
+		//TextOut(hdc, 10, 70, tcharm, lstrlen(tcharm));
+		//TextOut(hdc, 10, 90, tcharl, lstrlen(tcharl));
+		//TextOut(hdc, 10, 110, tchars, lstrlen(tchars));
+		//TextOut(hdc, 10, 130, tchare, lstrlen(tchare));
 	}
-
-	SelectObject(hdc, oldBrush);
-	DeleteObject(myBrush);
-
-	TCHAR tcPercent[30];
-
-
-	//TCHAR tcharx[30];
-	//TCHAR tchary[30];
-	//TCHAR tcharm[30];
-	//TCHAR tcharl[30];
-	//TCHAR tchars[30];
-	//TCHAR tchare[30];
-
-	_ltow(GamePercent, tcPercent, 10);
-	//_ltow(m_Player->ptPosition.x, tcharx, 10);
-	//_ltow(m_Player->ptPosition.y, tchary, 10);
-	//_ltow(m_Player->iDirection, tcharm, 10);
-	//_ltow(m_Player->PlayerLinePosition, tcharl, 10);
-	//_ltow(arrStartEndCheck[START_LINE], tchars, 10);
-	//_ltow(arrStartEndCheck[END_LINE], tchare, 10);
-
-	//m_rc_GamePercent = { 350,750,450,850 };
-	TextOut(hdc, 350, 750, tcPercent, lstrlen(tcPercent));
-	//TextOut(hdc, 700, 30, tcharx, lstrlen(tcharx));
-	//TextOut(hdc, 700, 50, tchary, lstrlen(tchary));
-
-	//TextOut(hdc, 10, 70, tcharm, lstrlen(tcharm));
-	//TextOut(hdc, 10, 90, tcharl, lstrlen(tcharl));
-	//TextOut(hdc, 10, 110, tchars, lstrlen(tchars));
-	//TextOut(hdc, 10, 130, tchare, lstrlen(tchare));
-
+	
+	{
+		for (int i = 0; i < vecMonster.size(); i++)
+		{
+			vecMonster[i]->Render(hdc);
+		}
+	}
+	
 }
 
 void GameScene::Free(void)
@@ -745,7 +766,7 @@ void GameScene::DrawBitmapDoubleBuffering(HWND hwnd, HDC hdc)
 		hOldBitmap2 = (HBITMAP)SelectObject(hMemDC2, hDoubleTemp); //도화자에 그릴준비
 
 		HBRUSH myBrush, oldBrush;
-		myBrush = (HBRUSH)CreateSolidBrush(RGB(255, 255, 0));
+		myBrush = (HBRUSH)CreateSolidBrush(RGB(100, 100, 100));
 		oldBrush = (HBRUSH)SelectObject(hMemDC2, myBrush);
 
 		Rectangle(hMemDC2, 0, 0, rectView.right, rectView.bottom); //화면전체출력 가리기용도 . 

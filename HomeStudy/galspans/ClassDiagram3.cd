@@ -38,7 +38,7 @@
   <Class Name="GameScene" Collapsed="true">
     <Position X="2.25" Y="4.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>QAQEEAAAAECAFUAAAElEBAAAAoCACCEAAjACBAAAIQI=</HashCode>
+      <HashCode>QAREEAAAAACAFUAAAElEBAAAAoCACCEgAjACBAAAIQI=</HashCode>
       <FileName>GameScene.h</FileName>
     </TypeIdentifier>
   </Class>
@@ -63,11 +63,11 @@
       <FileName>MenuUI.h</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Object" Collapsed="true">
-    <Position X="12.5" Y="1.75" Width="1.5" />
+  <Class Name="Monster" Collapsed="true">
+    <Position X="2.25" Y="7.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAQAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Object.h</FileName>
+      <HashCode>AAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAgAAAAAAAAA=</HashCode>
+      <FileName>Monster.h</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="PlayerManager" Collapsed="true">
