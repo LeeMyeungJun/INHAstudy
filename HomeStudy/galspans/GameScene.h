@@ -7,7 +7,7 @@ class Monster;
 #define SCREEN_WIDTH 900
 #define SCREEN_HEIGHT 800
 
-#define MONSTER_COUNT 5
+
 
 using namespace std;
 class GameScene : public Scene

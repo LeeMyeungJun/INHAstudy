@@ -18,6 +18,7 @@ GameScene::GameScene()
 
 	
 	stage = STAGE_ONE;
+
 	for (int i = 0; i < MONSTER_COUNT; i++)
 	{
 		m_Monster = new Monster(i*100+100, 200);
@@ -130,10 +131,14 @@ void GameScene::Update(UINT message, WPARAM wParam, LPARAM lParam)
 		bWin = false;
 		
 	}
-
 	for (int i = 0; i < vecMonster.size(); i++)
 	{
 		vecMonster[i]->Update();
+		vecMonster[i]->ObjectCollide(vecMonster);
+		if (PolygonInsideCheck(vecMonster[i]->getPosition()))
+		{
+			vecMonster[i]->ChangeDirection();
+		}
 	}
 	
 

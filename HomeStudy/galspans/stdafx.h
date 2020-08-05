@@ -21,7 +21,7 @@
 #include <malloc.h>
 #include <memory.h>
 #include <tchar.h>
-
+#include <time.h>
 
 
 //main
@@ -57,6 +57,10 @@
 #define SCREEN_WIDTH 900
 #define SCREEN_HEIGHT 800
 #define CHARACTER_SIZE 5
+
+#define MONSTER_COUNT 10
+#define MONSTER_SIZE 10
+
 
 
 // TODO: reference additional headers your program requires here

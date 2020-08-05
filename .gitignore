@@ -1,7 +1,6 @@
 *.opendb
 *.cln
 *.db
-*.filters
 *.exe
 *.ilk
 *.log
