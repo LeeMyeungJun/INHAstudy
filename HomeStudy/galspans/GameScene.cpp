@@ -53,7 +53,6 @@ void GameScene::Init(void)
 		}
 	}
 
-
 	m_Player->ptPosition.x = 100;
 	m_Player->ptPosition.y = 100;
 
@@ -61,8 +60,9 @@ void GameScene::Init(void)
 	m_Player->ptTemp.y = 0;
 
 	bOutMoveFlag = false;
+	bWin = false;
 	fArea = 100 * 100;
-
+	GamePercent = 1;
 	arrStartEndCheck[START_LINE] = 0;
 	arrStartEndCheck[END_LINE] = 0;
 
@@ -114,21 +114,25 @@ void GameScene::Update(UINT message, WPARAM wParam, LPARAM lParam)
 	break;
 	}
 
-	int test = (fabs(fArea) / (rectView.right * rectView.bottom)) * 100;
-	if (test > 110)
+	
+	if (bWin)
 	{
 		stage++;
 		if (stage > STAGE_TWO)
 			g_GameManager->SceneChange(Scene_enum::SCENE_END);
 		Init();
+		bWin = false;
+		
 	}
 
+	
 
 }
 
 void GameScene::Render(HWND hWnd, HDC hdc)
 {
 	GetClientRect(hWnd, &rectView);
+
 	/*그리기*/
 	DrawBitmapDoubleBuffering(hWnd, hdc);
 
@@ -169,24 +173,28 @@ void GameScene::Render(HWND hWnd, HDC hdc)
 	SelectObject(hdc, oldBrush);
 	DeleteObject(myBrush);
 
-	TCHAR tcharx[30];
-	TCHAR tchary[30];
+	TCHAR tcPercent[30];
 
+
+	//TCHAR tcharx[30];
+	//TCHAR tchary[30];
 	//TCHAR tcharm[30];
 	//TCHAR tcharl[30];
 	//TCHAR tchars[30];
 	//TCHAR tchare[30];
 
-	_ltow(m_Player->ptPosition.x, tcharx, 10);
-	_ltow(m_Player->ptPosition.y, tchary, 10);
+	_ltow(GamePercent, tcPercent, 10);
+	//_ltow(m_Player->ptPosition.x, tcharx, 10);
+	//_ltow(m_Player->ptPosition.y, tchary, 10);
 	//_ltow(m_Player->iDirection, tcharm, 10);
 	//_ltow(m_Player->PlayerLinePosition, tcharl, 10);
 	//_ltow(arrStartEndCheck[START_LINE], tchars, 10);
 	//_ltow(arrStartEndCheck[END_LINE], tchare, 10);
 
-
-	TextOut(hdc, 700, 30, tcharx, lstrlen(tcharx));
-	TextOut(hdc, 700, 50, tchary, lstrlen(tchary));
+	//m_rc_GamePercent = { 350,750,450,850 };
+	TextOut(hdc, 350, 750, tcPercent, lstrlen(tcPercent));
+	//TextOut(hdc, 700, 30, tcharx, lstrlen(tcharx));
+	//TextOut(hdc, 700, 50, tchary, lstrlen(tchary));
 
 	//TextOut(hdc, 10, 70, tcharm, lstrlen(tcharm));
 	//TextOut(hdc, 10, 90, tcharl, lstrlen(tcharl));
@@ -375,6 +383,14 @@ void GameScene::PlayerMove(UINT message)
 				vecPoint.clear();
 
 				PolygonArea();
+
+				GamePercent = (fabs(fArea) / (rectView.right * rectView.bottom)) * 100;
+
+				if (GamePercent > 80)
+				{
+					bWin = true;
+				}
+
 			}
 			else if (!LandBorderCheck(m_Player->ptPosition.y + iCheckY, m_Player->ptPosition.x + iCheckX) && GetKeyState(VK_SPACE) & 0x8000 && !PolygonInsideCheck({ m_Player->ptPosition.x + iCheckX ,m_Player->ptPosition.y + iCheckY }))
 			{
@@ -776,21 +792,33 @@ void GameScene::PolygonArea()
 	vecTempArea = vecPolygon;
 
 	vecTempArea.insert(vecTempArea.begin() + vecTempArea.size(), vecTempArea.front());
-
-	//double x[10002];
-	//double y[10002];
-	//int n;
-	//int cnt = 0;
-	//cin >> n;
-
-
+	fArea = 0;
 	for (int i = 0; i < vecTempArea.size() - 1; i++)
 		fArea += (((float)vecTempArea[i].x * (float)vecTempArea[i + 1].y) / 2 - ((float)vecTempArea[i + 1].x * (float)vecTempArea[i].y) / 2);
 
-	//실수절대값 fabs
-	//	printf("%.1lf", fabs(fArea));
 
 
+	//int PolygonArea(vector<POINT> poly)
+	//{
+	//	int result = 0;
+	//	int areaX = 0;
+	//	int areaY = 0;
+	//	for (int i = 0; i < poly.size(); i++)
+	//	{
+	//		if (i == poly.size() - 1)
+	//		{
+	//			areaX += poly[i].x * poly[0].y;
+	//			areaY += poly[i].y * poly[0].x;
+	//		}
+	//		else
+	//		{
+	//			areaX += poly[i].x * poly[i + 1].y;
+	//			areaY += poly[i].y * poly[i + 1].x;
+	//		}
+	//	}
+	//	result = areaX - (areaY);
+	//	return abs(result*0.5);
+	//}
 
 }
 

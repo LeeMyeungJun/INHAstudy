@@ -58,7 +58,7 @@ public:
 
 	size_t stage;
 	bool bOutMoveFlag;
-	bool bDrawFlag; //지울것 테스트용이였음
+	bool bWin; //지울것 테스트용이였음
 	int arrStartEndCheck[2];
 	PlayerManager * m_Player;
 
@@ -68,6 +68,7 @@ public:
 	std::vector<POINT> vecPolygon;
 	std::vector<POINT> vecPoint;
 	float fArea;
+	int GamePercent;
 
 	HBITMAP hDoubleBufferImage;
 	RECT rectView;
