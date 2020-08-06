@@ -44,7 +44,7 @@ GameScene::~GameScene()
 
 void GameScene::Init(void)
 {
-	SetTimer(g_GameManager->getHwnd(), 999, 1000/30, MonsterUpdate);
+	/*SetTimer(g_GameManager->getHwnd(), 999, 1000/30, MonsterUpdate);*/
 
 	{
 		vecPoint.clear();
@@ -228,7 +228,7 @@ void GameScene::Render(HWND hWnd, HDC hdc)
 void GameScene::Free(void)
 {
 	stage = STAGE_ONE;
-	while (!KillTimer(g_GameManager->getHwnd(), 999));
+	//while (!KillTimer(g_GameManager->getHwnd(), 999));
 
 	for (int i = 0; i < vecMonster.size(); i++)
 	{
@@ -992,13 +992,7 @@ void GameScene::nonStaticMonsterUpdate()
 	}
 }
 
-void CALLBACK MonsterUpdate(HWND, UINT, UINT_PTR, DWORD)
-{
-	//static int count = 0;
-	//count++;
-	//string str =to_string(count) + "\n";
-	//DWORD dwWrite;
-	//HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
-	//WriteFile(hOut, str.c_str(), str.size(), &dwWrite, NULL);
-	g_GameManager->getGameScene()->nonStaticMonsterUpdate();
-}
+//void CALLBACK MonsterUpdate(HWND, UINT, UINT_PTR, DWORD)
+//{
+//	g_GameManager->getGameScene()->nonStaticMonsterUpdate();
+//}

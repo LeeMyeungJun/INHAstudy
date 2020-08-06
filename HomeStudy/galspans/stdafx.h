@@ -60,7 +60,7 @@
 #define SCREEN_HEIGHT 800
 
 
-#define MONSTER_COUNT 4
+#define MONSTER_COUNT 1
 #define MONSTER_SIZE 10
 #define CHARACTER_SIZE 7
 
