@@ -101,14 +101,16 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
-	
+
 
     switch (message)
     {
 	case WM_CREATE:
 		{
+			srand((unsigned int)time(NULL));
 			g_GameManager = GameManager::GetInstance();
 			SetTimer(hWnd,1, 50, NULL);
+			g_GameManager->setHwnd(hWnd);
 		}
 		break;
     case WM_COMMAND:

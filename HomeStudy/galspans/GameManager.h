@@ -18,7 +18,8 @@ enum class Scene_enum : size_t
 
 class GameManager
 {
-
+private:
+	HWND hWnd;
 
 
 private:
@@ -38,8 +39,21 @@ public:
 	void Render(HWND hWnd, HDC hdc);
 	void SceneChange(Scene_enum nextScene);
 
+	
+	void setHwnd(HWND hWnd)
+	{
+		this->hWnd = hWnd;
+	}
 
+	HWND getHwnd()
+	{
+		return this->hWnd;
+	}
 
+	GameScene * getGameScene()
+	{
+		return m_GameScene;
+	}
 
 	static GameManager* GetInstance()
 	{

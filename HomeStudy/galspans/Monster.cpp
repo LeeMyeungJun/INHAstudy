@@ -1,9 +1,9 @@
 #include "stdafx.h"
 #include "Monster.h"
 
-Monster::Monster(int x, int y) :speed(SPEED_ONE), bDead(false), Direction(rand() % 8)
+Monster::Monster(int x, int y) :speed(SPEED_ONE), bDead(false), Direction(rand() % 8), ptMonster_Position({x,y}), ptTemp_Position({ x,y })
 {
-	setPosition({ x,y });
+	
 }
 Monster::~Monster()
 {
@@ -22,8 +22,6 @@ void Monster::setPosition(POINT pt)
 
 void Monster::ChangeDirection()
 {
-	
-
 	switch (this->Direction)
 	{
 	case DIR_LT:
@@ -66,17 +64,27 @@ void Monster::ChangeDirection()
 		this->Direction = 0;
 	}
 	break;
-	default:
-	{
-		this->Direction = rand() % 8;
 	}
-	break;
-	}
+}
+
+void Monster::setDirection(int dir)
+{
+	this->Direction = dir;
 }
 
 int Monster::getDirection()
 {
 	return Direction;
+}
+
+void Monster::setDead(bool bflag)
+{
+	this->bDead = bflag;
+}
+
+bool Monster::getDead()
+{
+	return bDead;
 }
 
 int Monster::getSpeed()
@@ -88,22 +96,6 @@ POINT Monster::getPosition()
 {
 	return ptMonster_Position;
 }
-
-void Monster::MonsterPatternUp()
-{
-	switch (speed)
-	{
-	case SPEED_ONE:
-		speed = SPEED_TWO;
-		break;
-	case SPEED_TWO:
-		speed = SPEED_THREE;
-		break;
-	default:
-		break;
-	}
-}
-
 
 
 void Monster::ObjectCollide(vector<Monster*> enemy)
@@ -221,8 +213,7 @@ void Monster::Move()
 
 void Monster::Init()
 {
-
-
+	setPosition(ptTemp_Position);
 }
 
 void Monster::Free()

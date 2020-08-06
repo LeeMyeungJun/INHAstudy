@@ -24,24 +24,13 @@ public:
 		STAGE_ONE,
 		STAGE_TWO
 	};
-
-	
-
 private:
 	POINT ptPotion; //±¸¸Û¶Õ±â¿ëµµ.
 public:
 	GameScene();
 	~GameScene();
 
-
-
-
-
-
-
-
-
-
+public:
 	void Init(void);
 	void Update(UINT message, WPARAM wParam, LPARAM lParam);
 	void Render(HWND hWnd, HDC hdc);
@@ -56,7 +45,13 @@ public:
 	void RebuildLand();
 	void DrawBitmapDoubleBuffering(HWND hwnd, HDC hdc);
 	void PolygonArea();
+
 	bool PolygonInsideCheck(POINT);
+
+
+	bool Polygon_Line_Collision(POINT);
+	bool Player_Collsion(POINT);
+	bool Tail_Collsion(POINT);
 
 
 	size_t stage;
@@ -70,7 +65,7 @@ public:
 
 
 
-	std::vector<Monster*> vecMonster;
+
 	std::vector<POINT> vecPolygon;
 	std::vector<POINT> vecPoint;
 	float fArea;
@@ -84,6 +79,9 @@ public:
 	BITMAP tempBack;
 
 	char arrLand[SCREEN_HEIGHT][SCREEN_WIDTH];//a.Å×µÎ¸® b.³»ºÎ c.¾È¸ÔÀº¶¥ d.²¿¸®
+
+	void nonStaticMonsterUpdate();
 	
 };
 
+void CALLBACK MonsterUpdate(HWND, UINT, UINT_PTR, DWORD);

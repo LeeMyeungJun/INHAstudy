@@ -15,6 +15,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <list>
 
 // C RunTime Header Files
 #include <stdlib.h>
@@ -22,7 +23,8 @@
 #include <memory.h>
 #include <tchar.h>
 #include <time.h>
-
+#include <cstdlib>
+#include <ctime>
 
 //main
 #include "galspans.h"
@@ -56,11 +58,11 @@
 
 #define SCREEN_WIDTH 900
 #define SCREEN_HEIGHT 800
-#define CHARACTER_SIZE 5
 
-#define MONSTER_COUNT 10
+
+#define MONSTER_COUNT 4
 #define MONSTER_SIZE 10
-
+#define CHARACTER_SIZE 7
 
 
 // TODO: reference additional headers your program requires here

@@ -7,7 +7,12 @@ const int PlayerSpeed = 10;
 
 
 extern GameManager * g_GameManager;
+
 using namespace std;
+vector<Monster*> vecMonster;
+list<Monster*> dieMonster;
+
+
 GameScene::GameScene()
 {
 	m_GameUI = new GameUI;
@@ -24,6 +29,7 @@ GameScene::GameScene()
 		m_Monster = new Monster(i*100+100, 200);
 		vecMonster.push_back(m_Monster);
 	}
+
 	
 }
 
@@ -33,67 +39,86 @@ GameScene::~GameScene()
 	delete m_Bitmap;
 	delete m_Player;
 	delete m_GameUI;
+
 }
 
 void GameScene::Init(void)
 {
-	vecPoint.clear();
-	vecPolygon.clear();
+	SetTimer(g_GameManager->getHwnd(), 999, 1000/30, MonsterUpdate);
 
-	vecPolygon.push_back({ 0,0 });
-	vecPolygon.push_back({ 100,0 });
-	vecPolygon.push_back({ 100,100 });
-	vecPolygon.push_back({ 0,100 });
-	memset(arrLand, 'c', sizeof(arrLand));
-
-	for (int i = 0; i <= 100; i++)
 	{
-		for (int j = 0; j <= 100; j++)
+		vecPoint.clear();
+		vecPolygon.clear();
+
+		vecPolygon.push_back({ 0,0 });
+		vecPolygon.push_back({ 100,0 });
+		vecPolygon.push_back({ 100,100 });
+		vecPolygon.push_back({ 0,100 });
+
+		memset(arrLand, 'c', sizeof(arrLand));
+
+		for (int i = 0; i <= 100; i++)
 		{
-			if (i == 0 || i == 100 || j == 0 || j == 100)
+			for (int j = 0; j <= 100; j++)
 			{
-				arrLand[i][j] = 'a';
-			}
-			else
-			{
-				continue;
+				if (i == 0 || i == 100 || j == 0 || j == 100)
+				{
+					arrLand[i][j] = 'a';
+				}
+				else
+				{
+					continue;
+				}
 			}
 		}
+
+
+		m_Player->ptPosition.x = 100;
+		m_Player->ptPosition.y = 100;
+
+		m_Player->ptTemp.x = 0;
+		m_Player->ptTemp.y = 0;
+
+		bOutMoveFlag = false;
+		bWin = false;
+		fArea = 100 * 100;
+		GamePercent = 1;
+		arrStartEndCheck[START_LINE] = 0;
+		arrStartEndCheck[END_LINE] = 0;
+
+
+		switch (stage)
+		{
+		case STAGE_ONE:
+		{
+			tempImage = MapSetting.hBackImage1;
+			tempBack = MapSetting.bitBack1;
+		}
+		break;
+		case STAGE_TWO:
+		{
+			tempImage = MapSetting.hBackImage2;
+			tempBack = MapSetting.bitBack2;
+		}
+		break;
+		}
+
+		hDoubleBufferImage = NULL;
+
+		list<Monster*>::iterator it = dieMonster.begin();
+		for (it = dieMonster.begin(); it != dieMonster.end(); it++)
+		{
+			(*it)->setDead(false);
+			vecMonster.push_back(*it);
+		}
+		dieMonster.clear();
+
+
+		for (int i = 0; i < vecMonster.size(); i++)
+		{
+			vecMonster[i]->Init();
+		}
 	}
-
-	m_Player->ptPosition.x = 100;
-	m_Player->ptPosition.y = 100;
-
-	m_Player->ptTemp.x = 0;
-	m_Player->ptTemp.y = 0;
-
-	bOutMoveFlag = false;
-	bWin = false;
-	fArea = 100 * 100;
-	GamePercent = 1;
-	arrStartEndCheck[START_LINE] = 0;
-	arrStartEndCheck[END_LINE] = 0;
-
-
-	switch (stage)
-	{
-	case STAGE_ONE:
-	{
-		tempImage = MapSetting.hBackImage1;
-		tempBack = MapSetting.bitBack1;
-	}
-	break;
-	case STAGE_TWO:
-	{
-		tempImage = MapSetting.hBackImage2;
-		tempBack = MapSetting.bitBack2;
-	}
-	break;
-	}
-
-	hDoubleBufferImage = NULL;
-
-
 }
 
 void GameScene::Update(UINT message, WPARAM wParam, LPARAM lParam)
@@ -129,19 +154,8 @@ void GameScene::Update(UINT message, WPARAM wParam, LPARAM lParam)
 			g_GameManager->SceneChange(Scene_enum::SCENE_END);
 		Init();
 		bWin = false;
-		
-	}
-	for (int i = 0; i < vecMonster.size(); i++)
-	{
-		vecMonster[i]->Update();
-		vecMonster[i]->ObjectCollide(vecMonster);
-		if (PolygonInsideCheck(vecMonster[i]->getPosition()))
-		{
-			vecMonster[i]->ChangeDirection();
-		}
 	}
 	
-
 }
 
 void GameScene::Render(HWND hWnd, HDC hdc)
@@ -163,12 +177,6 @@ void GameScene::Render(HWND hWnd, HDC hdc)
 
 		for (int i = 0; i < vecPoint.size(); i++)
 		{
-			//if (vecPoint.size() ==1)
-			//{
-			//	MoveToEx(hdc, vecPoint[0].x, vecPoint[0].y, NULL);
-			//	LineTo(hdc, m_Player->ptPosition.x, m_Player->ptPosition.y);
-			//}
-
 
 			if (i == vecPoint.size() - 1)
 			{
@@ -193,33 +201,21 @@ void GameScene::Render(HWND hWnd, HDC hdc)
 		HFONT oldFont = (HFONT)SelectObject(hdc,font.GameFont);
 		TCHAR tcPercent[30];
 
-
 		//TCHAR tcharx[30];
 		//TCHAR tchary[30];
-		//TCHAR tcharm[30];
-		//TCHAR tcharl[30];
-		//TCHAR tchars[30];
-		//TCHAR tchare[30];
 
 		_ltow(GamePercent, tcPercent, 10);
 		//_ltow(m_Player->ptPosition.x, tcharx, 10);
 		//_ltow(m_Player->ptPosition.y, tchary, 10);
-		//_ltow(m_Player->iDirection, tcharm, 10);
-		//_ltow(m_Player->PlayerLinePosition, tcharl, 10);
-		//_ltow(arrStartEndCheck[START_LINE], tchars, 10);
-		//_ltow(arrStartEndCheck[END_LINE], tchare, 10);
 
-		//m_rc_GamePercent = { 350,750,450,850 };
 		TextOut(hdc, 350, 400, tcPercent, lstrlen(tcPercent));
 		//TextOut(hdc, 700, 30, tcharx, lstrlen(tcharx));
 		//TextOut(hdc, 700, 50, tchary, lstrlen(tchary));
 
-		//TextOut(hdc, 10, 70, tcharm, lstrlen(tcharm));
-		//TextOut(hdc, 10, 90, tcharl, lstrlen(tcharl));
-		//TextOut(hdc, 10, 110, tchars, lstrlen(tchars));
-		//TextOut(hdc, 10, 130, tchare, lstrlen(tchare));
+
 	}
 	
+	//몬스터그리기
 	{
 		for (int i = 0; i < vecMonster.size(); i++)
 		{
@@ -232,6 +228,12 @@ void GameScene::Render(HWND hWnd, HDC hdc)
 void GameScene::Free(void)
 {
 	stage = STAGE_ONE;
+	while (!KillTimer(g_GameManager->getHwnd(), 999));
+
+	for (int i = 0; i < vecMonster.size(); i++)
+	{
+		dieMonster.push_back(vecMonster[i]);
+	}
 }
 
 void GameScene::PlayerMove(UINT message)
@@ -400,7 +402,6 @@ void GameScene::PlayerMove(UINT message)
 				for (int i = 0; i < vecPoint.size(); i++)
 				{
 					vecTemp.insert(vecTemp.begin() + temp + 1, vecPoint[i]);
-
 				}
 				vecPolygon = vecTemp;
 				RebuildLand();
@@ -571,7 +572,6 @@ bool GameScene::LandEmptyCheck(int y, int x)
 		return true;
 	return false;
 }
-
 //테두리 체크
 bool GameScene::LandBorderCheck(int y, int x)
 {
@@ -760,7 +760,7 @@ void GameScene::DrawBitmapDoubleBuffering(HWND hwnd, HDC hdc)
 		DeleteDC(hMemDC2);
 
 	}
-
+	//가리기부분
 	{
 		HBITMAP hDoubleTemp = NULL;
 
@@ -798,8 +798,6 @@ void GameScene::DrawBitmapDoubleBuffering(HWND hwnd, HDC hdc)
 
 	}
 
-	//TransparentBlt(hdc, 0, 0, rectView.right, rectView.bottom, hMemDC, 0, 0, rectView.right, rectView.bottom, RGB(255, 50, 255)); //hMemDC에 HMemDC2에 쓴것을 쓰겟다 . 255 50 255 색깔만뺴고.
-
 	StretchBlt(hdc, 0, 0, rectView.right, rectView.bottom, hMemDC, 0, 0, rectView.right, rectView.bottom, SRCCOPY); //hMemDC에 쓴것을 hdc에 쓰겟다. 
 
 	SelectObject(hMemDC, hOldBitmap);
@@ -821,8 +819,6 @@ void GameScene::PolygonArea()
 	fArea = 0;
 	for (int i = 0; i < vecTempArea.size() - 1; i++)
 		fArea += (((float)vecTempArea[i].x * (float)vecTempArea[i + 1].y) / 2 - ((float)vecTempArea[i + 1].x * (float)vecTempArea[i].y) / 2);
-
-
 
 	//int PolygonArea(vector<POINT> poly)
 	//{
@@ -867,3 +863,142 @@ bool GameScene::PolygonInsideCheck(POINT p)
 	return crosses % 2 > 0;
 }
 
+bool GameScene::Polygon_Line_Collision(POINT p)
+{
+	int i, j;
+	for (i = 0; i < vecPolygon.size(); i++)
+	{
+		if (i + 1 == vecPolygon.size())
+		{
+			if (vecPolygon[i].x == vecPolygon[0].x)
+			{
+				if ((vecPolygon[i].y < p.y  && vecPolygon[0].y > p.y) ||
+					(vecPolygon[i].y > p.y  && vecPolygon[0].y < p.y))
+				{
+					if (vecPolygon[i].x == p.x - MONSTER_SIZE || vecPolygon[i].x == p.x + MONSTER_SIZE)
+					{
+						return true;
+					}
+
+				}
+			}
+			else if (vecPolygon[i].y == vecPolygon[0].y)
+			{
+				if ((vecPolygon[i].x < p.x  && vecPolygon[0].x > p.x) ||
+					(vecPolygon[i].x > p.x  && vecPolygon[0].x < p.x))
+				{
+					if (vecPolygon[i].y == p.y - MONSTER_SIZE || vecPolygon[i].y == p.y + MONSTER_SIZE)
+					{
+						return true;
+					}
+
+				}
+			}
+		}
+		else if (vecPolygon[i].x == vecPolygon[i + 1].x)
+		{
+			if ((vecPolygon[i].y <= p.y  && vecPolygon[i + 1].y >= p.y)) //오른쪽일경우지.
+			{
+				if (vecPolygon[i].x == p.x - MONSTER_SIZE)
+				{
+					return true;
+				}
+			}
+			else if ((vecPolygon[i].y >= p.y  && vecPolygon[i + 1].y <= p.y)) //왼쪽
+			{
+				if (vecPolygon[i].x == p.x + MONSTER_SIZE)
+				{
+					return true;
+				}
+			}
+		}
+		else if (vecPolygon[i].y == vecPolygon[i + 1].y)
+		{
+			if ((vecPolygon[i].x <= p.x  && vecPolygon[i + 1].x >= p.x)) //위쪽
+			{
+				if (vecPolygon[i].y == p.y + MONSTER_SIZE)
+				{
+					return true;
+				}
+			}
+			else if ((vecPolygon[i].x >= p.x  && vecPolygon[i + 1].x <= p.x)) //아래쪽
+			{
+				if (vecPolygon[i].y == p.y - MONSTER_SIZE)
+				{
+					return true;
+				}
+			}
+
+		}
+	}
+
+	
+	return false;
+}
+
+bool GameScene::Player_Collsion(POINT p)
+{
+	float deltaX = p.x - m_Player->ptPosition.x;
+	float deltaY = p.y - m_Player->ptPosition.y;
+
+	float length = sqrt(deltaX *deltaX + deltaY*deltaY);
+
+	if (length > (MONSTER_SIZE + CHARACTER_SIZE))
+		return false;
+
+	return true;
+}
+
+bool GameScene::Tail_Collsion(POINT p)
+{
+	if (arrLand[p.y][p.x] == 'd')
+		return true;
+
+	return false;
+}
+
+void GameScene::nonStaticMonsterUpdate()
+{
+	for (int i = 0; i < vecMonster.size(); i++)
+	{
+		if (PolygonInsideCheck(vecMonster[i]->getPosition()))
+		{
+			vecMonster[i]->setDead(true);
+			dieMonster.push_back(vecMonster[i]);
+			vecMonster.erase(vecMonster.begin() + i);
+			continue;
+		}
+
+
+		vecMonster[i]->ObjectCollide(vecMonster);
+
+		
+
+		if (Polygon_Line_Collision(vecMonster[i]->getPosition()))
+		{
+			vecMonster[i]->ChangeDirection();
+		}
+
+		if (Player_Collsion(vecMonster[i]->getPosition()))
+		{
+			g_GameManager->SceneChange(Scene_enum::SCENE_END);
+		}
+		else if (Tail_Collsion(vecMonster[i]->getPosition()))
+		{
+			g_GameManager->SceneChange(Scene_enum::SCENE_END);
+		}
+
+		vecMonster[i]->Update();
+	}
+}
+
+void CALLBACK MonsterUpdate(HWND, UINT, UINT_PTR, DWORD)
+{
+	//static int count = 0;
+	//count++;
+	//string str =to_string(count) + "\n";
+	//DWORD dwWrite;
+	//HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
+	//WriteFile(hOut, str.c_str(), str.size(), &dwWrite, NULL);
+	g_GameManager->getGameScene()->nonStaticMonsterUpdate();
+}
