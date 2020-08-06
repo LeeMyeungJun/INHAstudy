@@ -228,7 +228,6 @@ void GameScene::Render(HWND hWnd, HDC hdc)
 void GameScene::Free(void)
 {
 	stage = STAGE_ONE;
-	//while (!KillTimer(g_GameManager->getHwnd(), 999));
 
 	for (int i = 0; i < vecMonster.size(); i++)
 	{
@@ -969,11 +968,8 @@ void GameScene::nonStaticMonsterUpdate()
 			continue;
 		}
 
-
 		vecMonster[i]->ObjectCollide(vecMonster);
-
 		
-
 		if (Polygon_Line_Collision(vecMonster[i]->getPosition()))
 		{
 			vecMonster[i]->ChangeDirection();

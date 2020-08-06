@@ -32,9 +32,8 @@ public:
 	const std::wstring m_NextStage = L"다음 스테이지";
 	const std::wstring m_EndTitle = L"패배";
 
-
 	//종료
-	const std::wstring m_reStart = L"다시하기";
+	const std::wstring m_reStart = L"종료";
 	const std::wstring m_reMenu = L"메뉴로가기";
 
 

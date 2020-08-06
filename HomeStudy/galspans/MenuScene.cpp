@@ -24,8 +24,6 @@ void MenuScene::Init(void)
 
 void MenuScene::Update(UINT message, WPARAM wParam, LPARAM lParam)
 {
-	
-
 	if (message == WM_LBUTTONDOWN )
 	{
 		int Clickx = LOWORD(lParam);
@@ -41,10 +39,7 @@ void MenuScene::Update(UINT message, WPARAM wParam, LPARAM lParam)
 		{
 			PostQuitMessage(0);
 		}
-
-		
 	}
-
 }
 
 void MenuScene::Render(HWND hWnd, HDC hdc)

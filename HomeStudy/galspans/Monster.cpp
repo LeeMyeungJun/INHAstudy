@@ -157,7 +157,6 @@ void Monster::Move()
 	//ptTemp.y += speed;
 	//setPosition({ ptTemp.x ,ptTemp.y});
 
-
 	switch (Direction)
 	{
 	case DIR_LT:

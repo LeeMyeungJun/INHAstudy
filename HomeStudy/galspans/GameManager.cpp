@@ -21,8 +21,6 @@ GameManager::GameManager()
 
 GameManager::~GameManager()
 {
-
-
 }
 
 void GameManager::Init()
@@ -68,9 +66,8 @@ void GameManager::SceneChange(Scene_enum nextScene)
 		if (m_GameScene != nullptr) delete m_GameScene;
 		if (m_MenuScene != nullptr) delete m_MenuScene;
 		m_Scene = nullptr;
-		delete g_GameManager;
 		PostQuitMessage(0);
-		break;
+		return;
 	}
 
 

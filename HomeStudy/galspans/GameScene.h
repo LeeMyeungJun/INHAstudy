@@ -7,8 +7,6 @@ class Monster;
 #define SCREEN_WIDTH 900
 #define SCREEN_HEIGHT 800
 
-
-
 using namespace std;
 class GameScene : public Scene
 {
@@ -84,4 +82,4 @@ public:
 	
 };
 
-void CALLBACK MonsterUpdate(HWND, UINT, UINT_PTR, DWORD);
+//void CALLBACK MonsterUpdate(HWND, UINT, UINT_PTR, DWORD);
