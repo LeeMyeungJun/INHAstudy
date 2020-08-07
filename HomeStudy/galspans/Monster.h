@@ -21,6 +21,13 @@ private :
 		DIR_RB = 7
 
 	};
+	enum SIDE
+	{
+		SIDE_LEFT,
+		SIDE_TOP,
+		SIDE_RIGHT,
+		SIDE_BOTTOM
+	};
 private:
 	POINT ptMonster_Position;
 	POINT ptTemp_Position;
@@ -28,10 +35,11 @@ private:
 	bool bDead;
 	int pattern;
 	int Direction;
+	
 public:
 	Monster(int,int);
 	~Monster();
-
+	int iTimeCheck;
 public:
 	void setSpeed(int);
 	int getSpeed();
@@ -39,7 +47,7 @@ public:
 	POINT getPosition();
 	void setPosition(POINT);
 
-	void ChangeDirection();
+
 	void setDirection(int);
 	int getDirection();
 
@@ -51,6 +59,9 @@ public:
 public:
 	void ObjectCollide(std::vector<Monster*>);
 	bool Collide(POINT,POINT);
+	void PolygonCollide(int);
+	void TimeCheck();
+
 
 	void Update();
 	void Render(HDC);

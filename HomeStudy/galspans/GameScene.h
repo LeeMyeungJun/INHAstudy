@@ -22,6 +22,13 @@ public:
 		STAGE_ONE,
 		STAGE_TWO
 	};
+	enum SIDE
+	{
+		SIDE_LEFT,
+		SIDE_TOP,
+		SIDE_RIGHT,
+		SIDE_BOTTOM
+	};
 private:
 	POINT ptPotion; //±¸¸Û¶Õ±â¿ëµµ.
 public:
@@ -45,7 +52,7 @@ public:
 	void DrawBitmapDoubleBuffering(HWND hwnd, HDC hdc);
 	void PolygonArea();
 	bool PolygonInsideCheck(POINT);
-	bool Polygon_Line_Collision(POINT);
+	bool Polygon_Line_Collision(POINT,int);
 	bool Player_Collsion(POINT);
 	bool Tail_Collsion(POINT);
 	void NextStageFreeInit();

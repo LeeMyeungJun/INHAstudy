@@ -12,8 +12,8 @@ public:
 	void Render(HWND hWnd, HDC hdc);
 	void Free(void);
 
-	RECT n_rc_reStart_btn;
-	RECT m_rc_menu_btn;
+	//RECT n_rc_reStart_btn;
+	//RECT m_rc_menu_btn;
 
 };
 

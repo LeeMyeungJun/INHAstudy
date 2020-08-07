@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Monster.h"
 
-Monster::Monster(int x, int y) :speed(SPEED_ONE), bDead(false), Direction(rand() % 8), ptMonster_Position({x,y}), ptTemp_Position({ x,y })
+Monster::Monster(int x, int y) :speed(SPEED_ONE), bDead(false), Direction(rand() % 8), ptMonster_Position({x,y}), ptTemp_Position({ x,y }), iTimeCheck(0)
 {
 	
 }
@@ -20,52 +20,96 @@ void Monster::setPosition(POINT pt)
 	ptMonster_Position.y = pt.y;
 }
 
-void Monster::ChangeDirection()
+
+void Monster::PolygonCollide(int side)
 {
-	switch (this->Direction)
+	switch (side)
 	{
-	case DIR_LT:
-	{
-		this->Direction = 7;
-	}
-	break;
-	case DIR_T:
-	{
-		this->Direction = 6;
-	}
-	break;
-	case DIR_RT:
-	{
-		this->Direction = 5;
-	}
-	break;
-	case DIR_L:
-	{
-		this->Direction = 4;
-	}
-	break;
-	case DIR_R:
-	{
-		this->Direction = 3;
-	}					  
-	break;				  
-	case DIR_LB:		  
-	{					  
-		this->Direction = 2;
-	}					  
-	break;				  
-	case DIR_B:			  
-	{					  
-		this->Direction = 1;
-	}					  
-	break;				  
-	case DIR_RB:		  
-	{					  
-		this->Direction = 0;
-	}
-	break;
+	case SIDE_LEFT:
+		switch (this->Direction)
+		{
+		case DIR_RT:
+			this->Direction = DIR_LT;
+			break;
+		case DIR_R:
+			this->Direction = DIR_L;
+			break;
+		case DIR_RB:
+			this->Direction = DIR_LB;
+			break;
+
+		}
+		break;
+	case SIDE_RIGHT:
+		switch (this->Direction)
+		{
+		case DIR_LT:
+			this->Direction = DIR_RT;
+			break;
+		case DIR_L:
+			this->Direction = DIR_R;
+			break;
+		case DIR_LB:
+			this->Direction = DIR_RB;
+			break;
+		}
+		break;
+	case SIDE_TOP:
+		switch (this->Direction)
+		{
+		case DIR_LB:
+			this->Direction = DIR_LT;
+			break;
+		case DIR_B:
+			this->Direction = DIR_T;
+			break;
+		case DIR_RB:
+			this->Direction = DIR_RT;
+			break;
+		}
+		break;
+	case SIDE_BOTTOM:
+		switch (this->Direction)
+		{
+		case DIR_LT:
+			this->Direction = DIR_LB;
+			break;
+		case DIR_T:
+			this->Direction = DIR_B;
+			break;
+		case DIR_RT:
+			this->Direction = DIR_RB;
+			break;
+		}
+		break;
+
 	}
 }
+
+void Monster::TimeCheck()
+{
+	POINT pt = getPosition();
+	
+	//pt.x <= 0 || pt.x >= 880 || pt.y <= 0 || pt.y >= 760
+	if (pt.x > 440)
+	{
+		setPosition({ pt.x - 30,pt.y });
+	}else if (pt.x < 440)
+	{
+		setPosition({ pt.x + 30,pt.y });
+	}
+
+	if (pt.y > 380)
+	{
+		setPosition({ pt.x,pt.y -30});
+	}
+	else if (pt.y < 380)
+	{
+		setPosition({ pt.x ,pt.y + 30 });
+	}
+	
+}
+
 
 void Monster::setDirection(int dir)
 {
@@ -97,7 +141,6 @@ POINT Monster::getPosition()
 	return ptMonster_Position;
 }
 
-
 void Monster::ObjectCollide(vector<Monster*> enemy)
 {
 	for (Monster *i : enemy)
@@ -115,6 +158,7 @@ bool Monster::Collide(POINT Object,POINT OtherObject)
 
 	if (MONSTER_SIZE*2 > dLength) //Ãæµ¹
 	{
+		iTimeCheck++;
 		return true;
 	}
 
@@ -124,6 +168,12 @@ bool Monster::Collide(POINT Object,POINT OtherObject)
 void Monster::Update()
 {
 	Move();
+
+	if (iTimeCheck > 5)
+	{
+		TimeCheck();
+	}
+
 }
 
 void Monster::Render(HDC hdc)
@@ -136,9 +186,70 @@ void Monster::reflection(POINT pt)
 	
 	if (pt.x <= 0 || pt.x >= 880 ||pt.y <= 0 || pt.y >= 760)
 	{
-		ChangeDirection();
+		iTimeCheck++;
+		POINT pt = getPosition();
+		//if (pt.x <= 0 || pt.x >= 880 || pt.y <= 0 || pt.y >= 760)
+		switch (this->Direction)
+		{
+		case DIR_LT:
+		{
+			if(pt.x <=0)
+				this->Direction = DIR_RT;
+			else if(pt.y<= 0)
+				this->Direction = DIR_LB;
+		}
+		break;
+		case DIR_T:
+		{
+			this->Direction = DIR_B;
+		}
+		break;
+		case DIR_RT:
+		{
+			if (pt.x >= 880)
+				this->Direction = DIR_LT;
+			else if (pt.y <= 0)
+				this->Direction = DIR_RB;
+		}
+		break;
+		case DIR_L:
+		{
+			this->Direction = DIR_R;
+		}
+		break;
+		case DIR_R:
+		{
+			this->Direction = DIR_L;
+		}
+		break;
+		case DIR_LB:
+		{
+			if (pt.x <= 0)
+				this->Direction = DIR_RB;
+			else if (pt.y >= 760)
+				this->Direction = DIR_LT;
+		}
+		break;
+		case DIR_B:
+		{
+			this->Direction = DIR_T;
+		}
+		break;
+		case DIR_RB:
+		{
+			if (pt.x >= 880)
+				this->Direction = DIR_LB;
+			else if (pt.y >= 760)
+				this->Direction = DIR_RT;
+		}
+		break;
+		}
 	}
-
+	else
+	{
+		iTimeCheck = 0;
+	}
+	
 }
 
 /*
@@ -151,7 +262,7 @@ void Monster::reflection(POINT pt)
 void Monster::Move()
 {
 	POINT ptTemp;
-
+	
 	ptTemp = getPosition();
 	//ptTemp.x += speed;
 	//ptTemp.y += speed;

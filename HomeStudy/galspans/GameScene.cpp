@@ -939,7 +939,7 @@ bool GameScene::PolygonInsideCheck(POINT p)
 	return crosses % 2 > 0;
 }
 
-bool GameScene::Polygon_Line_Collision(POINT p)
+bool GameScene::Polygon_Line_Collision(POINT p ,int index) 
 {
 	int i, j;
 	for (i = 0; i < vecPolygon.size(); i++)
@@ -953,6 +953,7 @@ bool GameScene::Polygon_Line_Collision(POINT p)
 				{
 					if (vecPolygon[i].x == p.x - MONSTER_SIZE || vecPolygon[i].x == p.x + MONSTER_SIZE)
 					{
+						vecMonster[index]->PolygonCollide(SIDE_LEFT);
 						return true;
 					}
 
@@ -965,6 +966,7 @@ bool GameScene::Polygon_Line_Collision(POINT p)
 				{
 					if (vecPolygon[i].y == p.y - MONSTER_SIZE || vecPolygon[i].y == p.y + MONSTER_SIZE)
 					{
+						vecMonster[index]->PolygonCollide(SIDE_LEFT);
 						return true;
 					}
 
@@ -977,6 +979,7 @@ bool GameScene::Polygon_Line_Collision(POINT p)
 			{
 				if (vecPolygon[i].x == p.x - MONSTER_SIZE)
 				{
+					vecMonster[index]->PolygonCollide(SIDE_RIGHT);
 					return true;
 				}
 			}
@@ -984,6 +987,7 @@ bool GameScene::Polygon_Line_Collision(POINT p)
 			{
 				if (vecPolygon[i].x == p.x + MONSTER_SIZE)
 				{
+					vecMonster[index]->PolygonCollide(SIDE_LEFT);
 					return true;
 				}
 			}
@@ -994,6 +998,7 @@ bool GameScene::Polygon_Line_Collision(POINT p)
 			{
 				if (vecPolygon[i].y == p.y + MONSTER_SIZE)
 				{
+					vecMonster[index]->PolygonCollide(SIDE_TOP);
 					return true;
 				}
 			}
@@ -1001,6 +1006,7 @@ bool GameScene::Polygon_Line_Collision(POINT p)
 			{
 				if (vecPolygon[i].y == p.y - MONSTER_SIZE)
 				{
+					vecMonster[index]->PolygonCollide(SIDE_BOTTOM);
 					return true;
 				}
 			}
@@ -1140,10 +1146,8 @@ void GameScene::nonStaticMonsterUpdate()
 
 			vecMonster[i]->ObjectCollide(vecMonster);
 
-			if (Polygon_Line_Collision(vecMonster[i]->getPosition()))
-			{
-				vecMonster[i]->ChangeDirection();
-			}
+			Polygon_Line_Collision(vecMonster[i]->getPosition(), i);
+
 		}
 		vecMonster[i]->Update();
 
