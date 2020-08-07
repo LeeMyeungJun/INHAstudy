@@ -82,4 +82,4 @@ public:
 	
 };
 
-//void CALLBACK MonsterUpdate(HWND, UINT, UINT_PTR, DWORD);
+void CALLBACK MonsterUpdate(HWND, UINT, UINT_PTR, DWORD);

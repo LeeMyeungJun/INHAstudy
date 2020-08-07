@@ -26,13 +26,20 @@ GameScene::GameScene()
 
 	for (int i = 0; i < MONSTER_COUNT; i++)
 	{
-		m_Monster = new Monster(i*100+100, 200);
+		if (i > 6)
+		{
+			m_Monster = new Monster((i-6) * 100 + 100, 500);
+		}
+		else
+		{
+			m_Monster = new Monster(i * 100 + 100, 300);
+		}
+	
 		vecMonster.push_back(m_Monster);
 	}
 
 	
 }
-
 
 GameScene::~GameScene()
 {
@@ -44,7 +51,6 @@ GameScene::~GameScene()
 
 void GameScene::Init(void)
 {
-	/*SetTimer(g_GameManager->getHwnd(), 999, 1000/30, MonsterUpdate);*/
 
 	{
 		vecPoint.clear();
@@ -119,6 +125,7 @@ void GameScene::Init(void)
 			vecMonster[i]->Init();
 		}
 	}
+	SetTimer(g_GameManager->getHwnd(), 999, 1000 / 30, MonsterUpdate);
 }
 
 void GameScene::Update(UINT message, WPARAM wParam, LPARAM lParam)
@@ -228,11 +235,14 @@ void GameScene::Render(HWND hWnd, HDC hdc)
 void GameScene::Free(void)
 {
 	stage = STAGE_ONE;
+	KillTimer(g_GameManager->getHwnd(), 999);
 
 	for (int i = 0; i < vecMonster.size(); i++)
 	{
 		dieMonster.push_back(vecMonster[i]);
+		vecMonster.erase(vecMonster.begin() + i);
 	}
+
 }
 
 void GameScene::PlayerMove(UINT message)
@@ -975,6 +985,8 @@ void GameScene::nonStaticMonsterUpdate()
 			vecMonster[i]->ChangeDirection();
 		}
 
+		vecMonster[i]->Update();
+
 		if (Player_Collsion(vecMonster[i]->getPosition()))
 		{
 			g_GameManager->SceneChange(Scene_enum::SCENE_END);
@@ -984,11 +996,11 @@ void GameScene::nonStaticMonsterUpdate()
 			g_GameManager->SceneChange(Scene_enum::SCENE_END);
 		}
 
-		vecMonster[i]->Update();
+		
 	}
 }
 
-//void CALLBACK MonsterUpdate(HWND, UINT, UINT_PTR, DWORD)
-//{
-//	g_GameManager->getGameScene()->nonStaticMonsterUpdate();
-//}
+void CALLBACK MonsterUpdate(HWND, UINT, UINT_PTR, DWORD)
+{
+	g_GameManager->getGameScene()->nonStaticMonsterUpdate();
+}

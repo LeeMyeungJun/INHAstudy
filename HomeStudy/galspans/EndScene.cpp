@@ -33,7 +33,7 @@ void EndScene::Update(UINT message, WPARAM wParam, LPARAM lParam)
 		if (Clickx >= n_rc_reStart_btn.left &&Clickx <= n_rc_reStart_btn.right
 			&& Clicky >= n_rc_reStart_btn.top && Clicky <= n_rc_reStart_btn.bottom)
 		{
-			g_GameManager->SceneChange(Scene_enum::SCENE_EXIT);
+			g_GameManager->SceneChange(Scene_enum::SCENE_GAME);
 		}
 		else if (Clickx >= m_rc_menu_btn.left &&Clickx <= m_rc_menu_btn.right
 			&& Clicky >= m_rc_menu_btn.top && Clicky <= m_rc_menu_btn.bottom)

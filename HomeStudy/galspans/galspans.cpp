@@ -112,7 +112,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			srand((unsigned int)time(NULL));
 			g_GameManager = GameManager::GetInstance();
 			SetTimer(hWnd,1, 50, NULL);
-			SetTimer(hWnd, 999, 1000 / 30, MonsterUpdate);
+		//	SetTimer(hWnd, 999, 1000 / 30, MonsterUpdate);
 			g_GameManager->setHwnd(hWnd);
 		}
 		break;
@@ -165,7 +165,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	case WM_TIMER:
 		{
 			g_GameManager->Update(message, wParam, lParam); 
-
 			InvalidateRgn(hWnd, NULL, false);
 			
 			break;
@@ -173,7 +172,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     case WM_DESTROY:
 
 		KillTimer(0,0);
-		KillTimer(hWnd, 999);
+	//	KillTimer(hWnd, 999);
         PostQuitMessage(0);
         break;
     default:
@@ -203,7 +202,7 @@ INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 }
 
 
-void CALLBACK MonsterUpdate(HWND, UINT, UINT_PTR, DWORD)
-{
-	g_GameManager->getGameScene()->nonStaticMonsterUpdate();
-}
+//void CALLBACK MonsterUpdate(HWND, UINT, UINT_PTR, DWORD)
+//{
+//	g_GameManager->getGameScene()->nonStaticMonsterUpdate();
+//}
