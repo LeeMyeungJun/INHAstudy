@@ -55,12 +55,12 @@ void GameManager::SceneChange(Scene_enum nextScene)
 		m_Scene = m_GameScene;
 		m_Scene_enum = Scene_enum::SCENE_GAME;
 		break;
-	case Scene_enum::SCENE_END:
-		if (m_EndScene == nullptr)
-			m_EndScene = new EndScene;
-		m_Scene = m_EndScene;
-		m_Scene_enum = Scene_enum::SCENE_END;
-		break;
+	//case Scene_enum::SCENE_END:
+	//	if (m_EndScene == nullptr)
+	//		m_EndScene = new EndScene;
+	//	m_Scene = m_EndScene;
+	//	m_Scene_enum = Scene_enum::SCENE_END;
+	//	break;
 	case Scene_enum::SCENE_EXIT:
 		if (m_EndScene != nullptr) delete m_EndScene;
 		if (m_GameScene != nullptr) delete m_GameScene;

@@ -12,17 +12,20 @@ using namespace std;
 vector<Monster*> vecMonster;
 list<Monster*> dieMonster;
 
+int GameScene::stage = 0;
 
 GameScene::GameScene()
 {
 	m_GameUI = new GameUI;
+	m_SceneUI = m_GameUI;
 	m_Bitmap = new BitMap;
 	m_Player = new PlayerManager;
-	m_SceneUI = m_GameUI;
-	hDoubleBufferImage = NULL;
 
-	
-	stage = STAGE_ONE;
+	n_rc_reStart_btn = { 200,300 - 10,400,370 - 10 };
+	m_rc_menu_btn = { 500,300 - 10,700,370 - 10 };
+
+
+	hDoubleBufferImage = NULL;
 
 	for (int i = 0; i < MONSTER_COUNT; i++)
 	{
@@ -51,7 +54,6 @@ GameScene::~GameScene()
 
 void GameScene::Init(void)
 {
-
 	{
 		vecPoint.clear();
 		vecPolygon.clear();
@@ -87,10 +89,12 @@ void GameScene::Init(void)
 
 		bOutMoveFlag = false;
 		bWin = false;
+		bLose = false;
 		fArea = 100 * 100;
 		GamePercent = 1;
 		arrStartEndCheck[START_LINE] = 0;
 		arrStartEndCheck[END_LINE] = 0;
+		iTimer = 0;
 
 
 		switch (stage)
@@ -108,6 +112,13 @@ void GameScene::Init(void)
 		}
 		break;
 		}
+
+
+		WinImage = MapSetting.WinImage;
+		WinBack = MapSetting.WinBack;
+
+		LoseImage = MapSetting.LoseImage;
+		LoseBack = MapSetting.LoseBack;
 
 		hDoubleBufferImage = NULL;
 
@@ -130,37 +141,70 @@ void GameScene::Init(void)
 
 void GameScene::Update(UINT message, WPARAM wParam, LPARAM lParam)
 {
-	switch (message)
-	{
-	case WM_KEYDOWN:
-	{
-		if (GetKeyState(VK_RIGHT) & 0x8000)
-		{
-			PlayerMove(VK_RIGHT);
-		}
-		else if (GetKeyState(VK_LEFT) & 0x8000)
-		{
-			PlayerMove(VK_LEFT);
-		}
-		else if (GetKeyState(VK_UP) & 0x8000)
-		{
-			PlayerMove(VK_UP);
-		}
-		else if (GetKeyState(VK_DOWN) & 0x8000)
-		{
-			PlayerMove(VK_DOWN);
-		}
-	}
-	break;
-	}
+
 
 	if (bWin)
 	{
-		stage++;
-		if (stage > STAGE_TWO)
-			g_GameManager->SceneChange(Scene_enum::SCENE_END);
-		Init();
-		bWin = false;
+		iTimer++;
+		if (iTimer > 100)
+		{
+			stage++;
+			NextStageFreeInit();
+		}
+		
+	}
+	else if (bLose)
+	{
+		//stage++;
+		//g_GameManager->SceneChange(Scene_enum::SCENE_GAME);
+		if (message == WM_LBUTTONDOWN)
+		{
+			int Clickx = LOWORD(lParam);
+			int Clicky = HIWORD(lParam);
+
+			if (Clickx >= n_rc_reStart_btn.left &&Clickx <= n_rc_reStart_btn.right
+				&& Clicky >= n_rc_reStart_btn.top && Clicky <= n_rc_reStart_btn.bottom)
+			{
+				g_GameManager->SceneChange(Scene_enum::SCENE_GAME);
+			}
+			else if (Clickx >= m_rc_menu_btn.left &&Clickx <= m_rc_menu_btn.right
+				&& Clicky >= m_rc_menu_btn.top && Clicky <= m_rc_menu_btn.bottom)
+			{
+				g_GameManager->SceneChange(Scene_enum::SCENE_MENU);
+
+			}
+
+
+		}
+
+		
+	}
+	else
+	{
+		switch (message)
+		{
+		case WM_KEYDOWN:
+		{
+			if (GetKeyState(VK_RIGHT) & 0x8000)
+			{
+				PlayerMove(VK_RIGHT);
+			}
+			else if (GetKeyState(VK_LEFT) & 0x8000)
+			{
+				PlayerMove(VK_LEFT);
+			}
+			else if (GetKeyState(VK_UP) & 0x8000)
+			{
+				PlayerMove(VK_UP);
+			}
+			else if (GetKeyState(VK_DOWN) & 0x8000)
+			{
+				PlayerMove(VK_DOWN);
+			}
+		}
+		break;
+		}
+
 	}
 	
 }
@@ -168,19 +212,16 @@ void GameScene::Update(UINT message, WPARAM wParam, LPARAM lParam)
 void GameScene::Render(HWND hWnd, HDC hdc)
 {
 	
-	{
+	
 		GetClientRect(hWnd, &rectView);
-
 		/*그리기*/
 		DrawBitmapDoubleBuffering(hWnd, hdc);
-
 		/*플레이어 부분 */
 		HBRUSH myBrush, oldBrush;
 		myBrush = (HBRUSH)CreateSolidBrush(RGB(255, 0, 0));
 		oldBrush = (HBRUSH)SelectObject(hdc, myBrush);
 
 		m_Player->DrawPlayerCharacter(hdc);
-
 
 		for (int i = 0; i < vecPoint.size(); i++)
 		{
@@ -205,30 +246,33 @@ void GameScene::Render(HWND hWnd, HDC hdc)
 		SelectObject(hdc, oldBrush);
 		DeleteObject(myBrush);
 
+		//몬스터그리기
+		{
+			for (int i = 0; i < vecMonster.size(); i++)
+			{
+				vecMonster[i]->Render(hdc);
+			}
+		}
+		
+
 		HFONT oldFont = (HFONT)SelectObject(hdc,font.GameFont);
 		TCHAR tcPercent[30];
-
 		//TCHAR tcharx[30];
 		//TCHAR tchary[30];
-
 		_ltow(GamePercent, tcPercent, 10);
 		//_ltow(m_Player->ptPosition.x, tcharx, 10);
 		//_ltow(m_Player->ptPosition.y, tchary, 10);
-
 		TextOut(hdc, 350, 400, tcPercent, lstrlen(tcPercent));
 		//TextOut(hdc, 700, 30, tcharx, lstrlen(tcharx));
 		//TextOut(hdc, 700, 50, tchary, lstrlen(tchary));
 
-
-	}
-	
-	//몬스터그리기
-	{
-		for (int i = 0; i < vecMonster.size(); i++)
+		if(bLose)
 		{
-			vecMonster[i]->Render(hdc);
+			m_SceneUI->draw(hdc);
 		}
-	}
+	
+
+
 	
 }
 
@@ -422,7 +466,7 @@ void GameScene::PlayerMove(UINT message)
 
 				GamePercent = (fabs(fArea) / (rectView.right * rectView.bottom)) * 100;
 
-				if (GamePercent > 80)
+				if (GamePercent > VICTORY_PERCENT)
 				{
 					bWin = true;
 				}
@@ -527,7 +571,6 @@ void GameScene::PlayerMove(UINT message)
 
 
 		}
-
 	}
 
 
@@ -748,10 +791,12 @@ void GameScene::DrawBitmapDoubleBuffering(HWND hwnd, HDC hdc)
 
 
 	hMemDC = CreateCompatibleDC(hdc);
+
 	if (hDoubleBufferImage == NULL)
 		hDoubleBufferImage = CreateCompatibleBitmap(hdc, rectView.right, rectView.bottom); //초기화를해준다 처음들어가면 사이즈만큼
 
 	hOldBitmap = (HBITMAP)SelectObject(hMemDC, hDoubleBufferImage);
+
 
 	//사진부분 
 	{
@@ -787,7 +832,7 @@ void GameScene::DrawBitmapDoubleBuffering(HWND hwnd, HDC hdc)
 
 		SelectObject(hMemDC2, oldBrush);
 		DeleteObject(myBrush);
-		myBrush = (HBRUSH)CreateSolidBrush(RGB(255, 50, 255));
+		myBrush = (HBRUSH)CreateSolidBrush(RGB(255, 0, 255));
 		oldBrush = (HBRUSH)SelectObject(hMemDC2, myBrush);
 
 		/*구멍뚫을부분 */
@@ -799,7 +844,7 @@ void GameScene::DrawBitmapDoubleBuffering(HWND hwnd, HDC hdc)
 
 		//BitBlt(hMemDC, 0, 0, rectView.right, rectView.bottom, hMemDC2, 0, 0, SRCCOPY);
 
-		TransparentBlt(hMemDC, 0, 0, rectView.right, rectView.bottom, hMemDC2, 0, 0, rectView.right, rectView.bottom, RGB(255, 50, 255)); //hMemDC에 HMemDC2에 쓴것을 쓰겟다 . 255 50 255 색깔만뺴고.
+		TransparentBlt(hMemDC, 0, 0, rectView.right, rectView.bottom, hMemDC2, 0, 0, rectView.right, rectView.bottom, RGB(255, 0, 255)); //hMemDC에 HMemDC2에 쓴것을 쓰겟다 . 255 50 255 색깔만뺴고.
 		SelectObject(hMemDC2, hOldBitmap2);
 
 		DeleteObject(hOldBitmap2);
@@ -807,15 +852,37 @@ void GameScene::DrawBitmapDoubleBuffering(HWND hwnd, HDC hdc)
 
 	}
 
-	StretchBlt(hdc, 0, 0, rectView.right, rectView.bottom, hMemDC, 0, 0, rectView.right, rectView.bottom, SRCCOPY); //hMemDC에 쓴것을 hdc에 쓰겟다. 
+	//Win 사진  
+	if(bWin)
+	{
+		hMemDC2 = CreateCompatibleDC(hdc);//BitBlt(hMemDC, 200, 0, bx, by, hMemDC2, 0, 0, SRCCOPY);
+		hOldBitmap2 = (HBITMAP)SelectObject(hMemDC2, WinImage); //여기 사진넣기
+
+		bx = WinBack.bmWidth;
+		by = WinBack.bmHeight;
+		TransparentBlt(hMemDC, 200,100, bx, by, hMemDC2, 0, 0, bx, by, RGB(255, 0, 255));//분홍색을 제외하고 출력을한다.
+		SelectObject(hMemDC2, hOldBitmap2);
+		DeleteObject(hOldBitmap2);
+		DeleteDC(hMemDC2);
+	}
+	else if (bLose)
+	{
+		hMemDC2 = CreateCompatibleDC(hdc);//BitBlt(hMemDC, 200, 0, bx, by, hMemDC2, 0, 0, SRCCOPY);
+		hOldBitmap2 = (HBITMAP)SelectObject(hMemDC2, LoseImage); //여기 사진넣기
+
+		bx = LoseBack.bmWidth;
+		by = LoseBack.bmHeight;
+		TransparentBlt(hMemDC, 0, 0, bx/2, by/2, hMemDC2, 0, 0, bx, by, RGB(255, 0, 255));//분홍색을 제외하고 출력을한다.
+		SelectObject(hMemDC2, hOldBitmap2);
+		DeleteObject(hOldBitmap2);
+		DeleteDC(hMemDC2);
+	}
+	BitBlt(hdc, 0, 0, rectView.right, rectView.bottom, hMemDC, 0, 0, SRCCOPY); //hMemDC에 쓴것을 hdc에 쓰겟다. 
 
 	SelectObject(hMemDC, hOldBitmap);
 
 
 	DeleteDC(hMemDC);
-
-
-
 
 }
 
@@ -953,6 +1020,11 @@ bool GameScene::Player_Collsion(POINT p)
 	float length = sqrt(deltaX *deltaX + deltaY*deltaY);
 
 	if (length > (MONSTER_SIZE + CHARACTER_SIZE))
+	{
+		return false;
+	}
+		
+	if (arrLand[m_Player->ptPosition.y][m_Player->ptPosition.x] == 'a')
 		return false;
 
 	return true;
@@ -966,38 +1038,132 @@ bool GameScene::Tail_Collsion(POINT p)
 	return false;
 }
 
-void GameScene::nonStaticMonsterUpdate()
+void GameScene::NextStageFreeInit()
 {
+	//free
 	for (int i = 0; i < vecMonster.size(); i++)
 	{
-		if (PolygonInsideCheck(vecMonster[i]->getPosition()))
-		{
-			vecMonster[i]->setDead(true);
-			dieMonster.push_back(vecMonster[i]);
-			vecMonster.erase(vecMonster.begin() + i);
-			continue;
-		}
+		dieMonster.push_back(vecMonster[i]);
+		vecMonster.erase(vecMonster.begin() + i);
+	}
+	//Init
 
-		vecMonster[i]->ObjectCollide(vecMonster);
-		
-		if (Polygon_Line_Collision(vecMonster[i]->getPosition()))
-		{
-			vecMonster[i]->ChangeDirection();
-		}
+	vecPoint.clear();
+	vecPolygon.clear();
 
+	vecPolygon.push_back({ 0,0 });
+	vecPolygon.push_back({ 100,0 });
+	vecPolygon.push_back({ 100,100 });
+	vecPolygon.push_back({ 0,100 });
+
+	memset(arrLand, 'c', sizeof(arrLand));
+
+	for (int i = 0; i <= 100; i++)
+	{
+		for (int j = 0; j <= 100; j++)
+		{
+			if (i == 0 || i == 100 || j == 0 || j == 100)
+			{
+				arrLand[i][j] = 'a';
+			}
+			else
+			{
+				continue;
+			}
+		}
+	}
+
+
+	m_Player->ptPosition.x = 100;
+	m_Player->ptPosition.y = 100;
+
+	m_Player->ptTemp.x = 0;
+	m_Player->ptTemp.y = 0;
+
+	bOutMoveFlag = false;
+	bWin = false;
+	bLose = false;
+	fArea = 100 * 100;
+	GamePercent = 1;
+	arrStartEndCheck[START_LINE] = 0;
+	arrStartEndCheck[END_LINE] = 0;
+	iTimer = 0;
+
+
+	switch (stage)
+	{
+	case STAGE_ONE:
+	{
+		tempImage = MapSetting.hBackImage1;
+		tempBack = MapSetting.bitBack1;
+	}
+	break;
+	case STAGE_TWO:
+	{
+		tempImage = MapSetting.hBackImage2;
+		tempBack = MapSetting.bitBack2;
+	}
+	break;
+	}
+
+	list<Monster*>::iterator it = dieMonster.begin();
+	for (it = dieMonster.begin(); it != dieMonster.end(); it++)
+	{
+		(*it)->setDead(false);
+		vecMonster.push_back(*it);
+	}
+	dieMonster.clear();
+
+
+	for (int i = 0; i < vecMonster.size(); i++)
+	{
+		vecMonster[i]->Init();
+	}
+
+
+}
+
+void GameScene::nonStaticMonsterUpdate()
+{
+	
+	for (int i = 0; i < vecMonster.size(); i++)
+	{
+		if (!bWin)
+		{
+			if (PolygonInsideCheck(vecMonster[i]->getPosition()))
+			{
+				vecMonster[i]->setDead(true);
+				dieMonster.push_back(vecMonster[i]);
+				vecMonster.erase(vecMonster.begin() + i);
+				continue;
+			}
+
+			vecMonster[i]->ObjectCollide(vecMonster);
+
+			if (Polygon_Line_Collision(vecMonster[i]->getPosition()))
+			{
+				vecMonster[i]->ChangeDirection();
+			}
+		}
 		vecMonster[i]->Update();
 
-		if (Player_Collsion(vecMonster[i]->getPosition()))
+		if (!bWin)
 		{
-			g_GameManager->SceneChange(Scene_enum::SCENE_END);
-		}
-		else if (Tail_Collsion(vecMonster[i]->getPosition()))
-		{
-			g_GameManager->SceneChange(Scene_enum::SCENE_END);
+			if (Player_Collsion(vecMonster[i]->getPosition()))
+			{
+				bLose = true;
+			}
+			else if (Tail_Collsion(vecMonster[i]->getPosition()))
+			{
+				bLose = true;
+			}
 		}
 
-		
+
+
 	}
+	
+
 }
 
 void CALLBACK MonsterUpdate(HWND, UINT, UINT_PTR, DWORD)

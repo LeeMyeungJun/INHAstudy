@@ -6,7 +6,7 @@ public:
 	~BitMap();
 
 
-	void DrawBitmapDoubleBuffering(HWND hwnd, HDC hdc);
+	
 	void CreateBitmap();
 	void DeleteBitmap();
 
@@ -18,5 +18,11 @@ public:
 
 	HBITMAP hBackImage2;
 	BITMAP bitBack2;
+
+	HBITMAP WinImage;
+	BITMAP WinBack;
+
+	HBITMAP LoseImage;
+	BITMAP LoseBack;
 };
 

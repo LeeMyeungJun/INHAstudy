@@ -54,11 +54,10 @@
 
 
 
-
+#define VICTORY_PERCENT 2
 
 #define SCREEN_WIDTH 900
 #define SCREEN_HEIGHT 800
-
 
 #define MONSTER_COUNT 12
 #define MONSTER_SIZE 10

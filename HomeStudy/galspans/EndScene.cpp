@@ -5,7 +5,6 @@ extern GameManager * g_GameManager;
 EndScene::EndScene()
 {
 	m_EndUI = new EndUI;
-
 	m_SceneUI = m_EndUI;
 
 	n_rc_reStart_btn = { 200,300-10,400,370-10 };

@@ -34,6 +34,7 @@ public:
 	void Render(HWND hWnd, HDC hdc);
 	void Free(void);
 
+public:
 	void PlayerMove(UINT message);
 	void PlayerFirstDirection(UINT message);
 	void PlayerDirectionCheck(UINT message);
@@ -43,18 +44,19 @@ public:
 	void RebuildLand();
 	void DrawBitmapDoubleBuffering(HWND hwnd, HDC hdc);
 	void PolygonArea();
-
 	bool PolygonInsideCheck(POINT);
-
-
 	bool Polygon_Line_Collision(POINT);
 	bool Player_Collsion(POINT);
 	bool Tail_Collsion(POINT);
+	void NextStageFreeInit();
 
 
-	size_t stage;
+
+
+	static int stage;
 	bool bOutMoveFlag;
 	bool bWin; 
+	bool bLose;
 	int arrStartEndCheck[2];
 	PlayerManager * m_Player;
 	BitMap * m_Bitmap;
@@ -68,13 +70,26 @@ public:
 	std::vector<POINT> vecPoint;
 	float fArea;
 	int GamePercent;
+	int iTimer;
 
 	HBITMAP hDoubleBufferImage;
 	RECT rectView;
 
 	BitMap MapSetting;
+
 	HBITMAP tempImage;
 	BITMAP tempBack;
+
+	HBITMAP WinImage;
+	BITMAP WinBack;
+
+	HBITMAP LoseImage;
+	BITMAP LoseBack;
+
+
+	RECT n_rc_reStart_btn;
+	RECT m_rc_menu_btn;
+
 
 	char arrLand[SCREEN_HEIGHT][SCREEN_WIDTH];//a.Å×µÎ¸® b.³»ºÎ c.¾È¸ÔÀº¶¥ d.²¿¸®
 

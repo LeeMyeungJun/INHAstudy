@@ -256,8 +256,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		//EnableMenuItem(hSubMenu, ID_DRAW_STAR, MF_GRAYED);
 		CreateBitmap();
 		//SetTimer(hWnd, 123, 100, NULL);
-		SetTimer(hWnd, 123, 100, AniProc);
-		SetTimer(hWnd, 111, 100, KeyStateProc);
+		//SetTimer(hWnd, 123, 100, AniProc);
+		//SetTimer(hWnd, 111, 100, KeyStateProc);
 
 		GetClientRect(hWnd, &rectView);
 		}
@@ -541,7 +541,7 @@ void DrawBitMapDoubleBuffering(HWND hWnd, HDC hdc)
 		bx = bitTransparent.bmWidth;
 		by = bitTransparent.bmHeight;
 
-		BitBlt(hMemDC, 100, 100, bx, by, hMemDC2, 0, 0, SRCCOPY); // 이게일반그리기
+		//BitBlt(hMemDC, 100, 100, bx, by, hMemDC2, 0, 0, SRCCOPY); // 이게일반그리기
 		TransparentBlt(hMemDC, 200, 100, bx, by, hMemDC2, 0, 0, bx, by, RGB(255, 0, 255));//분홍색을 제외하고 출력을한다.
 		SelectObject(hMemDC2, h01Bitmap2);
 		DeleteDC(hMemDC2);
