@@ -1,0 +1,107 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="BitMap" Collapsed="true">
+    <Position X="4.25" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAABAAAAAAAACABAAACAAAAAgIBAAAIAAEACEAIAAAA=</HashCode>
+      <FileName>BitMap.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="FontManager" Collapsed="true">
+    <Position X="11" Y="2.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAEBAAEAAAAgAAAAAQAAAAggAAQACAAASAogAAAAAE=</HashCode>
+      <FileName>FontManager.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Monster" Collapsed="true">
+    <Position X="4.25" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAIAgACIAAAIACCiAACASCACAQEYADAhACAAAACgI=</HashCode>
+      <FileName>Monster.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PlayerManager" Collapsed="true">
+    <Position X="4.25" Y="7.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAIAABAAABAgAAAAEAAAIAAAAEAAAAAAAAACAAAAAAA=</HashCode>
+      <FileName>PlayerManager.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GameManager" Collapsed="true">
+    <Position X="7.75" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AASAAAAEAACAAAAAAACAIAAABAQAAAAAABAKgADQAAA=</HashCode>
+      <FileName>GameManager.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="EndScene" Collapsed="true">
+    <Position X="6.25" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAAAAAACAAAAAAAAAAAAAAAAAABBACAAAAAAI=</HashCode>
+      <FileName>EndScene.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GameScene" Collapsed="true">
+    <Position X="4.25" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QAZFGIAAAAGAFUBAIElEBgAAA4CAGCEgAnACFAIAIQI=</HashCode>
+      <FileName>GameScene.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MenuScene" Collapsed="true">
+    <Position X="2" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAUgAAAACAAAAAAAAAAAAAAAAAAAAIAAABACAQAAAAI=</HashCode>
+      <FileName>MenuScene.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Scene" Collapsed="true">
+    <Position X="4.25" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAYAAAAAAAAgAAQAgAAAAAAAQAAAAAAAARACAAAAAAI=</HashCode>
+      <FileName>Scene.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="EndUI" Collapsed="true">
+    <Position X="12.25" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAEAAAAAAAIAAAAAAAACAAAAAAACAAAAAAA=</HashCode>
+      <FileName>EndUI.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GameUI" Collapsed="true">
+    <Position X="10.5" Y="4.75" Width="1.5" />
+    <InheritanceLine Type="UI">
+      <InheritanceModifierLabel ManuallyPlaced="true">
+        <Position X="0.141" Y="0.07" />
+      </InheritanceModifierLabel>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>EAAAAAAAAAAAAAAAAAIAAAAAAEAgAAAAAAACAAEAAAA=</HashCode>
+      <FileName>GameUI.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MenuUI" Collapsed="true">
+    <Position X="8.5" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAQAIAAAAAAIAQIAAAAAACAAAAAgA=</HashCode>
+      <FileName>MenuUI.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="UI" Collapsed="true">
+    <Position X="10.5" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAIAAAAIAAACAAAAAAACAAAAEAA=</HashCode>
+      <FileName>UI.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Enum Name="Scene_enum" Collapsed="true">
+    <Position X="7.75" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAFQAAAAAAAAAAAAAAAAAAAAQACAAAA=</HashCode>
+      <FileName>GameManager.h</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="Malgun Gothic" Size="9" />
+</ClassDiagram>
