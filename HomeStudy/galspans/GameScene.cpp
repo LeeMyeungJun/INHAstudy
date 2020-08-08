@@ -211,8 +211,7 @@ void GameScene::Update(UINT message, WPARAM wParam, LPARAM lParam)
 
 void GameScene::Render(HWND hWnd, HDC hdc)
 {
-	
-	
+
 		GetClientRect(hWnd, &rectView);
 		/*±×¸®±â*/
 		DrawBitmapDoubleBuffering(hWnd, hdc);
@@ -1178,14 +1177,14 @@ void GameScene::nonStaticMonsterUpdate()
 			{
 				bLose = true;
 			}
-			else if (Tail_Collsion(vecMonster[i]->getPosition()))
+			else if (bOutMoveFlag)
 			{
-				bLose = true;
+				if (Tail_Collsion(vecMonster[i]->getPosition()))
+				{
+					bLose = true;
+				}
 			}
 		}
-
-
-
 	}
 	
 
