@@ -89,24 +89,23 @@ void Monster::PolygonCollide(int side)
 void Monster::TimeCheck()
 {
 	POINT pt = getPosition();
-	
-	//pt.x <= 0 || pt.x >= 880 || pt.y <= 0 || pt.y >= 760
+
 	if (pt.x > 440)
 	{
-		setPosition({ pt.x - 20,pt.y });
+		setPosition({ pt.x - 30,pt.y });
 	}
 	else if (pt.x < 440)
 	{
-		setPosition({ pt.x + 20,pt.y });
+		setPosition({ pt.x + 30,pt.y });
 	}
 
 	if (pt.y > 380)
 	{
-		setPosition({ pt.x,pt.y -50});
+		setPosition({ pt.x,pt.y -30});
 	}
 	else if (pt.y < 380)
 	{
-		setPosition({ pt.x ,pt.y + 50 });
+		setPosition({ pt.x ,pt.y + 30 });
 	}
 	
 }

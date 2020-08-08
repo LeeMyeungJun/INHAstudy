@@ -20,7 +20,8 @@ public:
 	enum STAGE
 	{
 		STAGE_ONE,
-		STAGE_TWO
+		STAGE_TWO,
+		STAGE_END
 	};
 	enum SIDE
 	{

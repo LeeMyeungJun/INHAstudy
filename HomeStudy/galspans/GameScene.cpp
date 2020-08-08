@@ -829,18 +829,16 @@ void GameScene::DrawBitmapDoubleBuffering(HWND hwnd, HDC hdc)
 
 		SelectObject(hMemDC2, hOldBitmap2);
 
-		DeleteObject(hOldBitmap2);
-		DeleteDC(hMemDC2);
 
 	}
 	//가리기부분
 	{
-		HBITMAP hDoubleTemp = NULL;
+		static HBITMAP hDoubleTemp = NULL;
 
 		if (hDoubleTemp == NULL)
-			hDoubleTemp = CreateCompatibleBitmap(hMemDC, rectView.right, rectView.bottom); //초기화를해준다 처음들어가면 사이즈만큼
+			hDoubleTemp = CreateCompatibleBitmap(hdc, rectView.right, rectView.bottom); //초기화를해준다 처음들어가면 사이즈만큼
 
-		hMemDC2 = CreateCompatibleDC(hMemDC); //똑같이만들어
+		//hMemDC2 = CreateCompatibleDC(hMemDC); //똑같이만들어
 		hOldBitmap2 = (HBITMAP)SelectObject(hMemDC2, hDoubleTemp); //도화자에 그릴준비
 
 		HBRUSH myBrush, oldBrush;
@@ -1128,6 +1126,11 @@ void GameScene::NextStageFreeInit()
 		tempBack = MapSetting.bitBack2;
 	}
 	break;
+	case STAGE_END:
+	{
+		g_GameManager->SceneChange(Scene_enum::SCENE_MENU);
+	}
+	break;
 	}
 
 	list<Monster*>::iterator it = dieMonster.begin();
@@ -1152,27 +1155,12 @@ void GameScene::nonStaticMonsterUpdate()
 	
 	for (int i = 0; i < vecMonster.size(); i++)
 	{
+		vecMonster[i]->Update();
 		if (!bWin)
 		{
 			Polygon_Line_Collision(vecMonster[i]->getPosition(), i);
-
-
-			/*if (PolygonInsideCheck(vecMonster[i]->getPosition()))
-			{
-				vecMonster[i]->setDead(true);
-				dieMonster.push_back(vecMonster[i]);
-				vecMonster.erase(vecMonster.begin() + i);
-				continue;
-			}*/
 			vecMonster[i]->ObjectCollide(vecMonster);
 
-			
-
-		}
-		vecMonster[i]->Update();
-
-		if (!bWin)
-		{
 			if (Player_Collsion(vecMonster[i]->getPosition()))
 			{
 				bLose = true;
