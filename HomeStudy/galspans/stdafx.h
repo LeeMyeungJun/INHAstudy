@@ -54,7 +54,7 @@
 
 
 
-#define VICTORY_PERCENT 2
+#define VICTORY_PERCENT 45
 
 #define SCREEN_WIDTH 900
 #define SCREEN_HEIGHT 800

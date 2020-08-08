@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Monster.h"
 
-Monster::Monster(int x, int y) :speed(SPEED_ONE), bDead(false), Direction(rand() % 8), ptMonster_Position({x,y}), ptTemp_Position({ x,y }), iTimeCheck(0)
+Monster::Monster(int x, int y) :speed(10), bDead(false), Direction(rand() % 8), ptMonster_Position({x,y}), ptTemp_Position({ x,y }), iTimeCheck(0)
 {
 	
 }
@@ -93,19 +93,20 @@ void Monster::TimeCheck()
 	//pt.x <= 0 || pt.x >= 880 || pt.y <= 0 || pt.y >= 760
 	if (pt.x > 440)
 	{
-		setPosition({ pt.x - 30,pt.y });
-	}else if (pt.x < 440)
+		setPosition({ pt.x - 20,pt.y });
+	}
+	else if (pt.x < 440)
 	{
-		setPosition({ pt.x + 30,pt.y });
+		setPosition({ pt.x + 20,pt.y });
 	}
 
 	if (pt.y > 380)
 	{
-		setPosition({ pt.x,pt.y -30});
+		setPosition({ pt.x,pt.y -50});
 	}
 	else if (pt.y < 380)
 	{
-		setPosition({ pt.x ,pt.y + 30 });
+		setPosition({ pt.x ,pt.y + 50 });
 	}
 	
 }

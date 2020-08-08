@@ -3,12 +3,6 @@
 class Monster
 {
 private :
-	enum SPEED
-	{
-		SPEED_ONE = 10,
-		SPEED_TWO = 8,
-		SPEED_THREE= 5
-	};
 	enum DIRECTION
 	{
 		DIR_LT = 0,
@@ -19,7 +13,6 @@ private :
 		DIR_LB,
 		DIR_B,
 		DIR_RB = 7
-
 	};
 	enum SIDE
 	{

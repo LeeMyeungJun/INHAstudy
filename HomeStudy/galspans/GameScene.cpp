@@ -14,7 +14,7 @@ list<Monster*> dieMonster;
 
 int GameScene::stage = 0;
 
-GameScene::GameScene()
+GameScene::GameScene() 
 {
 	m_GameUI = new GameUI;
 	m_SceneUI = m_GameUI;
@@ -218,33 +218,41 @@ void GameScene::Render(HWND hWnd, HDC hdc)
 		DrawBitmapDoubleBuffering(hWnd, hdc);
 		/*플레이어 부분 */
 		HBRUSH myBrush, oldBrush;
-		myBrush = (HBRUSH)CreateSolidBrush(RGB(255, 0, 0));
-		oldBrush = (HBRUSH)SelectObject(hdc, myBrush);
+		if (bOutMoveFlag)
+		{
+			myBrush = (HBRUSH)CreateSolidBrush(RGB(255, 0, 0));
+			oldBrush = (HBRUSH)SelectObject(hdc, myBrush);
 
-		m_Player->DrawPlayerCharacter(hdc);
+			m_Player->DrawPlayerCharacter(hdc);
+
+			SelectObject(hdc, oldBrush);
+			DeleteObject(myBrush);
+		}
+		else
+		{
+			myBrush = (HBRUSH)CreateSolidBrush(RGB(0,255, 0));
+			oldBrush = (HBRUSH)SelectObject(hdc, myBrush);
+
+			m_Player->DrawPlayerCharacter(hdc);
+
+			SelectObject(hdc, oldBrush);
+			DeleteObject(myBrush);
+		}
 
 		for (int i = 0; i < vecPoint.size(); i++)
 		{
-
 			if (i == vecPoint.size() - 1)
 			{
 				MoveToEx(hdc, vecPoint[i].x, vecPoint[i].y, NULL);
 				LineTo(hdc, m_Player->ptPosition.x, m_Player->ptPosition.y);
-
 			}
 			else
 			{
 				MoveToEx(hdc, vecPoint[i].x, vecPoint[i].y, NULL);
 				LineTo(hdc, vecPoint[i + 1].x, vecPoint[i + 1].y);
-
 			}
-
-
-
 		}
 
-		SelectObject(hdc, oldBrush);
-		DeleteObject(myBrush);
 
 		//몬스터그리기
 		{
@@ -470,6 +478,21 @@ void GameScene::PlayerMove(UINT message)
 				{
 					bWin = true;
 				}
+				if (!bWin)
+				{
+					for (int j = 0; j < vecMonster.size(); j++)
+					{
+						if (PolygonInsideCheck(vecMonster[j]->getPosition()))
+						{
+							vecMonster[j]->setDead(true);
+							dieMonster.push_back(vecMonster[j]);
+							vecMonster.erase(vecMonster.begin() + j);
+							continue;
+						}
+					}
+				}
+				
+
 
 			}
 			else if (!LandBorderCheck(m_Player->ptPosition.y + iCheckY, m_Player->ptPosition.x + iCheckX) && GetKeyState(VK_SPACE) & 0x8000 && !PolygonInsideCheck({ m_Player->ptPosition.x + iCheckX ,m_Player->ptPosition.y + iCheckY }))
@@ -652,7 +675,6 @@ void GameScene::PlayerLineCheck()
 					m_Player->PlayerLinePosition = i;
 					break;
 				}
-
 			}
 			else if (vecPolygon[i].x == m_Player->ptPosition.x && vecPolygon[0].x == m_Player->ptPosition.x)
 			{
@@ -684,14 +706,12 @@ void GameScene::PlayerLineCheck()
 				m_Player->PlayerLinePosition = i;
 				break;
 			}
-
 		}
 		else
 		{
 			m_Player->PlayerLinePosition = -1;
 		}
 	}
-
 }
 
 void GameScene::RebuildLand()
@@ -855,7 +875,7 @@ void GameScene::DrawBitmapDoubleBuffering(HWND hwnd, HDC hdc)
 	//Win 사진  
 	if(bWin)
 	{
-		hMemDC2 = CreateCompatibleDC(hdc);//BitBlt(hMemDC, 200, 0, bx, by, hMemDC2, 0, 0, SRCCOPY);
+		hMemDC2 = CreateCompatibleDC(hdc);
 		hOldBitmap2 = (HBITMAP)SelectObject(hMemDC2, WinImage); //여기 사진넣기
 
 		bx = WinBack.bmWidth;
@@ -867,7 +887,7 @@ void GameScene::DrawBitmapDoubleBuffering(HWND hwnd, HDC hdc)
 	}
 	else if (bLose)
 	{
-		hMemDC2 = CreateCompatibleDC(hdc);//BitBlt(hMemDC, 200, 0, bx, by, hMemDC2, 0, 0, SRCCOPY);
+		hMemDC2 = CreateCompatibleDC(hdc);
 		hOldBitmap2 = (HBITMAP)SelectObject(hMemDC2, LoseImage); //여기 사진넣기
 
 		bx = LoseBack.bmWidth;
@@ -895,29 +915,6 @@ void GameScene::PolygonArea()
 	fArea = 0;
 	for (int i = 0; i < vecTempArea.size() - 1; i++)
 		fArea += (((float)vecTempArea[i].x * (float)vecTempArea[i + 1].y) / 2 - ((float)vecTempArea[i + 1].x * (float)vecTempArea[i].y) / 2);
-
-	//int PolygonArea(vector<POINT> poly)
-	//{
-	//	int result = 0;
-	//	int areaX = 0;
-	//	int areaY = 0;
-	//	for (int i = 0; i < poly.size(); i++)
-	//	{
-	//		if (i == poly.size() - 1)
-	//		{
-	//			areaX += poly[i].x * poly[0].y;
-	//			areaY += poly[i].y * poly[0].x;
-	//		}
-	//		else
-	//		{
-	//			areaX += poly[i].x * poly[i + 1].y;
-	//			areaY += poly[i].y * poly[i + 1].x;
-	//		}
-	//	}
-	//	result = areaX - (areaY);
-	//	return abs(result*0.5);
-	//}
-
 }
 
 bool GameScene::PolygonInsideCheck(POINT p)
@@ -948,8 +945,8 @@ bool GameScene::Polygon_Line_Collision(POINT p ,int index)
 		{
 			if (vecPolygon[i].x == vecPolygon[0].x)
 			{
-				if ((vecPolygon[i].y < p.y  && vecPolygon[0].y > p.y) ||
-					(vecPolygon[i].y > p.y  && vecPolygon[0].y < p.y))
+				if ((vecPolygon[i].y <= p.y  && vecPolygon[0].y >= p.y) ||
+					(vecPolygon[i].y >= p.y  && vecPolygon[0].y <= p.y))
 				{
 					if (vecPolygon[i].x == p.x - MONSTER_SIZE || vecPolygon[i].x == p.x + MONSTER_SIZE)
 					{
@@ -961,8 +958,8 @@ bool GameScene::Polygon_Line_Collision(POINT p ,int index)
 			}
 			else if (vecPolygon[i].y == vecPolygon[0].y)
 			{
-				if ((vecPolygon[i].x < p.x  && vecPolygon[0].x > p.x) ||
-					(vecPolygon[i].x > p.x  && vecPolygon[0].x < p.x))
+				if ((vecPolygon[i].x <= p.x  && vecPolygon[0].x >= p.x) ||
+					(vecPolygon[i].x >= p.x  && vecPolygon[0].x <= p.x))
 				{
 					if (vecPolygon[i].y == p.y - MONSTER_SIZE || vecPolygon[i].y == p.y + MONSTER_SIZE)
 					{
@@ -1011,6 +1008,28 @@ bool GameScene::Polygon_Line_Collision(POINT p ,int index)
 				}
 			}
 
+		}
+
+		if (vecPolygon[i].x == p.x && vecPolygon[i].y == p.y)
+		{
+			int dir = vecMonster[index]->getDirection();
+			switch (dir)
+			{
+			case DIR_LT:
+				vecMonster[index]->setDirection(DIR_RB);
+				break;
+			case DIR_RT:
+				vecMonster[index]->setDirection(DIR_LB);
+				break;
+			case DIR_LB:
+				vecMonster[index]->setDirection(DIR_RT);
+				break;
+			case DIR_RB:
+				vecMonster[index]->setDirection(DIR_LT);
+				break;
+			}
+			
+			return true;
 		}
 	}
 
@@ -1136,17 +1155,19 @@ void GameScene::nonStaticMonsterUpdate()
 	{
 		if (!bWin)
 		{
-			if (PolygonInsideCheck(vecMonster[i]->getPosition()))
+			Polygon_Line_Collision(vecMonster[i]->getPosition(), i);
+
+
+			/*if (PolygonInsideCheck(vecMonster[i]->getPosition()))
 			{
 				vecMonster[i]->setDead(true);
 				dieMonster.push_back(vecMonster[i]);
 				vecMonster.erase(vecMonster.begin() + i);
 				continue;
-			}
-
+			}*/
 			vecMonster[i]->ObjectCollide(vecMonster);
 
-			Polygon_Line_Collision(vecMonster[i]->getPosition(), i);
+			
 
 		}
 		vecMonster[i]->Update();

@@ -29,6 +29,17 @@ public:
 		SIDE_RIGHT,
 		SIDE_BOTTOM
 	};
+	enum DIRECTION
+	{
+		DIR_LT = 0,
+		DIR_T,
+		DIR_RT,
+		DIR_L,
+		DIR_R,
+		DIR_LB,
+		DIR_B,
+		DIR_RB = 7
+	};
 private:
 	POINT ptPotion; //±¸¸Û¶Õ±â¿ëµµ.
 public:
