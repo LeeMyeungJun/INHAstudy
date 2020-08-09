@@ -2,7 +2,7 @@
 //
 
 #include "stdafx.h"
-#include "Cartsort.h"
+
 
 #define MAX_LOADSTRING 100
 
@@ -125,6 +125,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
     switch (message)
     {
+	case WM_CREATE:
+		//GameCenter *Gamecenter = new GameCenter;
+		break;
     case WM_COMMAND:
         {
             int wmId = LOWORD(wParam);
@@ -151,6 +154,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         }
         break;
     case WM_DESTROY:
+	//	delete Gamecenter;
         PostQuitMessage(0);
         break;
     default:

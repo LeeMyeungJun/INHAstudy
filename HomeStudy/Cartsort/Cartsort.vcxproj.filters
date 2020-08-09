@@ -13,120 +13,156 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Header Files\Scene">
-      <UniqueIdentifier>{7f1760ae-1bf7-4967-bece-a2bbe842fee9}</UniqueIdentifier>
+    <Filter Include="Source Files\Main">
+      <UniqueIdentifier>{42c634f4-0139-45f9-9fb6-51f25f186d83}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Scene">
+    <Filter Include="Source Files\Class">
+      <UniqueIdentifier>{67654c97-a4d2-4fe3-8084-ca63dd62a632}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Class\Scene">
       <UniqueIdentifier>{9fa2dcbe-1484-4dbf-9dbc-e5021c008320}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Enemy">
+    <Filter Include="Source Files\Class\Enemy">
       <UniqueIdentifier>{ee58f864-bc96-4e7a-a2d9-694a68fc1033}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Enemy">
+    <Filter Include="Header Files\Main">
+      <UniqueIdentifier>{60603c34-19ca-4d36-88f2-9e617ab6a2a6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Class">
+      <UniqueIdentifier>{911c56e3-cedb-4d99-8870-c742ad8889b6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Class\Enemy">
       <UniqueIdentifier>{eba3ddec-5d16-4a02-a306-f63e55382ffa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Class\Scene">
+      <UniqueIdentifier>{7f1760ae-1bf7-4967-bece-a2bbe842fee9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Class\UI">
+      <UniqueIdentifier>{5060bb45-db2e-4a79-9150-b673458cb69b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Class\UI">
+      <UniqueIdentifier>{9064815d-34b6-4ad9-bfa9-fb3750fc85ec}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="stdafx.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="targetver.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Resource.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Cartsort.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="GameCenter.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Scene.h">
-      <Filter>Header Files\Scene</Filter>
+      <Filter>Header Files\Class\Scene</Filter>
     </ClInclude>
     <ClInclude Include="LobbyScene.h">
-      <Filter>Header Files\Scene</Filter>
+      <Filter>Header Files\Class\Scene</Filter>
     </ClInclude>
     <ClInclude Include="GameScene.h">
-      <Filter>Header Files\Scene</Filter>
+      <Filter>Header Files\Class\Scene</Filter>
     </ClInclude>
     <ClInclude Include="EndScene.h">
-      <Filter>Header Files\Scene</Filter>
-    </ClInclude>
-    <ClInclude Include="UI.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Bitmap.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Class\Scene</Filter>
     </ClInclude>
     <ClInclude Include="AdultEnemy.h">
-      <Filter>Header Files\Enemy</Filter>
+      <Filter>Header Files\Class\Enemy</Filter>
     </ClInclude>
     <ClInclude Include="CarEnemy.h">
-      <Filter>Header Files\Enemy</Filter>
+      <Filter>Header Files\Class\Enemy</Filter>
     </ClInclude>
     <ClInclude Include="ChildEnemy.h">
-      <Filter>Header Files\Enemy</Filter>
+      <Filter>Header Files\Class\Enemy</Filter>
     </ClInclude>
     <ClInclude Include="Enemy.h">
-      <Filter>Header Files\Enemy</Filter>
+      <Filter>Header Files\Class\Enemy</Filter>
     </ClInclude>
     <ClInclude Include="OldmanEnemy.h">
-      <Filter>Header Files\Enemy</Filter>
+      <Filter>Header Files\Class\Enemy</Filter>
     </ClInclude>
-    <ClInclude Include="Data.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="Bitmap.h">
+      <Filter>Header Files\Class</Filter>
+    </ClInclude>
+    <ClInclude Include="Cartsort.h">
+      <Filter>Header Files\Class</Filter>
+    </ClInclude>
+    <ClInclude Include="GameCenter.h">
+      <Filter>Header Files\Class</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource.h">
+      <Filter>Header Files\Class</Filter>
+    </ClInclude>
+    <ClInclude Include="stdafx.h">
+      <Filter>Header Files\Main</Filter>
+    </ClInclude>
+    <ClInclude Include="LobbyUI.h">
+      <Filter>Header Files\Class\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="GameUI.h">
+      <Filter>Header Files\Class\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="EndUI.h">
+      <Filter>Header Files\Class\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="UI.h">
+      <Filter>Header Files\Class\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="DataManager.h">
+      <Filter>Header Files\Class</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="stdafx.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Cartsort.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Scene.cpp">
-      <Filter>Source Files\Scene</Filter>
+      <Filter>Source Files\Class\Scene</Filter>
     </ClCompile>
     <ClCompile Include="LobbyScene.cpp">
-      <Filter>Source Files\Scene</Filter>
+      <Filter>Source Files\Class\Scene</Filter>
     </ClCompile>
     <ClCompile Include="GameScene.cpp">
-      <Filter>Source Files\Scene</Filter>
+      <Filter>Source Files\Class\Scene</Filter>
     </ClCompile>
     <ClCompile Include="EndScene.cpp">
-      <Filter>Source Files\Scene</Filter>
-    </ClCompile>
-    <ClCompile Include="UI.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Bitmap.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="AdultEnemy.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Class\Scene</Filter>
     </ClCompile>
     <ClCompile Include="OldmanEnemy.cpp">
-      <Filter>Source Files\Enemy</Filter>
+      <Filter>Source Files\Class\Enemy</Filter>
     </ClCompile>
     <ClCompile Include="ChildEnemy.cpp">
-      <Filter>Source Files\Enemy</Filter>
+      <Filter>Source Files\Class\Enemy</Filter>
     </ClCompile>
     <ClCompile Include="CarEnemy.cpp">
-      <Filter>Source Files\Enemy</Filter>
+      <Filter>Source Files\Class\Enemy</Filter>
     </ClCompile>
     <ClCompile Include="Enemy.cpp">
-      <Filter>Source Files\Enemy</Filter>
+      <Filter>Source Files\Class\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="Cartsort.cpp">
+      <Filter>Source Files\Main</Filter>
+    </ClCompile>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>Source Files\Main</Filter>
+    </ClCompile>
+    <ClCompile Include="Bitmap.cpp">
+      <Filter>Source Files\Class</Filter>
     </ClCompile>
     <ClCompile Include="GameCenter.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Class</Filter>
     </ClCompile>
-    <ClCompile Include="Data.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="AdultEnemy.cpp">
+      <Filter>Source Files\Class\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="EndUI.cpp">
+      <Filter>Source Files\Class\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="GameUI.cpp">
+      <Filter>Source Files\Class\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="LobbyUI.cpp">
+      <Filter>Source Files\Class\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="UI.cpp">
+      <Filter>Source Files\Class\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="DataManager.cpp">
+      <Filter>Source Files\Class</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

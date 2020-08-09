@@ -11,6 +11,9 @@
 // Windows Header Files:
 #include <windows.h>
 
+//Main
+#include "Cartsort.h"
+
 // C RunTime Header Files
 #include <stdlib.h>
 #include <malloc.h>
@@ -27,5 +30,24 @@
 #include "GameScene.h"
 #include "EndScene.h"
 
+//Enemy
+#include "Enemy.h"
+#include "CarEnemy.h"
+#include "ChildEnemy.h"
 #include "AdultEnemy.h"
+#include "OldmanEnemy.h"
+
+//DataManager
+#include "DataManager.h"
+
+
+
+enum class SceneState : int
+{
+	Enum_Lobby,
+	Enum_Game,
+	Enum_End,
+	Enum_Quit
+
+};
 // TODO: reference additional headers your program requires here
