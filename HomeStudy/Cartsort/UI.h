@@ -7,5 +7,10 @@ public:
 
 	virtual void Draw(HWND hWnd, HDC hdc) = 0;
 	virtual void Free(void) = 0;
+
+private:
+	GameCenter m_Mediator;
+
+
 };
 

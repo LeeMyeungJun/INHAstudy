@@ -7,5 +7,9 @@ public:
 
 	void Draw(HWND hWnd, HDC hdc);
 	void Free(void);
+
+
+
+
 };
 

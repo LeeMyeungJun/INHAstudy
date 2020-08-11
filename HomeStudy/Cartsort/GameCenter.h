@@ -20,6 +20,10 @@ private:
 
 	DataManager  *m_Data;
 	
+	UI			* m_UI;
+	//LobbyUI		* m_LobbyUI;
+	//GameUI      * m_GameUI;
+
 
 public:
 	GameCenter();

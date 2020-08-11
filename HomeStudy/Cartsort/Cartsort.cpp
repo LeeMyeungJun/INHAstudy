@@ -151,6 +151,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             PAINTSTRUCT ps;
             HDC hdc = BeginPaint(hWnd, &ps);
             // TODO: Add any drawing code that uses hdc here...
+			Gamecenter->Render(hWnd,hdc);
             EndPaint(hWnd, &ps);
         }
         break;
