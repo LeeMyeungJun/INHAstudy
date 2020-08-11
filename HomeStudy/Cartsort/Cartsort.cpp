@@ -76,7 +76,7 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
     wcex.hIcon          = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_CARTSORT));
     wcex.hCursor        = LoadCursor(nullptr, IDC_ARROW);
     wcex.hbrBackground  = (HBRUSH)(COLOR_WINDOW+1);
-    wcex.lpszMenuName   = MAKEINTRESOURCEW(IDC_CARTSORT);
+    wcex.lpszMenuName   = NULL;
     wcex.lpszClassName  = szWindowClass;
     wcex.hIconSm        = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
 
@@ -98,7 +98,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
    hInst = hInstance; // Store instance handle in our global variable
 
    HWND hWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
-      CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, nullptr, nullptr, hInstance, nullptr);
+	   400, 200, SCREEN_WIDTH, SCREEN_HEIGHT, nullptr, nullptr, hInstance, nullptr);
 
    if (!hWnd)
    {
@@ -123,10 +123,11 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 //
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
+	GameCenter *Gamecenter = new GameCenter;
     switch (message)
     {
-	case WM_CREATE:
-		//GameCenter *Gamecenter = new GameCenter;
+	case WM_CREATE:		
+		SetTimer(hWnd, 1, 1000 / 30, NULL);
 		break;
     case WM_COMMAND:
         {
@@ -153,8 +154,21 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             EndPaint(hWnd, &ps);
         }
         break;
+	case WM_TIMER:
+		{
+			switch (wParam)
+			{
+				case 1:
+				{
+					Gamecenter->Update(message, wParam, lParam);
+				}
+					break;
+			}
+		}
+		break;
     case WM_DESTROY:
-	//	delete Gamecenter;
+		delete Gamecenter;
+		KillTimer(hWnd, 1);
         PostQuitMessage(0);
         break;
     default:

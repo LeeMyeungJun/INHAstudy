@@ -40,6 +40,8 @@
 //DataManager
 #include "DataManager.h"
 
+#define SCREEN_WIDTH 900
+#define SCREEN_HEIGHT 800
 
 
 enum class SceneState : int

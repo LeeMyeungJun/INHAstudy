@@ -155,8 +155,6 @@ void GameScene::Update(UINT message, WPARAM wParam, LPARAM lParam)
 	}
 	else if (bLose)
 	{
-		//stage++;
-		//g_GameManager->SceneChange(Scene_enum::SCENE_GAME);
 		if (message == WM_LBUTTONDOWN)
 		{
 			int Clickx = LOWORD(lParam);
@@ -171,6 +169,7 @@ void GameScene::Update(UINT message, WPARAM wParam, LPARAM lParam)
 				&& Clicky >= m_rc_menu_btn.top && Clicky <= m_rc_menu_btn.bottom)
 			{
 				g_GameManager->SceneChange(Scene_enum::SCENE_MENU);
+				
 
 			}
 

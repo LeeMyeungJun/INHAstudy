@@ -11,11 +11,6 @@ GameManager::GameManager()
 	m_EndScene = nullptr;
 	Init();
 
-	//Scene		* m_Scene;
-	//MenuScene	* m_MenuScene;
-	//GameScene	* m_GameScene;
-	//EndScene	* m_EndScene;
-
 }
 
 
@@ -72,5 +67,5 @@ void GameManager::SceneChange(Scene_enum nextScene)
 
 
 	m_Scene->Init();
-
+	InvalidateRect(getHwnd(), NULL, true);
 }

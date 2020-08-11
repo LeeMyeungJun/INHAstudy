@@ -10,3 +10,11 @@ LobbyUI::LobbyUI()
 LobbyUI::~LobbyUI()
 {
 }
+
+void LobbyUI::Draw(HWND hWnd, HDC hdc)
+{
+}
+
+void LobbyUI::Free(void)
+{
+}
