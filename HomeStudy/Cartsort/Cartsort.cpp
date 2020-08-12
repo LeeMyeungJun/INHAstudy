@@ -128,6 +128,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     {
 	case WM_CREATE:		
 		SetTimer(hWnd, 1, 1000 / 30, NULL);
+		//GameCenter *Gamecenter = new GameCenter;
+		//*Gamecenter  = GameCenter::GetInstance();
 		break;
     case WM_COMMAND:
         {

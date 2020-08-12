@@ -2,14 +2,12 @@
 #include "LobbyScene.h"
 
 
-
-LobbyScene::LobbyScene() :
-	m_rc_Title_Btn({ 200,50,700,200 }),
-m_rc_Start_Btn({ 350,300 - 10,550,370 - 10 }), 
-m_rc_Exit_Btn({ 350,400 - 10,550,470 - 10 })
-{
-
-}
+//
+//LobbyScene::LobbyScene(Scene & wrapped) :wrapped_(wrapped), m_rc_Title_Btn({ 200,50,700,200 }),
+//m_rc_Start_Btn({ 350,300 - 10,550,370 - 10 }),
+//m_rc_Exit_Btn({ 350,400 - 10,550,470 - 10 }) {
+//	GameCenter::provid(Scene_);
+//}
 
 
 LobbyScene::~LobbyScene()

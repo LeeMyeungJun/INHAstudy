@@ -11,19 +11,30 @@ class GameCenter
 {
 	
 private:
-	Scene		* m_Scene;
-	LobbyScene	* m_LobbyScene;
-	GameScene	* m_GameScene;
-	EndScene	* m_EndScene;
-	
+	//Scene		* m_Scene;
+	//LobbyScene	* m_LobbyScene;
+	//GameScene	* m_GameScene;
+	//EndScene	* m_EndScene;
+
 	SceneState	 m_SceneState;
 
-	DataManager  *m_Data;
-	
-	UI			* m_UI;
-	//LobbyUI		* m_LobbyUI;
-	//GameUI      * m_GameUI;
+	//static DataManager* data_;
+	static Scene* Scene_;
+	//static LobbyScene* LobbyScene_;
+	//static GameScene* GameScene_;
+	//static EndScene* EndScene_;
 
+
+public:
+	//static GameCenterz& GetInstance()
+	//{
+	//	static GameCenter * instance = new GameCenter();
+	//	return *instance;
+	//}
+
+	static Scene& GetScene(){return *Scene_;}
+
+	static void provid(Scene* Scene);
 
 public:
 	GameCenter();
@@ -34,6 +45,22 @@ public:
 	void Render(HWND hWnd, HDC hdc);
 	void SceneChange(SceneState nextScene);
 
+
+	/*
+	public:
+	static FileSystem& instance()
+	{
+	if(instance_ ==NULL)
+	instance_ = newFileSystem();
+	return *instance_;
+	}
+
+	private:
+	FileSystem(){}
+	static FileSystem* instance
+	*/
 	
+
+
 };
 

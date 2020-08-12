@@ -1,15 +1,27 @@
 #include "stdafx.h"
 
 
+Scene* GameCenter::Scene_;
+
+void GameCenter::provid(Scene * Scene)
+{
+	if (Scene_ == NULL)
+		Scene_ = new LobbyScene(GameCenter::GetScene());
+	else
+		Scene_ = Scene;
+
+}
 
 GameCenter::GameCenter()
 {
-	m_Scene = nullptr;
-	m_LobbyScene = nullptr;
-	m_GameScene = nullptr;
-	m_EndScene = nullptr;
-	m_Data = new DataManager;
+	//Scene *scene = GameCenter::GetScene();
+	//m_LobbyScene = nullptr;
+	//m_GameScene = nullptr;
+	//m_EndScene = nullptr;
+
+	//*Scene_ = GameCenter::GetScene();
 	Init();
+	
 }
 
 
@@ -19,47 +31,46 @@ GameCenter::~GameCenter()
 
 void GameCenter::Init()
 {
-	m_SceneState = SceneState::Enum_Lobby;
-	m_Scene = m_LobbyScene = new LobbyScene;
-	m_Scene->Init();
+	/*if(Scene_ == nullptr)
+		Scene_ = new LobbyScene(GameCenter::GetScene());*/
+	GameCenter::provid(Scene_);
+	Scene_->Init();
 }
 
 void GameCenter::Update(UINT message, WPARAM wParam, LPARAM lParam)
 {
-	m_Scene->Update(message, wParam, lParam);
+	Scene_->Update(message, wParam, lParam);
 }
 
 void GameCenter::Render(HWND hWnd, HDC hdc)
 {
-	m_Scene->Render(hWnd, hdc);
+	Scene_->Render(hWnd, hdc);
 }
 
 void GameCenter::SceneChange(SceneState nextScene)
 {
-	m_Scene->Free();
+
+	Scene_->Free();
+
 	switch (nextScene)
 	{
 	case SceneState::Enum_Lobby:
-		m_Scene = m_LobbyScene;
+		Scene_ = new LobbyScene(GameCenter::GetScene());
+		GameCenter::provid(Scene_);
 		break;
 	case SceneState::Enum_Game:
-		if (m_GameScene == nullptr)
-			m_GameScene = new GameScene;
-		m_Scene = m_GameScene;
+		Scene_ = new GameScene(GameCenter::GetScene());
+		GameCenter::provid(Scene_);
 		break;
 	case SceneState::Enum_End:
-		if (m_EndScene == nullptr)
-			m_EndScene = new EndScene;
-		m_Scene = m_EndScene;
+		Scene_ = new EndScene(GameCenter::GetScene());
+		GameCenter::provid(Scene_);
 		break;
 	case SceneState::Enum_Quit:
-		if (m_EndScene != nullptr) delete m_EndScene;
-		if (m_GameScene != nullptr) delete m_GameScene;
-		if (m_LobbyScene != nullptr) delete m_LobbyScene;
-		m_Scene = nullptr;
+		Scene_ = nullptr;
 		PostQuitMessage(0);
 		return;
 		break;
 	}
-	m_Scene->Init();
+	Scene_->Init();
 }

@@ -1,8 +1,12 @@
 #pragma once
 class LobbyScene :public Scene
 {
+private:
+	Scene &wrapped_;
 public:
-	LobbyScene();
+	LobbyScene(Scene &wrapped) :wrapped_(wrapped) {}
+
+
 	~LobbyScene();
 
 	void Init(void);

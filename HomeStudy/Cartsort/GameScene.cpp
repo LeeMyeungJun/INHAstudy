@@ -3,10 +3,6 @@
 
 
 
-GameScene::GameScene()
-{
-}
-
 
 GameScene::~GameScene()
 {

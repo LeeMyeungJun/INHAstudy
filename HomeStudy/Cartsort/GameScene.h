@@ -1,8 +1,10 @@
 #pragma once
 class GameScene :public Scene
 {
+private:
+	Scene &wrapped_;
 public:
-	GameScene();
+	GameScene(Scene &wrapped) :wrapped_(wrapped) {}
 	~GameScene();
 
 	void Init(void);

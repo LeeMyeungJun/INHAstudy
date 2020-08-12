@@ -1,8 +1,11 @@
 #pragma once
 class EndScene :public Scene
 {
+
+private:
+	Scene &wrapped_;
 public:
-	EndScene();
+	EndScene(Scene &wrapped) :wrapped_(wrapped) {}
 	~EndScene();
 
 	void Init(void);
