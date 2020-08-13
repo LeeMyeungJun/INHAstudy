@@ -26,11 +26,11 @@ private:
 
 
 public:
-	//static GameCenterz& GetInstance()
-	//{
-	//	static GameCenter * instance = new GameCenter();
-	//	return *instance;
-	//}
+	static GameCenter* GetInstance()
+	{
+		static GameCenter * instance = new GameCenter();
+		return instance;
+	}
 
 	static Scene& GetScene(){return *Scene_;}
 

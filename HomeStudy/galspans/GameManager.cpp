@@ -8,7 +8,6 @@ GameManager::GameManager()
 	m_Scene = nullptr;
 	m_MenuScene = nullptr;
 	m_GameScene = nullptr;
-	m_EndScene = nullptr;
 	Init();
 
 }

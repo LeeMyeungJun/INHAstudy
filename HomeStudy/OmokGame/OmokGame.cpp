@@ -1,4 +1,4 @@
-// Cartsort.cpp : Defines the entry point for the application.
+// OmokGame.cpp : Defines the entry point for the application.
 //
 
 #include "stdafx.h"
@@ -17,6 +17,8 @@ BOOL                InitInstance(HINSTANCE, int);
 LRESULT CALLBACK    WndProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK    About(HWND, UINT, WPARAM, LPARAM);
 
+
+
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
                      _In_opt_ HINSTANCE hPrevInstance,
                      _In_ LPWSTR    lpCmdLine,
@@ -29,7 +31,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
     // Initialize global strings
     LoadStringW(hInstance, IDS_APP_TITLE, szTitle, MAX_LOADSTRING);
-    LoadStringW(hInstance, IDC_CARTSORT, szWindowClass, MAX_LOADSTRING);
+    LoadStringW(hInstance, IDC_OMOKGAME, szWindowClass, MAX_LOADSTRING);
     MyRegisterClass(hInstance);
 
     // Perform application initialization:
@@ -38,7 +40,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
         return FALSE;
     }
 
-    HACCEL hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_CARTSORT));
+    HACCEL hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_OMOKGAME));
 
     MSG msg;
 
@@ -73,10 +75,10 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
     wcex.cbClsExtra     = 0;
     wcex.cbWndExtra     = 0;
     wcex.hInstance      = hInstance;
-    wcex.hIcon          = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_CARTSORT));
+    wcex.hIcon          = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_OMOKGAME));
     wcex.hCursor        = LoadCursor(nullptr, IDC_ARROW);
     wcex.hbrBackground  = (HBRUSH)(COLOR_WINDOW+1);
-    wcex.lpszMenuName   = NULL;
+    wcex.lpszMenuName   = MAKEINTRESOURCEW(IDC_OMOKGAME);
     wcex.lpszClassName  = szWindowClass;
     wcex.hIconSm        = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
 
@@ -98,7 +100,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
    hInst = hInstance; // Store instance handle in our global variable
 
    HWND hWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
-	   400, 200, SCREEN_WIDTH, SCREEN_HEIGHT, nullptr, nullptr, hInstance, nullptr);
+	   CW_USEDEFAULT, 0, BLOCKSIZE*OMOKLINE +500, BLOCKSIZE*OMOKLINE + 120, nullptr, nullptr, hInstance, nullptr);
 
    if (!hWnd)
    {
@@ -123,13 +125,20 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 //
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
-	static GameCenter *Gamecenter;
+	HDC hdc ;
+	static GameCenter *Gamecenter = nullptr;
+	static int delay;
+
+
+
     switch (message)
     {
-	case WM_CREATE:		
+	case WM_CREATE:
+		
+		Gamecenter = GameCenter::GetInstance();
+		Gamecenter->setHwnd(hWnd);
+		delay = 0;
 		SetTimer(hWnd, 1, 1000 / 30, NULL);
-		//GameCenter *Gamecenter = new GameCenter;
-		Gamecenter  = GameCenter::GetInstance();
 		break;
     case WM_COMMAND:
         {
@@ -151,26 +160,37 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     case WM_PAINT:
         {
             PAINTSTRUCT ps;
-            HDC hdc = BeginPaint(hWnd, &ps);
+            hdc = BeginPaint(hWnd, &ps);
+			Gamecenter->Render(hWnd, hdc);
             // TODO: Add any drawing code that uses hdc here...
-			Gamecenter->Render(hWnd,hdc);
             EndPaint(hWnd, &ps);
         }
         break;
+	case WM_LBUTTONDOWN:
+	{
+		Gamecenter->Update(message, wParam, lParam);
+		InvalidateRect(hWnd, NULL, true);
+	}
+	break;
+	//case WM_MOUSEMOVE:
+	//{
+	//	Gamecenter->Update(message, wParam, lParam);
+	//	InvalidateRect(hWnd, NULL, true);
+	//}
+	//break;
 	case WM_TIMER:
+	{
+		switch (wParam)
 		{
-			switch (wParam)
-			{
-				case 1:
-				{
-					Gamecenter->Update(message, wParam, lParam);
-				}
-					break;
-			}
+		case 1:
+		{
+			Gamecenter->Update(message, wParam, lParam);
 		}
 		break;
+		}
+	}
+	break;
     case WM_DESTROY:
-		delete Gamecenter;
 		KillTimer(hWnd, 1);
         PostQuitMessage(0);
         break;
