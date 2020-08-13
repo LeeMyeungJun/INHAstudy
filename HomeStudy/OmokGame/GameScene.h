@@ -2,7 +2,10 @@
 class GameScene :public Scene
 {
 private:
-	std::vector<POINT> boardPoint;
+	std::vector<POINT> ClientOnePoint;
+	std::vector<POINT> ClientTwoPoint;
+	char boardState[19][19];
+
 public:
 	GameScene();
 	~GameScene();
@@ -16,11 +19,20 @@ public:
 	void WhiteStone(HDC hdc,POINT);
 	int Distance(const POINT& p1, const POINT& p2);
 
+	struct boardPoint
+	{
+		int x;
+		int y;
+	};
 
-
+public:
 	int Clickx;
 	int Clicky;
 	TCHAR tcharx[30];
 	TCHAR tchary[30];
+	boardPoint board[19][19];
+
+
+
 };
 

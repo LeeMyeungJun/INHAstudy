@@ -11,6 +11,7 @@ public:
 	RECT m_rc_Title;
 	RECT m_rc_Start;
 	RECT m_rc_Exit;
+	RECT m_rc_Manual;
 
 
 

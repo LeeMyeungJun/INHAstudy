@@ -9,6 +9,7 @@ MenuUI::MenuUI()
 	m_rc_Title = { 200,50,700,200 };
 	m_rc_Start = { 350,300,550,370 };
 	m_rc_Exit  = { 350,400,550,470 };
+	m_rc_Manual = { 200,500,700,570 };
 }
 
 
@@ -41,6 +42,10 @@ void MenuUI::draw(HDC hdc)
 	//폰트 start와 동일.
 	DrawText(hdc, FontSetting.m_ExitButton.c_str(), FontSetting.m_ExitButton.size(), &m_rc_Exit, DT_TOP | DT_CENTER | DT_SINGLELINE);
 
+	/*Manual */
+	Rectangle(hdc, m_rc_Manual.left, m_rc_Manual.top - 10, m_rc_Manual.right, m_rc_Manual.bottom - 10);
+	(HFONT)SelectObject(hdc, FontSetting.ManualFont);
+	DrawText(hdc, FontSetting.m_Manual.c_str(), FontSetting.m_Manual.size(), &m_rc_Manual, DT_TOP | DT_CENTER | DT_SINGLELINE);
 
 
 	SelectObject(hdc, oldFont);
