@@ -30,8 +30,22 @@ void GameScene::Update(UINT message, WPARAM wParam, LPARAM lParam)
 
 	if (message == WM_LBUTTONDOWN)
 	{
+		POINT pt = { Clickx,Clicky };
+		for (int i = 0; i <= OMOKLINE; i++)
+		{
+			for (int j = 0; j <= OMOKLINE; j++)
+			{
+				if (Distance(pt, boardPoint[i + j]) < 5)
+				{
+					BlackStone(hdc, boardPoint[i + j]);
+				}
+
+			}
+
+		}
 
 	}
+	
 
 }
 
@@ -41,6 +55,9 @@ void GameScene::Render(HWND hWnd, HDC hdc)
 
 	TextOut(hdc, 700, 30, tcharx, lstrlen(tcharx));
 	TextOut(hdc, 700, 50, tchary, lstrlen(tchary));
+
+
+
 }
 
 void GameScene::Free(void)
@@ -74,10 +91,21 @@ void GameScene::UI(HDC hdc)
 
 void GameScene::BlackStone(HDC hdc,POINT pt)
 {
-	Ellipse(hdc, 30 - STONE_SIZE, 30 - STONE_SIZE, 30 + STONE_SIZE, 30 + STONE_SIZE);
+	Ellipse(hdc, pt.x - STONE_SIZE, pt.y - STONE_SIZE, pt.x + STONE_SIZE, pt.y + STONE_SIZE);
 
 }
 
 void GameScene::WhiteStone(HDC hdc, POINT pt)
 {
+}
+
+int Distance(const POINT& p1, const POINT& p2) {
+
+	double distance;
+
+	// 피타고라스의 정리
+	// pow(x,2) x의 2승,  sqrt() 제곱근
+	distance = sqrt(pow(p1.x - p2.x, 2) + pow(p1.y - p2.y, 2));
+
+	return distance;
 }

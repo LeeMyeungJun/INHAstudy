@@ -14,6 +14,8 @@ public:
 	void UI(HDC hdc);
 	void BlackStone(HDC hdc,POINT);
 	void WhiteStone(HDC hdc,POINT);
+	int Distance(const POINT& p1, const POINT& p2);
+
 
 
 	int Clickx;
