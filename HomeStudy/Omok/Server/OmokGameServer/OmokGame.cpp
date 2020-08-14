@@ -173,7 +173,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			{
 				send(clientList[0], "_b", _tcslen("_b"), NULL);
 				send(clientList[1], "_w", _tcslen("_w"), NULL);
-
+				send(clientList[0], "@t", _tcslen("@t"), NULL);
 				bFlag = false;
 			}
 			else

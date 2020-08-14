@@ -29,6 +29,10 @@ void GameCenter::Init()
 void GameCenter::Update(UINT message, WPARAM wParam, LPARAM lParam)
 {
 	m_Scene->Update(message, wParam, lParam);
+	if (m_Scene_enum == Scene_enum::GAME_ENUM)
+	{
+		m_GameScene->setTurn(getTurn());
+	}
 }
 
 void GameCenter::Render(HWND hWnd, HDC hdc)

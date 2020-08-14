@@ -19,6 +19,7 @@ class GameCenter
 private:
 	HWND hWnd;
 	char Player;
+	char m_turn;
 private:
 	static Bitmap * m_Bitmap;
 	Scene * m_Scene;
@@ -33,6 +34,9 @@ public:
 
 	void setPlayer(char player) { this->Player = player; }
 	char getPlayer() { return Player; }
+
+	char getTurn() { return m_turn; }
+	void setTurn(char turn) { m_turn = turn; }
 
 	static GameCenter* GetInstance()
 	{

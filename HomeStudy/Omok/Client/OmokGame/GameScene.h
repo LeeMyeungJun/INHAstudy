@@ -5,16 +5,18 @@ private:
 	
 	char boardState[19][19];
 	char m_player;
+	char m_turn;
 public:
 	GameScene();
 	~GameScene();
 
-	std::vector<POINT> ClientOnePoint;
-	std::vector<POINT> ClientTwoPoint;
-
 	
 	char getPlayer(){return m_player;}
 	void setPlayer(char player) { m_player = player; }
+
+	char getTurn() { return m_turn; }
+	void setTurn(char turn) { m_turn = turn; }
+
 
 	void Init(void);
 	void Update(UINT message, WPARAM wParam, LPARAM lParam);

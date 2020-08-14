@@ -38,7 +38,7 @@ void GameScene::Update(UINT message, WPARAM wParam, LPARAM lParam)
 	_ltow(Clickx, tcharx, 10);
 	_ltow(Clicky, tchary, 10);
 
-	if (message == WM_LBUTTONDOWN)
+	if (message == WM_LBUTTONDOWN && getTurn() == 't')
 	{
 		POINT pt = { Clickx,Clicky };
 		for (int i = 0; i < OMOKLINE; i++)
@@ -48,12 +48,14 @@ void GameScene::Update(UINT message, WPARAM wParam, LPARAM lParam)
 				if (Distance(pt, { board[i][j].x , board[i][j].y }) < 5 && boardState[i][j] == 'a')
 				{
 					boardState[i][j] = m_player;
+					setTurn('\0');
 					break;
 				}
 
 			}
 
 		}
+	
 
 	}
 	
