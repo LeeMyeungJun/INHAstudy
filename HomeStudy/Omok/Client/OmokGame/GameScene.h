@@ -2,13 +2,19 @@
 class GameScene :public Scene
 {
 private:
-	std::vector<POINT> ClientOnePoint;
-	std::vector<POINT> ClientTwoPoint;
+	
 	char boardState[19][19];
-
+	char m_player;
 public:
 	GameScene();
 	~GameScene();
+
+	std::vector<POINT> ClientOnePoint;
+	std::vector<POINT> ClientTwoPoint;
+
+	
+	char getPlayer(){return m_player;}
+	void setPlayer(char player) { m_player = player; }
 
 	void Init(void);
 	void Update(UINT message, WPARAM wParam, LPARAM lParam);
@@ -17,6 +23,7 @@ public:
 	void UI(HDC hdc);
 	void BlackStone(HDC hdc,POINT);
 	void WhiteStone(HDC hdc,POINT);
+	void StoneRender(HDC hdc);
 	int Distance(const POINT& p1, const POINT& p2);
 
 	struct boardPoint
@@ -28,11 +35,11 @@ public:
 public:
 	int Clickx;
 	int Clicky;
-	TCHAR tcharx[30];
-	TCHAR tchary[30];
+	WCHAR tcharx[30];
+	WCHAR tchary[30];
 	boardPoint board[19][19];
-
-
+	
+	HBRUSH myBrush, oldBrush;
 
 };
 

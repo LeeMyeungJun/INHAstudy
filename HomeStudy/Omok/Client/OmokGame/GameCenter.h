@@ -18,22 +18,28 @@ class GameCenter
 {
 private:
 	HWND hWnd;
-
+	char Player;
 private:
 	static Bitmap * m_Bitmap;
 	Scene * m_Scene;
 	GameScene *m_GameScene;
 	MenuScene *m_MenuScene;
-	Scene_enum  m_Scene_enum;
+	
 public:
 	GameCenter();
 	~GameCenter();
+
+	Scene_enum  m_Scene_enum;
+
+	void setPlayer(char player) { this->Player = player; }
+	char getPlayer() { return Player; }
 
 	static GameCenter* GetInstance()
 	{
 		static GameCenter instance;
 		return &instance;
 	}
+
 
 
 	void setHwnd(HWND hWnd)

@@ -100,7 +100,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
    hInst = hInstance; // Store instance handle in our global variable
 
    HWND hWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
-	   CW_USEDEFAULT, 0, BLOCKSIZE*OMOKLINE +500, BLOCKSIZE*OMOKLINE + 120, nullptr, nullptr, hInstance, nullptr);
+	   CW_USEDEFAULT, 0, 400, 800, nullptr, nullptr, hInstance, nullptr);
 
    if (!hWnd)
    {
@@ -126,77 +126,139 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	HDC hdc ;
-	static GameCenter *Gamecenter = nullptr;
-	static int delay;
+	//static GameCenter *Gamecenter = nullptr;
+	//static int delay;
+	static WSADATA wsaData;
+	static SOCKET server;
+	static vector<SOCKET> clientList;
+	static SOCKADDR_IN addr = { 0 }, c_addr;
+	static TCHAR msg[1024];
+	static int count;
+	static TCHAR str[1024];
+	static char buffer[1024];
+	int size, msgLen;
+	bool bFlag = true;
 
 
-
-    switch (message)
-    {
+	switch (message)
+	{
 	case WM_CREATE:
+		WSAStartup(MAKEWORD(2, 2), &wsaData);
+		server = socket(AF_INET, SOCK_STREAM, NULL);
+		addr.sin_family = AF_INET;
+		addr.sin_port = 20;
+		addr.sin_addr.S_un.S_addr = inet_addr("127.0.0.1");
+		memset(msg, 0, 300);
+		if (bind(server, (LPSOCKADDR)& addr, sizeof(addr)) == -1)
+		{
+			MessageBox(NULL, _T("bind failed"), _T("Error"), MB_OK);
+			return 0;
+		}
+		WSAAsyncSelect(server, hWnd, WM_ASYNC, FD_ACCEPT);
+		if (listen(server, 5) == SOCKET_ERROR)
+		{
+			MessageBox(NULL, _T("listen failed"), _T("Error"), MB_OK);
+			return 0;
+		}
+		break;
+	case WM_ASYNC:
+		switch (lParam)
+		{
+		case FD_ACCEPT:
+			size = sizeof(c_addr);
+			clientList.push_back(accept(server, (LPSOCKADDR)&c_addr, &size));
+			WSAAsyncSelect(clientList.back(), hWnd, WM_ASYNC, FD_READ | FD_CLOSE);
 		
-		Gamecenter = GameCenter::GetInstance();
-		Gamecenter->setHwnd(hWnd);
-		delay = 0;
-		SetTimer(hWnd, 1, 1000 / 30, NULL);
-		break;
-    case WM_COMMAND:
-        {
-            int wmId = LOWORD(wParam);
-            // Parse the menu selections:
-            switch (wmId)
-            {
-            case IDM_ABOUT:
-                DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
-                break;
-            case IDM_EXIT:
-                DestroyWindow(hWnd);
-                break;
-            default:
-                return DefWindowProc(hWnd, message, wParam, lParam);
-            }
-        }
-        break;
-    case WM_PAINT:
-        {
-            PAINTSTRUCT ps;
-            hdc = BeginPaint(hWnd, &ps);
-			Gamecenter->Render(hWnd, hdc);
-            // TODO: Add any drawing code that uses hdc here...
-            EndPaint(hWnd, &ps);
-        }
-        break;
-	case WM_LBUTTONDOWN:
-	{
-		Gamecenter->Update(message, wParam, lParam);
-		InvalidateRect(hWnd, NULL, true);
-	}
-	break;
-	//case WM_MOUSEMOVE:
-	//{
-	//	Gamecenter->Update(message, wParam, lParam);
-	//	InvalidateRect(hWnd, NULL, true);
-	//}
-	//break;
-	case WM_TIMER:
-	{
-		switch (wParam)
-		{
-		case 1:
-		{
-			Gamecenter->Update(message, wParam, lParam);
+			if (clientList.size() == 2 && bFlag)
+			{
+				send(clientList[0], "_b", _tcslen("_b"), NULL);
+				send(clientList[1], "_w", _tcslen("_w"), NULL);
+
+				bFlag = false;
+			}
+			else
+			{
+				wsprintf(msg, "%s %d", "Your Number is", clientList.back());
+				send(clientList.back(), msg, _tcslen(msg), NULL);
+			}
+			break;
+		case FD_READ:
+			msgLen = recv(wParam, buffer, 100, 0);
+			buffer[msgLen] = NULL;
+			//¼­¹öÃ¢ 
+			wsprintf(msg, "%d : %s", wParam, buffer);
+			for (SOCKET client : clientList)
+			{
+				send(client, msg, _tcslen(msg), NULL);
+			}
+			InvalidateRect(hWnd, NULL, TRUE);
+			break;
+		case FD_CLOSE:
+			for (auto it = clientList.begin(); it != clientList.end(); it++)
+			{
+				if ((*it) == wParam)
+				{
+					wsprintf(msg, "%d %s", wParam, "user exit");
+					closesocket(*it);
+					clientList.erase(it);
+					break;
+				}
+			}
+			for (SOCKET client : clientList)
+			{
+				send(client, msg, _tcslen(msg), NULL);
+			}
+			break;
 		}
 		break;
-		}
+	case WM_PAINT:
+	{
+		PAINTSTRUCT ps;
+		HDC hdc = BeginPaint(hWnd, &ps);
+		// TODO: Add any drawing code that uses hdc here...
+		if (_tcscmp(msg, _T("")))
+			TextOut(hdc, 0, 30, msg, (int)_tcslen(msg));
+		TextOut(hdc, 0, 0, str, _tcslen(str));
+		EndPaint(hWnd, &ps);
 	}
 	break;
-    case WM_DESTROY:
-		KillTimer(hWnd, 1);
-        PostQuitMessage(0);
-        break;
-    default:
-        return DefWindowProc(hWnd, message, wParam, lParam);
-    }
+	case WM_CHAR:
+		if (wParam == VK_RETURN)
+		{
+			if (clientList.size() == 0)
+				return 0;
+			if (clientList.back() == INVALID_SOCKET)
+				return 0;
+			else
+			{
+				strcpy_s(buffer, str);
+				send(clientList.back(), (LPSTR)buffer, strlen(buffer) + 1, 0);
+				count = 0;
+				return 0;
+			}
+		}
+		if (wParam == VK_BACK)
+		{
+			if (clientList.back() == INVALID_SOCKET)
+				return 0;
+			if (count != 0)
+				str[--count] = '\0';
+		}
+		else
+		{
+			str[count++] = (TCHAR)wParam;
+			str[count] = '\0';
+		}
+		InvalidateRgn(hWnd, NULL, TRUE);
+		break;
+	case WM_DESTROY:
+		closesocket(server);
+		WSACleanup();
+		PostQuitMessage(0);
+		break;
+	default:
+		return DefWindowProc(hWnd, message, wParam, lParam);
+	}
     return 0;
 }
 

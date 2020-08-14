@@ -5,7 +5,7 @@ Bitmap * GameCenter::m_Bitmap = nullptr;
 GameCenter::GameCenter()
 {
 	m_Bitmap = new Bitmap(this);
-
+	Player = 'a';
 	m_Scene = nullptr;
 	m_MenuScene = nullptr;
 	m_GameScene = nullptr;
@@ -49,6 +49,7 @@ void GameCenter::SceneChange(Scene_enum nextScene)
 		if (m_GameScene == nullptr)
 			m_GameScene = new GameScene;
 		m_Scene = m_GameScene;
+		m_GameScene->setPlayer(getPlayer());
 		m_Scene_enum = Scene_enum::GAME_ENUM;
 		break;
 	case Scene_enum::EXIT_ENUM:
