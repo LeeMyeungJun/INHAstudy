@@ -62,27 +62,7 @@ void GameScene::Update(UINT message, WPARAM wParam, LPARAM lParam)
 void GameScene::Render(HWND hWnd, HDC hdc)
 {
 	UI(hdc);
-
-	//TextOut(hdc, 700, 30, tcharx, lstrlen(tcharx));
-	//TextOut(hdc, 700, 50, tchary, lstrlen(tchary));
-
-	for (int i = 0; i < OMOKLINE; i++)
-	{
-		for (int j = 0; j < OMOKLINE; j++)
-		{
-			if ( boardState[i][j] == 'b')
-			{
-				BlackStone(hdc, { board[i][j].x , board[i][j].y });
-			}
-			else if (boardState[i][j] == 'w')
-			{
-
-			}
-
-		}
-
-	}
-
+	StoneRender(hdc);
 }
 
 void GameScene::Free(void)
@@ -91,7 +71,7 @@ void GameScene::Free(void)
 
 void GameScene::UI(HDC hdc)
 {
-	HBRUSH myBrush, oldBrush;
+	
 	myBrush = (HBRUSH)CreateSolidBrush(RGB(250, 203, 125));
 	oldBrush = (HBRUSH)SelectObject(hdc, myBrush);
 
@@ -109,8 +89,6 @@ void GameScene::UI(HDC hdc)
 		LineTo(hdc, BLOCKSIZE * i + SUBWIDTH, SUBWIDTH + BLOCKSIZE*(OMOKLINE - 1)); //¼¼·ÎÁÙ
 	}
 	
-	POINT pt = {0,0};
-	BlackStone(hdc,pt);
 
 }
 
@@ -122,6 +100,33 @@ void GameScene::BlackStone(HDC hdc,POINT pt)
 
 void GameScene::WhiteStone(HDC hdc, POINT pt)
 {
+}
+
+void GameScene::StoneRender(HDC hdc)
+{
+	for (int i = 0; i < OMOKLINE; i++)
+	{
+		for (int j = 0; j < OMOKLINE; j++)
+		{
+			if (boardState[i][j] == 'b')
+			{
+				myBrush = (HBRUSH)CreateSolidBrush(RGB(0, 0, 0));
+				oldBrush = (HBRUSH)SelectObject(hdc, myBrush);
+
+				BlackStone(hdc, { board[i][j].x , board[i][j].y });
+
+				SelectObject(hdc, oldBrush);
+				DeleteObject(myBrush);
+
+			}
+			else if (boardState[i][j] == 'w')
+			{
+
+			}
+
+		}
+
+	}
 }
 
 int GameScene::Distance(const POINT & p1, const POINT & p2)
