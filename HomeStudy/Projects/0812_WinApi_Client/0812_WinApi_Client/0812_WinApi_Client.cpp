@@ -141,6 +141,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	static std::vector<TCHAR *> chatLog;
 	static HBRUSH charRectBrush = CreateSolidBrush(RGB(40, 170, 220));
 	int msgLen = 0;
+
 	switch (message)
 	{
 	case WM_CREATE:
