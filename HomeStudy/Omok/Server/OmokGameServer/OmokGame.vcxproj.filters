@@ -35,7 +35,7 @@
     <ClCompile Include="stdafx.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="OmokGame.cpp">
+    <ClCompile Include="OmokServer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

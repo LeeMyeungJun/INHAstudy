@@ -10,6 +10,8 @@
 HINSTANCE hInst;                                // current instance
 WCHAR szTitle[MAX_LOADSTRING];                  // The title bar text
 WCHAR szWindowClass[MAX_LOADSTRING];            // the main window class name
+extern ServerManager *Servermanager;
+
 
 // Forward declarations of functions included in this code module:
 ATOM                MyRegisterClass(HINSTANCE hInstance);
@@ -128,67 +130,26 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	HDC hdc ;
 	static GameCenter *Gamecenter = nullptr;
 	static int delay;
-
-
-	/*네트웤*/
-	static WSADATA wsaData;
-	static SOCKET server;
-	static TCHAR str[100] = { 0 };
-	static char buffer[100];
-	static int count = 0;
-	static SOCKADDR_IN addr = { 0 };
-	static std::vector<TCHAR *> chatLog;
 	static HBRUSH charRectBrush = CreateSolidBrush(RGB(40, 170, 220));
 	static HBRUSH charRectTitleBrush = CreateSolidBrush(RGB(100, 250, 150));
-
-	int msgLen = 0;
-
 
     switch (message)
     {
 	case WM_CREATE:
 		Gamecenter = GameCenter::GetInstance();
-		Gamecenter->setHwnd(hWnd);
+		Servermanager = ServerManager::GetInstance();
+		Servermanager->setHwnd(hWnd);
+		Servermanager->Init();
 		delay = 0;
 		SetTimer(hWnd, 1, 1000 / 30, NULL);
-		WSAStartup(MAKEWORD(2, 2), &wsaData);
-		server = socket(AF_INET, SOCK_STREAM, 0);
-		if (server == INVALID_SOCKET)
-		{
-			MessageBox(NULL, _T("socket faield"), _T("Error"), MB_OK);
-			return 0;
-		}
-
-		addr.sin_family = AF_INET;
-		addr.sin_port = 20;
-		addr.sin_addr.S_un.S_addr = inet_addr("127.0.0.1");
-		if (connect(server, (LPSOCKADDR)&addr, sizeof(addr)) == SOCKET_ERROR)
-		{
-			MessageBox(NULL, _T("connect failed"), _T("Error"), MB_OK);
-			return 0;
-		}
-		WSAAsyncSelect(server, hWnd, WM_ASYNC, FD_READ);
+		
 		break;
 	case WM_ASYNC:
 		switch (lParam)
 		{
 		case FD_READ:
 		{
-			memset(buffer, 0, sizeof(buffer));
-			msgLen = recv(server, buffer, 100, 0); //받아오는곳 
-			buffer[msgLen] = NULL;
-			size_t stlength = strlen(buffer);
-			TCHAR * newMsg = new TCHAR[stlength + 1];
-			sprintf(newMsg, TEXT("%s"), buffer);
-			if (newMsg[0]=='_')
-			{
-				Gamecenter->setPlayer(newMsg[1]);
-			}
-			else
-			{
-				chatLog.push_back(newMsg);
-			}
-			
+			Servermanager->Read_Fd();
 			InvalidateRect(hWnd, NULL, TRUE);
 		}
 		break;
@@ -218,23 +179,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             hdc = BeginPaint(hWnd, &ps);
 			Gamecenter->Render(hWnd, hdc);
 
-			//채팅부분 밑 
-			SetBkMode(hdc, TRANSPARENT);
-			
-			size_t chatLogSize = chatLog.size();
-		
-			SelectObject(hdc, charRectTitleBrush);
-			Rectangle(hdc, BLOCKSIZE*(OMOKLINE - 1) + SUBWIDTH + 50, 0, BLOCKSIZE*(OMOKLINE - 1) + SUBWIDTH + 450, SUBWIDTH + BLOCKSIZE*(OMOKLINE - 1) + 50);
-
-			SelectObject(hdc, charRectBrush);
-			Rectangle(hdc, BLOCKSIZE*(OMOKLINE - 1) + SUBWIDTH + 50, SUBWIDTH + BLOCKSIZE*(OMOKLINE - 1), BLOCKSIZE*(OMOKLINE-1) + SUBWIDTH + 450, SUBWIDTH + BLOCKSIZE*(OMOKLINE - 1) + 50);
-			RECT charRect = { 820, 750, 1100, 800 };
-
-			for (size_t i = 0; i < chatLogSize; i++)
-			{
-				TextOut(hdc, 820, 720 - (i * 20), chatLog[chatLogSize - 1 - i], _tcslen(chatLog[chatLogSize - 1 - i]));
-			}
-			DrawText(hdc, str, _tcslen(str), &charRect, DT_LEFT | DT_VCENTER | DT_SINGLELINE);
 
             EndPaint(hWnd, &ps);
         }
@@ -246,12 +190,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		InvalidateRect(hWnd, NULL, true);
 	}
 	break;
-	//case WM_MOUSEMOVE:
-	//{
-	//	Gamecenter->Update(message, wParam, lParam);
-	//	InvalidateRect(hWnd, NULL, true);
-	//}
-	//break;
 	case WM_TIMER:
 	{
 		switch (wParam)
@@ -266,32 +204,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	}
 	break;
 	case WM_CHAR:
-		if (wParam == VK_RETURN)
+
+		if (Gamecenter->m_Scene_enum == Scene_enum::GAME_ENUM)
 		{
-			if (server == INVALID_SOCKET)
-				return 0;
-			else
-			{
-				strcpy_s(buffer, str);
-				send(server, (LPSTR)buffer, strlen(buffer), 0);
-				count = 0;
-				str[count] = str[1] = '\0';
-			}
-		}
-		else if (wParam == VK_BACK)
-		{
-			if (server == INVALID_SOCKET)
-				return 0;
-			if (count != 0)
-				str[--count] = '\0';
-		}
-		else
-		{
-			if (count < 40)
-			{
-				str[count++] = (TCHAR)wParam;
-				str[count] = '\0';
-			}
+			Gamecenter->Update(message, wParam, lParam);
 		}
 		InvalidateRgn(hWnd, NULL, TRUE);
 		break;

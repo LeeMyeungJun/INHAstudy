@@ -22,6 +22,7 @@
 #include <WinSock2.h>
 #include <string>
 
+
 #pragma comment(lib, "ws2_32.lib")
 
 
@@ -34,6 +35,8 @@
 #include "MenuScene.h"
 #include "GameScene.h"
 #include "Bitmap.h"
+#include "GameScene.h"
+#include "ServerManager.h"
 
 #define MAX_LOADSTRING 100
 #define WM_ASYNC WM_USER + 2

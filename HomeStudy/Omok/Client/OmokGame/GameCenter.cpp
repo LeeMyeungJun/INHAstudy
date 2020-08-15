@@ -1,11 +1,14 @@
 #include "stdafx.h"
 
+
+extern ServerManager *Servermanager;
+
 Bitmap * GameCenter::m_Bitmap = nullptr;
 
 GameCenter::GameCenter()
 {
 	m_Bitmap = new Bitmap(this);
-	Player = 'a';
+	//Player = 'a';
 	m_Scene = nullptr;
 	m_MenuScene = nullptr;
 	m_GameScene = nullptr;
@@ -29,10 +32,6 @@ void GameCenter::Init()
 void GameCenter::Update(UINT message, WPARAM wParam, LPARAM lParam)
 {
 	m_Scene->Update(message, wParam, lParam);
-	if (m_Scene_enum == Scene_enum::GAME_ENUM)
-	{
-		m_GameScene->setTurn(getTurn());
-	}
 }
 
 void GameCenter::Render(HWND hWnd, HDC hdc)
@@ -53,7 +52,6 @@ void GameCenter::SceneChange(Scene_enum nextScene)
 		if (m_GameScene == nullptr)
 			m_GameScene = new GameScene;
 		m_Scene = m_GameScene;
-		m_GameScene->setPlayer(getPlayer());
 		m_Scene_enum = Scene_enum::GAME_ENUM;
 		break;
 	case Scene_enum::EXIT_ENUM:
@@ -65,5 +63,5 @@ void GameCenter::SceneChange(Scene_enum nextScene)
 	}
 
 	m_Scene->Init();
-	InvalidateRect(getHwnd(), NULL, true);
+	InvalidateRect(Servermanager->getHwnd(), NULL, true);
 }
