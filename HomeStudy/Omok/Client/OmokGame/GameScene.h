@@ -9,9 +9,6 @@ public:
 	GameScene();
 	~GameScene();
 
-	std::vector<POINT> ClientOnePoint;
-	std::vector<POINT> ClientTwoPoint;
-
 	
 	char getPlayer(){return m_player;}
 	void setPlayer(char player) { m_player = player; }
