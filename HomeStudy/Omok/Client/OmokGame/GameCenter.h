@@ -32,12 +32,6 @@ public:
 
 	Scene_enum  m_Scene_enum;
 
-	//void setPlayer(char player) { this->Player = player; }
-	//char getPlayer() { return Player; }
-
-	//char getTurn() { return m_turn; }
-	//void setTurn(char turn) { m_turn = turn; }
-
 	static GameCenter* GetInstance()
 	{
 		static GameCenter instance;
@@ -46,14 +40,6 @@ public:
 
 
 	GameScene* getGameScene() { return m_GameScene; }
-
-
-
-	/*void setHwnd(HWND hWnd)
-	{
-		this->hWnd = hWnd;
-	}
-	HWND getHwnd() { return hWnd; }*/
 
 public:
 	void Init();

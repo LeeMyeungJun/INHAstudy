@@ -6,7 +6,7 @@ extern char g_turn;
 extern char boardState[19][19];
 ServerManager::ServerManager()
 {
-	
+	BWturn = true;
 }
 
 
@@ -61,7 +61,20 @@ void ServerManager::Read_Fd()
 				else if (g_player == 'w')
 				{
 					boardState[position[1]][position[2]] = 'b';
+				}
+				else if(g_player =='o')
+				{
+					if (BWturn)
+					{
+						boardState[position[1]][position[2]] = 'w';
+						BWturn = !BWturn;
+					}
+					else
+					{
+						boardState[position[1]][position[2]] = 'b';
+						BWturn = !BWturn;
 
+					}
 				}
 				g_turn = 't';
 			}

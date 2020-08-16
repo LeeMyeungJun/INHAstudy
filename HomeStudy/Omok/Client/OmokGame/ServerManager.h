@@ -17,6 +17,7 @@ public:
 	TCHAR str[100] = { 0 };
 	char buffer[100];
 	int count = 0;
+	bool BWturn;
 	std::vector<TCHAR *> chatLog;
 	
 

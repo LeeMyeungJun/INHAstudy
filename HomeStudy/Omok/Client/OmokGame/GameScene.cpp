@@ -207,6 +207,8 @@ void GameScene::ChatLog(WPARAM wParam)
 
 void GameScene::ClickEvent(UINT message  ,LPARAM lParam)
 {
+	if (g_player == 'o')
+		return;
 	Clickx = LOWORD(lParam);
 	Clicky = HIWORD(lParam);
 	char sendXPosition[10];
@@ -227,40 +229,9 @@ void GameScene::ClickEvent(UINT message  ,LPARAM lParam)
 				{
 					boardState[i][j] = g_player;
 					g_turn = 'u';
-
-					//itoa(j, sendXPosition, 10);
-
-					//itoa(i, sendYPosition, 10);
-
-
-					/*		strcpy(tchturn, sendXPosition);
-					xlen = strlen(tchturn);
-
-					 if (len == 1)
-					 {
-						 tchturn[1] = '.';
-						 tchturn[2] = '*';
-						 tchturn[3] = '*';
-					 }
-					 else if (len ==2)
-					 {
-						 tchturn[2] = '*';
-						 tchturn[3] = '*';
-					 }
-					
-
-					strcpy_s(Servermanager->buffer, tchturn);
-					send(Servermanager->server, (LPSTR)Servermanager->buffer, strlen(Servermanager->buffer), 0);
-*/
-
-				/*	if (board[Y_row][X_col] == 0)
-					{*/
-						itoa(j * 1000 + i, Servermanager->buffer, 10); //x, y값 변환하여 한번에 전송
-						send(Servermanager->server, Servermanager->buffer, 10, 0);  //버퍼에 10크기만큼 전송
-					/*}*/
-
-		
-
+					itoa(j * 1000 + i, Servermanager->buffer, 10); //x, y값 변환하여 한번에 전송
+					send(Servermanager->server, Servermanager->buffer, 10, 0);  //버퍼에 10크기만큼 전송
+			
 					g_turn = '\0';
 					break;
 				}

@@ -149,8 +149,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	static int count;
 	static TCHAR str[1024];
 	static char buffer[1024];
+	int position[3];
 	int size, msgLen;
 	bool bFlag = true;
+	static char boardState[19][19];
 	//static vector<POINT> playerOne;
 	//static vector<POINT> playerTwo;
 
@@ -222,26 +224,35 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			}
 			else
 			{
+				position[0] = atoi(buffer);
+				position[1] = position[0] % 1000;
+				position[2] = (position[0] - position[1]) / 1000;
+				
+				
 				if (wParam == clientList[0])
 				{
-					send(clientList[1], (LPSTR)buffer, strlen(buffer), 0);
+					for (SOCKET client : clientList)
+					{
+						send(client, (LPSTR)buffer, strlen(buffer), 0);
+					}
+				//	send(clientList[1], (LPSTR)buffer, strlen(buffer), 0);
+					boardState[position[1]][position[2]] = 'b';
 				}
 				else
 				{
-					send(clientList[0], (LPSTR)buffer, strlen(buffer), 0);
+					for (SOCKET client : clientList)
+					{
+						send(client, (LPSTR)buffer, strlen(buffer), 0);
+					}
+					//send(clientList[0], (LPSTR)buffer, strlen(buffer), 0);
+					boardState[position[1]][position[2]] = 'w';
+
 				}
+				
 			}
 	
 			
 
-			//size_t stlength = strlen(buffer);
-			//TCHAR * newMsg = new TCHAR[stlength + 1];
-			//sprintf(newMsg, TEXT("%s"), buffer);
-			//if (newMsg[0] == '(')
-			//{
-			//	send(clientList[0], "_bt", _tcslen("_bt"), NULL);
-			//	send(clientList[1], "_w", _tcslen("_w"), NULL);
-			//}
 
 			InvalidateRect(hWnd, NULL, TRUE);
 			break;
