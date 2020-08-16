@@ -4,15 +4,12 @@ class GameScene :public Scene
 private:
 	
 	char boardState[19][19];
-	char m_player;
+
 public:
 	GameScene();
 	~GameScene();
 
 	
-	char getPlayer(){return m_player;}
-	void setPlayer(char player) { m_player = player; }
-
 	void Init(void);
 	void Update(UINT message, WPARAM wParam, LPARAM lParam);
 	void Render(HWND hWnd, HDC hdc);
@@ -20,8 +17,14 @@ public:
 	void UI(HDC hdc);
 	void BlackStone(HDC hdc,POINT);
 	void WhiteStone(HDC hdc,POINT);
+	void DrawChat(HDC hdc);
 	void StoneRender(HDC hdc);
 	int Distance(const POINT& p1, const POINT& p2);
+	void ChatLog(WPARAM wParam);
+	void ClickEvent(UINT message , LPARAM lParam);
+
+	HBRUSH charRectBrush = CreateSolidBrush(RGB(40, 170, 220));
+	HBRUSH charRectTitleBrush = CreateSolidBrush(RGB(100, 250, 150));
 
 	struct boardPoint
 	{
@@ -35,7 +38,11 @@ public:
 	WCHAR tcharx[30];
 	WCHAR tchary[30];
 	boardPoint board[19][19];
-	
+	TCHAR str[100] = { 0 };
+	TCHAR tchturn[3] = { 0 };
+	int count;
+
+
 	HBRUSH myBrush, oldBrush;
 
 };

@@ -16,9 +16,10 @@ enum class Scene_enum :size_t
 
 class GameCenter
 {
-private:
-	HWND hWnd;
-	char Player;
+//private:
+//	HWND hWnd;
+	//char Player;
+	//char m_turn;
 private:
 	static Bitmap * m_Bitmap;
 	Scene * m_Scene;
@@ -31,8 +32,11 @@ public:
 
 	Scene_enum  m_Scene_enum;
 
-	void setPlayer(char player) { this->Player = player; }
-	char getPlayer() { return Player; }
+	//void setPlayer(char player) { this->Player = player; }
+	//char getPlayer() { return Player; }
+
+	//char getTurn() { return m_turn; }
+	//void setTurn(char turn) { m_turn = turn; }
 
 	static GameCenter* GetInstance()
 	{
@@ -41,12 +45,15 @@ public:
 	}
 
 
+	GameScene* getGameScene() { return m_GameScene; }
 
-	void setHwnd(HWND hWnd)
+
+
+	/*void setHwnd(HWND hWnd)
 	{
 		this->hWnd = hWnd;
 	}
-	HWND getHwnd() { return hWnd; }
+	HWND getHwnd() { return hWnd; }*/
 
 public:
 	void Init();

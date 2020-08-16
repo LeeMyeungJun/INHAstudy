@@ -171,9 +171,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		
 			if (clientList.size() == 2 && bFlag)
 			{
-				send(clientList[0], "_b", _tcslen("_b"), NULL);
+				send(clientList[0], "_bt", _tcslen("_bt"), NULL);
 				send(clientList[1], "_w", _tcslen("_w"), NULL);
-
 				bFlag = false;
 			}
 			else
@@ -185,12 +184,37 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		case FD_READ:
 			msgLen = recv(wParam, buffer, 100, 0);
 			buffer[msgLen] = NULL;
-			//¼­¹öÃ¢ 
-			wsprintf(msg, "%d : %s", wParam, buffer);
-			for (SOCKET client : clientList)
+			if (buffer[0] == '(' && buffer[1] == 't')
 			{
-				send(client, msg, _tcslen(msg), NULL);
+				if (wParam == clientList[0])
+				{
+					send(clientList[1], "(t", _tcslen("(t"), NULL);
+				}
+				else
+				{
+					send(clientList[0], "(t", _tcslen("(t"), NULL);
+				}
 			}
+			else
+			{
+				wsprintf(msg, "%d : %s", wParam, buffer);
+				for (SOCKET client : clientList)
+				{
+					send(client, msg, _tcslen(msg), NULL);
+				}
+			}
+	
+			
+
+			//size_t stlength = strlen(buffer);
+			//TCHAR * newMsg = new TCHAR[stlength + 1];
+			//sprintf(newMsg, TEXT("%s"), buffer);
+			//if (newMsg[0] == '(')
+			//{
+			//	send(clientList[0], "_bt", _tcslen("_bt"), NULL);
+			//	send(clientList[1], "_w", _tcslen("_w"), NULL);
+			//}
+
 			InvalidateRect(hWnd, NULL, TRUE);
 			break;
 		case FD_CLOSE:
