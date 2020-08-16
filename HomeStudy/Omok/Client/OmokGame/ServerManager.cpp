@@ -3,7 +3,7 @@
 
 extern char g_player;
 extern char g_turn;
-
+extern char boardState[19][19];
 ServerManager::ServerManager()
 {
 	
@@ -16,10 +16,12 @@ ServerManager::~ServerManager()
 
 void ServerManager::Read_Fd()
 {
+	int position[3];
 	memset(buffer, 0, sizeof(buffer));
 	msgLen = recv(server, buffer, 100, 0); //받아오는곳 
 	buffer[msgLen] = NULL;
 	size_t stlength = strlen(buffer);
+	TCHAR tchturn[10] = { 0 };
 	TCHAR * newMsg = new TCHAR[stlength + 1];
 	sprintf(newMsg, TEXT("%s"), buffer);
 	if (newMsg[0] == '_')
@@ -27,13 +29,43 @@ void ServerManager::Read_Fd()
 		g_player = newMsg[1];
 		g_turn = newMsg[2];
 	}
-	else if (newMsg[0] == '(' &&newMsg[1]=='t')
+	else if (newMsg[0] == '(' &&newMsg[1] == 't')
 	{
 		g_turn = 't';
 	}
 	else
 	{
-		chatLog.push_back(newMsg);
+		if (newMsg[4] == ':')
+		{
+			chatLog.push_back(newMsg);
+		}
+		else
+		{
+			position[0] = atoi(newMsg);
+			position[1] = position[0] % 1000;
+			position[2] = (position[0] - position[1]) / 1000;
+
+			if (boardState[position[1]][position[2]] == 'b' || boardState[position[1]][position[2]] == 'w')
+			{
+				strcpy(tchturn, "(t");
+				strcpy_s(buffer, tchturn);
+				send(server, (LPSTR)buffer, strlen(buffer), 0);
+				g_turn = '\0';
+			}
+			else
+			{
+				if (g_player == 'b')
+				{
+					boardState[position[1]][position[2]] = 'w';
+				}
+				else if (g_player == 'w')
+				{
+					boardState[position[1]][position[2]] = 'b';
+
+				}
+				g_turn = 't';
+			}
+		}
 	}
 
 	InvalidateRect(hWnd, NULL, TRUE);

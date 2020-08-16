@@ -123,6 +123,19 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 //  WM_DESTROY  - post a quit message and return
 //
 //
+
+bool operator == (POINT& pt , POINT& pt2)
+{ 
+	if (pt.x != pt2.x)
+		return false;
+	else if (pt.y != pt2.y)
+		return false;
+
+	return true; 
+}
+
+
+
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	HDC hdc ;
@@ -138,6 +151,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	static char buffer[1024];
 	int size, msgLen;
 	bool bFlag = true;
+	//static vector<POINT> playerOne;
+	//static vector<POINT> playerTwo;
+
 
 
 	switch (message)
@@ -195,12 +211,24 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 					send(clientList[0], "(t", _tcslen("(t"), NULL);
 				}
 			}
-			else
+			else if(buffer[0] =='-')
 			{
-				wsprintf(msg, "%d : %s", wParam, buffer);
+				buffer[0] = ' ';
+				wsprintf(msg, "%d :%s", wParam, buffer);
 				for (SOCKET client : clientList)
 				{
 					send(client, msg, _tcslen(msg), NULL);
+				}
+			}
+			else
+			{
+				if (wParam == clientList[0])
+				{
+					send(clientList[1], (LPSTR)buffer, strlen(buffer), 0);
+				}
+				else
+				{
+					send(clientList[0], (LPSTR)buffer, strlen(buffer), 0);
 				}
 			}
 	
@@ -241,7 +269,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		HDC hdc = BeginPaint(hWnd, &ps);
 		// TODO: Add any drawing code that uses hdc here...
 		if (_tcscmp(msg, _T("")))
-			TextOut(hdc, 0, 30, msg, (int)_tcslen(msg));
+			TextOut(hdc, 0, 30, msg, (int)_tcslen(msg));	
 		TextOut(hdc, 0, 0, str, _tcslen(str));
 		EndPaint(hWnd, &ps);
 	}

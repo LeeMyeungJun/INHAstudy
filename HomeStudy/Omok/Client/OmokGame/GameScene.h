@@ -3,7 +3,7 @@ class GameScene :public Scene
 {
 private:
 	
-	char boardState[19][19];
+	
 
 public:
 	GameScene();
@@ -39,7 +39,7 @@ public:
 	WCHAR tchary[30];
 	boardPoint board[19][19];
 	TCHAR str[100] = { 0 };
-	TCHAR tchturn[3] = { 0 };
+	TCHAR tchturn[10] = { 0 };
 	int count;
 
 

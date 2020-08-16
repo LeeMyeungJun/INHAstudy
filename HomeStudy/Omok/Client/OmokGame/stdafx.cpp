@@ -11,3 +11,5 @@ ServerManager *Servermanager;
 
 char g_player = 'a';
 char g_turn = '\0';
+
+char boardState[19][19];

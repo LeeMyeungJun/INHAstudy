@@ -4,6 +4,7 @@
 extern ServerManager *Servermanager;
 extern char g_player;
 extern char g_turn;
+extern char boardState[19][19];
 //a > 빈것 w> 하얀돌 b>검은돌 
 GameScene::GameScene()
 {
@@ -53,8 +54,6 @@ void GameScene::Update(UINT message, WPARAM wParam, LPARAM lParam)
 			strcpy(tchturn, "(t");
 			strcpy_s(Servermanager->buffer, tchturn);
 			send(Servermanager->server, (LPSTR)Servermanager->buffer, strlen(Servermanager->buffer), 0);
-
-			//send(Servermanager->server,"(t", _tcslen("(t"), 0);
 			g_turn = '\0';
 		}
 	}
@@ -182,7 +181,8 @@ void GameScene::ChatLog(WPARAM wParam)
 			return ;
 		else
 		{
-			strcpy_s(Servermanager->buffer, str);
+			//strcpy_s(Servermanager->buffer, str);
+			wsprintf(Servermanager->buffer, "%c%s", '-', str);
 			send(Servermanager->server, (LPSTR)Servermanager->buffer, strlen(Servermanager->buffer), 0);
 			count = 0;
 			str[count] = str[1] = '\0';
@@ -209,7 +209,10 @@ void GameScene::ClickEvent(UINT message  ,LPARAM lParam)
 {
 	Clickx = LOWORD(lParam);
 	Clicky = HIWORD(lParam);
-
+	char sendXPosition[10];
+	char sendYPosition[10];
+	int xlen = 0;
+	int ylen = 0;
 	_ltow(Clickx, tcharx, 10);
 	_ltow(Clicky, tchary, 10);
 
@@ -224,6 +227,41 @@ void GameScene::ClickEvent(UINT message  ,LPARAM lParam)
 				{
 					boardState[i][j] = g_player;
 					g_turn = 'u';
+
+					//itoa(j, sendXPosition, 10);
+
+					//itoa(i, sendYPosition, 10);
+
+
+					/*		strcpy(tchturn, sendXPosition);
+					xlen = strlen(tchturn);
+
+					 if (len == 1)
+					 {
+						 tchturn[1] = '.';
+						 tchturn[2] = '*';
+						 tchturn[3] = '*';
+					 }
+					 else if (len ==2)
+					 {
+						 tchturn[2] = '*';
+						 tchturn[3] = '*';
+					 }
+					
+
+					strcpy_s(Servermanager->buffer, tchturn);
+					send(Servermanager->server, (LPSTR)Servermanager->buffer, strlen(Servermanager->buffer), 0);
+*/
+
+				/*	if (board[Y_row][X_col] == 0)
+					{*/
+						itoa(j * 1000 + i, Servermanager->buffer, 10); //x, y값 변환하여 한번에 전송
+						send(Servermanager->server, Servermanager->buffer, 10, 0);  //버퍼에 10크기만큼 전송
+					/*}*/
+
+		
+
+					g_turn = '\0';
 					break;
 				}
 
