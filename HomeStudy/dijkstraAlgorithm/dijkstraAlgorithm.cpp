@@ -22,44 +22,55 @@ int dijkstra[MAXLOAD][MAXLOAD] =
 };
 
 
-
+void dikstraFun(int, int);
 
 int main()
 {
 	int startPoint = 0;
 	int endPoint = 0;
-	int temp = 0, i = 0, j = 0;
-	int arrlength[MAXLOAD]; // 거리배열
-	int arrIndex[MAXLOAD]; //경로 배열
-	bool bFlag[MAXLOAD] = { false, }; //들렸던건지 쳌
 
-	memset(arrlength, 0, sizeof(arrlength));
-	memset(arrIndex, 0, sizeof(arrIndex));
-
-	cout << "시작 지점 , 끝지점 순서대로 입력해줘요.";
+	cout << "출발노드  , 목적 노드  ";
 	cin >> startPoint >> endPoint;
-	for (i = 0; i < MAXLOAD; i++)
-	{
-		arrlength[i] = dijkstra[startPoint - 1][i];
-	}
 
+	dikstraFun(startPoint-1, endPoint-1);
 
     return 0;
 }
 
-void SmallLength()
+void dikstraFun(int _start, int _end)
 {
-	temp = MX;
-	for (i = 0; i < MAXLOAD; i++)
-	{
-		if (temp > arrlength[i] && i != startPoint - 1 && !bFlag[i])
-		{
-			temp = arrlength[i];
-			arrIndex[MAXLOAD] = i;
-		}
-			
+	int smallLength[MAXLOAD] = {0,};
+	int pathroad[MAXLOAD] = { 0, };
+	vector<int> path;
+	int lengthSum = 0;
+	bool bFlag[MAXLOAD] = { false, };
+	int cnt = 0;
+	int start = 0;
+	int end = _end;
+	int small = 0;
+	int roadCnt = 0;
+	int temp = _start;
+	memset(smallLength, MX, sizeof(smallLength));
+	smallLength[_start] = 0;
+	//path.push_back(_start+1);
 
+	while (cnt != MAXLOAD)
+	{
+		cnt = 0;
+
+		start = temp;
+		temp = MX;
+		pathroad[roadCnt] = start;
+		bFlag[start] = true;
+		
+		for (int i = 0; i < MAXLOAD; i++)
+		{
+			if (bFlag[i])
+				cnt += 1;
+		}
+
+		roadCnt++;
 	}
-	
+
 }
 
