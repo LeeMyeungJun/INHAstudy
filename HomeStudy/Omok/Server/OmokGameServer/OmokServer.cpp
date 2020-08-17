@@ -10,6 +10,10 @@
 HINSTANCE hInst;                                // current instance
 WCHAR szTitle[MAX_LOADSTRING];                  // The title bar text
 WCHAR szWindowClass[MAX_LOADSTRING];            // the main window class name
+static char boardState[19][19];
+
+
+
 
 // Forward declarations of functions included in this code module:
 ATOM                MyRegisterClass(HINSTANCE hInstance);
@@ -124,17 +128,73 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 //
 //
 
-bool operator == (POINT& pt , POINT& pt2)
-{ 
-	if (pt.x != pt2.x)
-		return false;
-	else if (pt.y != pt2.y)
-		return false;
 
-	return true; 
+bool OmokWin(int _x, int _y ,char _stone)
+{
+	int x = _x, y = _y, count = 0;
+
+	//좌측,위쪽으로 모든걸 다몰아놓고 오른쪽으로가면서 카운트해보자.
+
+	//가로 
+	// x값만 감소시켜 stone과 다를때까지 감소
+		while (boardState[_y][x - 1] == _stone && x > 0)
+	    x--;
+	// x값만 증가시켜 stone과 다를때까지 증가
+		while (boardState[_y][x++] == _stone && x <= 18)
+		    count++;
+
+		if (count == 5)
+		{
+			return true;
+		}
+		x = _x, y = _y, count = 0;
+	//세로 
+
+		while (boardState[y-1][_x] == _stone && y > 0)
+			y--;
+
+		while (boardState[y++][_x] == _stone && y <= 18)
+			count++;
+
+		if (count == 5)
+		{
+			return true;
+		}
+		x = _x, y = _y, count = 0;
+	//우측대각
+		while (boardState[y + 1][x-1] == _stone && y <= 18 && x > 0 )
+		{
+			y++;
+			x--;
+		}
+			
+		while (boardState[y--][x++] == _stone && y >0 && x <= 18)
+			count++;
+
+		if (count == 5)
+		{
+			return true;
+		}
+		x = _x, y = _y, count = 0;
+
+	//좌측대각 
+		while (boardState[y - 1][x - 1] == _stone && y > 0 && x > 0)
+		{
+			y--;
+			x--;
+		}
+
+		while (boardState[y++][x++] == _stone && y <= 18 && x <= 18)
+			count++;
+
+		if (count == 5)
+		{
+			return true;
+		}
+	
+
+	return false;
 }
-
-
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
@@ -152,7 +212,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	int position[3];
 	int size, msgLen;
 	bool bFlag = true;
-	static char boardState[19][19];
+	static bool gameover = false;
+	
 	//static vector<POINT> playerOne;
 	//static vector<POINT> playerTwo;
 
@@ -178,6 +239,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			MessageBox(NULL, _T("listen failed"), _T("Error"), MB_OK);
 			return 0;
 		}
+		memset(boardState, 'a', sizeof(boardState));
 		break;
 	case WM_ASYNC:
 		switch (lParam)
@@ -200,61 +262,92 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			}
 			break;
 		case FD_READ:
-			msgLen = recv(wParam, buffer, 100, 0);
-			buffer[msgLen] = NULL;
-			if (buffer[0] == '(' && buffer[1] == 't')
-			{
-				if (wParam == clientList[0])
-				{
-					send(clientList[1], "(t", _tcslen("(t"), NULL);
-				}
-				else
-				{
-					send(clientList[0], "(t", _tcslen("(t"), NULL);
-				}
-			}
-			else if(buffer[0] =='-')
-			{
-				buffer[0] = ' ';
-				wsprintf(msg, "%d :%s", wParam, buffer);
-				for (SOCKET client : clientList)
-				{
-					send(client, msg, _tcslen(msg), NULL);
-				}
-			}
-			else
-			{
-				position[0] = atoi(buffer);
-				position[1] = position[0] % 1000;
-				position[2] = (position[0] - position[1]) / 1000;
-				
-				
-				if (wParam == clientList[0])
-				{
-					for (SOCKET client : clientList)
-					{
-						send(client, (LPSTR)buffer, strlen(buffer), 0);
-					}
-				//	send(clientList[1], (LPSTR)buffer, strlen(buffer), 0);
-					boardState[position[1]][position[2]] = 'b';
-				}
-				else
-				{
-					for (SOCKET client : clientList)
-					{
-						send(client, (LPSTR)buffer, strlen(buffer), 0);
-					}
-					//send(clientList[0], (LPSTR)buffer, strlen(buffer), 0);
-					boardState[position[1]][position[2]] = 'w';
-
-				}
-				
-			}
-	
+		{
 			
+			
+				msgLen = recv(wParam, buffer, 100, 0);
+				buffer[msgLen] = NULL;
+				if (buffer[0] == '(' && buffer[1] == 't')
+				{
+					if (wParam == clientList[0])
+					{
+						send(clientList[1], "(t", _tcslen("(t"), NULL);
+					}
+					else
+					{
+						send(clientList[0], "(t", _tcslen("(t"), NULL);
+					}
+				}
+				else if(buffer[0] =='-')
+				{
+					buffer[0] = ' ';
+					wsprintf(msg, "%d :%s", wParam, buffer);
+					for (SOCKET client : clientList)
+					{
+						send(client, msg, _tcslen(msg), NULL);
+					}
+				}
+				else
+				{
+					position[0] = atoi(buffer);
+					position[1] = position[0] % 1000; //y좌표
+					position[2] = (position[0] - position[1]) / 1000; //x좌표
 
+					/*if (!gameover)
+					{*/
+						if (wParam == clientList[0])
+						{
+							for (SOCKET client : clientList)
+							{
+								send(client, (LPSTR)buffer, strlen(buffer), 0);
+							}
+							//	send(clientList[1], (LPSTR)buffer, strlen(buffer), 0);
+							boardState[position[1]][position[2]] = 'b';
+						}
+						else
+						{
+							for (SOCKET client : clientList)
+							{
+								send(client, (LPSTR)buffer, strlen(buffer), 0);
+							}
+							//send(clientList[0], (LPSTR)buffer, strlen(buffer), 0);
+							boardState[position[1]][position[2]] = 'w';
+						}
+					
+						
+
+						if (OmokWin(position[2], position[1], 'w'))
+						{
+							wsprintf(msg, "%d :%s", wParam, "Win");
+							for (SOCKET client : clientList)
+							{
+								send(client, msg, _tcslen(msg), NULL);
+							}
+							gameover = true;
+
+						}
+						else if (OmokWin(position[2], position[1], 'b'))
+						{
+
+				
+							wsprintf(msg, "%d :%s", wParam, "Win");
+							for (SOCKET client : clientList)
+							{
+								send(client, msg, _tcslen(msg), NULL);
+							}
+							gameover = true;
+
+
+						}
+
+					/*}*/
+				
+
+
+			}
 
 			InvalidateRect(hWnd, NULL, TRUE);
+		}
 			break;
 		case FD_CLOSE:
 			for (auto it = clientList.begin(); it != clientList.end(); it++)

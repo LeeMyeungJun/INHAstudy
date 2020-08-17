@@ -20,68 +20,22 @@ int dijkstra[MAXLOAD][MAXLOAD] =
 	{ MX ,MX ,MX ,2  ,MX ,6  ,0  ,4 },
 	{ MX ,MX ,MX ,4  ,MX ,MX ,4  ,0 }
 };
-int arrlength[MAXLOAD]; // 거리배열
-int arrIndex[MAXLOAD]; //경로 배열
-bool bFlag[MAXLOAD] = { false, }; //들렸던건지 쳌
 
-int startPoint = 0;
-int endPoint = 0;
-int temp = 0, i = 0, j = 0;
 
-void SmallLength();
-void Init();
-void Sort();
+
 
 int main()
 {
+	int startPoint = 0;
+	int endPoint = 0;
+	int temp = 0, i = 0, j = 0;
+	int arrlength[MAXLOAD]; // 거리배열
+	int arrIndex[MAXLOAD]; //경로 배열
+	bool bFlag[MAXLOAD] = { false, }; //들렸던건지 쳌
+
 	memset(arrlength, 0, sizeof(arrlength));
 	memset(arrIndex, 0, sizeof(arrIndex));
-	{
-		for (i = 0; i < MAXLOAD; i++)
-		{
-			for (j = 0; j < MAXLOAD; j++)
-			{
-				cout << dijkstra[i][j]<<" ";
-			}
-			cout << endl;
-		}
 
-		//cin >> startPoint;
-		//
-		//for (i = 0; i < MAXLOAD; i++)
-		//{
-		//	arrlength[i] = dijkstra[startPoint - 1][i];
-		//}
-
-
-		//temp = 999;
-		//for (i = 0; i < MAXLOAD; i++)
-		//{
-		//	if (temp > arrlength[i] && i != startPoint-1)
-		//		temp = arrlength[i];
-		//}
-		//
-		//for (i = 0; i < MAXLOAD; i++)
-		//{
-		//	if(arrlength[i] >temp +dijkstra[temp-1][i])
-		//		arrlength[i] = temp + dijkstra[temp-1][i];
-		//}
-
-		//temp = 999;
-		//for (i = 0; i < MAXLOAD; i++)
-		//{
-		//	if (temp > arrlength[i] && i != startPoint - 1)
-		//		temp = arrlength[i];
-		//}
-
-
-		//for (i = 0; i < MAXLOAD; i++)
-		//{
-		//	if (arrlength[i] >temp + dijkstra[temp - 1][i])
-		//		arrlength[i] = temp + dijkstra[temp - 1][i];
-		//}
-	}
-	
 	cout << "시작 지점 , 끝지점 순서대로 입력해줘요.";
 	cin >> startPoint >> endPoint;
 	for (i = 0; i < MAXLOAD; i++)
@@ -109,13 +63,3 @@ void SmallLength()
 	
 }
 
-void Init()
-{
-
-}
-
-void Sort()
-{
-	
-	
-}

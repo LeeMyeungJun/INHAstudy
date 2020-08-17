@@ -9,6 +9,7 @@
 
 ServerManager *Servermanager;
 
+bool g_GameOver = false;
 char g_player = 'o';
 char g_turn = '\0';
 

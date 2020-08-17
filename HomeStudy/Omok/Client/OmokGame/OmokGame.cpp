@@ -11,7 +11,7 @@ HINSTANCE hInst;                                // current instance
 WCHAR szTitle[MAX_LOADSTRING];                  // The title bar text
 WCHAR szWindowClass[MAX_LOADSTRING];            // the main window class name
 extern ServerManager *Servermanager;
-
+extern bool g_GameOver;
 
 // Forward declarations of functions included in this code module:
 ATOM                MyRegisterClass(HINSTANCE hInstance);
@@ -185,8 +185,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         break;
 	case WM_LBUTTONDOWN:
 	{
-		Gamecenter->Update(message, wParam, lParam);
-			
+		if (!g_GameOver)
+		{
+			Gamecenter->Update(message, wParam, lParam);
+
+		}
+
 		InvalidateRect(hWnd, NULL, true);
 	}
 	break;

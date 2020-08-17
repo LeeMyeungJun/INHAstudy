@@ -4,6 +4,7 @@
 extern char g_player;
 extern char g_turn;
 extern char boardState[19][19];
+extern bool g_GameOver;
 ServerManager::ServerManager()
 {
 	BWturn = true;
@@ -37,6 +38,10 @@ void ServerManager::Read_Fd()
 	{
 		if (newMsg[4] == ':')
 		{
+			if (newMsg[5] == 'W' && newMsg[6] == 'i'&& newMsg[7] == 'n')
+			{
+				g_GameOver = true;
+			}
 			chatLog.push_back(newMsg);
 		}
 		else
