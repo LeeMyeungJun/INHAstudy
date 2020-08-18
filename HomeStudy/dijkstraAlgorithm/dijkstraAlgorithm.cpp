@@ -242,17 +242,15 @@ void dikstraFun(int _start, int _end)
 	memset(bFlag, false, sizeof(bFlag));
 	memset(smallLength, MX, sizeof(smallLength));
 	smallLength[_start] = 0;
-
 //	path.push_back(start + 1);
 //	patch[start] = start + 1;
-
+	// * 1 * 2 * * 4 7
 	while (1)
 	{
 		cnt = 0;
 		temp = MX;
 	
 		bFlag[start] = true;
-		IndexTemp = start;
 		for (int i = 0; i < MAXLOAD; i++)
 		{
 			if (bFlag[i])
@@ -261,7 +259,8 @@ void dikstraFun(int _start, int _end)
 			if (smallLength[i] > dijkstra[start][i] + small)
 			{
 				smallLength[i] = dijkstra[start][i] + small;
-
+				//여기에다가 start 를 누적시켜보자 .
+				path[start] = IndexTemp+1;
 			}
 		}
 
@@ -278,56 +277,23 @@ void dikstraFun(int _start, int _end)
 				
 			}
 		}
-
-		path[start] = IndexTemp;
-
-		
+		IndexTemp = start;
 
 		for (int i = 0; i < MAXLOAD; i++)
 		{
 			if (bFlag[i])
 				cnt += 1;
 		}
+
 		if (cnt == MAXLOAD)
 			break;
-	
-		//path[start] = start;
-		//path.push_back(start + 1);
-		
+
+
+
+
 	}
 
 	start = _start;
 	end = _end;
-	//cout << start +1 <<" - ";
-	//while (true)
-	//{
-	//	if (path[start] == end + 1)
-	//	{
-	//		cout << path[start] ;
-	//		break;
-	//	}
-	//		
-
-	//	cout << path[start] << " - ";
-	//	start = path[start]-1;
-	//	
-	//}
-
-
-	//while (true)
-	//{
-	//	if (path[start] == _end+1)
-	//	{
-	//		cout << path[start];
-	//		break;
-	//	}
-	//	cout << path[start] << " - ";
-	//	start = path[start];
-
-	//}
-
-
-
-
 }
 
