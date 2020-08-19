@@ -263,12 +263,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			break;
 		case FD_READ:
 		{
-			
-			
 				msgLen = recv(wParam, buffer, 100, 0);
 				buffer[msgLen] = NULL;
 				if (buffer[0] == '(' && buffer[1] == 't')
 				{
+
 					if (wParam == clientList[0])
 					{
 						send(clientList[1], "(t", _tcslen("(t"), NULL);
