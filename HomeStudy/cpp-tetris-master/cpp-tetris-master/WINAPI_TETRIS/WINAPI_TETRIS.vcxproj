@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -126,13 +126,13 @@
     <ClCompile Include="Block.cpp" />
     <ClCompile Include="GameScene.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="SoundManager.cpp" />
+    <ClCompile Include="SoundCenter.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Block.h" />
     <ClInclude Include="GameScene.h" />
     <ClInclude Include="resource.h" />
-    <ClInclude Include="SoundManager.h" />
+    <ClInclude Include="SoundCenter.h" />
     <ClInclude Include="헤더.h" />
   </ItemGroup>
   <ItemGroup>

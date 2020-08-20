@@ -309,6 +309,12 @@ void Astar::Algorithm()
 			if (boardState[ptCheck[i].y][ptCheck[i].x] == 'x')
 			{
 
+
+		/*		if (temp > setting[ptCheck[i].y][ptCheck[i].x].st_g)
+				{
+					temp = setting[ptCheck[i].y][ptCheck[i].x].st_g;
+					tempPt = ptCheck[i];
+				}*/
 			}
 			else if (boardState[ptCheck[i].y][ptCheck[i].x] == 'a')
 			{
@@ -336,6 +342,8 @@ void Astar::Algorithm()
 					tempPt = ptCheck[i];
 				}
 
+
+
 			}
 		
 				
@@ -345,9 +353,9 @@ void Astar::Algorithm()
 		/*if (boardState[tempPt.y][tempPt.x] == 'e')
 			return;*/
 	
-			boardState[tempPt.y][tempPt.x] = 'c';
 	
-		
+		boardState[tempPt.y][tempPt.x] = 'c';
+
 		
 		
 		

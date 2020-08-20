@@ -11,6 +11,8 @@
 HINSTANCE hInst;                                // current instance
 WCHAR szTitle[MAX_LOADSTRING];                  // The title bar text
 WCHAR szWindowClass[MAX_LOADSTRING];            // the main window class name
+extern NetWorkManager *g_NetworkManager;
+
 
 // Forward declarations of functions included in this code module:
 ATOM                MyRegisterClass(HINSTANCE hInstance);
@@ -124,10 +126,18 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 //
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
+	static GameCenter *Gamecenter = nullptr;
+
     switch (message)
     {
 	case WM_CREATE:
 		srand(time(NULL));
+		Gamecenter = GameCenter::GetInstance();
+		//g_NetworkManager = NetWorkManager::GetInstance();
+		
+		Gamecenter->setHwnd(hWnd);
+		SetTimer(hWnd, 1, 1000 / 30, NULL);
+
 		break;
     case WM_COMMAND:
         {
@@ -149,12 +159,31 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     case WM_PAINT:
         {
             PAINTSTRUCT ps;
-            HDC hdc = BeginPaint(hWnd, &ps);
+			HDC hdc = BeginPaint(hWnd, &ps);
             // TODO: Add any drawing code that uses hdc here...
+			Gamecenter->Render(hWnd, hdc);
             EndPaint(hWnd, &ps);
         }
         break;
+	case WM_LBUTTONDOWN:
+		{
+			Gamecenter->Update(message, wParam, lParam);
+		}
+		break;
+	case WM_TIMER:
+	{
+		switch (wParam)
+		{
+		case 1:
+		{
+			Gamecenter->Update(message, wParam, lParam);
+		}
+		break;
+		}
+	}
+	break;
     case WM_DESTROY:
+		KillTimer(hWnd, 1);
         PostQuitMessage(0);
         break;
     default:

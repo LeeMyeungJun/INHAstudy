@@ -141,12 +141,31 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Block.h" />
+    <ClInclude Include="GameCenter.h" />
+    <ClInclude Include="GameScene.h" />
+    <ClInclude Include="LobbyScene.h" />
+    <ClInclude Include="LoginScene.h" />
+    <ClInclude Include="NetWorkManager.h" />
     <ClInclude Include="Resource.h" />
+    <ClInclude Include="RoomScene.h" />
+    <ClInclude Include="Scene.h" />
+    <ClInclude Include="SoundCenter.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="TetrisPrj.h" />
+    <ClInclude Include="UI.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Block.cpp" />
+    <ClCompile Include="GameCenter.cpp" />
+    <ClCompile Include="GameScene.cpp" />
+    <ClCompile Include="LobbyScene.cpp" />
+    <ClCompile Include="LoginScene.cpp" />
+    <ClCompile Include="NetWorkManager.cpp" />
+    <ClCompile Include="RoomScene.cpp" />
+    <ClCompile Include="Scene.cpp" />
+    <ClCompile Include="SoundCenter.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -154,6 +173,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="TetrisPrj.cpp" />
+    <ClCompile Include="UI.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="TetrisPrj.rc" />

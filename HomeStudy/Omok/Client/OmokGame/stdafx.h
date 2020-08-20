@@ -11,7 +11,6 @@
 // Windows Header Files:
 #include <windows.h>
 #include <iostream>
-#include <string>
 #include <vector>
 
 // C RunTime Header Files

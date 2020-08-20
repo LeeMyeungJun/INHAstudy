@@ -17,6 +17,25 @@
 #include <memory.h>
 #include <tchar.h>
 #include <time.h>
+#include <WinSock2.h>
+#include <string>
+#include <vector>
+#include <map>
+
+#pragma comment(lib, "ws2_32.lib")
+
+
+//class
+#include "UI.h"
+#include "SoundCenter.h"
+#include "NetWorkManager.h"
+#include "GameCenter.h"
+#include "Block.h"
+#include "Scene.h"
+#include "RoomScene.h"
+#include "LoginScene.h"
+#include "LobbyScene.h"
+#include "GameScene.h"
 
 
 // TODO: reference additional headers your program requires here
