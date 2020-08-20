@@ -37,5 +37,5 @@
 #include "LobbyScene.h"
 #include "GameScene.h"
 
-
-// TODO: reference additional headers your program requires here
+#define WIDTH 10
+#define HEIGHT 20

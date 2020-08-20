@@ -29,3 +29,7 @@ void RoomScene::Free(void)
 void RoomScene::UI(HDC hdc)
 {
 }
+
+void RoomScene::ClickEvent(LPARAM lParam)
+{
+}

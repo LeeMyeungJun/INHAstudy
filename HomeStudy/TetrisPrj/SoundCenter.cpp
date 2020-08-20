@@ -1,6 +1,6 @@
 #include "stdafx.h"
 
-SoundCenter::SoundCenter(GameCenter * wrapped):m_gameCenter(wrapped)
+SoundCenter::SoundCenter()
 {
 }
 

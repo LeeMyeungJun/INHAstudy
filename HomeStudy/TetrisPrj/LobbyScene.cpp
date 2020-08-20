@@ -29,3 +29,7 @@ void LobbyScene::Free(void)
 void LobbyScene::UI(HDC hdc)
 {
 }
+
+void LobbyScene::ClickEvent(LPARAM lParam)
+{
+}

@@ -12,7 +12,7 @@ GameCenter::GameCenter()
 	m_RoomScene = nullptr;
 	m_GameScene = nullptr;
 
-	m_SoundCeneter = new SoundCenter(this);
+	m_SoundCeneter = new SoundCenter();
 	m_UI = new UI(this);
 	Init();
 	
@@ -43,6 +43,7 @@ void GameCenter::Render(HWND hWnd, HDC hdc)
 
 void GameCenter::SceneChange(Scene_enum nextScene)
 {
+	m_Scene;
 	m_Scene->Free();
 
 
@@ -69,6 +70,12 @@ void GameCenter::SceneChange(Scene_enum nextScene)
 			m_GameScene = new GameScene;
 		m_Scene = m_GameScene;
 		m_Scene_enum = Scene_enum::GAME_SCENE;
+		break;
+	case Scene_enum::LOCALGAME_SCENE:
+		if (m_GameScene == nullptr)
+			m_GameScene = new GameScene;
+		m_Scene = m_GameScene;
+		m_Scene_enum = Scene_enum::LOCALGAME_SCENE;
 		break;
 	case Scene_enum::EXIT:
 		if (m_LoginScene != nullptr) delete m_LoginScene;

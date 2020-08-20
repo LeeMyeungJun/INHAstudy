@@ -3,10 +3,6 @@
 using namespace std;
 class SoundCenter
 {
-
-private:
-	GameCenter* m_gameCenter;
-
 	/*System * fmodSystem;
 
 	Channel* bgmChannel;
@@ -16,7 +12,7 @@ private:
 	map<string, Sound*> soundHash;
 */
 public:
-	SoundCenter(GameCenter* wrapped);
+	SoundCenter();
 	~SoundCenter();
 
 

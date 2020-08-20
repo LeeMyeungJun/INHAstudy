@@ -10,8 +10,9 @@ LoginScene::~LoginScene()
 {
 }
 
-void LoginScene::Init(void)
+void LoginScene::Init()
 {
+
 }
 
 void LoginScene::Update(UINT message, WPARAM wParam, LPARAM lParam)
@@ -28,10 +29,10 @@ void LoginScene::Update(UINT message, WPARAM wParam, LPARAM lParam)
 
 void LoginScene::Render(HWND hWnd, HDC hdc)
 {
-	getGameCenter()->getUI()->UIRender(hdc);
+	GameCenter::GetInstance()->getUI()->UIRender(hdc);
 }
 
-void LoginScene::Free(void)
+void LoginScene::Free()
 {
 
 }
@@ -45,20 +46,21 @@ void LoginScene::ClickEvent(LPARAM lParam)
 		int Clickx = LOWORD(lParam);
 		int Clicky = HIWORD(lParam);
 
-		if (Clickx >= getGameCenter()->getUI()->getRCExitBtn().left &&Clickx <= getGameCenter()->getUI()->getRCExitBtn().right
-			&& Clicky >= getGameCenter()->getUI()->getRCExitBtn().top && Clicky <= getGameCenter()->getUI()->getRCExitBtn().bottom)
+		if (Clickx >= GameCenter::GetInstance()->getUI()->getRCLogin_ExitBtn().left &&Clickx <= GameCenter::GetInstance()->getUI()->getRCLogin_ExitBtn().right
+			&& Clicky >= GameCenter::GetInstance()->getUI()->getRCLogin_ExitBtn().top && Clicky <= GameCenter::GetInstance()->getUI()->getRCLogin_ExitBtn().bottom)
 		{
 			PostQuitMessage(0);
 		}
-		else if (Clickx >= getGameCenter()->getUI()->getRcLocalBtn().left &&Clickx <= getGameCenter()->getUI()->getRcLocalBtn().right
-			&& Clicky >= getGameCenter()->getUI()->getRcLocalBtn().top && Clicky <= getGameCenter()->getUI()->getRcLocalBtn().bottom)
+		else if (Clickx >= GameCenter::GetInstance()->getUI()->getRcLogin_LocalBtn().left &&Clickx <= GameCenter::GetInstance()->getUI()->getRcLogin_LocalBtn().right
+			&& Clicky >= GameCenter::GetInstance()->getUI()->getRcLogin_LocalBtn().top && Clicky <= GameCenter::GetInstance()->getUI()->getRcLogin_LocalBtn().bottom)
 		{
-			getGameCenter()->SceneChange(GameCenter::Scene_enum::GAME_SCENE);
+			GameCenter::GetInstance()->SceneChange(GameCenter::Scene_enum::LOCALGAME_SCENE);
+
 		}
-		else if (Clickx >= getGameCenter()->getUI()->getRcOnlineBtn().left &&Clickx <= getGameCenter()->getUI()->getRcOnlineBtn().right
-			&& Clicky >= getGameCenter()->getUI()->getRcOnlineBtn().top && Clicky <= getGameCenter()->getUI()->getRcOnlineBtn().bottom)
+		else if (Clickx >= GameCenter::GetInstance()->getUI()->getRcLogin_OnlineBtn().left &&Clickx <= GameCenter::GetInstance()->getUI()->getRcLogin_OnlineBtn().right
+			&& Clicky >= GameCenter::GetInstance()->getUI()->getRcLogin_OnlineBtn().top && Clicky <= GameCenter::GetInstance()->getUI()->getRcLogin_OnlineBtn().bottom)
 		{
-			getGameCenter()->SceneChange(GameCenter::Scene_enum::GAME_SCENE);
+			GameCenter::GetInstance()->SceneChange(GameCenter::Scene_enum::GAME_SCENE);
 		}
 
 		

@@ -3,10 +3,7 @@
 
 class Scene
 {
-protected:
-	GameCenter* m_gameCenter;
 public:
-	Scene(GameCenter*);
 	Scene();
 	virtual ~Scene();
 
@@ -15,10 +12,6 @@ public:
 	virtual void Render(HWND hWnd, HDC hdc) = 0;
 	virtual void Free(void) = 0;
 	virtual void UI(HDC hdc) = 0;
-
-public:
-	GameCenter* getGameCenter() { return m_gameCenter; }
-
-
+	virtual void ClickEvent(LPARAM lParam) = 0;
 };
 

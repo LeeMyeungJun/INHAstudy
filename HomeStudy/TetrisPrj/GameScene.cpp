@@ -16,16 +16,20 @@ void GameScene::Init(void)
 
 void GameScene::Update(UINT message, WPARAM wParam, LPARAM lParam)
 {
-	if (message == WM_LBUTTONDOWN)
+	switch (message)
 	{
-		int Clickx = LOWORD(lParam);
-		int Clicky = HIWORD(lParam);
-
+	case WM_LBUTTONDOWN:
+		ClickEvent(lParam);
+		break;
+	default:
+		break;
 	}
+
 }
 
 void GameScene::Render(HWND hWnd, HDC hdc)
 {
+	GameCenter::GetInstance()->getUI()->UIRender(hdc);
 }
 
 void GameScene::Free(void)
@@ -34,4 +38,24 @@ void GameScene::Free(void)
 
 void GameScene::UI(HDC hdc)
 {
+}
+
+void GameScene::ClickEvent(LPARAM lParam)
+{
+	int Clickx = LOWORD(lParam);
+	int Clicky = HIWORD(lParam);
+
+	if (GameCenter::GetInstance()->getScene() == GameCenter::Scene_enum::LOCALGAME_SCENE)
+	{
+		if (Clickx >= GameCenter::GetInstance()->getUI()->getRCLocal_ExitBtn().left &&Clickx <= GameCenter::GetInstance()->getUI()->getRCLocal_ExitBtn().right
+			&& Clicky >= GameCenter::GetInstance()->getUI()->getRCLocal_ExitBtn().top && Clicky <= GameCenter::GetInstance()->getUI()->getRCLocal_ExitBtn().bottom)
+		{
+			PostQuitMessage(0);
+		}
+
+	}
+	else if (GameCenter::GetInstance()->getScene() == GameCenter::Scene_enum::GAME_SCENE)
+	{
+
+	}
 }

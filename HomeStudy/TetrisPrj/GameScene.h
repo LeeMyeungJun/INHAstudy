@@ -11,8 +11,7 @@ public:
 	void Render(HWND hWnd, HDC hdc);
 	void Free(void);
 	void UI(HDC hdc);
+	void ClickEvent(LPARAM lParam);
 
-public:
-	GameCenter* getGameCenter() { return m_gameCenter; }
 };
 

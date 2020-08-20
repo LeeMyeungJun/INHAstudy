@@ -8,7 +8,7 @@ public:
 	{
 		FONT_GAME_SIZE = 150,
 		FONT_TITLE_SIZE = 130,
-		FONT_COMMON_SIZE = 100,
+		FONT_COMMON_SIZE = 30,
 		FONT_END_SIZE = 35,
 		FONT_MANUAL_SIZE = 40
 	};
@@ -27,31 +27,46 @@ public:
 	const std::wstring m_Title = L"T E T R I S";
 	const std::wstring m_LocalBtn = L"1인용";
 	const std::wstring m_OnlineBtn = L"온라인";
-	const std::wstring m_Exit = L"Exit";
+	//로컬 게임 
+	const std::wstring m_Keymanual = L"↑ ← ↓→ SPACEBAR";
+	//온라인 게임
 
-	////게임중
-	//const std::wstring m_NextStage = L"다음 스테이지";
-	//const std::wstring m_EndTitle = L"패배";
 
-	////종료
-	//const std::wstring m_reStart = L"다시하기";
-	//const std::wstring m_reMenu = L"메뉴로가기";
 
+
+
+	const std::wstring m_Exit = L"나가기";
 
 private:
 	RECT m_rcclient;
-
+private:
+	/*LOGIN*/
 	RECT m_rcLogin_Title;
 	RECT m_rcLogin_LocalBtn;
 	RECT m_rcLogin_OnlineBtn;
 	RECT m_rcLogin_ExitBtn;
+	/*LOCALGAME*/
+	RECT m_rcLocal_GameBoard;
+	RECT m_rcLocal_ExitBtn;
+	RECT m_rcLocal_Manual;
+	/*ONLINEGAME*/
+	RECT m_rcGame_GameBoard;
+	RECT m_rcGame_GameBoardPlayer1;
+	RECT m_rcGame_GameBoardPlayer2;
+	RECT m_rcGame_GameBoardPlayer3;
+	RECT m_rcGame_GameBoardPlayer4;
+
+
+
 
 public:
-	RECT getRcLocalBtn() { return m_rcLogin_LocalBtn; }
-	RECT getRcOnlineBtn() { return m_rcLogin_OnlineBtn; }
-	RECT getRCExitBtn() { return m_rcLogin_ExitBtn; }
-
-
+	/*LOGIN*/
+	RECT getRcLogin_LocalBtn() { return m_rcLogin_LocalBtn; }
+	RECT getRcLogin_OnlineBtn() { return m_rcLogin_OnlineBtn; }
+	RECT getRCLogin_ExitBtn() { return m_rcLogin_ExitBtn; }
+	/*LOCALGAME*/
+	RECT getRCLocal_ExitBtn() { return m_rcLocal_ExitBtn; }
+	/*ONLINEGAME*/
 
 
 private:
@@ -66,5 +81,6 @@ public:
 
 private:
 	void LoginRender(HDC hdc);
+	void LocalRender(HDC hdc);
 };
 
