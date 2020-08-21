@@ -43,7 +43,6 @@ void GameCenter::Render(HWND hWnd, HDC hdc)
 
 void GameCenter::SceneChange(Scene_enum nextScene)
 {
-	m_Scene;
 	m_Scene->Free();
 
 
