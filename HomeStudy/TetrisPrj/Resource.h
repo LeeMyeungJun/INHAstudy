@@ -3,6 +3,24 @@
 // Used by TetrisPrj.rc
 //
 
+#define IDB_Block_RED                   101
+//#define IDB_Block_Orange                102
+//#define IDB_Block_Yellow                103
+//#define IDB_Block_Green                 104
+////#define IDB_Block_Blue                  105
+//#define IDB_Block_Purple                106
+//
+//#define IDB_Block_Gray                  198
+//#define IDB_Block_Guide                 199
+//
+//#define IDB_MENUBG                      1001
+//#define IDB_GAMEBG                      1002
+//#define IDB_BITMAP1                     1007
+//
+//#define IDB_GameOver                    1100
+//#define IDB_Logo                        1101
+
+
 #define IDS_APP_TITLE			103
 
 #define IDR_MAINFRAME			128

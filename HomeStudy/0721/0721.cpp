@@ -457,50 +457,50 @@ void CreateBitmap()
 
 //정보를  hMemDC = CreateCompatibleDC(hdc); 똑같이만들어
 
-void DrawBitmap(HWND hWnd, HDC hdc)
-{
-	HDC hMemDC;
-	HBITMAP h01Bitmap;
-	int bx, by;
-	//1번쨰 그림넣기
-	{
-		hMemDC = CreateCompatibleDC(hdc); //똑같이만들어
-		h01Bitmap = (HBITMAP)SelectObject(hMemDC, hBackImage); //그려주는거야
-		bx = bitBack.bmWidth;
-		by = bitBack.bmHeight;
-
-		BitBlt(hdc, 0, 0, bx, by, hMemDC, 0, 0, SRCCOPY); //읽자마자 바로그려줌
-		SelectObject(hMemDC, h01Bitmap);
-		DeleteDC(hMemDC);
-	}
-	//2번째꺼 색지우기
-	{
-		hMemDC = CreateCompatibleDC(hdc); //똑같이만들어
-		h01Bitmap = (HBITMAP)SelectObject(hMemDC, hTransParentImage); //그려주는거야
-		bx = bitTransparent.bmWidth;
-		by = bitTransparent.bmHeight;
-
-		BitBlt(hdc, 100, 100, bx, by, hMemDC, 0, 0, SRCCOPY); // 이게일반그리기
-		TransparentBlt(hdc, 200, 100, bx, by, hMemDC, 0, 0, bx, by, RGB(255, 0, 255));//분홍색을 제외하고 출력을한다.
-		SelectObject(hMemDC, h01Bitmap);
-		DeleteDC(hMemDC);
-	}
-	//3번째 애니메이션
-	{
-		hMemDC = CreateCompatibleDC(hdc); //똑같이만들어
-		h01Bitmap = (HBITMAP)SelectObject(hMemDC, hAniImage); //그려주는거야
-		bx = bitAni.bmWidth / 16; //이미지 프레임 가로로 16장
-		by = bitAni.bmHeight / 2; //세로로 2장
-		
-		int xStart = cur_Frame * bx;
-		int yStart = 0;
-		TransparentBlt(hdc, 100, 100, bx, by, hMemDC, xStart, yStart, bx, by, RGB(255, 0, 255));//
-		SelectObject(hMemDC, h01Bitmap);
-		DeleteDC(hMemDC);
-	}
-	
-
-}
+//void DrawBitmap(HWND hWnd, HDC hdc)
+//{
+//	HDC hMemDC;
+//	HBITMAP h01Bitmap;
+//	int bx, by;
+//	//1번쨰 그림넣기
+//	{
+//		hMemDC = CreateCompatibleDC(hdc); //똑같이만들어
+//		h01Bitmap = (HBITMAP)SelectObject(hMemDC, hBackImage); //그려주는거야
+//		bx = bitBack.bmWidth;
+//		by = bitBack.bmHeight;
+//
+//		BitBlt(hdc, 0, 0, bx, by, hMemDC, 0, 0, SRCCOPY); //읽자마자 바로그려줌
+//		SelectObject(hMemDC, h01Bitmap);
+//		DeleteDC(hMemDC);
+//	}
+//	//2번째꺼 색지우기
+//	{
+//		hMemDC = CreateCompatibleDC(hdc); //똑같이만들어
+//		h01Bitmap = (HBITMAP)SelectObject(hMemDC, hTransParentImage); //그려주는거야
+//		bx = bitTransparent.bmWidth;
+//		by = bitTransparent.bmHeight;
+//
+//		BitBlt(hdc, 100, 100, bx, by, hMemDC, 0, 0, SRCCOPY); // 이게일반그리기
+//		TransparentBlt(hdc, 200, 100, bx, by, hMemDC, 0, 0, bx, by, RGB(255, 0, 255));//분홍색을 제외하고 출력을한다.
+//		SelectObject(hMemDC, h01Bitmap);
+//		DeleteDC(hMemDC);
+//	}
+//	//3번째 애니메이션
+//	{
+//		hMemDC = CreateCompatibleDC(hdc); //똑같이만들어
+//		h01Bitmap = (HBITMAP)SelectObject(hMemDC, hAniImage); //그려주는거야
+//		bx = bitAni.bmWidth / 16; //이미지 프레임 가로로 16장
+//		by = bitAni.bmHeight / 2; //세로로 2장
+//		
+//		int xStart = cur_Frame * bx;
+//		int yStart = 0;
+//		TransparentBlt(hdc, 100, 100, bx, by, hMemDC, xStart, yStart, bx, by, RGB(255, 0, 255));//
+//		SelectObject(hMemDC, h01Bitmap);
+//		DeleteDC(hMemDC);
+//	}
+//	
+//
+//}
 
 
 void DrawBitMapDoubleBuffering(HWND hWnd, HDC hdc)
