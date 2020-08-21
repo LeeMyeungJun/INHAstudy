@@ -1,6 +1,16 @@
 #pragma once
+
+#define WIDTH 10
+#define HEIGHT 20
+
+
 class GameScene :public Scene
 {
+
+
+private:
+	unsigned char mMap[HEIGHT][WIDTH];
+
 public:
 	GameScene();
 	~GameScene();

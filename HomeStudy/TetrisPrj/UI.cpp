@@ -26,21 +26,32 @@ void UI::Init()
 {
 	GetClientRect(m_gameCenter->getHwnd(), &m_rcclient); //창크기 불러오기 
 	/*로그인*/
-	m_rcLogin_Title = { m_rcclient.left + 300,m_rcclient.top + 50,m_rcclient.right - 300,m_rcclient.top + 250 };
-	m_rcLogin_LocalBtn = { m_rcclient.left + 500,m_rcclient.bottom - 500,m_rcclient.left + 900,m_rcclient.bottom - 200 };
-	m_rcLogin_OnlineBtn = { m_rcclient.right - 900,m_rcclient.bottom - 500,m_rcclient.right - 500,m_rcclient.bottom - 200 };
-	m_rcLogin_ExitBtn = { m_rcclient.right - 150, m_rcclient.top + 30, m_rcclient.right - 50, m_rcclient.top + 100 };
+	m_rcLogin_Title		 = { m_rcclient.left + 300,m_rcclient.top + 50,m_rcclient.right - 300,m_rcclient.top + 250 };
+	m_rcLogin_LocalBtn   = { m_rcclient.left + 500,m_rcclient.bottom - 500,m_rcclient.left + 900,m_rcclient.bottom - 200 };
+	m_rcLogin_OnlineBtn  = { m_rcclient.right - 900,m_rcclient.bottom - 500,m_rcclient.right - 500,m_rcclient.bottom - 200 };
+	m_rcLogin_ExitBtn	 = { m_rcclient.right - 150, m_rcclient.top + 30, m_rcclient.right - 50, m_rcclient.top + 100 };
 	/*로컬*/
+	m_rcLocal_borderLine = { m_rcclient.left + 200,m_rcclient.top + 20,m_rcclient.left + 1100,m_rcclient.top + 1000 };
 	m_rcLocal_GameBoard = { m_rcclient.left + 400,m_rcclient.top + 50,m_rcclient.left + 900,m_rcclient.top + 800 };
 	m_rcLocal_ExitBtn	= { m_rcclient.right - 550,m_rcclient.bottom - 250,m_rcclient.right - 350,m_rcclient.bottom -150 };
 	m_rcLocal_Manual	= { m_rcclient.right - 600,m_rcclient.bottom - 350,m_rcclient.right - 350,m_rcclient.bottom - 150 };
-	/*온라인게임*/
-	m_rcGame_GameBoard		  = { m_rcclient.left + 400,m_rcclient.top + 50,m_rcclient.left + 900,m_rcclient.top + 800 };
+	/*로비*/
+	m_rcLobby_Room		= { m_rcclient.left + 500,m_rcclient.top + 100,m_rcclient.right - 500,m_rcclient.top + 250 };
+	m_rcLobby_RoomMake  = { m_rcclient.left + 500,m_rcclient.bottom - 400,m_rcclient.left + 900,m_rcclient.bottom - 200 };
+	m_rcLobby_ExitBtn   = { m_rcclient.right - 900,m_rcclient.bottom - 400,m_rcclient.right - 500,m_rcclient.bottom - 200 };
 
-	m_rcGame_GameBoardPlayer1 = { m_rcclient.left + 1000,m_rcclient.top + 50,m_rcclient.left + 1250,m_rcclient.top + 800 };
-	m_rcGame_GameBoardPlayer2 = { m_rcclient.left + 1300,m_rcclient.bottom - 250,m_rcclient.left + 1550,m_rcclient.bottom - 150 };
-	m_rcGame_GameBoardPlayer3 = { m_rcclient.left + 1000,m_rcclient.bottom - 350,m_rcclient.left + 1250,m_rcclient.bottom - 150 };
-	m_rcGame_GameBoardPlayer4 = { m_rcclient.left - 600,m_rcclient.bottom - 350,m_rcclient.right - 350,m_rcclient.bottom - 150 };
+
+	/*온라인게임*/ //상대방 가로 250 세로 450
+	m_rcGame_GameBoard		  = { m_rcclient.left + 200,m_rcclient.top + 50,m_rcclient.left + 900,m_rcclient.top + 950 };
+	m_rcGame_GameBoardPlayer1 = { m_rcclient.left + 1000,m_rcclient.top + 50,m_rcclient.left + 1250,m_rcclient.top + 450 };
+	m_rcGame_GameBoardPlayer2 = { m_rcclient.left + 1300,m_rcclient.top + 50,m_rcclient.left + 1550,m_rcclient.top + 450 };
+	m_rcGame_GameBoardPlayer3 = { m_rcclient.left + 1000,m_rcclient.top +500,m_rcclient.left + 1250,m_rcclient.top + 950};
+	m_rcGame_GameBoardPlayer4 = { m_rcclient.left + 1300,m_rcclient.top + 500,m_rcclient.left + 1550,m_rcclient.top + 950 };
+
+	/*방*/
+	m_rcRoom_Info		= { m_rcclient.left + 500,m_rcclient.top + 100,m_rcclient.right - 500,m_rcclient.top + 250 };
+	m_rcRoom_ReadyBtn   = { m_rcclient.left + 500,m_rcclient.bottom - 400,m_rcclient.left + 900,m_rcclient.bottom - 200 };
+	m_rcRoom_ExitBtn    = { m_rcclient.right - 900,m_rcclient.bottom - 400,m_rcclient.right - 500,m_rcclient.bottom - 200 };
 
 }
 
@@ -57,15 +68,14 @@ void UI::UIRender(HDC hdc)
 		LocalRender(hdc);
 		break;
 	case GameCenter::Scene_enum::LOBBY_SCENE:
-
+		LobbyRender(hdc);
 		break;
 	case GameCenter::Scene_enum::ROOM_SCENE:
-
+		RoomRender(hdc);
 		break;
 	case GameCenter::Scene_enum::GAME_SCENE:
-
+		GameRender(hdc);
 		break;
-
 	}
 }
 
@@ -111,7 +121,8 @@ void UI::LoginRender(HDC hdc)
 void UI::LocalRender(HDC hdc)
 {
 	RECT rectTemp;
-	
+	/*BORDERLINE*/
+	Rectangle(hdc, m_rcLocal_borderLine.left, m_rcLocal_borderLine.top, m_rcLocal_borderLine.right, m_rcLocal_borderLine.bottom);
 
 	/*GAMEBOARD*/
 	Rectangle(hdc, m_rcLocal_GameBoard.left, m_rcLocal_GameBoard.top, m_rcLocal_GameBoard.right, m_rcLocal_GameBoard.bottom);
@@ -127,12 +138,83 @@ void UI::LocalRender(HDC hdc)
 	rectTemp.top += 30;
 	DrawText(hdc, m_Exit.c_str(), m_Exit.size(), &rectTemp, DT_TOP | DT_CENTER | DT_SINGLELINE);
 
+	SelectObject(hdc, oldFont);
+}
+
+void UI::LobbyRender(HDC hdc)
+{
+	RECT rectTemp;
+
+	/*ROOM*/
+	Rectangle(hdc, m_rcLobby_Room.left, m_rcLobby_Room.top, m_rcLobby_Room.right, m_rcLobby_Room.bottom);
+	HFONT oldFont = (HFONT)SelectObject(hdc, GameFont);
+	rectTemp = m_rcLobby_Room;
+	rectTemp.top += 30;
+	DrawText(hdc, m_Room.c_str(), m_Room.size(), &rectTemp, DT_TOP | DT_CENTER | DT_SINGLELINE);
+
+	/*ROOMMAKE BUTTON*/
+	Rectangle(hdc, m_rcLobby_RoomMake.left, m_rcLobby_RoomMake.top, m_rcLobby_RoomMake.right, m_rcLobby_RoomMake.bottom);
+	(HFONT)SelectObject(hdc, ManualFont);
+	rectTemp = m_rcLobby_RoomMake;
+	rectTemp.top += 80;
+	DrawText(hdc, m_RoomMakeBtn.c_str(), m_RoomMakeBtn.size(), &rectTemp, DT_TOP | DT_CENTER | DT_SINGLELINE);
 
 
-
+	/*EXIT BUTTON*/
+	Rectangle(hdc, m_rcLobby_ExitBtn.left, m_rcLobby_ExitBtn.top, m_rcLobby_ExitBtn.right, m_rcLobby_ExitBtn.bottom);
+	//폰트 start와 동일.
+	rectTemp = m_rcLobby_ExitBtn;
+	rectTemp.top += 80;
+	DrawText(hdc, m_Exit.c_str(), m_Exit.size(), &rectTemp, DT_TOP | DT_CENTER | DT_SINGLELINE);
 
 	SelectObject(hdc, oldFont);
+}
+
+void UI::GameRender(HDC hdc)
+{
+	/*Player*/
+	Rectangle(hdc, m_rcGame_GameBoard.left, m_rcGame_GameBoard.top, m_rcGame_GameBoard.right, m_rcGame_GameBoard.bottom);
+
+	/*Player1*/
+	Rectangle(hdc, m_rcGame_GameBoardPlayer1.left, m_rcGame_GameBoardPlayer1.top, m_rcGame_GameBoardPlayer1.right, m_rcGame_GameBoardPlayer1.bottom);
+
+	/*Player2*/
+	Rectangle(hdc, m_rcGame_GameBoardPlayer2.left, m_rcGame_GameBoardPlayer2.top, m_rcGame_GameBoardPlayer2.right, m_rcGame_GameBoardPlayer2.bottom);
+
+	/*Player3*/
+	Rectangle(hdc, m_rcGame_GameBoardPlayer3.left, m_rcGame_GameBoardPlayer3.top, m_rcGame_GameBoardPlayer3.right, m_rcGame_GameBoardPlayer3.bottom);
+
+	/*Player4*/
+	Rectangle(hdc, m_rcGame_GameBoardPlayer4.left, m_rcGame_GameBoardPlayer4.top, m_rcGame_GameBoardPlayer4.right, m_rcGame_GameBoardPlayer4.bottom);
+
+}
+
+void UI::RoomRender(HDC hdc)
+{
+	RECT rectTemp;
+
+	/*ROOM_INFO*/
+	Rectangle(hdc, m_rcRoom_Info.left, m_rcRoom_Info.top, m_rcRoom_Info.right, m_rcRoom_Info.bottom);
+	HFONT oldFont = (HFONT)SelectObject(hdc, GameFont);
+	rectTemp = m_rcRoom_Info;
+	rectTemp.top += 30;
+	DrawText(hdc, m_RoomInfo.c_str(), m_RoomInfo.size(), &rectTemp, DT_TOP | DT_CENTER | DT_SINGLELINE);
+
+	/*Ready BUTTON*/
+	Rectangle(hdc, m_rcRoom_ReadyBtn.left, m_rcRoom_ReadyBtn.top, m_rcRoom_ReadyBtn.right, m_rcRoom_ReadyBtn.bottom);
+	(HFONT)SelectObject(hdc, ManualFont);
+	rectTemp = m_rcRoom_ReadyBtn;
+	rectTemp.top += 80;
+	DrawText(hdc, m_Ready.c_str(), m_Ready.size(), &rectTemp, DT_TOP | DT_CENTER | DT_SINGLELINE);
 
 
+	/*EXIT BUTTON*/
+	Rectangle(hdc, m_rcRoom_ExitBtn.left, m_rcRoom_ExitBtn.top, m_rcRoom_ExitBtn.right, m_rcRoom_ExitBtn.bottom);
+	//폰트 start와 동일.
+	rectTemp = m_rcRoom_ExitBtn;
+	rectTemp.top += 80;
+	DrawText(hdc, m_Exit.c_str(), m_Exit.size(), &rectTemp, DT_TOP | DT_CENTER | DT_SINGLELINE);
+
+	SelectObject(hdc, oldFont);
 }
  

@@ -37,5 +37,3 @@
 #include "LobbyScene.h"
 #include "GameScene.h"
 
-#define WIDTH 10
-#define HEIGHT 20

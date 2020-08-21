@@ -60,7 +60,7 @@ void LoginScene::ClickEvent(LPARAM lParam)
 		else if (Clickx >= GameCenter::GetInstance()->getUI()->getRcLogin_OnlineBtn().left &&Clickx <= GameCenter::GetInstance()->getUI()->getRcLogin_OnlineBtn().right
 			&& Clicky >= GameCenter::GetInstance()->getUI()->getRcLogin_OnlineBtn().top && Clicky <= GameCenter::GetInstance()->getUI()->getRcLogin_OnlineBtn().bottom)
 		{
-			GameCenter::GetInstance()->SceneChange(GameCenter::Scene_enum::GAME_SCENE);
+			GameCenter::GetInstance()->SceneChange(GameCenter::Scene_enum::LOBBY_SCENE);
 		}
 
 		
