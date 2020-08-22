@@ -9,16 +9,20 @@ class GameScene :public Scene
 {
 private:
 	unsigned char mMap[HEIGHT][WIDTH];
-	wstring tetromino[7];
+	//wstring mBlock[7];
 	bool m_Lose;
-
-
-
+	Block *m_block;
+	POINT m_Position[HEIGHT][WIDTH];
 	eInputType inputType;
 
 public:
 	GameScene();
 	~GameScene();
+	HDC hBlocksDc;
+	HBITMAP hBlocks;
+	BITMAP bitBlcok;
+	POINT getPosition(int x,int y) { return m_Position[y][x]; }
+	void setPosition(POINT position,int x , int y) { m_Position[y][x] = position; }
 
 public:
 	void Init(void);
@@ -31,7 +35,11 @@ public:
 	void ClickEvent(LPARAM lParam);
 	void Input();
 	void InputProcess();
-	int Rotate(int px, int py, int r);
+	
+	void DrawBlcok(HDC hdc);
+	void TransBlt(HDC hdc, int x, int y,int Color);
+	void MoveBlock();
+
 
 };
 

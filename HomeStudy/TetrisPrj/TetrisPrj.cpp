@@ -136,7 +136,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		//g_NetworkManager = NetWorkManager::GetInstance();
 		
 		Gamecenter->setHwnd(hWnd);
-		SetTimer(hWnd, 1, 1000 / 30, NULL);
+		Gamecenter->setHInstance(hInst);
+		SetTimer(hWnd, 1, 1000 , NULL);
 
 		break;
     case WM_COMMAND:
@@ -168,11 +169,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	case WM_KEYDOWN:
 		{
 			Gamecenter->Update(message, wParam, lParam);
+			InvalidateRgn(hWnd, NULL, false);
 		}
 		break;
 	case WM_LBUTTONDOWN:
 		{
 			Gamecenter->Update(message, wParam, lParam);
+			InvalidateRgn(hWnd, NULL, false);
 		}
 		break;
 	case WM_TIMER:
@@ -182,6 +185,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		case 1:
 		{
 			Gamecenter->Update(message, wParam, lParam);
+			InvalidateRgn(hWnd, NULL, false);
 		}
 		break;
 		}

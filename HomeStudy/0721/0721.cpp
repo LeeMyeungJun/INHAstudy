@@ -488,7 +488,7 @@ void CreateBitmap()
 //	//3번째 애니메이션
 //	{
 //		hMemDC = CreateCompatibleDC(hdc); //똑같이만들어
-//		h01Bitmap = (HBITMAP)SelectObject(hMemDC, hAniImage); //그려주는거야
+//		h01Bitmap = (HBITMAP)SelectObject(hMemDC, \); //그려주는거야
 //		bx = bitAni.bmWidth / 16; //이미지 프레임 가로로 16장
 //		by = bitAni.bmHeight / 2; //세로로 2장
 //		

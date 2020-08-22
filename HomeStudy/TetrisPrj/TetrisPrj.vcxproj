@@ -179,6 +179,8 @@
     <ResourceCompile Include="TetrisPrj.rc" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="img\bitmap2.bmp" />
+    <Image Include="IMG\Block.bmp" />
     <Image Include="small.ico" />
     <Image Include="TetrisPrj.ico" />
   </ItemGroup>

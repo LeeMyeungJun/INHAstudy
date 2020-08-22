@@ -25,6 +25,7 @@ public:
 
 private:
 	HWND hWnd;
+	HINSTANCE hInstance;
 private:
 	Scene		 * m_Scene;
 	LoginScene	 *m_LoginScene;
@@ -45,6 +46,9 @@ public:
 
 	HWND getHwnd() { return hWnd; }
 	void setHwnd(HWND hwnd) { this->hWnd = hwnd; }
+
+	HINSTANCE getHInstance() { return hInstance; }
+	void setHInstance(HINSTANCE hInstance) { this->hInstance = hInstance; }
 
 	UI* getUI() { return m_UI; }
 

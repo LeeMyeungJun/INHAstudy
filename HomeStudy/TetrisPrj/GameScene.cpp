@@ -5,40 +5,44 @@
 
 GameScene::GameScene():m_Lose(false)
 {
-	tetromino[0].append(L"..X.");
-	tetromino[0].append(L"..X.");
-	tetromino[0].append(L"..X.");
-	tetromino[0].append(L"..X.");
+	/*mBlock[0].append(L"..X.");
+	mBlock[0].append(L"..X.");
+	mBlock[0].append(L"..X.");
+	mBlock[0].append(L"..X.");
 
-	tetromino[1].append(L"..X.");
-	tetromino[1].append(L".XX.");
-	tetromino[1].append(L".X..");
-	tetromino[1].append(L"....");
+	mBlock[1].append(L"..X.");
+	mBlock[1].append(L".XX.");
+	mBlock[1].append(L".X..");
+	mBlock[1].append(L"....");
 
-	tetromino[2].append(L".X..");
-	tetromino[2].append(L".XX.");
-	tetromino[2].append(L"..X.");
-	tetromino[2].append(L"....");
+	mBlock[2].append(L".X..");
+	mBlock[2].append(L".XX.");
+	mBlock[2].append(L"..X.");
+	mBlock[2].append(L"....");
 
-	tetromino[3].append(L"....");
-	tetromino[3].append(L".XX.");
-	tetromino[3].append(L".XX.");
-	tetromino[3].append(L"....");
+	mBlock[3].append(L"....");
+	mBlock[3].append(L".XX.");
+	mBlock[3].append(L".XX.");
+	mBlock[3].append(L"....");
 
-	tetromino[4].append(L"....");
-	tetromino[4].append(L".XX.");
-	tetromino[4].append(L"..X.");
-	tetromino[4].append(L"..X.");
+	mBlock[4].append(L"....");
+	mBlock[4].append(L".XX.");
+	mBlock[4].append(L"..X.");
+	mBlock[4].append(L"..X.");
 
-	tetromino[5].append(L"....");
-	tetromino[5].append(L".XX.");
-	tetromino[5].append(L"..X.");
-	tetromino[5].append(L"..X.");
 
-	tetromino[6].append(L"..X.");
-	tetromino[6].append(L".XX.");
-	tetromino[6].append(L"..X.");
-	tetromino[6].append(L"....");
+	mBlock[5].append(L"....");
+	mBlock[5].append(L".XX.");
+	mBlock[5].append(L"..X.");
+	mBlock[5].append(L"..X.");
+
+	mBlock[6].append(L"..X.");
+	mBlock[6].append(L".XX.");
+	mBlock[6].append(L"..X.");
+	mBlock[6].append(L"....");*/
+
+	//m_bitMap_Blocks = LoadBitmap(GameCenter::GetInstance()->getHInstance(), MAKEINTRESOURCE());
+	m_block = new Block;
 }
 
 GameScene::~GameScene()
@@ -48,17 +52,24 @@ GameScene::~GameScene()
 void GameScene::Init(void)
 {
 	ZeroMemory(mMap, HEIGHT * WIDTH); //memset 0으로 매크로
-
+	m_block->Init();
+	//m_rcLocal_borderLine = { m_rcclient.left + 200 - 1,m_rcclient.top + 50,m_rcclient.left + 800 + 1,m_rcclient.top + 950 };
 
 	//벽처리 
 	for (int i = 0; i < HEIGHT; i++)
 	{
 		for (int j = 0; j <WIDTH; j++)
 		{
-			mMap[i][j] = ( i == 0||j==0 || i==HEIGHT-1 || j==WIDTH-1) ? '#' : '0'; 
+			mMap[i][j] = ( i == 0||j==0 || i==HEIGHT-1 || j==WIDTH-1) ? '#' : '\0'; 
+			setPosition({200+(60*j),50+(60*i)}, j, i);
 		}
 	}
-
+	m_block->CreateBlock();
+	for (int i = 0; i < 4; i++)
+	{
+		mMap[m_block->mPosition[i].y][m_block->mPosition[i].x] = m_block->GetBlockColor();
+	}
+	
 
 }
 
@@ -114,11 +125,12 @@ void GameScene::UI(HDC hdc)
 
 		break;
 	case GameCenter::Scene_enum::LOCALGAME_SCENE:
-	//	m_rcLocal_borderLine = { m_rcclient.left + 200,m_rcclient.top + 20,m_rcclient.left + 1100,m_rcclient.top + 1000 };
-
+		//MoveBlock();
 		break;
 	}
 
+
+	DrawBlcok(hdc);
 }
 
 void GameScene::ClickEvent(LPARAM lParam)
@@ -199,18 +211,85 @@ void GameScene::InputProcess()
 	}
 }
 
-int GameScene::Rotate(int px, int py, int r)
+void GameScene::DrawBlcok(HDC hdc)
 {
-	switch (r % 4)
-	{
-	case 0: return py * 4 + px; //0 degrees
-	case 1: return 12 + py - (px * 4); //0 degrees
-	case 2: return 15 - (py * 4) - px; //0 degrees
-	case 3: return 3 - py  + (4* px); //0 degrees
+	/*test*/
+	//for (int i = 0; i < WIDTH - 2; i++)
+	//{
+	//	Rectangle(hdc, 200 + (60 * i), 890, 260 + (60 * i), 950);
+	//}
+	HBITMAP h01Bitmap;
+	hBlocks = (HBITMAP)LoadImage(NULL, TEXT("IMG/Block.bmp"), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
+	GetObject(hBlocks, sizeof(BITMAP), &bitBlcok);
 
-	
+	hBlocksDc = CreateCompatibleDC(hdc); //똑같이만들어
+	h01Bitmap = (HBITMAP)SelectObject(hBlocksDc, hBlocks); //그려주는거야
+	//int bx = bitBlcok.bmWidth / 9; //이미지 프레임 가로로 16장
+	//int by = bitBlcok.bmHeight / 1; //세로로 2장
+	POINT temp;
+	for (int i = 0; i < HEIGHT; i++)
+	{
+		for (int j = 0; j < WIDTH; j++)
+		{
+			switch (mMap[i][j])
+			{
+			case 'P':
+				temp = getPosition(j, i);
+				TransBlt(hdc, temp.x, temp.y,0);
+				break;
+			case 'Y':
+				temp = getPosition(j, i);
+				TransBlt(hdc, temp.x, temp.y,1);
+				break;
+			case 'G':
+				temp = getPosition(j, i);
+				TransBlt(hdc, temp.x, temp.y, 2);
+				break;
+			case 'S':
+				temp = getPosition(j, i);
+				TransBlt(hdc, temp.x, temp.y, 3);
+				break;
+			case 'O':
+				temp = getPosition(j, i);
+				TransBlt(hdc, temp.x, temp.y, 4);
+				break;
+			case 'B':
+				temp = getPosition(j, i);
+				TransBlt(hdc, temp.x, temp.y, 5);
+				break;
+			case 'R':
+				temp = getPosition(j, i);
+				TransBlt(hdc, temp.x, temp.y, 6);
+				break;
+			default:
+
+					break;
+			}
+		
+		}
 	}
-	return 0;
+
+	SelectObject(hBlocksDc, h01Bitmap);
+	DeleteDC(hBlocksDc);
+}
+
+void GameScene::TransBlt(HDC hdc ,int x, int y, int Color)
+{
+	int bx = bitBlcok.bmWidth / 9; //이미지 프레임 가로로 16장
+	TransparentBlt(hdc, x, y, bx * 3.7, bitBlcok.bmHeight * 3.7, hBlocksDc, bx * Color, 0, bx, bitBlcok.bmHeight, RGB(255, 0, 255));// 200, 900좌표 bx*1 2번쨰그림
+
+}
+
+void GameScene::MoveBlock()
+{
+	for (int i = 0; i< 4; i++)
+		mMap[m_block->mPosition[i].y][m_block->mPosition[i].x] = '0';
+
+	for (int i = 0; i < 4; i++)
+	{
+		m_block->mPosition[i].y += 1;
+		mMap[m_block->mPosition[i].y][m_block->mPosition[i].x] = m_block->GetBlockColor();
+	}
 }
 
 
