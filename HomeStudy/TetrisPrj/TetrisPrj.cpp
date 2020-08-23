@@ -137,7 +137,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		
 		Gamecenter->setHwnd(hWnd);
 		Gamecenter->setHInstance(hInst);
-		SetTimer(hWnd, 1, 1000 , NULL);
+		SetTimer(hWnd, 1, 500 , NULL);
 
 		break;
     case WM_COMMAND:

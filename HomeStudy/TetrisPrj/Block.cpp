@@ -63,10 +63,10 @@ void Block::CreateBlock()
 		¡á¡á¡à
 		¡à¡á¡á
 		¡à¡à¡à	*/
-		mTileData[0][0] = mColor; mPosition[0] = { 5,0 };
-		mTileData[0][1] = mColor; mPosition[1] = { 6,0 };
-		mTileData[1][1] = mColor; mPosition[2] = { 6,1 };
-		mTileData[1][2] = mColor; mPosition[3] = { 7,1 };
+		mTileData[0][0] = mColor; mPosition[0] = { 5,1 };
+		mTileData[0][1] = mColor; mPosition[1] = { 6,1 };
+		mTileData[1][1] = mColor; mPosition[2] = { 6,2 };
+		mTileData[1][2] = mColor; mPosition[3] = { 7,2 };
 		break;
 
 	case 1:
@@ -74,10 +74,10 @@ void Block::CreateBlock()
 		¡à¡á¡á
 		¡á¡á¡à
 		¡à¡à¡à	*/
-		mTileData[0][1] = mColor; mPosition[0] = { 6,0 };
-		mTileData[0][2] = mColor; mPosition[1] = { 7,0 };
-		mTileData[1][0] = mColor; mPosition[2] = { 5,1 };
-		mTileData[1][1] = mColor; mPosition[3] = { 6,1 };
+		mTileData[0][1] = mColor; mPosition[0] = { 6,1 };
+		mTileData[0][2] = mColor; mPosition[1] = { 7,1 };
+		mTileData[1][0] = mColor; mPosition[2] = { 5,2 };
+		mTileData[1][1] = mColor; mPosition[3] = { 6,2 };
 		break;
 
 	case 2:
@@ -85,10 +85,10 @@ void Block::CreateBlock()
 		¡á¡á¡à
 		¡à¡á¡à
 		¡à¡á¡à	*/
-		mTileData[0][0] = mColor; mPosition[0] = { 5,0 };
-		mTileData[0][1] = mColor; mPosition[1] = { 6,0 };
-		mTileData[1][1] = mColor; mPosition[2] = { 6,1 };
-		mTileData[2][1] = mColor; mPosition[3] = { 6,2 };
+		mTileData[0][0] = mColor; mPosition[0] = { 5,1 };
+		mTileData[0][1] = mColor; mPosition[1] = { 6,1 };
+		mTileData[1][1] = mColor; mPosition[2] = { 6,2 };
+		mTileData[2][1] = mColor; mPosition[3] = { 6,3 };
 		break;
 
 	case 3:
@@ -96,10 +96,10 @@ void Block::CreateBlock()
 		¡à¡á¡á
 		¡à¡á¡à
 		¡à¡á¡à	*/
-		mTileData[0][1] = mColor; mPosition[0] = { 6,0 };
-		mTileData[0][2] = mColor; mPosition[1] = { 7,0 };
-		mTileData[1][1] = mColor; mPosition[2] = { 6,1 };
-		mTileData[2][1] = mColor; mPosition[3] = { 6,2 };
+		mTileData[0][1] = mColor; mPosition[0] = { 6,1 };
+		mTileData[0][2] = mColor; mPosition[1] = { 7,1 };
+		mTileData[1][1] = mColor; mPosition[2] = { 6,2 };
+		mTileData[2][1] = mColor; mPosition[3] = { 6,3 };
 		break;
 
 	case 4:
@@ -107,10 +107,10 @@ void Block::CreateBlock()
 		¡à¡á¡à
 		¡á¡á¡á
 		¡à¡à¡à	*/
-		mTileData[0][1] = mColor; mPosition[0] = { 6,0 };
-		mTileData[1][0] = mColor; mPosition[1] = { 5,1 };
-		mTileData[1][1] = mColor; mPosition[2] = { 6,1 };
-		mTileData[1][2] = mColor; mPosition[3] = { 7,1 };
+		mTileData[0][1] = mColor; mPosition[0] = { 6,1 };
+		mTileData[1][0] = mColor; mPosition[1] = { 5,2 };
+		mTileData[1][1] = mColor; mPosition[2] = { 6,2 };
+		mTileData[1][2] = mColor; mPosition[3] = { 7,2 };
 		break;
 
 	case 5:
@@ -119,10 +119,10 @@ void Block::CreateBlock()
 		¡à¡á¡á¡à
 		¡à¡á¡á¡à
 		¡à¡à¡à¡à	*/
-		mTileData[1][1] = mColor; mPosition[0] = { 6,1 };
-		mTileData[1][2] = mColor; mPosition[1] = { 7,1 };
-		mTileData[2][1] = mColor; mPosition[2] = { 6,2 };
-		mTileData[2][2] = mColor; mPosition[3] = { 7,2 };
+		mTileData[1][1] = mColor; mPosition[0] = { 6,2 };
+		mTileData[1][2] = mColor; mPosition[1] = { 7,2 };
+		mTileData[2][1] = mColor; mPosition[2] = { 6,3 };
+		mTileData[2][2] = mColor; mPosition[3] = { 7,3 };
 		break;
 
 	case 6:
@@ -131,10 +131,10 @@ void Block::CreateBlock()
 		¡á¡á¡á¡á
 		¡à¡à¡à¡à
 		¡à¡à¡à¡à	*/
-		mTileData[1][0] = mColor; mPosition[0] = { 5,1 };
-		mTileData[1][1] = mColor; mPosition[1] = { 6,1 };
-		mTileData[1][2] = mColor; mPosition[2] = { 7,1 };
-		mTileData[1][3] = mColor; mPosition[3] = { 8,1 };
+		mTileData[1][0] = mColor; mPosition[0] = { 5,2 };
+		mTileData[1][1] = mColor; mPosition[1] = { 6,2 };
+		mTileData[1][2] = mColor; mPosition[2] = { 7,2 };
+		mTileData[1][3] = mColor; mPosition[3] = { 8,2 };
 		break;
 	}
 }
@@ -180,45 +180,3 @@ char Block::GetBlockColor()
 {
 	return mColor;
 }
-//
-//void Block::GetEachTilePosition(Point nextPosition, Point* outPoint)
-//{
-//	//int pointerIndex = 0;
-//
-//	//for (int y = 0; y < 4; y++)
-//	//{
-//	//	if (pointerIndex >= 4)
-//	//		break;
-//	//	for (int x = 0; x < 4; x++)
-//	//	{
-//	//		if (mTileData[y][x] != eTileInfo::EMPTY)
-//	//		{
-//	//			outPoint[pointerIndex].x = x;
-//	//			outPoint[pointerIndex].y = y;
-//	//			outPoint[pointerIndex] += nextPosition;
-//	//			pointerIndex++;
-//	//		}
-//	//	}
-//	//}
-//}
-//
-//void Block::GetEachTileVecPosition(Point* outPoint)
-//{
-//	GetEachTilePosition(Point{ 0,0 }, outPoint);
-//}
-//
-//void Block::SetEachTilePosition(Point inPosition[4])
-//{
-//	//for (int i = 0; i < 4; i++)
-//	//{
-//	//	for (int j = 0; j < 4; j++)
-//	//	{
-//	//		mTileData[i][j] = eTileInfo::EMPTY;
-//	//	}
-//	//}
-//
-//	//for (int i = 0; i < 4; i++)
-//	//{
-//	//	mTileData[inPosition[i].y][inPosition[i].x] = mColor;
-//	//}
-//}

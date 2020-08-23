@@ -37,10 +37,6 @@ public:
 	void CopyBlock(Block& block);
 
 	POINT mPosition[4];//위치정보
-	//void GetEachTilePosition(Point nextPosition, Point* outPoint);	// 맵상의 타일 각각의 위치를 구해준다.
-	//void GetEachTileVecPosition(Point* outPoint);	// 타일 각각의 상대위치를 구해준다.
-	//void SetEachTilePosition(Point inPosition[4]);
-
 
 	void GetBlockData(char outData[4][4]);
 	void SetBlockData(char data[4][4]);

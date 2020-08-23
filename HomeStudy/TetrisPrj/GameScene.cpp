@@ -51,25 +51,44 @@ GameScene::~GameScene()
 
 void GameScene::Init(void)
 {
-	ZeroMemory(mMap, HEIGHT * WIDTH); //memset 0으로 매크로
-	m_block->Init();
-	//m_rcLocal_borderLine = { m_rcclient.left + 200 - 1,m_rcclient.top + 50,m_rcclient.left + 800 + 1,m_rcclient.top + 950 };
+	memset(mMap, 'N', sizeof(unsigned char));
+	
+	
 
-	//벽처리 
-	for (int i = 0; i < HEIGHT; i++)
+	////벽처리 
+	for (int i = 0; i < HEIGHT+2; i++)
 	{
-		for (int j = 0; j <WIDTH; j++)
+		for (int j = 0; j <WIDTH+2; j++)
 		{
-			mMap[i][j] = ( i == 0||j==0 || i==HEIGHT-1 || j==WIDTH-1) ? '#' : '\0'; 
-			setPosition({200+(60*j),50+(60*i)}, j, i);
+			mMap[i][j] = ( i == 0||j==0 || i==HEIGHT+1 || j==WIDTH+1) ? '#' : 'N'; 
+			
+			/*Test*/
+			//if (i == 0 || j == 0 || i == HEIGHT + 1 || j == WIDTH + 1)
+			//{
+			//	mMap[i][j] = '#';
+			//}
+			//else
+			//{
+			//	mMap[i][j] = 'O';
+			//}
 		}
 	}
+	//m_rcLocal_borderLine = { m_rcclient.left + 400 - 1,m_rcclient.top + 50,m_rcclient.left + 800 + 1,m_rcclient.top + 850 };
+	for (int j = 0; j < HEIGHT; j++)
+	{
+		for (int i = 0; i < WIDTH; i++)
+		{
+			setPosition({ 400 + (40 * i),50 + (40 * j) }, i, j);
+			
+		}
+	}
+	m_block->Init();
 	m_block->CreateBlock();
 	for (int i = 0; i < 4; i++)
 	{
 		mMap[m_block->mPosition[i].y][m_block->mPosition[i].x] = m_block->GetBlockColor();
 	}
-	
+
 
 }
 
@@ -125,7 +144,7 @@ void GameScene::UI(HDC hdc)
 
 		break;
 	case GameCenter::Scene_enum::LOCALGAME_SCENE:
-		//MoveBlock();
+		MoveBlock();
 		break;
 	}
 
@@ -213,52 +232,58 @@ void GameScene::InputProcess()
 
 void GameScene::DrawBlcok(HDC hdc)
 {
+	//m_rcLocal_borderLine = { m_rcclient.left + 400 - 1,m_rcclient.top + 50,m_rcclient.left + 800 + 1,m_rcclient.top + 850 };
+
 	/*test*/
-	//for (int i = 0; i < WIDTH - 2; i++)
+	//for (int j = 0; j < HEIGHT; j++)
 	//{
-	//	Rectangle(hdc, 200 + (60 * i), 890, 260 + (60 * i), 950);
+	//	for (int i = 0; i < WIDTH; i++)
+	//	{
+	//		Rectangle(hdc, 400 + ( 40* i), 50+(40*j), 440 + (40 * i), 90 + (40 * j));
+	//	}
 	//}
+	
+
 	HBITMAP h01Bitmap;
 	hBlocks = (HBITMAP)LoadImage(NULL, TEXT("IMG/Block.bmp"), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
 	GetObject(hBlocks, sizeof(BITMAP), &bitBlcok);
-
 	hBlocksDc = CreateCompatibleDC(hdc); //똑같이만들어
 	h01Bitmap = (HBITMAP)SelectObject(hBlocksDc, hBlocks); //그려주는거야
 	//int bx = bitBlcok.bmWidth / 9; //이미지 프레임 가로로 16장
 	//int by = bitBlcok.bmHeight / 1; //세로로 2장
 	POINT temp;
-	for (int i = 0; i < HEIGHT; i++)
+	for (int i = 1; i <= HEIGHT; i++)
 	{
-		for (int j = 0; j < WIDTH; j++)
+		for (int j = 1; j <= WIDTH; j++)
 		{
 			switch (mMap[i][j])
 			{
 			case 'P':
-				temp = getPosition(j, i);
+				temp = getPosition(j-1, i-1);
 				TransBlt(hdc, temp.x, temp.y,0);
 				break;
 			case 'Y':
-				temp = getPosition(j, i);
+				temp = getPosition(j - 1, i - 1);
 				TransBlt(hdc, temp.x, temp.y,1);
 				break;
 			case 'G':
-				temp = getPosition(j, i);
+				temp = getPosition(j - 1, i - 1);
 				TransBlt(hdc, temp.x, temp.y, 2);
 				break;
 			case 'S':
-				temp = getPosition(j, i);
+				temp = getPosition(j - 1, i - 1);
 				TransBlt(hdc, temp.x, temp.y, 3);
 				break;
 			case 'O':
-				temp = getPosition(j, i);
+				temp = getPosition(j - 1, i - 1);
 				TransBlt(hdc, temp.x, temp.y, 4);
 				break;
 			case 'B':
-				temp = getPosition(j, i);
+				temp = getPosition(j - 1, i - 1);
 				TransBlt(hdc, temp.x, temp.y, 5);
 				break;
 			case 'R':
-				temp = getPosition(j, i);
+				temp = getPosition(j - 1, i - 1);
 				TransBlt(hdc, temp.x, temp.y, 6);
 				break;
 			default:
@@ -268,7 +293,6 @@ void GameScene::DrawBlcok(HDC hdc)
 		
 		}
 	}
-
 	SelectObject(hBlocksDc, h01Bitmap);
 	DeleteDC(hBlocksDc);
 }
@@ -276,16 +300,44 @@ void GameScene::DrawBlcok(HDC hdc)
 void GameScene::TransBlt(HDC hdc ,int x, int y, int Color)
 {
 	int bx = bitBlcok.bmWidth / 9; //이미지 프레임 가로로 16장
-	TransparentBlt(hdc, x, y, bx * 3.7, bitBlcok.bmHeight * 3.7, hBlocksDc, bx * Color, 0, bx, bitBlcok.bmHeight, RGB(255, 0, 255));// 200, 900좌표 bx*1 2번쨰그림
+	TransparentBlt(hdc, x, y, bx * 2.5, bitBlcok.bmHeight * 2.5, hBlocksDc, bx * Color, 0, bx, bitBlcok.bmHeight, RGB(255, 0, 255));// 200, 900좌표 bx*1 2번쨰그림
 
 }
 
 void GameScene::MoveBlock()
 {
-	for (int i = 0; i< 4; i++)
-		mMap[m_block->mPosition[i].y][m_block->mPosition[i].x] = '0';
+	int i = 0;
+	for (i = 0; i < 4; i++)
+	{
+		for (int j = 0; j < 4; j++)
+		{
+			if (m_block->mPosition[i].y + 1 == m_block->mPosition[j].y && m_block->mPosition[i].x == m_block->mPosition[j].x)
+			{
+				if (i == 3)
+					break;
+				else
+				{
+					i++;
+				
+				}
+					
+			}
 
-	for (int i = 0; i < 4; i++)
+		}
+		if (mMap[m_block->mPosition[i].y + 1][m_block->mPosition[i].x] != 'N')
+		{
+			m_block->CreateBlock();
+		}
+	}
+
+	
+
+
+
+	for (i = 0; i< 4; i++)
+		mMap[m_block->mPosition[i].y][m_block->mPosition[i].x] = 'N';
+
+	for (i = 0; i < 4; i++)
 	{
 		m_block->mPosition[i].y += 1;
 		mMap[m_block->mPosition[i].y][m_block->mPosition[i].x] = m_block->GetBlockColor();

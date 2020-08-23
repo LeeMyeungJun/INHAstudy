@@ -120,12 +120,6 @@
     <Image Include="TetrisPrj.ico">
       <Filter>Resource Files</Filter>
     </Image>
-    <Image Include="IMG\Block.bmp">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="img\bitmap2.bmp">
-      <Filter>Resource Files</Filter>
-    </Image>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt">

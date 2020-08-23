@@ -1,6 +1,6 @@
 #pragma once
 
-#define WIDTH 12
+#define WIDTH 10
 #define HEIGHT 20
 
 enum eInputType { NONE, LEFT, RIGHT, UP, DOWN, SPACE, ESC };
@@ -8,11 +8,11 @@ enum eInputType { NONE, LEFT, RIGHT, UP, DOWN, SPACE, ESC };
 class GameScene :public Scene
 {
 private:
-	unsigned char mMap[HEIGHT][WIDTH];
+	unsigned char mMap[HEIGHT+2][WIDTH+2];
 	//wstring mBlock[7];
 	bool m_Lose;
 	Block *m_block;
-	POINT m_Position[HEIGHT][WIDTH];
+	POINT m_Position[HEIGHT+2][WIDTH+2];
 	eInputType inputType;
 
 public:
