@@ -32,6 +32,7 @@ void UI::Init()
 	m_rcLogin_ExitBtn	 = { m_rcclient.right - 150, m_rcclient.top + 30, m_rcclient.right - 50, m_rcclient.top + 100 };
 	/*로컬*/
 	m_rcLocal_borderLine = { m_rcclient.left + 400-1,m_rcclient.top + 50,m_rcclient.left + 800+1,m_rcclient.top + 850 };
+	m_rcLocal_NextBlock = { m_rcclient.left + 830,m_rcclient.top + 50,m_rcclient.left + 1000 , m_rcclient.top + 220 };
 	m_rcLocal_ExitBtn	= { m_rcclient.right - 550,m_rcclient.bottom - 250,m_rcclient.right - 350,m_rcclient.bottom -150 };
 	m_rcLocal_Manual	= { m_rcclient.right - 600,m_rcclient.bottom - 350,m_rcclient.right - 350,m_rcclient.bottom - 150 };
 	/*로비*/
@@ -91,6 +92,7 @@ void UI::LoginRender(HDC hdc)
 
 	/*LOCAL BUTTON*/
 	Rectangle(hdc, m_rcLogin_LocalBtn.left, m_rcLogin_LocalBtn.top, m_rcLogin_LocalBtn.right, m_rcLogin_LocalBtn.bottom);
+	
 	(HFONT)SelectObject(hdc, TitleFont);
 	rectTemp = m_rcLogin_LocalBtn;
 	rectTemp.top += 80;
@@ -124,6 +126,7 @@ void UI::LocalRender(HDC hdc)
 	Rectangle(hdc, m_rcLocal_borderLine.left, m_rcLocal_borderLine.top, m_rcLocal_borderLine.right, m_rcLocal_borderLine.bottom);
 
 	/*GAMEBOARD*/
+	Rectangle(hdc, m_rcLocal_NextBlock.left, m_rcLocal_NextBlock.top, m_rcLocal_NextBlock.right, m_rcLocal_NextBlock.bottom);
 	Rectangle(hdc, m_rcLocal_GameBoard.left, m_rcLocal_GameBoard.top, m_rcLocal_GameBoard.right, m_rcLocal_GameBoard.bottom);
 	HFONT oldFont = (HFONT)SelectObject(hdc, CommonFont);
 

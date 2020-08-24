@@ -12,6 +12,7 @@ Block::~Block()
 {
 }
 
+
 void Block::Init()
 {
 	memset(mTileData, '\0', sizeof(char));
@@ -63,10 +64,10 @@ void Block::CreateBlock()
 		¡á¡á¡à
 		¡à¡á¡á
 		¡à¡à¡à	*/
-		mTileData[0][0] = mColor; mPosition[0] = { 5,1 };
-		mTileData[0][1] = mColor; mPosition[1] = { 6,1 };
-		mTileData[1][1] = mColor; mPosition[2] = { 6,2 };
-		mTileData[1][2] = mColor; mPosition[3] = { 7,2 };
+		mTileData[0][0] = mColor; mPosition[0] = { 5,0 };
+		mTileData[0][1] = mColor; mPosition[1] = { 6,0 };
+		mTileData[1][1] = mColor; mPosition[2] = { 6,1 };
+		mTileData[1][2] = mColor; mPosition[3] = { 7,1 };
 		break;
 
 	case 1:
@@ -74,10 +75,10 @@ void Block::CreateBlock()
 		¡à¡á¡á
 		¡á¡á¡à
 		¡à¡à¡à	*/
-		mTileData[0][1] = mColor; mPosition[0] = { 6,1 };
-		mTileData[0][2] = mColor; mPosition[1] = { 7,1 };
-		mTileData[1][0] = mColor; mPosition[2] = { 5,2 };
-		mTileData[1][1] = mColor; mPosition[3] = { 6,2 };
+		mTileData[0][1] = mColor; mPosition[0] = { 6,0 };
+		mTileData[0][2] = mColor; mPosition[1] = { 7,0 };
+		mTileData[1][0] = mColor; mPosition[2] = { 5,1 };
+		mTileData[1][1] = mColor; mPosition[3] = { 6,1 };
 		break;
 
 	case 2:
@@ -85,10 +86,10 @@ void Block::CreateBlock()
 		¡á¡á¡à
 		¡à¡á¡à
 		¡à¡á¡à	*/
-		mTileData[0][0] = mColor; mPosition[0] = { 5,1 };
-		mTileData[0][1] = mColor; mPosition[1] = { 6,1 };
-		mTileData[1][1] = mColor; mPosition[2] = { 6,2 };
-		mTileData[2][1] = mColor; mPosition[3] = { 6,3 };
+		mTileData[0][0] = mColor; mPosition[0] = { 5,0 };
+		mTileData[0][1] = mColor; mPosition[1] = { 6,0 };
+		mTileData[1][1] = mColor; mPosition[2] = { 6,1 };
+		mTileData[2][1] = mColor; mPosition[3] = { 6,2 };
 		break;
 
 	case 3:
@@ -96,10 +97,10 @@ void Block::CreateBlock()
 		¡à¡á¡á
 		¡à¡á¡à
 		¡à¡á¡à	*/
-		mTileData[0][1] = mColor; mPosition[0] = { 6,1 };
-		mTileData[0][2] = mColor; mPosition[1] = { 7,1 };
-		mTileData[1][1] = mColor; mPosition[2] = { 6,2 };
-		mTileData[2][1] = mColor; mPosition[3] = { 6,3 };
+		mTileData[0][1] = mColor; mPosition[0] = { 6,0 };
+		mTileData[0][2] = mColor; mPosition[1] = { 7,0 };
+		mTileData[1][1] = mColor; mPosition[2] = { 6,1 };
+		mTileData[2][1] = mColor; mPosition[3] = { 6,2 };
 		break;
 
 	case 4:
@@ -107,10 +108,10 @@ void Block::CreateBlock()
 		¡à¡á¡à
 		¡á¡á¡á
 		¡à¡à¡à	*/
-		mTileData[0][1] = mColor; mPosition[0] = { 6,1 };
-		mTileData[1][0] = mColor; mPosition[1] = { 5,2 };
-		mTileData[1][1] = mColor; mPosition[2] = { 6,2 };
-		mTileData[1][2] = mColor; mPosition[3] = { 7,2 };
+		mTileData[0][1] = mColor; mPosition[0] = { 6,0 };
+		mTileData[1][0] = mColor; mPosition[1] = { 5,1 };
+		mTileData[1][1] = mColor; mPosition[2] = { 6,1 };
+		mTileData[1][2] = mColor; mPosition[3] = { 7,1 };
 		break;
 
 	case 5:
@@ -119,10 +120,10 @@ void Block::CreateBlock()
 		¡à¡á¡á¡à
 		¡à¡á¡á¡à
 		¡à¡à¡à¡à	*/
-		mTileData[1][1] = mColor; mPosition[0] = { 6,2 };
-		mTileData[1][2] = mColor; mPosition[1] = { 7,2 };
-		mTileData[2][1] = mColor; mPosition[2] = { 6,3 };
-		mTileData[2][2] = mColor; mPosition[3] = { 7,3 };
+		mTileData[1][1] = mColor; mPosition[0] = { 6,1 };
+		mTileData[1][2] = mColor; mPosition[1] = { 7,1 };
+		mTileData[2][1] = mColor; mPosition[2] = { 6,2 };
+		mTileData[2][2] = mColor; mPosition[3] = { 7,2 };
 		break;
 
 	case 6:
@@ -131,10 +132,10 @@ void Block::CreateBlock()
 		¡á¡á¡á¡á
 		¡à¡à¡à¡à
 		¡à¡à¡à¡à	*/
-		mTileData[1][0] = mColor; mPosition[0] = { 5,2 };
-		mTileData[1][1] = mColor; mPosition[1] = { 6,2 };
-		mTileData[1][2] = mColor; mPosition[2] = { 7,2 };
-		mTileData[1][3] = mColor; mPosition[3] = { 8,2 };
+		mTileData[1][0] = mColor; mPosition[0] = { 5,0 };
+		mTileData[1][1] = mColor; mPosition[1] = { 6,0 };
+		mTileData[1][2] = mColor; mPosition[2] = { 7,0 };
+		mTileData[1][3] = mColor; mPosition[3] = { 8,0 };
 		break;
 	}
 }
@@ -148,7 +149,6 @@ void Block::CopyBlock(Block& block)
 	//mColor = block.GetBlockColor();
 	//mPosition = block.GetPosition();
 }
-
 
 void Block::GetBlockData(char outData[4][4])
 {
@@ -180,3 +180,5 @@ char Block::GetBlockColor()
 {
 	return mColor;
 }
+
+

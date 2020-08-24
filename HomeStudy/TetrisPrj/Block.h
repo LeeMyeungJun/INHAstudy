@@ -26,7 +26,6 @@ class Block
 
 private:
 	char mTileData[4][4];// 블록정보 저장
-	
 	char mColor; //컬러정보
 	int mType;  //블록의 타입
 	int mColorRandTemp;//Rand돌리는용도.
@@ -47,10 +46,10 @@ public:
 	char GetBlockColor();
 
 
-
 public:
 	Block();
 	~Block();
 
+	
 };
 

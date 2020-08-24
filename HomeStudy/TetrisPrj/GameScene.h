@@ -9,11 +9,12 @@ class GameScene :public Scene
 {
 private:
 	unsigned char mMap[HEIGHT+2][WIDTH+2];
-	//wstring mBlock[7];
 	bool m_Lose;
 	Block *m_block;
+
 	POINT m_Position[HEIGHT+2][WIDTH+2];
 	eInputType inputType;
+
 
 public:
 	GameScene();
@@ -35,10 +36,12 @@ public:
 	void ClickEvent(LPARAM lParam);
 	void Input();
 	void InputProcess();
+	void InputProcessSub(int Xnum);
 	
 	void DrawBlcok(HDC hdc);
 	void TransBlt(HDC hdc, int x, int y,int Color);
 	void MoveBlock();
+	void BlockTurn();
 
 
 };

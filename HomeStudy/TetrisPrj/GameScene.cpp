@@ -5,44 +5,8 @@
 
 GameScene::GameScene():m_Lose(false)
 {
-	/*mBlock[0].append(L"..X.");
-	mBlock[0].append(L"..X.");
-	mBlock[0].append(L"..X.");
-	mBlock[0].append(L"..X.");
-
-	mBlock[1].append(L"..X.");
-	mBlock[1].append(L".XX.");
-	mBlock[1].append(L".X..");
-	mBlock[1].append(L"....");
-
-	mBlock[2].append(L".X..");
-	mBlock[2].append(L".XX.");
-	mBlock[2].append(L"..X.");
-	mBlock[2].append(L"....");
-
-	mBlock[3].append(L"....");
-	mBlock[3].append(L".XX.");
-	mBlock[3].append(L".XX.");
-	mBlock[3].append(L"....");
-
-	mBlock[4].append(L"....");
-	mBlock[4].append(L".XX.");
-	mBlock[4].append(L"..X.");
-	mBlock[4].append(L"..X.");
-
-
-	mBlock[5].append(L"....");
-	mBlock[5].append(L".XX.");
-	mBlock[5].append(L"..X.");
-	mBlock[5].append(L"..X.");
-
-	mBlock[6].append(L"..X.");
-	mBlock[6].append(L".XX.");
-	mBlock[6].append(L"..X.");
-	mBlock[6].append(L"....");*/
-
-	//m_bitMap_Blocks = LoadBitmap(GameCenter::GetInstance()->getHInstance(), MAKEINTRESOURCE());
 	m_block = new Block;
+
 }
 
 GameScene::~GameScene()
@@ -52,15 +16,15 @@ GameScene::~GameScene()
 void GameScene::Init(void)
 {
 	memset(mMap, 'N', sizeof(unsigned char));
-	
-	
+	inputType = eInputType::NONE;
+	m_Lose = false;
 
 	////벽처리 
 	for (int i = 0; i < HEIGHT+2; i++)
 	{
 		for (int j = 0; j <WIDTH+2; j++)
 		{
-			mMap[i][j] = ( i == 0||j==0 || i==HEIGHT+1 || j==WIDTH+1) ? '#' : 'N'; 
+			mMap[i][j] = (j==0 || i==HEIGHT+1 || j==WIDTH+1) ? '#' : 'N'; 
 			
 			/*Test*/
 			//if (i == 0 || j == 0 || i == HEIGHT + 1 || j == WIDTH + 1)
@@ -84,6 +48,7 @@ void GameScene::Init(void)
 	}
 	m_block->Init();
 	m_block->CreateBlock();
+
 	for (int i = 0; i < 4; i++)
 	{
 		mMap[m_block->mPosition[i].y][m_block->mPosition[i].x] = m_block->GetBlockColor();
@@ -96,20 +61,25 @@ void GameScene::Update(UINT message, WPARAM wParam, LPARAM lParam)
 {
 	InputProcess();
 
-	if (m_Lose) //패배했을때
-		return;
-
 	switch (message)
 	{
 	case WM_LBUTTONDOWN:
 		ClickEvent(lParam);
 		break;
 	case WM_KEYDOWN:
+	{
+		if (m_Lose)
+			return;
 		Input();
+	}
+		
 		break;
 	default:
 		break;
 	}
+
+	if (m_Lose)
+		return;
 
 	switch (GameCenter::GetInstance()->getScene())
 	{
@@ -117,7 +87,8 @@ void GameScene::Update(UINT message, WPARAM wParam, LPARAM lParam)
 
 		break;
 	case GameCenter::Scene_enum::LOCALGAME_SCENE:
-
+		MoveBlock();
+		
 		break;
 	}
 
@@ -144,7 +115,7 @@ void GameScene::UI(HDC hdc)
 
 		break;
 	case GameCenter::Scene_enum::LOCALGAME_SCENE:
-		MoveBlock();
+		
 		break;
 	}
 
@@ -206,20 +177,22 @@ void GameScene::Input()
 
 void GameScene::InputProcess()
 {
+	//(mMap[m_block->mPosition[i].y + 1][m_block->mPosition[i].x] != 'N')
 	switch (inputType)
 	{
 	case eInputType::LEFT: // 왼쪽으로 이동
+		InputProcessSub(-1);
 		break;
 
 	case eInputType::RIGHT: // 오른쪽으로 이동
+		InputProcessSub(+1);
 		break;
-
 	case eInputType::UP: // 모양바꾸는것
 
 		break;
 
 	case eInputType::DOWN: // 아래로 한칸 내림
-
+		MoveBlock();
 		break;
 
 	case eInputType::SPACE: // 밑으로 쭉 내림
@@ -228,6 +201,28 @@ void GameScene::InputProcess()
 	default:
 		break;
 	}
+	inputType = eInputType::NONE;
+}
+
+void GameScene::InputProcessSub(int Xnum)
+{
+
+	for (int i = 0; i < 4; i++)
+	{
+		if (mMap[m_block->mPosition[i].y][m_block->mPosition[i].x + Xnum] == '#')
+			return;
+	}
+		
+
+
+	for (int i = 0; i< 4; i++)
+		mMap[m_block->mPosition[i].y][m_block->mPosition[i].x] = 'N';
+
+	for (int i = 0; i < 4; i++)
+	{
+		m_block->mPosition[i].x += Xnum;
+	}
+
 }
 
 void GameScene::DrawBlcok(HDC hdc)
@@ -307,6 +302,7 @@ void GameScene::TransBlt(HDC hdc ,int x, int y, int Color)
 void GameScene::MoveBlock()
 {
 	int i = 0;
+
 	for (i = 0; i < 4; i++)
 	{
 		for (int j = 0; j < 4; j++)
@@ -316,22 +312,22 @@ void GameScene::MoveBlock()
 				if (i == 3)
 					break;
 				else
-				{
-					i++;
-				
-				}
-					
+					i++;	
 			}
-
 		}
 		if (mMap[m_block->mPosition[i].y + 1][m_block->mPosition[i].x] != 'N')
 		{
+			for (i = 1; i < WIDTH; i++)
+			{
+				if (mMap[1][i] != 'N')
+				{
+					m_Lose = true;
+					return;
+				}
+			}
 			m_block->CreateBlock();
 		}
 	}
-
-	
-
 
 
 	for (i = 0; i< 4; i++)
@@ -343,5 +339,12 @@ void GameScene::MoveBlock()
 		mMap[m_block->mPosition[i].y][m_block->mPosition[i].x] = m_block->GetBlockColor();
 	}
 }
+
+void GameScene::BlockTurn()
+{
+
+
+}
+
 
 

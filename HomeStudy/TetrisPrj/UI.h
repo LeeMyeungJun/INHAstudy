@@ -51,6 +51,7 @@ private:
 	RECT m_rcLogin_ExitBtn;
 	/*LOCALGAME*/
 	RECT m_rcLocal_borderLine;
+	RECT m_rcLocal_NextBlock;
 	RECT m_rcLocal_GameBoard;
 	RECT m_rcLocal_ExitBtn;
 	RECT m_rcLocal_Manual;
