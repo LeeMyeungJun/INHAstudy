@@ -25,6 +25,7 @@
 #include <string>
 #include <vector>
 #include <map>
+#include <math.h>
 
 #pragma comment(lib, "ws2_32.lib")
 

@@ -31,8 +31,8 @@ void UI::Init()
 	m_rcLogin_OnlineBtn  = { m_rcclient.right - 900,m_rcclient.bottom - 500,m_rcclient.right - 500,m_rcclient.bottom - 200 };
 	m_rcLogin_ExitBtn	 = { m_rcclient.right - 150, m_rcclient.top + 30, m_rcclient.right - 50, m_rcclient.top + 100 };
 	/*로컬*/
-	m_rcLocal_borderLine = { m_rcclient.left + 400-1,m_rcclient.top + 50,m_rcclient.left + 800+1,m_rcclient.top + 850 };
-	m_rcLocal_NextBlock = { m_rcclient.left + 830,m_rcclient.top + 50,m_rcclient.left + 1000 , m_rcclient.top + 220 };
+	m_rcLocal_borderLine = { m_rcclient.left + 400-1,m_rcclient.top + 50,m_rcclient.left + 850+1,m_rcclient.top + 800 };
+	m_rcLocal_NextBlock = { m_rcclient.left + 880,m_rcclient.top + 50,m_rcclient.left + 1000 , m_rcclient.top + 220 };
 	m_rcLocal_ExitBtn	= { m_rcclient.right - 550,m_rcclient.bottom - 250,m_rcclient.right - 350,m_rcclient.bottom -150 };
 	m_rcLocal_Manual	= { m_rcclient.right - 600,m_rcclient.bottom - 350,m_rcclient.right - 350,m_rcclient.bottom - 150 };
 	/*로비*/
