@@ -30,7 +30,8 @@ public:
 	HDC hBlocksDc;
 	HBITMAP hBlocks;
 	POINT BoardPoint[HEIGHT-1][WIDTH-2];
-
+	POINT Position[4];
+	POINT NextBlockPosition[4][4];
 	BITMAP bitBlcok;
 
 
@@ -47,15 +48,17 @@ public:
 	void DrawBlock(HDC hdc);
 	int  DrawCurBlock();
 	void PreviewBlocks(HDC hdc);
-
+	void PositionSave();
 	void SetBlockToGameBoard();
 	bool CheckCollision();
+	bool TurnCheckCollision();
 	void CreateRandomBlocks();
 	void GameOver();
 	void BlockMove();
-	void ClearCurBlocks();
+	void ClearCurBlocks(int x, int y);
 	void RotateBlocks();
 	void Input();
+	void LineFullCheck();
 public:
 	/* 테트리스 블록 모양 및 색상 설정*/
 	int m_BlockList[7][4][4][4] = 	// 블록 종류의 개수: -7, 회전상태(0°, 90°, -180°, -270°),
