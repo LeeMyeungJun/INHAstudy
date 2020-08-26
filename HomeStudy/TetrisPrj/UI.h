@@ -71,7 +71,6 @@ private:
 	RECT m_rcRoom_ExitBtn;
 
 
-
 public:
 	/*LOGIN*/
 	RECT getRcLogin_LocalBtn() { return m_rcLogin_LocalBtn; }
@@ -91,16 +90,15 @@ public:
 
 private:
 	GameCenter* m_gameCenter;
+
 public:
 	UI(GameCenter* wrapped);
 	~UI();
 
 	void Init();
-	
 	void UIRender(HDC hdc);
 private:
 	
-
 	void LoginRender(HDC hdc);
 	void LocalRender(HDC hdc);
 	void LobbyRender(HDC hdc);

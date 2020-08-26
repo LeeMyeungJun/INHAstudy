@@ -31,7 +31,7 @@ void UI::Init()
 	m_rcLogin_OnlineBtn  = { m_rcclient.right - 900,m_rcclient.bottom - 500,m_rcclient.right - 500,m_rcclient.bottom - 200 };
 	m_rcLogin_ExitBtn	 = { m_rcclient.right - 150, m_rcclient.top + 30, m_rcclient.right - 50, m_rcclient.top + 100 };
 	/*╥ндц*/
-	m_rcLocal_borderLine = { m_rcclient.left + 400-1,m_rcclient.top + 50,m_rcclient.left + 850+1,m_rcclient.top + 800 };
+	m_rcLocal_borderLine = { m_rcclient.left + 400-1,m_rcclient.top + 50,m_rcclient.left + 820+1,m_rcclient.top + 800 };
 	m_rcLocal_NextBlock = { m_rcclient.left + 880,m_rcclient.top + 50,m_rcclient.left + 1030 , m_rcclient.top + 200 };
 	m_rcLocal_ExitBtn	= { m_rcclient.right - 550,m_rcclient.bottom - 250,m_rcclient.right - 350,m_rcclient.bottom -150 };
 	m_rcLocal_Manual	= { m_rcclient.right - 600,m_rcclient.bottom - 350,m_rcclient.right - 350,m_rcclient.bottom - 150 };
@@ -52,6 +52,7 @@ void UI::Init()
 	m_rcRoom_Info		= { m_rcclient.left + 500,m_rcclient.top + 100,m_rcclient.right - 500,m_rcclient.top + 250 };
 	m_rcRoom_ReadyBtn   = { m_rcclient.left + 500,m_rcclient.bottom - 400,m_rcclient.left + 900,m_rcclient.bottom - 200 };
 	m_rcRoom_ExitBtn    = { m_rcclient.right - 900,m_rcclient.bottom - 400,m_rcclient.right - 500,m_rcclient.bottom - 200 };
+
 
 }
 
