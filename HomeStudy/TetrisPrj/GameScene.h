@@ -35,7 +35,7 @@ public:
 	HBITMAP hBlocks;
 	BITMAP bitBlcok;
 
-	static HBITMAP hBackGround;
+	HBITMAP hBackGround;
 	BITMAP bitBackground;
 
 
