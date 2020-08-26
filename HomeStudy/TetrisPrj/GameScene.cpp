@@ -5,8 +5,10 @@ char *str[] = { "Game Over", "Next Block", "Score : ", "Level : ", "F2 : Start G
 
 GameScene::GameScene()
 {
-	
-
+	GetClientRect(GameCenter::GetInstance()->getHwnd(), &client);
+	hBlocksDc	=::GetDC(NULL);
+	BackBuffer	=::GetDC(NULL);
+	FrontBuffer	=::GetDC(NULL);
 }
 
 GameScene::~GameScene()
@@ -161,7 +163,7 @@ void GameScene::DrawBlock(HDC hdc)
 		for (j = 0; j < WIDTH-2; j++)
 		{
 			if (m_iGameBoard[i][j] > 0)   //블럭이 존재할 때
-				StretchBlt(hdc, BoardPoint[i][j].x, BoardPoint[i][j].y, m_iBlockWidth, m_iBlockWidth, hBlocksDc,16 * (m_iGameBoard[i][j] -1), 0,16,by, SRCCOPY);   //각 블럭의 색
+				StretchBlt(BackBuffer, BoardPoint[i][j].x, BoardPoint[i][j].y, m_iBlockWidth, m_iBlockWidth, hBlocksDc,16 * (m_iGameBoard[i][j] -1), 0,16,by, SRCCOPY);   //각 블럭의 색
 		}
 
 	for (i = 0; i < 4; i++)
@@ -169,10 +171,11 @@ void GameScene::DrawBlock(HDC hdc)
 		{
 			if (m_BlockList[m_iNextBlocksType][0][i][j] > 0)
 			{
-				StretchBlt(hdc, NextBlockPosition[i][j].x, NextBlockPosition[i][j].y, m_iBlockWidth, m_iBlockWidth, hBlocksDc, 16 * (8 - 1), 0, 16, by, SRCCOPY);   //각 블럭의 색
+				StretchBlt(BackBuffer, NextBlockPosition[i][j].x, NextBlockPosition[i][j].y, m_iBlockWidth, m_iBlockWidth, hBlocksDc, 16 * (8 - 1), 0, 16, by, SRCCOPY);   //각 블럭의 색
 			}
 		}
-	ReleaseDC(GameCenter::GetInstance()->getHwnd(), hdc);
+
+	ReleaseDC(GameCenter::GetInstance()->getHwnd(), hBlocksDc);
 }
 
 int GameScene::DrawCurBlock()
@@ -183,24 +186,23 @@ int GameScene::DrawCurBlock()
 
 void GameScene::PreviewBlocks(HDC hdc)
 {
-	int i, j, bitmapX;
-	if (m_iNextBlocksType >= 0 && m_iNextBlocksType < 7)
-	{
-		for (i = 0; i < 4; i++)
-		{
-			for (j = 0; j < 4; j++)
-			{
-				if (m_BlockList[m_iNextBlocksType][0][i][j] > 0)   //회전되지 않은 블럭이 있을 때
-					bitmapX = m_iNextBlocksType * 16;
-				else
-					bitmapX = 16 * 8;
-
-				BitBlt(hdc, 280 + j * 16, 10 + i * 16, 16, 16, hBlocksDc, bitmapX, 0, SRCCOPY);   //hBlockDc에 저장된 비트맵을 bitmapX값에 따라 출력
-			}
-		}
-		//TextOut(hdc, 275, 70, (LPCWSTR)str[1], strlen(str[1]));
-		ReleaseDC(GameCenter::GetInstance()->getHwnd(), hdc);
-	}
+	//int i, j, bitmapX;
+	//if (m_iNextBlocksType >= 0 && m_iNextBlocksType < 7)
+	//{
+	//	for (i = 0; i < 4; i++)
+	//	{
+	//		for (j = 0; j < 4; j++)
+	//		{
+	//			if (m_BlockList[m_iNextBlocksType][0][i][j] > 0)   //회전되지 않은 블럭이 있을 때
+	//				bitmapX = m_iNextBlocksType * 16;
+	//			else
+	//				bitmapX = 16 * 8;
+	//			BitBlt(hdc, 280 + j * 16, 10 + i * 16, 16, 16, hBlocksDc, bitmapX, 0, SRCCOPY);   //hBlockDc에 저장된 비트맵을 bitmapX값에 따라 출력
+	//		}
+	//	}
+	//	//TextOut(hdc, 275, 70, (LPCWSTR)str[1], strlen(str[1]));
+	//	ReleaseDC(GameCenter::GetInstance()->getHwnd(), hdc);
+	//}
 }
 
 void GameScene::PositionSave()
@@ -386,8 +388,6 @@ void GameScene::Input()
 		SetBlockToGameBoard();
 	}
 
-
-
 }
 
 void GameScene::LineFullCheck()
@@ -417,3 +417,18 @@ void GameScene::LineFullCheck()
 		}
 	}
 }
+
+void GameScene::DoubleBufferRender(HDC hdc)
+{
+	BackBuffer = CreateCompatibleDC(hdc);
+	FrontBuffer = CreateCompatibleDC(hdc);
+
+	BitBlt(FrontBuffer, 0, 0, client.right, client.bottom, BackBuffer, 0, 0, SRCCOPY);
+
+	BitBlt(hdc, 0, 0, client.right, client.bottom, FrontBuffer, 0, 0, SRCCOPY);
+
+	ReleaseDC(GameCenter::GetInstance()->getHwnd(), BackBuffer);
+	ReleaseDC(GameCenter::GetInstance()->getHwnd(), FrontBuffer);
+
+}
+
