@@ -2,7 +2,7 @@
 
 
 char *str[] = { "Game Over", "Next Block", "Score : ", "Level : ", "F2 : Start Game","F3 : Game Pause","HOLD" };
-
+HBITMAP GameScene::hBackGround;
 GameScene::GameScene()
 {
 	
@@ -32,6 +32,9 @@ void GameScene::Init(void)
 	m_iTotalClearBlocks = 0;
 	m_iStartClearBlocks = 5;
 	m_iStepClearBlocks = 2;
+
+	hBackGround = (HBITMAP)LoadImage(NULL, TEXT("IMG/background.bmp"),IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
+	GetObject(hBackGround, sizeof(BITMAP), &bitBackground);
 
 	//m_rcLocal_borderLine = { m_rcclient.left + 400 - 1,m_rcclient.top + 50,m_rcclient.left + 850 + 1,m_rcclient.top + 770 };
 	int i, j;
@@ -96,6 +99,7 @@ void GameScene::Update(UINT message, WPARAM wParam, LPARAM lParam)
 
 void GameScene::Render(HWND hWnd, HDC hdc)
 {
+	DrawBackGround(hWnd,hdc);
 	if (!m_GameStart)
 		return;
 	UI(hdc);
@@ -104,6 +108,8 @@ void GameScene::Render(HWND hWnd, HDC hdc)
 
 void GameScene::Free(void)
 {
+	DeleteObject(hBlocks);
+	DeleteObject(hBackGround);
 }
 
 void GameScene::UI(HDC hdc)
@@ -118,7 +124,7 @@ void GameScene::UI(HDC hdc)
 		GameCenter::GetInstance()->getUI()->UIRender(hdc);
 		//PrintScore(hdc);
 		//PrintLevel(hdc);
-
+		
 		DrawBlock(hdc);
 		break;
 	}
@@ -527,5 +533,24 @@ void GameScene::LineFullCheck()
 void GameScene::MoveCollision()
 {
 	PositionSave();
+
+}
+
+void GameScene::DrawBackGround(HWND hWnd,HDC hdc)
+{
+	HBITMAP h01Bitmap;
+	int bx, by;
+
+	hBlocksDc = CreateCompatibleDC(hdc);
+	h01Bitmap = (HBITMAP)SelectObject(hBlocksDc, hBackGround);
+
+	bx = bitBackground.bmWidth;
+	by = bitBackground.bmHeight;
+	
+	StretchBlt(hdc, 0,0, bx, by, hBlocksDc, 0, 0, bx, by, SRCCOPY);   //각 블럭의 색
+
+
+	ReleaseDC(GameCenter::GetInstance()->getHwnd(), hdc);
+		
 
 }

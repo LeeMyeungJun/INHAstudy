@@ -54,7 +54,6 @@ void UI::Init()
 	m_rcRoom_ExitBtn    = { m_rcclient.right - 900,m_rcclient.bottom - 400,m_rcclient.right - 500,m_rcclient.bottom - 200 };
 
 
-	m_rcRoom_Info = nullptr;
 }
 
 void UI::UIRender(HDC hdc)
