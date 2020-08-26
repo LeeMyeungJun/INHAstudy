@@ -1,0 +1,74 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="Block" Collapsed="true">
+    <Position X="15.5" Y="6.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAE=</HashCode>
+      <FileName>Block.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GameCenter" Collapsed="true">
+    <Position X="7" Y="0.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AASAAAAQAACAAAACEBCAIAAABAQIAIgAABIKoEAAAgA=</HashCode>
+      <FileName>GameCenter.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="NetWorkManager" Collapsed="true">
+    <Position X="3.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEAAAAAABAAAAAAKBgAAIAAABiBAACAAAABKgAAkACI=</HashCode>
+      <FileName>NetWorkManager.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SoundCenter" Collapsed="true">
+    <Position X="1.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEAABAAAAAAAAAAQAAEAAAAAQABAAAIAIAAAAAAAAAA=</HashCode>
+      <FileName>SoundCenter.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="UI" Collapsed="true">
+    <Position X="10.25" Y="0.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>BCEHHABFAoIBhUJBAZQEAAAqwAiACCQAAEAjAAREE+E=</HashCode>
+      <FileName>UI.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GameScene" Collapsed="true">
+    <Position X="6" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAZTiAECVABAQQAi4AhRnCAAGOAGAgKAABACoCCAEUI=</HashCode>
+      <FileName>GameScene.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LobbyScene" Collapsed="true">
+    <Position X="8.25" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AARAAAAAAAAAAAAAIAAAAAAAAAAAAAAAABACACAAEAI=</HashCode>
+      <FileName>LobbyScene.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LoginScene" Collapsed="true">
+    <Position X="10.5" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AARgAAAAAAAAAAAAAAAAAAAAAAACAAAAABACAAAAEAI=</HashCode>
+      <FileName>LoginScene.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="RoomScene" Collapsed="true">
+    <Position X="3.75" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AARAAAAAAAAAAAgAAAAAAAAAAAAAAAQAABACAAAAEAI=</HashCode>
+      <FileName>RoomScene.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Scene" Collapsed="true">
+    <Position X="7" Y="2.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AARAAAAAAAAAAAAAgAAAAAAAQAAAAAAAABACAAAAEAI=</HashCode>
+      <FileName>Scene.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Malgun Gothic" Size="9" />
+</ClassDiagram>

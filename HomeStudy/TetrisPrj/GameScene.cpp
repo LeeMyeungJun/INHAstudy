@@ -37,9 +37,9 @@ void GameScene::Init(void)
 	int i, j;
 	for ( i = 0; i < HEIGHT-1; i++)
 	{
-		for (j = 0; j < WIDTH-2; j++)
+		for (j = 0; j < WIDTH; j++)
 		{
-			BoardPoint[i][j] = { 400 + (m_iBlockWidth*j) ,50 + (m_iBlockWidth*i) };
+			BoardPoint[i][j] = { 370 + (m_iBlockWidth*j) ,50 + (m_iBlockWidth*i) };
 		}
 	}
 	//	m_rcLocal_NextBlock = { m_rcclient.left + 880,m_rcclient.top + 50,m_rcclient.left + 1000 , m_rcclient.top + 170 };
@@ -61,6 +61,7 @@ void GameScene::Init(void)
 	}
 
 	m_iNextBlocksType = rand() % 7;
+	
 	CreateRandomBlocks();
 
 
@@ -72,7 +73,8 @@ void GameScene::Update(UINT message, WPARAM wParam, LPARAM lParam)
 	ClickEvent(lParam);
 	
 
-
+	if (!m_GameStart)
+		return;
 	switch (message)
 	{
 	case WM_KEYDOWN:
@@ -94,6 +96,8 @@ void GameScene::Update(UINT message, WPARAM wParam, LPARAM lParam)
 
 void GameScene::Render(HWND hWnd, HDC hdc)
 {
+	if (!m_GameStart)
+		return;
 	UI(hdc);
 
 }
@@ -158,7 +162,7 @@ void GameScene::DrawBlock(HDC hdc)
 
 	int i, j;
 	for (i = 0; i < HEIGHT; i++)
-		for (j = 0; j < WIDTH-2; j++)
+		for (j = 0; j < WIDTH; j++)
 		{
 			if (m_iGameBoard[i][j] > 0)   //블럭이 존재할 때
 				StretchBlt(hdc, BoardPoint[i][j].x, BoardPoint[i][j].y, m_iBlockWidth, m_iBlockWidth, hBlocksDc,16 * (m_iGameBoard[i][j] -1), 0,16,by, SRCCOPY);   //각 블럭의 색
@@ -242,29 +246,30 @@ void GameScene::SetBlockToGameBoard()
 
 bool GameScene::CheckCollision()
 {
-	int i, j;
-	int max = 0;
+	int i, j,temp;
+	bool CheckFlag = false;
 
 	for (i = 0; i < 4; i++)
 	{
-		if (max < Position[i].y)
+		CheckFlag = false;
+		for (j = 0; j < 4; j++)
 		{
-			max = Position[i].y;
+			if (Position[i].x == Position[j].x)
+			{
+
+				if (Position[j].y > Position[i].y)
+				{
+					temp = j;
+					CheckFlag = true;
+				}
+					
+			}
 		}
-	}
-
-	for (i = 0; i < 4; i++)
-	{
-		if (max == Position[i].y)
+		if (!CheckFlag)
+			temp = i;
+		if (m_iGameBoard[Position[temp].y][Position[temp].x] == -1 || m_iGameBoard[Position[temp].y][Position[temp].x] > 0)
 		{
-			if (m_iGameBoard[Position[i].y  ][Position[i].x] == -1)
-			{
-				return true;
-			}
-			else if (m_iGameBoard[Position[i].y ][Position[i].x] > 0)
-			{
-				return true;
-			}
+			return true;
 		}
 	}
 
@@ -294,7 +299,10 @@ void GameScene::CreateRandomBlocks()
 	m_iCurBlocksType = m_iNextBlocksType;
 	m_iCurBlocksState = 0;
 	m_iNextBlocksType = rand() % 7;
-
+	if (GameOver())
+	{
+		m_GameStart = false;
+	}
 	//if (CheckCollision())
 	//	GameOver();
 	//else
@@ -304,8 +312,14 @@ void GameScene::CreateRandomBlocks()
 	
 }
 
-void GameScene::GameOver()
+bool GameScene::GameOver()
 {
+	for (int i = 1; i < WIDTH; i++)
+	{
+		if (m_iGameBoard[0][i] > 0)
+			return true;
+	}
+	return false;
 }
 
 void GameScene::BlockMove()
@@ -315,15 +329,15 @@ void GameScene::BlockMove()
 
 	if (CheckCollision())
 	{
+		m_iCurBlocksY--;
+		SetBlockToGameBoard();
+
 		LineFullCheck();
 		CreateRandomBlocks();
 	}
 	else
 	{
-
 		ClearCurBlocks(0,+1);
-
-
 		SetBlockToGameBoard();
 	}
 		
@@ -352,7 +366,8 @@ void GameScene::RotateBlocks()   //현재 블록 회전
 void GameScene::Input()
 {
 	PositionSave();
-	int x = 0, y = 0;
+	ClearCurBlocks(0, 0);
+
 	if (GetAsyncKeyState(VK_UP) & 0x8000)
 	{
 		RotateBlocks();
@@ -360,60 +375,157 @@ void GameScene::Input()
 
 	if (GetAsyncKeyState(VK_LEFT) & 0x8000)
 	{
-		ClearCurBlocks(x, y);
-		m_iCurBlocksX--;
+		
+		InputProcess(VK_LEFT);
+		
 		
 	}
 	else if (GetAsyncKeyState(VK_RIGHT) & 0x8000)
 	{
-		ClearCurBlocks(x, y);
-		m_iCurBlocksX++;
+
+		InputProcess(VK_RIGHT);
+		
 	}
 	else if (GetAsyncKeyState(VK_DOWN) & 0x8000)
 	{
-		ClearCurBlocks(x, y);
-		m_iCurBlocksY++;
+
+		InputProcess(VK_DOWN);
+		
+	}
+
+	if (GetAsyncKeyState(VK_SPACE) & 0x8000)
+	{
+
+		InputProcess(VK_SPACE);
+
 	}
 
 	
-	if (CheckCollision())
-	{
-		LineFullCheck();
-		CreateRandomBlocks();
-	}
-	else
-	{
-		SetBlockToGameBoard();
-	}
 
 
 
 }
 
-void GameScene::LineFullCheck()
+void GameScene::InputProcess(UINT message)
 {
-	int i, j,k,t,cnt = 0;
-	for (i = 0; i < HEIGHT-1; i++)
+	int i, j ,temp;
+	bool CheckFlag = false;
+	switch (message)
 	{
-		cnt = 0;
-
-		for (j = 1; j < WIDTH-1; j++)
+	case VK_LEFT:
+		for (i = 3; i >= 0; i--)
 		{
-			//1 ~ 15
-			if (m_iGameBoard[i][j] > 0)
-				cnt++;
-			if (cnt == 15)
+			for (j = 3; j >= 0; j--)
 			{
-				for (t = i; t > 0; t--)
+				if (Position[i].y == Position[j].y)
 				{
-					for (k = 1; k < WIDTH - 1; k++)
-					{
-						m_iGameBoard[t][k] = m_iGameBoard[t - 1][k];
-						//m_iGameBoard[i][k] = 0;
-					}
+					if (Position[j].x < Position[i].x)
+						i = j;
 				}
-				
+			}
+
+			if (m_iGameBoard[Position[i].y][Position[i].x - 1] == -1 || m_iGameBoard[Position[i].y][Position[i].x - 1] > 0)
+			{
+				return;
 			}
 		}
+		m_iCurBlocksX--;
+		break;
+	case VK_RIGHT:
+		for (i = 0; i < 4; i++)
+		{
+			for (j = 0; j < 4; j++)
+			{
+				if (Position[i].y == Position[j].y)
+				{
+					if (Position[j].x > Position[i].x)
+						i = j;
+				}
+			}
+			if (m_iGameBoard[Position[i].y][Position[i].x +1] == -1 || m_iGameBoard[Position[i].y][Position[i].x +1] > 0)
+			{
+				return;
+			}
+		}
+		m_iCurBlocksX++;
+		break;
+	case VK_DOWN:
+		for (i = 0; i < 4; i++)
+		{
+			CheckFlag = false;
+			for (j = 0; j < 4; j++)
+			{
+				if (Position[i].x == Position[j].x)
+				{
+
+					if (Position[j].y > Position[i].y)
+					{
+						temp = j;
+						CheckFlag = true;
+					}
+
+				}
+			}
+			if (!CheckFlag)
+				temp = i;
+			if (m_iGameBoard[Position[temp].y +1 ][Position[temp].x] == -1 || m_iGameBoard[Position[temp].y +1][Position[temp].x] > 0)
+			{
+				return;
+			}
+		}
+		m_iCurBlocksY++;
+		break;
+	case VK_SPACE:
+	{
+		while (!CheckCollision())
+		{
+			m_iCurBlocksY++;
+			ClearCurBlocks(0, +1);
+			PositionSave();
+			//SetBlockToGameBoard();
+		}
+
+		m_iCurBlocksY--;
+		SetBlockToGameBoard();
+
+		LineFullCheck();
+		CreateRandomBlocks();
+
 	}
+		
+		break;
+	}
+}
+
+void GameScene::LineFullCheck()
+{
+	int i, j, k, sum, deleteLine = 0;
+
+
+	//26 16  24 14
+	for (i = 0; i < HEIGHT; i++)
+	{
+		sum = 0;
+		for (j = 1; j < WIDTH; j++)
+			if (m_iGameBoard[i][j] > 0) sum += 1;
+
+		if (sum == WIDTH-2)
+		{
+			for (k = i; k > 0; k--)
+				for (j = 1; j < WIDTH; j++)
+				{
+					m_iGameBoard[k][j] = m_iGameBoard[k - 1][j];   //y 1감소
+				}
+		}
+	}
+
+
+
+
+}
+
+void GameScene::MoveCollision()
+{
+	PositionSave();
+
 }
