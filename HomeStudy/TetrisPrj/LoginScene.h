@@ -13,12 +13,18 @@ public:
 	void UI(HDC hdc);
 	void ClickEvent(LPARAM lParam);
 
+	void BackGroundDraw(HDC hdc);
+	void StartButtonDraw(HDC hdc);
+	void TitleDraw(HDC hdc);
+	void BtnAnimaition(LPARAM lParam);
 private:
 	HBITMAP hBackGround;
 	BITMAP bitBackground;
 	HDC hBackDC;
-	
 	RECT clientRect;
+	RECT StartBtnRect;
+
+	float m_startBtn_size;
 
 };
 

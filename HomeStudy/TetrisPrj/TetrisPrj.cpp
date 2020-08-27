@@ -162,7 +162,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
             PAINTSTRUCT ps;
 			HDC hdc = BeginPaint(hWnd, &ps);
-			
 
 			HDC back;
 			back = CreateCompatibleDC(hdc);
@@ -170,10 +169,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			SelectObject(back, backHBIT);
 			
 			SetBkMode(back, TRANSPARENT); //글자배경색 투명으로만듬
-
 			Gamecenter->Render(hWnd, back);
-
-
 
 			BitBlt(hdc, 0, 0, ps.rcPaint.right, ps.rcPaint.bottom, back, 0, 0, SRCCOPY);
 			DeleteDC(back);
@@ -200,11 +196,16 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		break;
 	case WM_LBUTTONDOWN:
 		{
-			
-
+			Gamecenter->Update(message, wParam, lParam);
+			InvalidateRgn(hWnd, NULL, false);
+		}
+		break;
+	case WM_MOUSEMOVE:
+		{
+			if (Gamecenter->getScene() == GameCenter::Scene_enum::LOGIN_SCENE)
+			{
 				Gamecenter->Update(message, wParam, lParam);
-				InvalidateRgn(hWnd, NULL, false);
-			
+			}
 		}
 		break;
 	case WM_TIMER:

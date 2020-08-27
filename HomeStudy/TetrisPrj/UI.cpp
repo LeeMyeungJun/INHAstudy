@@ -26,9 +26,12 @@ void UI::Init()
 	GetClientRect(m_gameCenter->getHwnd(), &m_rcclient); //창크기 불러오기 
 	/*로그인*/
 	m_rcLogin_Title		 = { m_rcclient.left + 300,m_rcclient.top + 50,m_rcclient.right - 300,m_rcclient.top + 250 };
-	m_rcLogin_LocalBtn   = { m_rcclient.left + 500,m_rcclient.bottom - 500,m_rcclient.left + 900,m_rcclient.bottom - 200 };
+	m_rcLogin_LocalBtn   = { m_rcclient.left + 350,m_rcclient.bottom - 500,m_rcclient.left + 750,m_rcclient.bottom - 350 };
 	m_rcLogin_OnlineBtn  = { m_rcclient.right - 900,m_rcclient.bottom - 500,m_rcclient.right - 500,m_rcclient.bottom - 200 };
 	m_rcLogin_ExitBtn	 = { m_rcclient.right - 150, m_rcclient.top + 30, m_rcclient.right - 50, m_rcclient.top + 100 };
+
+
+
 	/*로컬*/
 	m_rcLocal_borderLine = { m_rcclient.left + 400-1,m_rcclient.top + 85,m_rcclient.left + 820+1,m_rcclient.top + 835 };
 	m_rcLocal_NextBlock = { m_rcclient.left + 880,m_rcclient.top + 85,m_rcclient.left + 1000 , m_rcclient.top + 205 };
@@ -90,13 +93,14 @@ void UI::LoginRender(HDC hdc)
 	rectTemp.top += 30;
 	DrawText(hdc, m_Title.c_str(), m_Title.size(), &rectTemp, DT_TOP | DT_CENTER | DT_SINGLELINE);
 
-	/*LOCAL BUTTON*/
+	/*LOCAL BUTTON
 	Rectangle(hdc, m_rcLogin_LocalBtn.left, m_rcLogin_LocalBtn.top, m_rcLogin_LocalBtn.right, m_rcLogin_LocalBtn.bottom);
 	
 	(HFONT)SelectObject(hdc, TitleFont);
 	rectTemp = m_rcLogin_LocalBtn;
 	rectTemp.top += 80;
 	DrawText(hdc, m_LocalBtn.c_str(), m_LocalBtn.size(), &rectTemp, DT_TOP | DT_CENTER | DT_SINGLELINE);
+	*/
 
 
 	///*Online BUTTON*/
@@ -107,11 +111,11 @@ void UI::LoginRender(HDC hdc)
 	//DrawText(hdc, m_OnlineBtn.c_str(), m_OnlineBtn.size(), &rectTemp, DT_TOP | DT_CENTER | DT_SINGLELINE);
 
 	/*EXIT */
-	Rectangle(hdc, m_rcLogin_ExitBtn.left, m_rcLogin_ExitBtn.top, m_rcLogin_ExitBtn.right, m_rcLogin_ExitBtn.bottom);
-	(HFONT)SelectObject(hdc, CommonFont);
-	rectTemp = m_rcLogin_ExitBtn;
-	rectTemp.top += 10;
-	DrawText(hdc, m_Exit.c_str(), m_Exit.size(), &rectTemp, DT_TOP | DT_CENTER | DT_SINGLELINE);
+	//Rectangle(hdc, m_rcLogin_ExitBtn.left, m_rcLogin_ExitBtn.top, m_rcLogin_ExitBtn.right, m_rcLogin_ExitBtn.bottom);
+	//(HFONT)SelectObject(hdc, CommonFont);
+	//rectTemp = m_rcLogin_ExitBtn;
+	//rectTemp.top += 10;
+	//DrawText(hdc, m_Exit.c_str(), m_Exit.size(), &rectTemp, DT_TOP | DT_CENTER | DT_SINGLELINE);
 
 
 	SelectObject(hdc, oldFont);
@@ -121,6 +125,7 @@ void UI::LoginRender(HDC hdc)
 
 void UI::LocalRender(HDC hdc)
 {
+	
 	RECT rectTemp;
 	/*BORDERLINE*/
 	//Rectangle(hdc, m_rcLocal_borderLine.left, m_rcLocal_borderLine.top, m_rcLocal_borderLine.right, m_rcLocal_borderLine.bottom);
