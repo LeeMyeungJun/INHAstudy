@@ -6,13 +6,13 @@ class UI
 public:
 	enum FONT_SIZE : size_t
 	{
-		FONT_GAME_SIZE = 90,
+		FONT_GAME_SIZE = 35,
 		FONT_TITLE_SIZE = 130,
 		FONT_COMMON_SIZE = 30,
 		FONT_END_SIZE = 35,
 		FONT_MANUAL_SIZE = 40
 	};
-private:
+public:
 	HFONT TitleFont;
 	HFONT CommonFont;
 	HFONT EndFont;

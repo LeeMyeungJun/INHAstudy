@@ -17,8 +17,7 @@ GameCenter::GameCenter()
 	Init();
 	
 }
-
-
+ 
 GameCenter::~GameCenter()
 {
 }

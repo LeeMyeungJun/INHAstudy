@@ -1,9 +1,15 @@
 #include "stdafx.h"
 
+
 //char *str[] = { "Game Over", "Next Block", "Score : ", "Level : ", "F2 : Start Game","F3 : Game Pause","HOLD" };
+void CALLBACK BlockUpdate(HWND, UINT, UINT_PTR, DWORD);
+
+const int speed = 15;
 
 GameScene::GameScene()
 {
+
+	
 }
 
 GameScene::~GameScene()
@@ -12,11 +18,10 @@ GameScene::~GameScene()
 
 void GameScene::Init(void)
 {
+	m_iLevel = 1;
+	SetTimer(GameCenter::GetInstance()->getHwnd(), 999, 10000/ (m_iLevel*speed), BlockUpdate);
 	memset(m_iGameBoard, 0, sizeof(m_iGameBoard));
-	m_iLevel = 1;	
 	m_GameStart = true;
-	m_GamePause = false;
-	m_bHold = false;
 	m_iBlockWidth = 30;
 	m_iCurBlocksType = 0;
 	m_iCurBlocksState = 0;
@@ -24,28 +29,30 @@ void GameScene::Init(void)
 	m_iGostState = 0;
 	m_iNextBlocksType = -1;
 	m_iHoldBlocksType = -1;
-	m_iSpeed = 500;
-	m_iScore = 0;
 	m_iTotalClearBlocks = 0;
 	m_iStartClearBlocks = 5;
 	m_iStepClearBlocks = 2;
+	GameCenter::GetInstance()->InitMoveTime();
+	GameCenter::GetInstance()->InitLocalLevel();
+	GameCenter::GetInstance()->InitLocalScore();
+	
+	//	m_rcLocal_borderLine = { m_rcclient.left + 400-1,m_rcclient.top + 85,m_rcclient.left + 820+1,m_rcclient.top + 835 };
 
-	//m_rcLocal_borderLine = { m_rcclient.left + 400 - 1,m_rcclient.top + 50,m_rcclient.left + 850 + 1,m_rcclient.top + 770 };
 	int i, j;
 	for ( i = 0; i < HEIGHT-1; i++)
 	{
 		for (j = 0; j < WIDTH; j++)
 		{
-			BoardPoint[i][j] = { 370 + (m_iBlockWidth*j) ,50 + (m_iBlockWidth*i) };
+			BoardPoint[i][j] = { 370 + (m_iBlockWidth*j) ,85 + (m_iBlockWidth*i) };
 		}
 	}
-	//	m_rcLocal_NextBlock = { m_rcclient.left + 880,m_rcclient.top + 50,m_rcclient.left + 1000 , m_rcclient.top + 170 };
+	//	m_rcLocal_NextBlock = { m_rcclient.left + 880,m_rcclient.top + 85,m_rcclient.left + 1000 , m_rcclient.top + 205 };
 	
 	for (i = 0; i < 4; i++)
 	{
 		for (j = 0; j < 4; j++)
 		{
-			NextBlockPosition[i][j] = { 910 + m_iBlockWidth *j ,80 + (m_iBlockWidth*i) };
+			NextBlockPosition[i][j] = { 920 + m_iBlockWidth *j ,140 + (m_iBlockWidth*i) };
 		}
 	}
 
@@ -60,47 +67,38 @@ void GameScene::Init(void)
 	m_iNextBlocksType = rand() % 7;
 	
 	CreateRandomBlocks();
+
+	
 }
 
 void GameScene::Update(UINT message, WPARAM wParam, LPARAM lParam)
 {
-	ClickEvent(lParam);
-	
-
+	//ClickEvent(lParam);
 	if (!m_GameStart)
 		return;
-	switch (message)
-	{
-	case WM_KEYDOWN:
-		Input();
-		break;
-	}
-	switch (GameCenter::GetInstance()->getScene())
-	{
-	case GameCenter::Scene_enum::GAME_SCENE:
 
-		break;
-	case GameCenter::Scene_enum::LOCALGAME_SCENE:
-		BlockMove();
-		break;
-	}
 	
-
+		switch (message)
+		{
+		case WM_KEYDOWN:
+			Input();
+			break;
+		default:
+			break;
+		}
+	
 }
 
 void GameScene::Render(HWND hWnd, HDC hdc)
 {
-	DrawBackGround(hWnd,hdc);
-	if (!m_GameStart)
-		return;
 	UI(hdc);
-
 }
 
 void GameScene::Free(void)
 {
+	KillTimer(GameCenter::GetInstance()->getHwnd(), 999);
 	DeleteObject(hBlocks);
-	DeleteObject(hBackGround);
+	
 }
 
 void GameScene::UI(HDC hdc)
@@ -112,11 +110,14 @@ void GameScene::UI(HDC hdc)
 
 		break;
 	case GameCenter::Scene_enum::LOCALGAME_SCENE:
-		GameCenter::GetInstance()->getUI()->UIRender(hdc);
+		DrawBackGround(hdc);
+		//GameCenter::GetInstance()->getUI()->UIRender(hdc);
 		PrintScore(hdc);
-		//PrintLevel(hdc);
-		
+		PrintLevel(hdc);
 		DrawBlock(hdc);
+
+
+
 		break;
 	}
 	//PreviewBlocks(hdc);
@@ -138,11 +139,28 @@ void GameScene::ClickEvent(LPARAM lParam)
 
 void GameScene::PrintScore(HDC hdc)
 {
+	HFONT oldFont = (HFONT)SelectObject(hdc, GameCenter::GetInstance()->getUI()->GameFont);
 
+	//TextOut(hdc, 100, 100,L"SCORE", strlen("SCORE"));
+
+	TCHAR tcScore[30];
+	_ltow(GameCenter::GetInstance()->getLocalScore(), tcScore, 10);
+	TextOut(hdc, 600, 20, tcScore, lstrlen(tcScore));
+
+	SelectObject(hdc, oldFont);
 }
 
 void GameScene::PrintLevel(HDC hdc)
 {
+	HFONT oldFont = (HFONT)SelectObject(hdc, GameCenter::GetInstance()->getUI()->GameFont);
+
+	TextOut(hdc, 100, 100, L"LV", strlen("LV"));
+
+	TCHAR tcLevel[30];
+	_ltow(m_iLevel, tcLevel, 10);
+	TextOut(hdc, 200, 140, tcLevel, lstrlen(tcLevel));
+
+	SelectObject(hdc, oldFont);
 }
 
 void GameScene::DrawBlock(HDC hdc)
@@ -175,6 +193,7 @@ void GameScene::DrawBlock(HDC hdc)
 			}
 		}
 	DeleteDC(hBlocksDc);
+	DeleteObject(hBlocks);
 }
 
 int  GameScene::DrawCurBlock()
@@ -294,9 +313,27 @@ void GameScene::CreateRandomBlocks()
 	m_iCurBlocksType = m_iNextBlocksType;
 	m_iCurBlocksState = 0;
 	m_iNextBlocksType = rand() % 7;
+
+
+
+	//GameCenter::GetInstance()->setLocalScore(GameCenter::GetInstance()->getLocalScore() + 100);
+	//if (m_iLevel != GameCenter::GetInstance()->getLocalLevel())
+	//{
+	//	if (!(m_iLevel * 10 >= 10000))
+	//	{
+	//		m_iLevel = GameCenter::GetInstance()->getLocalLevel();
+	//	}
+	//	SetTimer(GameCenter::GetInstance()->getHwnd(), 999, 10000 / (m_iLevel *10), BlockUpdate);
+	//}
+
+
+
+
+
 	if (GameOver())
 	{
 		m_GameStart = false;
+		return;
 	}
 
 	SetBlockToGameBoard();
@@ -307,8 +344,9 @@ bool GameScene::GameOver()
 {
 	for (int i = 1; i < WIDTH; i++)
 	{
-		if (m_iGameBoard[0][i] > 0)
+		if (m_iGameBoard[0][i] > 0 || m_iGameBoard[1][i] > 0)
 			return true;
+
 	}
 	return false;
 }
@@ -391,9 +429,7 @@ void GameScene::Input()
 
 	}
 
-	
-
-
+	SetBlockToGameBoard();
 
 }
 
@@ -507,12 +543,20 @@ void GameScene::LineFullCheck()
 				{
 					m_iGameBoard[k][j] = m_iGameBoard[k - 1][j];   //y 1감소
 				}
+
+			GameCenter::GetInstance()->setLocalScore(GameCenter::GetInstance()->getLocalScore() + 100);
+			if (m_iLevel != GameCenter::GetInstance()->getLocalLevel())
+			{
+				if (!(m_iLevel * speed >= 10000))
+				{
+					m_iLevel = GameCenter::GetInstance()->getLocalLevel();
+				}
+				SetTimer(GameCenter::GetInstance()->getHwnd(), 999, 10000 / (m_iLevel * speed), BlockUpdate);
+			}
+
+
 		}
 	}
-
-
-
-
 }
 
 void GameScene::MoveCollision()
@@ -521,7 +565,7 @@ void GameScene::MoveCollision()
 
 }
 
-void GameScene::DrawBackGround(HWND hWnd,HDC hdc)
+void GameScene::DrawBackGround(HDC hdc)
 {
 	HBITMAP h01Bitmap;
 	int bx, by;
@@ -535,10 +579,34 @@ void GameScene::DrawBackGround(HWND hWnd,HDC hdc)
 	bx = bitBackground.bmWidth;
 	by = bitBackground.bmHeight;
 	
-	StretchBlt(hdc, 0,0, bx, by, hBlocksDc, 0, 0, bx, by, SRCCOPY);   //각 블럭의 색
+	StretchBlt(hdc, 0,0, bx+872, by+644, hBlocksDc, 0, 0, bx, by, SRCCOPY);   //각 블럭의 색
 
 
 	DeleteDC(hBlocksDc);
 		
+	DeleteObject(hBackGround);
+}
 
+
+void GameScene::nonStaticUpdate()
+{
+
+	if (!m_GameStart)
+		return;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+	switch (GameCenter::GetInstance()->getScene())
+	{
+	case GameCenter::Scene_enum::GAME_SCENE:
+
+		break;
+	case GameCenter::Scene_enum::LOCALGAME_SCENE:
+		BlockMove();
+		break;
+	}
+
+
+}
+
+void CALLBACK BlockUpdate(HWND, UINT, UINT_PTR, DWORD)
+{
+	GameCenter::GetInstance()->getGameScene()->nonStaticUpdate();
 }
