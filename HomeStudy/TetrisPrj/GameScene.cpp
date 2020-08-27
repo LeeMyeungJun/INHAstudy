@@ -1,12 +1,9 @@
 #include "stdafx.h"
 
-
 //char *str[] = { "Game Over", "Next Block", "Score : ", "Level : ", "F2 : Start Game","F3 : Game Pause","HOLD" };
 
 GameScene::GameScene()
 {
-	
-
 }
 
 GameScene::~GameScene()
