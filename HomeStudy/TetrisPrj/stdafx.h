@@ -35,7 +35,6 @@
 #include "SoundCenter.h"
 #include "NetWorkManager.h"
 #include "GameCenter.h"
-#include "Block.h"
 #include "Scene.h"
 #include "RoomScene.h"
 #include "LoginScene.h"
@@ -43,3 +42,5 @@
 #include "GameScene.h"
 
 #pragma comment(lib,"msimg32.lib")
+
+const int MOVE_DELAY = 80;

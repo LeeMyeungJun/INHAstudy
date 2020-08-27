@@ -13,5 +13,12 @@ public:
 	void UI(HDC hdc);
 	void ClickEvent(LPARAM lParam);
 
+private:
+	HBITMAP hBackGround;
+	BITMAP bitBackground;
+	HDC hBackDC;
+	
+	RECT clientRect;
+
 };
 

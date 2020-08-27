@@ -141,7 +141,6 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Block.h" />
     <ClInclude Include="GameCenter.h" />
     <ClInclude Include="GameScene.h" />
     <ClInclude Include="LobbyScene.h" />
@@ -157,7 +156,6 @@
     <ClInclude Include="UI.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Block.cpp" />
     <ClCompile Include="GameCenter.cpp" />
     <ClCompile Include="GameScene.cpp" />
     <ClCompile Include="LobbyScene.cpp" />

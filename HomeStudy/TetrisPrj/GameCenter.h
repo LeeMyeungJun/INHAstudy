@@ -26,6 +26,13 @@ public:
 private:
 	HWND hWnd;
 	HINSTANCE hInstance;
+	int		 m_MoveTime;
+	int		 m_LocalLevel;
+	int		 m_LocalScoreCheck;
+	int		 m_LocalScore;
+
+
+
 private:
 	Scene		 * m_Scene;
 	LoginScene	 *m_LoginScene;
@@ -53,6 +60,40 @@ public:
 	UI* getUI() { return m_UI; }
 
 
+	GameScene * getGameScene()
+	{
+		return m_GameScene;
+	}
+
+	void InitMoveTime() { m_MoveTime = 0; }
+	inline int getMoveTime() { return m_MoveTime; }
+	void setMoveTime(int time) { m_MoveTime = time; }
+
+	void InitLocalLevel() { m_LocalLevel = 1; }
+	int  getLocalLevel() { return m_LocalLevel; }
+	void setLocalLevel(int level) { m_LocalLevel = level; }
+
+	void InitLocalScore()
+	{
+		m_LocalScore = 0;
+		m_LocalScoreCheck = 0;
+	}
+	inline int  getLocalScore() { return m_LocalScore; }
+	inline void setLocalScore(int score)
+	{ 
+		m_LocalScore = score; 
+		m_LocalScoreCheck += score;
+
+		if (m_LocalScoreCheck >= 2000)
+		{
+			m_LocalScoreCheck = 0;
+			m_LocalLevel++;
+		}
+	
+	}
+
+
+
 	static GameCenter* GetInstance()
 	{
 		static GameCenter instance;
@@ -64,5 +105,8 @@ public:
 	void Update(UINT message, WPARAM wParam, LPARAM lParam);
 	void Render(HWND hWnd, HDC hdc);
 	void SceneChange(Scene_enum nextScene);
+
+
+	
 };
 

@@ -3,11 +3,10 @@
 
 UI::UI(GameCenter * wrapped):m_gameCenter(wrapped)
 {
-	
 	TitleFont = CreateFont(FONT_TITLE_SIZE, 0, 0, 0, 0, 0, 0, 0, DEFAULT_CHARSET, 0, 0, 0, 0, L"1훈새마을운동 R");
 	CommonFont = CreateFont(FONT_COMMON_SIZE, 0, 0, 0, 0, 0, 0, 0, DEFAULT_CHARSET, 0, 0, 0, 0, L"빙그레체");
 	EndFont = CreateFont(FONT_END_SIZE, 0, 0, 0, 0, 0, 0, 0, DEFAULT_CHARSET, 0, 0, 0, 0, L"빙그레체");
-	GameFont = CreateFont(FONT_GAME_SIZE, 0, 0, 0, 0, 0, 0, 0, DEFAULT_CHARSET, 0, 0, 0, 0, L"1훈새마을운동 R");
+	GameFont = CreateFont(FONT_GAME_SIZE, 0, 0, 0, FW_BOLD, 0, 0, 0, DEFAULT_CHARSET, 0, 0, 0, 0, L"1훈새마을운동 R");
 	ManualFont = CreateFont(FONT_MANUAL_SIZE, 0, 0, 0, 0, 0, 0, 0, DEFAULT_CHARSET, 0, 0, 0, 0, L"1훈새마을운동 R");
 
 	LineBrush = CreateSolidBrush(RGB(255, 0, 0)); //빨간색
@@ -31,10 +30,10 @@ void UI::Init()
 	m_rcLogin_OnlineBtn  = { m_rcclient.right - 900,m_rcclient.bottom - 500,m_rcclient.right - 500,m_rcclient.bottom - 200 };
 	m_rcLogin_ExitBtn	 = { m_rcclient.right - 150, m_rcclient.top + 30, m_rcclient.right - 50, m_rcclient.top + 100 };
 	/*로컬*/
-	m_rcLocal_borderLine = { m_rcclient.left + 400-1,m_rcclient.top + 50,m_rcclient.left + 820+1,m_rcclient.top + 800 };
-	m_rcLocal_NextBlock = { m_rcclient.left + 880,m_rcclient.top + 50,m_rcclient.left + 1030 , m_rcclient.top + 200 };
+	m_rcLocal_borderLine = { m_rcclient.left + 400-1,m_rcclient.top + 85,m_rcclient.left + 820+1,m_rcclient.top + 835 };
+	m_rcLocal_NextBlock = { m_rcclient.left + 880,m_rcclient.top + 85,m_rcclient.left + 1000 , m_rcclient.top + 205 };
 	m_rcLocal_ExitBtn	= { m_rcclient.right - 550,m_rcclient.bottom - 250,m_rcclient.right - 350,m_rcclient.bottom -150 };
-	m_rcLocal_Manual	= { m_rcclient.right - 600,m_rcclient.bottom - 350,m_rcclient.right - 350,m_rcclient.bottom - 150 };
+	m_rcLocal_Manual	= { m_rcclient.right - 660,m_rcclient.bottom - 350,m_rcclient.right - 350,m_rcclient.bottom - 150 };
 	/*로비*/
 	m_rcLobby_Room		= { m_rcclient.left + 500,m_rcclient.top + 100,m_rcclient.right - 500,m_rcclient.top + 250 };
 	m_rcLobby_RoomMake  = { m_rcclient.left + 500,m_rcclient.bottom - 400,m_rcclient.left + 900,m_rcclient.bottom - 200 };
@@ -100,12 +99,12 @@ void UI::LoginRender(HDC hdc)
 	DrawText(hdc, m_LocalBtn.c_str(), m_LocalBtn.size(), &rectTemp, DT_TOP | DT_CENTER | DT_SINGLELINE);
 
 
-	/*Online BUTTON*/
-	Rectangle(hdc, m_rcLogin_OnlineBtn.left, m_rcLogin_OnlineBtn.top, m_rcLogin_OnlineBtn.right, m_rcLogin_OnlineBtn.bottom);
-	//폰트 start와 동일.
-	rectTemp = m_rcLogin_OnlineBtn;
-	rectTemp.top += 80;
-	DrawText(hdc, m_OnlineBtn.c_str(), m_OnlineBtn.size(), &rectTemp, DT_TOP | DT_CENTER | DT_SINGLELINE);
+	///*Online BUTTON*/
+	//Rectangle(hdc, m_rcLogin_OnlineBtn.left, m_rcLogin_OnlineBtn.top, m_rcLogin_OnlineBtn.right, m_rcLogin_OnlineBtn.bottom);
+	////폰트 start와 동일.
+	//rectTemp = m_rcLogin_OnlineBtn;
+	//rectTemp.top += 80;
+	//DrawText(hdc, m_OnlineBtn.c_str(), m_OnlineBtn.size(), &rectTemp, DT_TOP | DT_CENTER | DT_SINGLELINE);
 
 	/*EXIT */
 	Rectangle(hdc, m_rcLogin_ExitBtn.left, m_rcLogin_ExitBtn.top, m_rcLogin_ExitBtn.right, m_rcLogin_ExitBtn.bottom);
@@ -124,11 +123,10 @@ void UI::LocalRender(HDC hdc)
 {
 	RECT rectTemp;
 	/*BORDERLINE*/
-	Rectangle(hdc, m_rcLocal_borderLine.left, m_rcLocal_borderLine.top, m_rcLocal_borderLine.right, m_rcLocal_borderLine.bottom);
+	//Rectangle(hdc, m_rcLocal_borderLine.left, m_rcLocal_borderLine.top, m_rcLocal_borderLine.right, m_rcLocal_borderLine.bottom);
 
 	/*GAMEBOARD*/
-	Rectangle(hdc, m_rcLocal_NextBlock.left, m_rcLocal_NextBlock.top, m_rcLocal_NextBlock.right, m_rcLocal_NextBlock.bottom);
-	Rectangle(hdc, m_rcLocal_GameBoard.left, m_rcLocal_GameBoard.top, m_rcLocal_GameBoard.right, m_rcLocal_GameBoard.bottom);
+	//Rectangle(hdc, m_rcLocal_NextBlock.left, m_rcLocal_NextBlock.top, m_rcLocal_NextBlock.right, m_rcLocal_NextBlock.bottom);
 	HFONT oldFont = (HFONT)SelectObject(hdc, CommonFont);
 
 	/*Maual*/

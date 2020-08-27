@@ -101,7 +101,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
    hInst = hInstance; // Store instance handle in our global variable
 
    HWND hWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
-      0, 0, GetSystemMetrics(SM_CXSCREEN), GetSystemMetrics(SM_CXSCREEN), nullptr, nullptr, hInstance, nullptr);
+      300, 30, 1150, 905, nullptr, nullptr, hInstance, nullptr);
 
    if (!hWnd)
    {
@@ -127,7 +127,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	static GameCenter *Gamecenter = nullptr;
-
+	
     switch (message)
     {
 	case WM_CREATE:
@@ -137,7 +137,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		
 		Gamecenter->setHwnd(hWnd);
 		Gamecenter->setHInstance(hInst);
-		SetTimer(hWnd, 1, 500 , NULL);
+		SetTimer(hWnd, 1, 1000/120 , NULL);
 
 		break;
     case WM_COMMAND:
@@ -159,23 +159,52 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         break;
     case WM_PAINT:
         {
+
             PAINTSTRUCT ps;
 			HDC hdc = BeginPaint(hWnd, &ps);
-            // TODO: Add any drawing code that uses hdc here...
-			Gamecenter->Render(hWnd, hdc);
-            EndPaint(hWnd, &ps);
+			
+
+			HDC back;
+			back = CreateCompatibleDC(hdc);
+			HBITMAP backHBIT = CreateCompatibleBitmap(hdc, ps.rcPaint.right - ps.rcPaint.left, ps.rcPaint.bottom - ps.rcPaint.top);
+			SelectObject(back, backHBIT);
+			
+			SetBkMode(back, TRANSPARENT); //글자배경색 투명으로만듬
+
+			Gamecenter->Render(hWnd, back);
+
+
+
+			BitBlt(hdc, 0, 0, ps.rcPaint.right, ps.rcPaint.bottom, back, 0, 0, SRCCOPY);
+			DeleteDC(back);
+			DeleteObject(backHBIT);
+
+
+
+			EndPaint(hWnd, &ps);
         }
         break;
 	case WM_KEYDOWN:
 		{
-			Gamecenter->Update(message, wParam, lParam);
-			InvalidateRgn(hWnd, NULL, false);
+	
+			int time = GetTickCount();
+	
+			if (Gamecenter->getMoveTime() + MOVE_DELAY < time)
+			{
+				Gamecenter->setMoveTime(time);
+
+				Gamecenter->Update(message, wParam, lParam);
+				InvalidateRgn(hWnd, NULL, false);
+			}
 		}
 		break;
 	case WM_LBUTTONDOWN:
 		{
-			Gamecenter->Update(message, wParam, lParam);
-			InvalidateRgn(hWnd, NULL, false);
+			
+
+				Gamecenter->Update(message, wParam, lParam);
+				InvalidateRgn(hWnd, NULL, false);
+			
 		}
 		break;
 	case WM_TIMER:
