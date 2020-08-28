@@ -9,4 +9,5 @@
 
 
 
-NetWorkManager *g_NetworkManager;
+//NetWorkManager *g_NetworkManager;
+SoundManager* g_theSoundManager;

@@ -1,7 +1,7 @@
 #include "stdafx.h"
 
 
-SoundCenter* GameCenter::m_SoundCeneter =nullptr;
+
 UI * GameCenter::m_UI = nullptr;
 
 GameCenter::GameCenter()
@@ -12,7 +12,7 @@ GameCenter::GameCenter()
 	m_RoomScene = nullptr;
 	m_GameScene = nullptr;
 
-	m_SoundCeneter = new SoundCenter();
+	
 	m_UI = new UI(this);
 	Init();
 	
@@ -81,7 +81,7 @@ void GameCenter::SceneChange(Scene_enum nextScene)
 		if (m_RoomScene != nullptr) delete m_RoomScene;
 		if (m_GameScene != nullptr) delete m_GameScene;
 		if (m_UI != nullptr) delete m_UI;
-		if (m_SoundCeneter != nullptr) delete m_SoundCeneter;
+
 		if (m_Scene != nullptr) delete m_Scene;
 
 		PostQuitMessage(0);

@@ -11,8 +11,8 @@
 HINSTANCE hInst;                                // current instance
 WCHAR szTitle[MAX_LOADSTRING];                  // The title bar text
 WCHAR szWindowClass[MAX_LOADSTRING];            // the main window class name
-extern NetWorkManager *g_NetworkManager;
-
+//extern NetWorkManager *g_NetworkManager;
+extern SoundManager* g_theSoundManager;
 
 // Forward declarations of functions included in this code module:
 ATOM                MyRegisterClass(HINSTANCE hInstance);
@@ -127,18 +127,29 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	static GameCenter *Gamecenter = nullptr;
-	
     switch (message)
     {
 	case WM_CREATE:
 		srand(time(NULL));
+
+
+
+		if (g_theSoundManager == nullptr)
+		{
+			g_theSoundManager = new SoundManager();
+			g_theSoundManager->AddBGM("sound/bgm.mp3");
+			g_theSoundManager->AddSFX("sound/effDelete.mp3", "BlockDelete");
+			g_theSoundManager->AddSFX("sound/effSelect.mp3", "Select");
+			g_theSoundManager->AddSFX("sound/effSpace.mp3", "Space");
+		}
+		g_theSoundManager->PlayBGM();
 		Gamecenter = GameCenter::GetInstance();
 		//g_NetworkManager = NetWorkManager::GetInstance();
 		
 		Gamecenter->setHwnd(hWnd);
 		Gamecenter->setHInstance(hInst);
 		SetTimer(hWnd, 1, 1000/144 , NULL);
-
+		
 		break;
     case WM_COMMAND:
         {
@@ -222,6 +233,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	}
 	break;
     case WM_DESTROY:
+		g_theSoundManager->Stop();
+		delete g_theSoundManager;
 		KillTimer(hWnd, 1);
         PostQuitMessage(0);
         break;

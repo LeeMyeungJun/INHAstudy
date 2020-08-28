@@ -1,20 +1,29 @@
 #pragma once
+#include <fmod.hpp>
+#pragma comment(lib,"fmodex_vc.lib")
+#include <string>
+#include <map>
 
 using namespace std;
-class SoundCenter
+using namespace FMOD;
+
+class SoundManager
 {
-	/*System * fmodSystem;
+private:
+	System * fmodSystem;
 
 	Channel* bgmChannel;
 	Channel* sfxChannel;
 
 	Sound* bgm;
 	map<string, Sound*> soundHash;
-*/
-public:
-	SoundCenter();
-	~SoundCenter();
 
+private:
+	void init();
+
+public:
+	SoundManager();
+	~SoundManager();
 
 	void AddSFX(string path, string musicName);
 	void AddBGM(string path);
@@ -26,7 +35,5 @@ public:
 
 	void Destroy();
 
-
-	
 };
 

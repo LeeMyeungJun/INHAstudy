@@ -32,7 +32,7 @@
 
 //class
 #include "UI.h"
-#include "SoundCenter.h"
+#include "SoundManager.h"
 #include "NetWorkManager.h"
 #include "GameCenter.h"
 #include "Scene.h"
@@ -43,4 +43,6 @@
 
 #pragma comment(lib,"msimg32.lib")
 
+
 const int MOVE_DELAY = 80;
+

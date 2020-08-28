@@ -5,7 +5,7 @@ class LobbyScene;
 class RoomScene;
 class GameScene;
 class LocalGameScene;
-class SoundCenter;
+
 class UI;
 
 class GameCenter
@@ -39,8 +39,6 @@ private:
 	LobbyScene	 *m_LobbyScene;
 	RoomScene	 *m_RoomScene;
 	GameScene	 *m_GameScene;
-
-	static SoundCenter *m_SoundCeneter;
 	static UI *m_UI;
 private:
 	Scene_enum  m_Scene_enum;

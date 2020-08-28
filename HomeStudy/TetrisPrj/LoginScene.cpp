@@ -1,10 +1,11 @@
 #include "stdafx.h"
 
-
+extern SoundManager* g_theSoundManager;
 const float BtnZoom = 1.3;
+
 LoginScene::LoginScene()
 {
-	
+
 }
 
 
@@ -14,6 +15,7 @@ LoginScene::~LoginScene()
 
 void LoginScene::Init()
 {
+	
 	StartBtnRect = { 455, 300,650,500 };
 	m_startBtn_size = 1;
 }
@@ -57,23 +59,15 @@ void LoginScene::ClickEvent(LPARAM lParam)
 		int Clickx = LOWORD(lParam);
 		int Clicky = HIWORD(lParam);
 
-		/*if (Clickx >= GameCenter::GetInstance()->getUI()->getRCLogin_ExitBtn().left &&Clickx <= GameCenter::GetInstance()->getUI()->getRCLogin_ExitBtn().right
-			&& Clicky >= GameCenter::GetInstance()->getUI()->getRCLogin_ExitBtn().top && Clicky <= GameCenter::GetInstance()->getUI()->getRCLogin_ExitBtn().bottom)
-		{
-			PostQuitMessage(0);
-		}
-		else */
+
 		if (Clickx >= StartBtnRect.left &&Clickx <= StartBtnRect.right
 			&& Clicky >= StartBtnRect.top && Clicky <= StartBtnRect.bottom)
 		{
+			g_theSoundManager->PlaySFX("Select");
 			GameCenter::GetInstance()->SceneChange(GameCenter::Scene_enum::LOCALGAME_SCENE);
 
 		}
-		//else if (Clickx >= GameCenter::GetInstance()->getUI()->getRcLogin_OnlineBtn().left &&Clickx <= GameCenter::GetInstance()->getUI()->getRcLogin_OnlineBtn().right
-		//	&& Clicky >= GameCenter::GetInstance()->getUI()->getRcLogin_OnlineBtn().top && Clicky <= GameCenter::GetInstance()->getUI()->getRcLogin_OnlineBtn().bottom)
-		//{
-		//	GameCenter::GetInstance()->SceneChange(GameCenter::Scene_enum::LOBBY_SCENE);
-		//}
+
 
 		
 }

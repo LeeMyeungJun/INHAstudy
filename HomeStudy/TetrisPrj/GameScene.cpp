@@ -1,7 +1,8 @@
 #include "stdafx.h"
 
 
-//char *str[] = { "Game Over", "Next Block", "Score : ", "Level : ", "F2 : Start Game","F3 : Game Pause","HOLD" };
+extern SoundManager* g_theSoundManager;
+
 void CALLBACK BlockUpdate(HWND, UINT, UINT_PTR, DWORD);
 
 const int speed = 15;
@@ -434,6 +435,7 @@ void GameScene::CreateRandomBlocks()
 		return;
 	}
 
+
 	SetBlockToGameBoard();
 	
 }
@@ -531,7 +533,7 @@ void GameScene::Input()
 
 	if (GetAsyncKeyState(VK_SPACE) & 0x8000)
 	{
-
+		g_theSoundManager->PlaySFX("Space");
 		InputProcess(VK_SPACE);
 
 	}
@@ -611,6 +613,8 @@ void GameScene::InputProcess(UINT message)
 		break;
 	case VK_SPACE:
 	{
+		
+
 		while (!CheckCollision())
 		{
 			m_iCurBlocksY++;
@@ -623,7 +627,7 @@ void GameScene::InputProcess(UINT message)
 
 
 
-
+		
 		LineFullCheck();
 		CreateRandomBlocks();
 
@@ -635,7 +639,7 @@ void GameScene::InputProcess(UINT message)
 
 void GameScene::LineFullCheck()
 {
-	int i, j, k, sum, deleteLine = 0;
+	int i, j, k, sum;
 
 
 	//26 16  24 14
@@ -647,6 +651,7 @@ void GameScene::LineFullCheck()
 
 		if (sum == WIDTH-2)
 		{
+			g_theSoundManager->PlaySFX("BlockDelete");
 			for (k = i; k > 0; k--)
 				for (j = 1; j < WIDTH; j++)
 				{
