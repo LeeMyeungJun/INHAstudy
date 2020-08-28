@@ -137,7 +137,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		
 		Gamecenter->setHwnd(hWnd);
 		Gamecenter->setHInstance(hInst);
-		SetTimer(hWnd, 1, 1000/120 , NULL);
+		SetTimer(hWnd, 1, 1000/144 , NULL);
 
 		break;
     case WM_COMMAND:
@@ -202,7 +202,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		break;
 	case WM_MOUSEMOVE:
 		{
-			if (Gamecenter->getScene() == GameCenter::Scene_enum::LOGIN_SCENE)
+			if (Gamecenter->getScene() == GameCenter::Scene_enum::LOGIN_SCENE || Gamecenter->getScene() == GameCenter::Scene_enum::LOCALGAME_SCENE)
 			{
 				Gamecenter->Update(message, wParam, lParam);
 			}

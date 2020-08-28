@@ -11,6 +11,7 @@ private:
 	int		 m_iCurBlocksType;		
 	int		 m_iCurBlocksState;	
 	int		 m_iCurBlocksX, m_iCurBlocksY;
+	int		 m_iGuideBlocksX, m_iGuideBlocksY;
 	int		 m_iGostType;
 	int		 m_iGostState;
 	int		 m_iGostY;
@@ -19,7 +20,10 @@ private:
 	int		 m_iGameBoard[HEIGHT][WIDTH];			
 	int		 m_iTotalClearBlocks;	
 	int		 m_iStartClearBlocks;	
-	int		 m_iStepClearBlocks;	
+	int		 m_iStepClearBlocks;
+	int		 m_iAnimation;
+	RECT	 m_YesBtn;
+	RECT	 m_NoBtn;
 
 	
 public:
@@ -29,7 +33,10 @@ public:
 
 	POINT BoardPoint[HEIGHT-1][WIDTH-1];
 	POINT NextBlockPosition[4][4];
+	POINT GuideBlockPosition[4][4];
+
 	POINT Position[4];
+	POINT GuidePosition[4];
 	
 	HBITMAP hBlocks;
 	BITMAP bitBlcok;
@@ -49,16 +56,25 @@ public:
 	void PrintScore(HDC hdc);
 	void PrintLevel(HDC hdc);
 	void DrawBlock(HDC hdc);
-	int  DrawCurBlock();
-	void PreviewBlocks(HDC hdc);
 	void PositionSave();
+	void GuidePositionSave();
 	void SetBlockToGameBoard();
+
 	bool CheckCollision();
+	/*가이드*/
+	bool CheckGuideCollision();
+	void GuidBlock();
+	void SetGuideBlockToGameBoard();
+	void ClearGuideBlocks();
+
+
 	bool TurnCheckCollision();
 	void CreateRandomBlocks();
 	bool GameOver();
 	void BlockMove();
 	void ClearCurBlocks(int x, int y);
+
+
 	void RotateBlocks();
 	void Input();
 	void InputProcess(UINT message);
@@ -66,6 +82,14 @@ public:
 	void MoveCollision();
 	void DrawBackGround(HDC hdc);
 	void nonStaticUpdate();
+
+	void DrawGameOver(HDC hdc);
+	void DrawContinue(HDC hdc);
+	void DrawContinue2(HDC hdc);
+	void DrawContinue3(HDC hdc);
+	void BtnAnimaition(LPARAM lParam);
+	
+	
 
 public:
 	/* 테트리스 블록 모양 및 색상 설정*/

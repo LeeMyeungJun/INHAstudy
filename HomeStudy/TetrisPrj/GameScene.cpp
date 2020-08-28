@@ -32,12 +32,19 @@ void GameScene::Init(void)
 	m_iTotalClearBlocks = 0;
 	m_iStartClearBlocks = 5;
 	m_iStepClearBlocks = 2;
+	m_iGuideBlocksX = 0;
+	m_iGuideBlocksY = 0;
 	GameCenter::GetInstance()->InitMoveTime();
 	GameCenter::GetInstance()->InitLocalLevel();
 	GameCenter::GetInstance()->InitLocalScore();
+	m_iAnimation = 0;
 	
-	//	m_rcLocal_borderLine = { m_rcclient.left + 400-1,m_rcclient.top + 85,m_rcclient.left + 820+1,m_rcclient.top + 835 };
 
+	m_YesBtn = { 495, 537, 595, 580 };
+	m_NoBtn = { 650, 537, 750, 580 };
+
+	//	m_rcLocal_borderLine = { m_rcclient.left + 400-1,m_rcclient.top + 85,m_rcclient.left + 820+1,m_rcclient.top + 835 };
+	
 	int i, j;
 	for ( i = 0; i < HEIGHT-1; i++)
 	{
@@ -63,6 +70,15 @@ void GameScene::Init(void)
 			m_iGameBoard[i][j] = (j == 0 || i == HEIGHT - 1 || j == WIDTH - 1) ? -1 : 0;
 		}
 	}
+	
+	for (i = 0; i < 4; i++)
+	{
+		GuidePosition[i].x = 0;
+		GuidePosition[i].y = 0;
+		Position[i].x = 0;
+		Position[i].y = 0;
+
+	}
 
 	m_iNextBlocksType = rand() % 7;
 	
@@ -75,17 +91,31 @@ void GameScene::Update(UINT message, WPARAM wParam, LPARAM lParam)
 {
 	//ClickEvent(lParam);
 	if (!m_GameStart)
+	{
+		if(message == WM_MOUSEMOVE)
+			BtnAnimaition(lParam);
+		else if (message == WM_LBUTTONDOWN)
+		{
+			ClickEvent(lParam);
+		}
+
+
+
+
 		return;
+	}
+		
 
 	
 		switch (message)
 		{
-		case WM_KEYDOWN:
+		case WM_KEYDOWN:	
 			Input();
 			break;
 		default:
 			break;
 		}
+		GuidBlock();
 	
 }
 
@@ -103,11 +133,9 @@ void GameScene::Free(void)
 
 void GameScene::UI(HDC hdc)
 {
-
 	switch (GameCenter::GetInstance()->getScene())
 	{
 	case GameCenter::Scene_enum::GAME_SCENE:
-
 		break;
 	case GameCenter::Scene_enum::LOCALGAME_SCENE:
 		DrawBackGround(hdc);
@@ -115,14 +143,30 @@ void GameScene::UI(HDC hdc)
 		PrintScore(hdc);
 		PrintLevel(hdc);
 		DrawBlock(hdc);
+		if (!m_GameStart)
+		{
+			DrawGameOver(hdc);
+			
 
-
+     			switch (m_iAnimation)
+			{
+			case 0:
+				DrawContinue(hdc);
+				break;
+			case 1:
+				DrawContinue2(hdc);
+				break;
+			case -1:
+				DrawContinue3(hdc);
+				break;
+			}
+				//Rectangle(hdc, m_YesBtn.left, m_YesBtn.top, m_YesBtn.right, m_YesBtn.bottom);
+				//Rectangle(hdc, m_NoBtn.left, m_NoBtn.top, m_NoBtn.right, m_NoBtn.bottom);
+			
+		}
 
 		break;
 	}
-	//PreviewBlocks(hdc);
-
-
 }
 
 void GameScene::ClickEvent(LPARAM lParam)
@@ -130,11 +174,17 @@ void GameScene::ClickEvent(LPARAM lParam)
 	int Clickx = LOWORD(lParam);
 	int Clicky = HIWORD(lParam);
 
-	if (Clickx >= GameCenter::GetInstance()->getUI()->getRCLocal_ExitBtn().left &&Clickx <= GameCenter::GetInstance()->getUI()->getRCLocal_ExitBtn().right
-		&& Clicky >= GameCenter::GetInstance()->getUI()->getRCLocal_ExitBtn().top && Clicky <= GameCenter::GetInstance()->getUI()->getRCLocal_ExitBtn().bottom)
+	if (Clickx >= m_YesBtn.left &&Clickx <= m_YesBtn.right
+		&& Clicky >= m_YesBtn.top && Clicky <= m_YesBtn.bottom)
+	{
+		Init();
+	}
+	else if (Clickx >= m_NoBtn.left &&Clickx <= m_NoBtn.right
+		&& Clicky >= m_NoBtn.top && Clicky <= m_NoBtn.bottom)
 	{
 		GameCenter::GetInstance()->SceneChange(GameCenter::Scene_enum::LOGIN_SCENE);
 	}
+	
 }
 
 void GameScene::PrintScore(HDC hdc)
@@ -177,13 +227,20 @@ void GameScene::DrawBlock(HDC hdc)
 	by = bitBlcok.bmHeight;
 
 	int i, j;
+	//움직이는 블럭
 	for (i = 0; i < HEIGHT; i++)
 		for (j = 0; j < WIDTH; j++)
 		{
 			if (m_iGameBoard[i][j] > 0)   //블럭이 존재할 때
 				StretchBlt(hdc, BoardPoint[i][j].x, BoardPoint[i][j].y, m_iBlockWidth, m_iBlockWidth, hBlocksDc,16 * (m_iGameBoard[i][j] -1), 0,16,by, SRCCOPY);   //각 블럭의 색
+			else if (m_iGameBoard[i][j] == -2)
+			{
+				//가이드 블럭
+				TransparentBlt(hdc, BoardPoint[i][j].x, BoardPoint[i][j].y, m_iBlockWidth, m_iBlockWidth, hBlocksDc, 16 * 8, 0, 16, by, RGB(255, 0, 255));// bx*4 ,by*4 는 4배한것.
+			}
 		}
 
+	//다음블럭
 	for (i = 0; i < 4; i++)
 		for (j = 0; j < 4; j++)
 		{
@@ -196,30 +253,6 @@ void GameScene::DrawBlock(HDC hdc)
 	DeleteObject(hBlocks);
 }
 
-int  GameScene::DrawCurBlock()
-{
-	return TRUE;
-}
-
-void GameScene::PreviewBlocks(HDC hdc)
-{
-	int i, j, bitmapX;
-	if (m_iNextBlocksType >= 0 && m_iNextBlocksType < 7)
-	{
-		for (i = 0; i < 4; i++)
-		{
-			for (j = 0; j < 4; j++)
-			{
-				if (m_BlockList[m_iNextBlocksType][0][i][j] > 0)   //회전되지 않은 블럭이 있을 때
-					bitmapX = m_iNextBlocksType * 16;
-				else
-					bitmapX = 16 * 8;
-
-				BitBlt(hdc, 280 + j * 16, 10 + i * 16, 16, 16, hBlocksDc, bitmapX, 0, SRCCOPY);   //hBlockDc에 저장된 비트맵을 bitmapX값에 따라 출력
-			}
-		}
-	}
-}
 
 void GameScene::PositionSave()
 {
@@ -234,6 +267,25 @@ void GameScene::PositionSave()
 			if (m_BlockList[m_iCurBlocksType][m_iCurBlocksState][i][j] > 0)
 			{
 				Position[cnt] = { m_iCurBlocksX + j ,m_iCurBlocksY + i };
+				cnt++;
+			}
+
+		}
+	}
+}
+
+void GameScene::GuidePositionSave()
+{
+	int i, j;
+	int cnt = 0;
+
+	for (i = 0; i < 4; i++)
+	{
+		for (j = 0; j < 4; j++)
+		{
+			if (m_BlockList[m_iCurBlocksType][m_iCurBlocksState][i][j] > 0)
+			{
+				GuidePosition[cnt] = { m_iGuideBlocksX + j ,m_iGuideBlocksY + i };
 				cnt++;
 			}
 
@@ -258,6 +310,23 @@ void GameScene::SetBlockToGameBoard()
 
 }
 
+void GameScene::SetGuideBlockToGameBoard()
+{
+	int i, j;
+	for (i = 0; i < 4; i++)
+	{
+		for (j = 0; j < 4; j++)
+		{
+			if (m_BlockList[m_iCurBlocksType][m_iCurBlocksState][i][j] > 0)
+			{
+				m_iGameBoard[i + m_iGuideBlocksY][j + m_iGuideBlocksX] = -2;
+	
+			}
+		}
+	}
+
+}
+
 bool GameScene::CheckCollision()
 {
 	int i, j,temp;
@@ -276,12 +345,43 @@ bool GameScene::CheckCollision()
 					temp = j;
 					CheckFlag = true;
 				}
-					
 			}
 		}
 		if (!CheckFlag)
 			temp = i;
 		if (m_iGameBoard[Position[temp].y][Position[temp].x] == -1 || m_iGameBoard[Position[temp].y][Position[temp].x] > 0)
+		{
+			return true;
+		}
+	}
+
+	return false;
+}
+
+bool GameScene::CheckGuideCollision()
+{
+	int i, j, temp;
+	bool CheckFlag = false;
+
+	for (i = 0; i < 4; i++)
+	{
+		CheckFlag = false;
+		for (j = 0; j < 4; j++)
+		{
+			if (GuidePosition[i].x == GuidePosition[j].x)
+			{
+
+				if (GuidePosition[j].y > GuidePosition[i].y)
+				{
+					temp = j;
+					CheckFlag = true;
+				}
+
+			}
+		}
+		if (!CheckFlag)
+			temp = i;
+		if (m_iGameBoard[GuidePosition[temp].y][GuidePosition[temp].x] == -1 || m_iGameBoard[GuidePosition[temp].y][GuidePosition[temp].x] > 0)
 		{
 			return true;
 		}
@@ -314,6 +414,8 @@ void GameScene::CreateRandomBlocks()
 	m_iCurBlocksState = 0;
 	m_iNextBlocksType = rand() % 7;
 
+	m_iGuideBlocksX = m_iCurBlocksX;
+	m_iGuideBlocksY = m_iCurBlocksY;
 
 
 	//GameCenter::GetInstance()->setLocalScore(GameCenter::GetInstance()->getLocalScore() + 100);
@@ -325,10 +427,6 @@ void GameScene::CreateRandomBlocks()
 	//	}
 	//	SetTimer(GameCenter::GetInstance()->getHwnd(), 999, 10000 / (m_iLevel *10), BlockUpdate);
 	//}
-
-
-
-
 
 	if (GameOver())
 	{
@@ -379,6 +477,15 @@ void GameScene::ClearCurBlocks(int x, int y)
 	{
 		m_iGameBoard[Position[i].y - (y)][Position[i].x - (x) ] = 0;
 	}
+}
+
+void GameScene::ClearGuideBlocks()
+{
+	int i, j;
+	for (i = 0; i < HEIGHT ; i++)
+		for (j = 0; j < WIDTH; j++)
+			if (m_iGameBoard[i][j] == -2)
+				m_iGameBoard[i][j] = 0;
 }
 
 void GameScene::RotateBlocks()   //현재 블록 회전
@@ -507,13 +614,15 @@ void GameScene::InputProcess(UINT message)
 		while (!CheckCollision())
 		{
 			m_iCurBlocksY++;
-			ClearCurBlocks(0, +1);
+			//ClearCurBlocks(0, +1);
 			PositionSave();
-			//SetBlockToGameBoard();
 		}
 
 		m_iCurBlocksY--;
 		SetBlockToGameBoard();
+
+
+
 
 		LineFullCheck();
 		CreateRandomBlocks();
@@ -587,7 +696,6 @@ void GameScene::DrawBackGround(HDC hdc)
 	DeleteObject(hBackGround);
 }
 
-
 void GameScene::nonStaticUpdate()
 {
 
@@ -600,11 +708,165 @@ void GameScene::nonStaticUpdate()
 		break;
 	case GameCenter::Scene_enum::LOCALGAME_SCENE:
 		BlockMove();
+		
 		break;
 	}
 
+}
+
+void GameScene::DrawGameOver(HDC hdc)
+{
+
+	HBITMAP h01Bitmap;
+	int bx, by;
+
+	hBackGround = (HBITMAP)LoadImage(NULL, TEXT("IMG/GameOver.bmp"), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
+	GetObject(hBackGround, sizeof(BITMAP), &bitBackground);
+
+	hBlocksDc = CreateCompatibleDC(hdc);
+	h01Bitmap = (HBITMAP)SelectObject(hBlocksDc, hBackGround);
+
+	bx = bitBackground.bmWidth;
+	by = bitBackground.bmHeight;
+
+	TransparentBlt(hdc,0,0, bx*4.7, by*5, hBlocksDc, 0, 0, bx, by, RGB(255, 0, 255));// bx*4 ,by*4 는 4배한것.
+
+
+	DeleteDC(hBlocksDc);
+
+	DeleteObject(hBackGround);
+}
+
+void GameScene::DrawContinue(HDC hdc)
+{
+
+	HBITMAP h01Bitmap;
+	int bx, by;
+
+	hBackGround = (HBITMAP)LoadImage(NULL, TEXT("IMG/Continue1.bmp"), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
+	GetObject(hBackGround, sizeof(BITMAP), &bitBackground);
+
+	hBlocksDc = CreateCompatibleDC(hdc);
+	h01Bitmap = (HBITMAP)SelectObject(hBlocksDc, hBackGround);
+
+	bx = bitBackground.bmWidth;
+	by = bitBackground.bmHeight;
+
+	TransparentBlt(hdc,425, 400, bx*1.8, by* 1.5, hBlocksDc, 0, 0, bx, by, RGB(255, 0, 255));// bx*4 ,by*4 는 4배한것.
+
+
+	DeleteDC(hBlocksDc);
+
+	DeleteObject(hBackGround);
+}
+
+void GameScene::DrawContinue2(HDC hdc)
+{
+	HBITMAP h01Bitmap;
+	int bx, by;
+
+	hBackGround = (HBITMAP)LoadImage(NULL, TEXT("IMG/Continue2.bmp"), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
+	GetObject(hBackGround, sizeof(BITMAP), &bitBackground);
+
+	hBlocksDc = CreateCompatibleDC(hdc);
+	h01Bitmap = (HBITMAP)SelectObject(hBlocksDc, hBackGround);
+
+	bx = bitBackground.bmWidth;
+	by = bitBackground.bmHeight;
+
+	TransparentBlt(hdc, 425, 400, bx*1.8, by* 1.5, hBlocksDc, 0, 0, bx, by, RGB(255, 0, 255));// bx*4 ,by*4 는 4배한것.
+
+
+	DeleteDC(hBlocksDc);
+
+	DeleteObject(hBackGround);
+}
+
+void GameScene::DrawContinue3(HDC hdc)
+{
+	HBITMAP h01Bitmap;
+	int bx, by;
+
+	hBackGround = (HBITMAP)LoadImage(NULL, TEXT("IMG/Continue3.bmp"), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
+	GetObject(hBackGround, sizeof(BITMAP), &bitBackground);
+
+	hBlocksDc = CreateCompatibleDC(hdc);
+	h01Bitmap = (HBITMAP)SelectObject(hBlocksDc, hBackGround);
+
+	bx = bitBackground.bmWidth;
+	by = bitBackground.bmHeight;
+
+	TransparentBlt(hdc, 425, 400, bx*1.8, by* 1.5, hBlocksDc, 0, 0, bx, by, RGB(255, 0, 255));// bx*4 ,by*4 는 4배한것.
+
+
+	DeleteDC(hBlocksDc);
+
+	DeleteObject(hBackGround);
+}
+
+void GameScene::BtnAnimaition(LPARAM lParam)
+{
+	int Clickx = LOWORD(lParam);
+	int Clicky = HIWORD(lParam);
+
+	if (Clickx >= m_YesBtn.left &&Clickx <= m_YesBtn.right
+		&& Clicky >= m_YesBtn.top && Clicky <= m_YesBtn.bottom)
+	{
+		m_iAnimation = 1;
+	}
+	else if (Clickx >= m_NoBtn.left &&Clickx <= m_NoBtn.right
+		&& Clicky >= m_NoBtn.top && Clicky <= m_NoBtn.bottom)
+	{
+		m_iAnimation = -1;
+	}
+	else
+	{
+		m_iAnimation = 0;
+	}
+}
+
+void GameScene::GuidBlock()
+{
+	int i;
+	m_iGuideBlocksY = m_iCurBlocksY + 4;
+	m_iGuideBlocksX = m_iCurBlocksX;
+	GuidePositionSave();
+
+	
+	if (CheckGuideCollision())
+	{
+		ClearGuideBlocks();
+		return;
+	}
+	
+
+	while (!CheckGuideCollision())
+	{
+
+		for (i = 0; i < 4; i++)
+		{
+			GuidePosition[i].y++;
+		}
+		m_iGuideBlocksY++;
+	
+		GuidePositionSave();
+		
+	}
+	ClearGuideBlocks();
+	for (i = 0; i < 4; i++)
+	{
+		GuidePosition[i].y--;
+	}
+	m_iGuideBlocksY--;
+
+
+	SetGuideBlockToGameBoard();
+
+
 
 }
+
+
 
 void CALLBACK BlockUpdate(HWND, UINT, UINT_PTR, DWORD)
 {
