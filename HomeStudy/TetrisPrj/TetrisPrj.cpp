@@ -138,9 +138,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		{
 			g_theSoundManager = new SoundManager();
 			g_theSoundManager->AddBGM("sound/bgm.mp3");
-			g_theSoundManager->AddSFX("sound/effDelete.mp3", "BlockDelete");
+			g_theSoundManager->AddSFX("sound/effBBam.mp3", "BBam");
+			g_theSoundManager->AddSFX("sound/effMelem.mp3", "Melem");
 			g_theSoundManager->AddSFX("sound/effSelect.mp3", "Select");
-			g_theSoundManager->AddSFX("sound/effSpace.mp3", "Space");
 		}
 		g_theSoundManager->PlayBGM();
 		Gamecenter = GameCenter::GetInstance();
@@ -193,9 +193,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         break;
 	case WM_KEYDOWN:
 		{
-	
 			int time = GetTickCount();
-	
+
 			if (Gamecenter->getMoveTime() + MOVE_DELAY < time)
 			{
 				Gamecenter->setMoveTime(time);

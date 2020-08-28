@@ -99,18 +99,16 @@ void GameScene::Update(UINT message, WPARAM wParam, LPARAM lParam)
 		{
 			ClickEvent(lParam);
 		}
-
-
-
-
 		return;
 	}
-		
+	
+	
 
 	
 		switch (message)
 		{
 		case WM_KEYDOWN:	
+			
 			Input();
 			break;
 		default:
@@ -254,7 +252,6 @@ void GameScene::DrawBlock(HDC hdc)
 	DeleteObject(hBlocks);
 }
 
-
 void GameScene::PositionSave()
 {
 
@@ -393,15 +390,21 @@ bool GameScene::CheckGuideCollision()
 
 bool GameScene::TurnCheckCollision()
 {
+
 	int i, j;
 	for (i = 0; i < 4; i++)
 	{
 		for (j = 0; j < 4; j++)
 		{
-			if (m_iGameBoard[m_iCurBlocksY + i + 1][m_iCurBlocksX + j] == -1 && m_BlockList[m_iCurBlocksType][m_iCurBlocksState][i][j] > 0)
+			if (m_iGameBoard[m_iCurBlocksY + i][m_iCurBlocksX + j] == -1 && m_BlockList[m_iCurBlocksType][m_iCurBlocksState][i][j] > 0)
 			{             //정확한 위치를 위해 더해줌
 				return true;
 			}
+			else if (m_iGameBoard[m_iCurBlocksY + i][m_iCurBlocksX + j] > 0 && m_BlockList[m_iCurBlocksType][m_iCurBlocksState][i][j] > 0)
+			{             //정확한 위치를 위해 더해줌
+				return true;
+			}
+
 		}
 	}
 	return false;
@@ -417,17 +420,6 @@ void GameScene::CreateRandomBlocks()
 
 	m_iGuideBlocksX = m_iCurBlocksX;
 	m_iGuideBlocksY = m_iCurBlocksY;
-
-
-	//GameCenter::GetInstance()->setLocalScore(GameCenter::GetInstance()->getLocalScore() + 100);
-	//if (m_iLevel != GameCenter::GetInstance()->getLocalLevel())
-	//{
-	//	if (!(m_iLevel * 10 >= 10000))
-	//	{
-	//		m_iLevel = GameCenter::GetInstance()->getLocalLevel();
-	//	}
-	//	SetTimer(GameCenter::GetInstance()->getHwnd(), 999, 10000 / (m_iLevel *10), BlockUpdate);
-	//}
 
 	if (GameOver())
 	{
@@ -495,8 +487,20 @@ void GameScene::RotateBlocks()   //현재 블록 회전
 	PositionSave();
 	ClearCurBlocks(0,0);
 	m_iCurBlocksState = (m_iCurBlocksState == 3) ? 0 : m_iCurBlocksState + 1;
+
 	if (TurnCheckCollision())
+	{
 		m_iCurBlocksState = (m_iCurBlocksState == 0) ? 3 : m_iCurBlocksState - 1;   //회전 제한
+	}
+	else
+	{
+		if (CheckCollision())
+		{
+			m_iCurBlocksState = (m_iCurBlocksState == 0) ? 3 : m_iCurBlocksState - 1;
+		}
+	}
+		
+	
 
 	return;
 }
@@ -511,31 +515,32 @@ void GameScene::Input()
 		RotateBlocks();
 	}
 
-	if (GetAsyncKeyState(VK_LEFT) & 0x8000)
+	else if (GetAsyncKeyState(VK_LEFT) & 0x8000)
 	{
-		
 		InputProcess(VK_LEFT);
-		
-		
 	}
 	else if (GetAsyncKeyState(VK_RIGHT) & 0x8000)
 	{
-
+		
 		InputProcess(VK_RIGHT);
 		
 	}
 	else if (GetAsyncKeyState(VK_DOWN) & 0x8000)
 	{
-
+		
 		InputProcess(VK_DOWN);
 		
 	}
 
 	if (GetAsyncKeyState(VK_SPACE) & 0x8000)
 	{
-		g_theSoundManager->PlaySFX("Space");
+		g_theSoundManager->PlaySFX("BBam");
 		InputProcess(VK_SPACE);
 
+	}
+	else
+	{
+		g_theSoundManager->PlaySFX("Melem");
 	}
 
 	SetBlockToGameBoard();
@@ -544,6 +549,9 @@ void GameScene::Input()
 
 void GameScene::InputProcess(UINT message)
 {
+	
+
+
 	int i, j ,temp;
 	bool CheckFlag = false;
 	switch (message)
@@ -651,7 +659,7 @@ void GameScene::LineFullCheck()
 
 		if (sum == WIDTH-2)
 		{
-			g_theSoundManager->PlaySFX("BlockDelete");
+			
 			for (k = i; k > 0; k--)
 				for (j = 1; j < WIDTH; j++)
 				{
@@ -694,7 +702,6 @@ void GameScene::DrawBackGround(HDC hdc)
 	by = bitBackground.bmHeight;
 	
 	StretchBlt(hdc, 0,0, bx+872, by+644, hBlocksDc, 0, 0, bx, by, SRCCOPY);   //각 블럭의 색
-
 
 	DeleteDC(hBlocksDc);
 		
@@ -844,10 +851,8 @@ void GameScene::GuidBlock()
 		return;
 	}
 	
-
 	while (!CheckGuideCollision())
 	{
-
 		for (i = 0; i < 4; i++)
 		{
 			GuidePosition[i].y++;
@@ -866,8 +871,6 @@ void GameScene::GuidBlock()
 
 
 	SetGuideBlockToGameBoard();
-
-
 
 }
 

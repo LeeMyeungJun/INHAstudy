@@ -53,43 +53,39 @@ public:
 	void UI(HDC hdc);
 	void ClickEvent(LPARAM lParam);
 public:
+	/*Render*/
 	void PrintScore(HDC hdc);
 	void PrintLevel(HDC hdc);
 	void DrawBlock(HDC hdc);
+	void DrawGameOver(HDC hdc);
+	void DrawContinue(HDC hdc);
+	void DrawContinue2(HDC hdc);
+	void DrawContinue3(HDC hdc);
+	void DrawBackGround(HDC hdc);
+
+	/*Update*/
 	void PositionSave();
 	void GuidePositionSave();
 	void SetBlockToGameBoard();
-
 	bool CheckCollision();
-	/*가이드*/
 	bool CheckGuideCollision();
 	void GuidBlock();
 	void SetGuideBlockToGameBoard();
 	void ClearGuideBlocks();
-
-
 	bool TurnCheckCollision();
 	void CreateRandomBlocks();
 	bool GameOver();
 	void BlockMove();
 	void ClearCurBlocks(int x, int y);
-
-
 	void RotateBlocks();
 	void Input();
 	void InputProcess(UINT message);
 	void LineFullCheck();
 	void MoveCollision();
-	void DrawBackGround(HDC hdc);
-	void nonStaticUpdate();
-
-	void DrawGameOver(HDC hdc);
-	void DrawContinue(HDC hdc);
-	void DrawContinue2(HDC hdc);
-	void DrawContinue3(HDC hdc);
 	void BtnAnimaition(LPARAM lParam);
-	
-	
+
+	/*Block Time*/
+	void nonStaticUpdate();
 
 public:
 	/* 테트리스 블록 모양 및 색상 설정*/

@@ -41,7 +41,7 @@ void SoundManager::PlayBGM()
 void SoundManager::PlaySFX(string soundName)
 {
 	if (soundHash[soundName] != NULL)
-		fmodSystem->playSound(FMOD_CHANNEL_FREE,soundHash[soundName], false, &sfxChannel);
+		fmodSystem->playSound(FMOD_CHANNEL_REUSE,soundHash[soundName], false, &sfxChannel);
 }
 
 void SoundManager::Stop()
