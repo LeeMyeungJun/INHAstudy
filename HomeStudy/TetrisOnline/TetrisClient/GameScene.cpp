@@ -102,9 +102,7 @@ void GameScene::Update(UINT message, WPARAM wParam, LPARAM lParam)
 		return;
 	}
 	
-	
 
-	
 		switch (message)
 		{
 		case WM_KEYDOWN:	
@@ -176,11 +174,13 @@ void GameScene::ClickEvent(LPARAM lParam)
 	if (Clickx >= m_YesBtn.left &&Clickx <= m_YesBtn.right
 		&& Clicky >= m_YesBtn.top && Clicky <= m_YesBtn.bottom)
 	{
+		g_theSoundManager->PlaySFX("Select");
 		Init();
 	}
 	else if (Clickx >= m_NoBtn.left &&Clickx <= m_NoBtn.right
 		&& Clicky >= m_NoBtn.top && Clicky <= m_NoBtn.bottom)
 	{
+		g_theSoundManager->PlaySFX("Select");
 		GameCenter::GetInstance()->SceneChange(GameCenter::Scene_enum::LOGIN_SCENE);
 	}
 	
