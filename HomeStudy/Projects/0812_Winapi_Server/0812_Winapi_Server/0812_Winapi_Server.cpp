@@ -146,17 +146,23 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		addr.sin_port = 20;
 		addr.sin_addr.S_un.S_addr = inet_addr("127.0.0.1");
 		memset(msg, 0, 300);
+
 		if (bind(server, (LPSOCKADDR)& addr, sizeof(addr)) == -1)
 		{
 			MessageBox(NULL, _T("bind failed"), _T("Error"), MB_OK);
 			return 0;
 		}
+
+
 		WSAAsyncSelect(server, hWnd, WM_ASYNC, FD_ACCEPT);
-		if (listen(server, 5) == SOCKET_ERROR)
+		if (listen(server, 10) == SOCKET_ERROR)
 		{
 			MessageBox(NULL, _T("listen failed"), _T("Error"), MB_OK);
 			return 0;
 		}
+
+
+
 		break;
 	case WM_ASYNC :
 		switch (lParam)

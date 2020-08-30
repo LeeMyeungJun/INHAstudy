@@ -19,9 +19,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{4275419E-1B5D-4831-8D5A-49F1259C1E4D}</ProjectGuid>
+    <ProjectGuid>{4477EA54-C99A-4D18-891E-56A1F67D59E0}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>Win32Project1</RootNamespace>
+    <RootNamespace>TetrisServer</RootNamespace>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -142,25 +142,27 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Resource.h" />
+    <ClInclude Include="ServerManager.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
-    <ClInclude Include="Win32Project1.h" />
+    <ClInclude Include="TetrisServer.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="ServerManager.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="Win32Project1.cpp" />
+    <ClCompile Include="TetrisServer.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="Win32Project1.rc" />
+    <ResourceCompile Include="TetrisServer.rc" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="small.ico" />
-    <Image Include="Win32Project1.ico" />
+    <Image Include="TetrisServer.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

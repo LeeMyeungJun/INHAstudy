@@ -212,7 +212,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		break;
 	case WM_MOUSEMOVE:
 		{
-			if (Gamecenter->getScene() == GameCenter::Scene_enum::LOGIN_SCENE || Gamecenter->getScene() == GameCenter::Scene_enum::LOCALGAME_SCENE)
+			if (Gamecenter->getScene() == GameCenter::Scene_enum::LOGIN_SCENE ||
+				Gamecenter->getScene() == GameCenter::Scene_enum::LOCALGAME_SCENE||
+				Gamecenter->getScene() == GameCenter::Scene_enum::LOBBY_SCENE)
 			{
 				Gamecenter->Update(message, wParam, lParam);
 			}

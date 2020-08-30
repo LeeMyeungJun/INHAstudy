@@ -1,8 +1,8 @@
-// Win32Project1.cpp : Defines the entry point for the application.
+// TetrisServer.cpp : Defines the entry point for the application.
 //
 
 #include "stdafx.h"
-#include "Win32Project1.h"
+
 
 #define MAX_LOADSTRING 100
 
@@ -29,7 +29,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
     // Initialize global strings
     LoadStringW(hInstance, IDS_APP_TITLE, szTitle, MAX_LOADSTRING);
-    LoadStringW(hInstance, IDC_WIN32PROJECT1, szWindowClass, MAX_LOADSTRING);
+    LoadStringW(hInstance, IDC_TETRISSERVER, szWindowClass, MAX_LOADSTRING);
     MyRegisterClass(hInstance);
 
     // Perform application initialization:
@@ -38,7 +38,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
         return FALSE;
     }
 
-    HACCEL hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_WIN32PROJECT1));
+    HACCEL hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_TETRISSERVER));
 
     MSG msg;
 
@@ -73,10 +73,10 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
     wcex.cbClsExtra     = 0;
     wcex.cbWndExtra     = 0;
     wcex.hInstance      = hInstance;
-    wcex.hIcon          = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_WIN32PROJECT1));
+    wcex.hIcon          = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_TETRISSERVER));
     wcex.hCursor        = LoadCursor(nullptr, IDC_ARROW);
     wcex.hbrBackground  = (HBRUSH)(COLOR_WINDOW+1);
-    wcex.lpszMenuName   = MAKEINTRESOURCEW(IDC_WIN32PROJECT1);
+	wcex.lpszMenuName = 0;
     wcex.lpszClassName  = szWindowClass;
     wcex.hIconSm        = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
 
@@ -123,8 +123,13 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 //
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
+	ServerManager *Server = nullptr;
     switch (message)
     {
+	case WM_CREATE:
+		Server = new ServerManager(hWnd);
+
+		break;
     case WM_COMMAND:
         {
             int wmId = LOWORD(wParam);
@@ -142,6 +147,22 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             }
         }
         break;
+	case WM_ASYNC:
+		switch (lParam)
+		{
+		case FD_ACCEPT:
+			Server->ServerAccept();
+			InvalidateRect(hWnd, NULL, TRUE);
+			break;
+		case FD_READ:
+			Server->ServerRead(wParam);
+			InvalidateRect(hWnd, NULL, TRUE);
+			break;
+		case FD_CLOSE:
+			Server->ServerUserExit(wParam);
+			break;
+		}
+		break;
     case WM_PAINT:
         {
             PAINTSTRUCT ps;
@@ -151,6 +172,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         }
         break;
     case WM_DESTROY:
+		delete Server;
         PostQuitMessage(0);
         break;
     default:

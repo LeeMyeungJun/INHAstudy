@@ -1,7 +1,7 @@
 #include "stdafx.h"
 
 extern SoundManager* g_theSoundManager;
-const float BtnZoom = 1.3;
+
 
 LoginScene::LoginScene()
 {
@@ -21,6 +21,7 @@ void LoginScene::Init()
 
 	m_startBtn_size = false;
 	m_LobbyBtn_size = false;
+
 
 }
 

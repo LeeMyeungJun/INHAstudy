@@ -1,6 +1,6 @@
 #include "stdafx.h"
 
-
+extern SoundManager* g_theSoundManager;
 LobbyScene::LobbyScene()
 {
 }
@@ -12,6 +12,14 @@ LobbyScene::~LobbyScene()
 
 void LobbyScene::Init(void)
 {
+	ExitBtn = {900,0,900+245,105};
+	RoomMakeBtn = {700 , 450 , 700 + 165 , 450 + 165 };
+
+	//UnderChatRect;
+	//UserChatRect;
+
+	m_ExitBtn_size = false;
+	m_RoomBtn_size = false;
 }
 
 void LobbyScene::Update(UINT message, WPARAM wParam, LPARAM lParam)
@@ -21,6 +29,8 @@ void LobbyScene::Update(UINT message, WPARAM wParam, LPARAM lParam)
 	case WM_LBUTTONDOWN:
 		ClickEvent(lParam);
 		break;
+	case WM_MOUSEMOVE:
+		BtnAnimaition(lParam);
 	default:
 		break;
 	}
@@ -42,24 +52,55 @@ void LobbyScene::UI(HDC hdc)
 	ChattingDraw(hdc);
 	LobbyRoomDraw(hdc);
 	LobbyUserBoardDraw(hdc);
+	ExitBtnDraw(hdc);
+	RoomCreateBtnDraw(hdc);
+	ChatDraw(hdc);
 }
 
 void LobbyScene::ClickEvent(LPARAM lParam)
 {
-	//int Clickx = LOWORD(lParam);
-	//int Clicky = HIWORD(lParam);
+	int Clickx = LOWORD(lParam);
+	int Clicky = HIWORD(lParam);
 
-	//if (Clickx >= GameCenter::GetInstance()->getUI()->getLobby_ExitBtn().left &&Clickx <= GameCenter::GetInstance()->getUI()->getLobby_ExitBtn().right
-	//	&& Clicky >= GameCenter::GetInstance()->getUI()->getLobby_ExitBtn().top && Clicky <= GameCenter::GetInstance()->getUI()->getLobby_ExitBtn().bottom)
-	//{
-	//	PostQuitMessage(0);
-	//}
-	//else if (Clickx >= GameCenter::GetInstance()->getUI()->getLobby_RoomMakeBtn().left &&Clickx <= GameCenter::GetInstance()->getUI()->getLobby_RoomMakeBtn().right
-	//	&& Clicky >= GameCenter::GetInstance()->getUI()->getLobby_RoomMakeBtn().top && Clicky <= GameCenter::GetInstance()->getUI()->getLobby_RoomMakeBtn().bottom)
-	//{
-	//	GameCenter::GetInstance()->SceneChange(GameCenter::Scene_enum::ROOM_SCENE);
-	//}
+	if (Clickx >= ExitBtn.left &&Clickx <= ExitBtn.right
+		&& Clicky >= ExitBtn.top && Clicky <= ExitBtn.bottom)
+	{
+		PostQuitMessage(0);
+	}
+	else if (Clickx >= RoomMakeBtn.left &&Clickx <= RoomMakeBtn.right
+		&& Clicky >= RoomMakeBtn.top && Clicky <= RoomMakeBtn.bottom)
+	{
+		g_theSoundManager->PlaySFX("Select");
+		GameCenter::GetInstance()->SceneChange(GameCenter::Scene_enum::ROOM_SCENE);
+	}
 	
+
+}
+
+void LobbyScene::BtnAnimaition(LPARAM lParam)
+{
+
+	int Clickx = LOWORD(lParam);
+	int Clicky = HIWORD(lParam);
+
+	if (Clickx >= ExitBtn.left &&Clickx <= ExitBtn.right
+		&& Clicky >= ExitBtn.top && Clicky <= ExitBtn.bottom)
+	{
+		m_ExitBtn_size = true;
+
+	}
+	else if (Clickx >= RoomMakeBtn.left &&Clickx <= RoomMakeBtn.right
+		&& Clicky >= RoomMakeBtn.top && Clicky <= RoomMakeBtn.bottom)
+	{
+		m_RoomBtn_size = true;
+
+	}
+	else
+	{
+		m_ExitBtn_size = false;
+		m_RoomBtn_size = false;
+	
+	}
 
 }
 
@@ -143,9 +184,69 @@ void LobbyScene::LobbyUserBoardDraw(HDC hdc)
 	bx = bitBackground.bmWidth;
 	by = bitBackground.bmHeight;
 
-	TransparentBlt(hdc,900, 0, bx*3.5, by*4, hBackDC, 0, 0, bx, by, RGB(255, 0, 255));// bx*4 ,by*4 는 4배한것.
+	TransparentBlt(hdc,900, 50, bx*3.5, by*4, hBackDC, 0, 0, bx, by, RGB(255, 0, 255));// bx*4 ,by*4 는 4배한것.
 
 	DeleteDC(hBackDC);
 
 	DeleteObject(hBackGround);
+}
+
+void LobbyScene::ExitBtnDraw(HDC hdc)
+{
+	HBITMAP h01Bitmap;
+	int bx, by;
+
+	hBackGround = (HBITMAP)LoadImage(NULL, TEXT("IMG/ExitBtn.bmp"), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
+	GetObject(hBackGround, sizeof(BITMAP), &bitBackground);
+
+	hBackDC = CreateCompatibleDC(hdc);
+	h01Bitmap = (HBITMAP)SelectObject(hBackDC, hBackGround);
+
+	bx = bitBackground.bmWidth;
+	by = bitBackground.bmHeight;
+	if (m_ExitBtn_size == false)
+	{
+		TransparentBlt(hdc, 900, 0, bx * 2, by*1.5, hBackDC, 0, 0, bx, by, RGB(255, 0, 255));// bx*4 ,by*4 는 4배한것.
+	}
+	else
+	{
+		TransparentBlt(hdc, 850, 0, (bx * 2)*BtnZoom, (by*1.5)*BtnZoom, hBackDC, 0, 0, bx, by, RGB(255, 0, 255));// bx*4 ,by*4 는 4배한것.
+	}
+
+	DeleteDC(hBackDC);
+
+	DeleteObject(hBackGround);
+}
+
+void LobbyScene::RoomCreateBtnDraw(HDC hdc)
+{
+	HBITMAP h01Bitmap;
+	int bx, by;
+
+	hBackGround = (HBITMAP)LoadImage(NULL, TEXT("IMG/RoomMakeBtn.bmp"), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
+	GetObject(hBackGround, sizeof(BITMAP), &bitBackground);
+
+	hBackDC = CreateCompatibleDC(hdc);
+	h01Bitmap = (HBITMAP)SelectObject(hBackDC, hBackGround);
+
+	bx = bitBackground.bmWidth;
+	by = bitBackground.bmHeight;
+
+	if (m_RoomBtn_size == false)
+	{
+		TransparentBlt(hdc, 700, 450, bx*1.4, by*1.4, hBackDC, 0, 0, bx, by, RGB(255, 0, 255));// bx*4 ,by*4 는 4배한것
+	}
+	else
+	{
+		TransparentBlt(hdc, 680, 430, bx*1.4 * BtnZoom, by*1.4 * BtnZoom, hBackDC, 0, 0, bx, by, RGB(255, 0, 255));// bx*4 ,by*4 는 4배한것
+
+	}
+	DeleteDC(hBackDC);
+
+	DeleteObject(hBackGround);
+}
+
+void LobbyScene::ChatDraw(HDC hdc)
+{
+	Rectangle(hdc, 130, 740, 1009, 783);
 }

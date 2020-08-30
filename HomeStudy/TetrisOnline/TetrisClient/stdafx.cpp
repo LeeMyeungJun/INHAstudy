@@ -8,6 +8,5 @@
 // and not in this file
 
 
-
 //NetWorkManager *g_NetworkManager;
 SoundManager* g_theSoundManager;

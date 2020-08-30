@@ -76,8 +76,8 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>C:\Program Files %28x86%29\FMOD SoundSystem\FMOD Programmers API Win32\api\inc;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Program Files %28x86%29\FMOD SoundSystem\FMOD Programmers API Win32\api\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\Cstudy\git-sutdy\HomeStudy\TetrisOnline\TetrisClient;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Cstudy\git-sutdy\HomeStudy\TetrisOnline\TetrisClient;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>

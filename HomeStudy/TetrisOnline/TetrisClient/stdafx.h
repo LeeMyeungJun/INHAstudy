@@ -45,4 +45,4 @@
 
 
 const int MOVE_DELAY = 100;
-
+const float BtnZoom = 1.3;
