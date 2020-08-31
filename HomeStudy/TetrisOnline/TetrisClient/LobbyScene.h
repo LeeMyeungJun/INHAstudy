@@ -38,6 +38,7 @@ private:
 	void ExitBtnDraw(HDC hdc);
 	void RoomCreateBtnDraw(HDC hdc);
 	void ChatDraw(HDC hdc);
+	void InputProcess(WPARAM wParam);
 
 };
 

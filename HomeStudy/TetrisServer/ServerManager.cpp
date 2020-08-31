@@ -1,9 +1,7 @@
 #include "stdafx.h"
 
 
-HWND ServerManager::hWnd = nullptr;
-
-ServerManager::ServerManager(HWND hWnd)
+ServerManager::ServerManager()
 {
 	Init();
 }
@@ -22,9 +20,6 @@ void ServerManager::Init()
 	addr.sin_port = 20;
 	addr.sin_addr.S_un.S_addr = inet_addr("127.0.0.1");
 	memset(msg, 0, 300);
-	ServerBind();
-	ServerListen();
-
 }
 
 void ServerManager::ServerBind()
@@ -36,7 +31,7 @@ void ServerManager::ServerBind()
 	}
 }
 
-void ServerManager::ServerListen()
+void ServerManager::ServerListen(HWND hWnd)
 {
 	WSAAsyncSelect(server, hWnd, WM_ASYNC, FD_ACCEPT);
 	if (listen(server, 5) == SOCKET_ERROR)
@@ -46,7 +41,7 @@ void ServerManager::ServerListen()
 	}
 }
 
-void ServerManager::ServerAccept()
+void ServerManager::ServerAccept(HWND hWnd)
 {
 	size = sizeof(c_addr);
 	clientList.push_back(accept(server, (LPSOCKADDR)&c_addr, &size));

@@ -2,7 +2,7 @@
 //
 
 #include "stdafx.h"
-#include "TetrisServer.h"
+
 
 #define MAX_LOADSTRING 100
 
@@ -76,7 +76,7 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
     wcex.hIcon          = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_TETRISSERVER));
     wcex.hCursor        = LoadCursor(nullptr, IDC_ARROW);
     wcex.hbrBackground  = (HBRUSH)(COLOR_WINDOW+1);
-    wcex.lpszMenuName   = MAKEINTRESOURCEW(IDC_TETRISSERVER);
+	wcex.lpszMenuName = 0;
     wcex.lpszClassName  = szWindowClass;
     wcex.hIconSm        = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
 
@@ -98,7 +98,8 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
    hInst = hInstance; // Store instance handle in our global variable
 
    HWND hWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
-	   CW_USEDEFAULT, 0, 400, 800, nullptr, nullptr, hInstance, nullptr);
+      CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, nullptr, nullptr, hInstance, nullptr);
+
    if (!hWnd)
    {
       return FALSE;
@@ -122,8 +123,12 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 //
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
+	static ServerManager *Server = nullptr;
     switch (message)
     {
+	case WM_CREATE:
+		Server = new ServerManager(hWnd);
+		break;
     case WM_COMMAND:
         {
             int wmId = LOWORD(wParam);
@@ -141,6 +146,22 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             }
         }
         break;
+	case WM_ASYNC:
+		switch (lParam)
+		{
+		case FD_ACCEPT:
+			Server->ServerAccept();
+			InvalidateRect(hWnd, NULL, TRUE);
+			break;
+		case FD_READ:
+			Server->ServerRead(wParam);
+			InvalidateRect(hWnd, NULL, TRUE);
+			break;
+		case FD_CLOSE:
+			Server->ServerUserExit(wParam);
+			break;
+		}
+		break;
     case WM_PAINT:
         {
             PAINTSTRUCT ps;
@@ -150,6 +171,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         }
         break;
     case WM_DESTROY:
+		delete Server;
         PostQuitMessage(0);
         break;
     default:

@@ -2,20 +2,17 @@
 class ServerManager
 {
 public:
-	ServerManager(HWND hWnd);
+	ServerManager();
 	~ServerManager();
 	void Init();
 
-
-
 	void ServerBind();
-	void ServerListen();
-	void ServerAccept();
+	void ServerListen(HWND hWnd);
+	void ServerAccept(HWND hWnd);
 	void ServerRead(WPARAM wParam);
 	void ServerUserExit(WPARAM wParam);
 private:
 	HDC hdc;
-	static HWND hWnd;
 private:
 	WSADATA wsaData;
 	SOCKET server;
@@ -26,6 +23,14 @@ private:
 	TCHAR str[1024];
 	char buffer[1024];
 	int size, msgLen;
+
+
+public:
+	static ServerManager* GetInstance()
+	{
+		static ServerManager instance;
+		return &instance;
+	}
 
 };
 

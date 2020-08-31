@@ -1,0 +1,2 @@
+C:\Users\UJae\Documents\카카오톡 받은 파일\TetrisServer\TetrisServer\Debug\TetrisServer.exe
+C:\Users\UJae\Documents\카카오톡 받은 파일\TetrisServer\TetrisServer\Debug\TetrisServer.pdb

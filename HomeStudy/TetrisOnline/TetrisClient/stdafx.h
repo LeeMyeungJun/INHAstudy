@@ -26,6 +26,7 @@
 #include <vector>
 #include <map>
 #include <math.h>
+#include <string.h>
 
 #pragma comment(lib, "ws2_32.lib")
 
@@ -43,6 +44,7 @@
 
 #pragma comment(lib,"msimg32.lib")
 
-
+using namespace std;
 const int MOVE_DELAY = 100;
 const float BtnZoom = 1.3;
+#define WM_ASYNC WM_USER + 2

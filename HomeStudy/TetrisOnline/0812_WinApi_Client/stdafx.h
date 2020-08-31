@@ -16,14 +16,6 @@
 #include <malloc.h>
 #include <memory.h>
 #include <tchar.h>
-#include <vector>
 
-#include <WinSock2.h>
-#pragma comment(lib, "ws2_32.lib")
 
-#define WM_ASYNC WM_USER + 2
-
-//class
-#include "TetrisServer.h"
-#include "ServerManager.h"
 // TODO: reference additional headers your program requires here

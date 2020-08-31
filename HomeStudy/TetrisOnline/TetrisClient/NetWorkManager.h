@@ -1,4 +1,6 @@
 #pragma once
+using namespace std;
+
 class NetWorkManager
 {
 private:
@@ -8,34 +10,43 @@ public:
 	NetWorkManager();
 	~NetWorkManager();
 
+public:
 	WSADATA wsaData;
 	SOCKET server;
+
+	TCHAR str[256] = { 0 };
+	char buffer[256];
+	int len;
+
+	int count;
 	SOCKADDR_IN addr = { 0 };
-	int msgLen = 0;
-	TCHAR str[100] = { 0 };
-	char buffer[100];
-	int count = 0;
-	bool BWturn;
-	std::vector<TCHAR *> chatLog;
+	int msgLen;
+	vector<TCHAR *> chatLog;
+	
 
-
-
-	void Read_Fd();
+	
+public:
 	void Init();
+	void Connect();
+	void Read_Fd();
+	void Send_message();
+
+
 	void setHwnd(HWND hWnd)
 	{
 		this->hWnd = hWnd;
 	}
 	HWND getHwnd() { return hWnd; }
 
-
-	void setMessage(UINT hWnd)
+	void setMessage(UINT message)
 	{
-		this->message = hWnd;
+		this->message = message;
 	}
 	UINT getMessage() { return message; }
 
-
+	size_t getChatLogSize() {
+		return chatLog.size(); 
+	}
 
 
 	static NetWorkManager* GetInstance()

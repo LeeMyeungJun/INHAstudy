@@ -123,12 +123,13 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 //
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
-	ServerManager *Server = nullptr;
+	static ServerManager *Server =nullptr;
     switch (message)
     {
 	case WM_CREATE:
-		Server = new ServerManager(hWnd);
-
+		Server = ServerManager::GetInstance();
+		Server->ServerBind();
+		Server->ServerListen(hWnd);
 		break;
     case WM_COMMAND:
         {
@@ -151,7 +152,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		switch (lParam)
 		{
 		case FD_ACCEPT:
-			Server->ServerAccept();
+			Server->ServerAccept(hWnd);
 			InvalidateRect(hWnd, NULL, TRUE);
 			break;
 		case FD_READ:

@@ -1,8 +1,13 @@
 #include "stdafx.h"
 
 extern SoundManager* g_theSoundManager;
+extern NetWorkManager *g_NetworkManager;
+
 LobbyScene::LobbyScene()
 {
+	g_NetworkManager = NetWorkManager::GetInstance();
+
+	g_NetworkManager->Connect();
 }
 
 
@@ -31,6 +36,9 @@ void LobbyScene::Update(UINT message, WPARAM wParam, LPARAM lParam)
 		break;
 	case WM_MOUSEMOVE:
 		BtnAnimaition(lParam);
+	case WM_CHAR:
+		InputProcess(wParam);
+		break;
 	default:
 		break;
 	}
@@ -249,4 +257,46 @@ void LobbyScene::RoomCreateBtnDraw(HDC hdc)
 void LobbyScene::ChatDraw(HDC hdc)
 {
 	Rectangle(hdc, 130, 740, 1009, 783);
+
+	size_t chatLogSize = 0;
+	chatLogSize = NetWorkManager::GetInstance()->getChatLogSize();
+	for (size_t i = 0; i < chatLogSize; i++)
+	{
+		TextOut(hdc, 10, 520 - (i * 20), g_NetworkManager->chatLog[chatLogSize - 1 - i], _tcslen(g_NetworkManager->chatLog[chatLogSize - 1 - i]));
+	}
+
+	RECT charRect = { 130, 740, 1009, 783 };
+	DrawText(hdc, NetWorkManager::GetInstance()->str, _tcslen(NetWorkManager::GetInstance()->str), &charRect, DT_LEFT | DT_VCENTER | DT_SINGLELINE);
+
+}
+
+void LobbyScene::InputProcess(WPARAM wParam)
+{
+	if (wParam == VK_RETURN)
+	{
+		if (NetWorkManager::GetInstance()->server == INVALID_SOCKET)
+			return ;
+		else
+		{
+			WideCharToMultiByte(CP_ACP, 0, NetWorkManager::GetInstance()->str, NetWorkManager::GetInstance()->len, NetWorkManager::GetInstance()->buffer, NetWorkManager::GetInstance()->len, NULL, NULL);
+			send(NetWorkManager::GetInstance()->server, (LPSTR)NetWorkManager::GetInstance()->buffer, strlen(NetWorkManager::GetInstance()->buffer), 0);
+			NetWorkManager::GetInstance()->count = 0;
+			NetWorkManager::GetInstance()->str[NetWorkManager::GetInstance()->count] = NetWorkManager::GetInstance()->str[1] = '\0';
+		}
+	}
+	else if (wParam == VK_BACK)
+	{
+		if (NetWorkManager::GetInstance()->server == INVALID_SOCKET)
+			return;
+		if (NetWorkManager::GetInstance()->count != 0)
+			NetWorkManager::GetInstance()->str[--NetWorkManager::GetInstance()->count] = '\0';
+	}
+	else if(wParam != 0)
+	{
+		if (NetWorkManager::GetInstance()->count < 40)
+		{
+			NetWorkManager::GetInstance()->str[NetWorkManager::GetInstance()->count++] = (TCHAR)wParam;
+			NetWorkManager::GetInstance()->str[NetWorkManager::GetInstance()->count] = '\0';
+		}
+	}
 }
