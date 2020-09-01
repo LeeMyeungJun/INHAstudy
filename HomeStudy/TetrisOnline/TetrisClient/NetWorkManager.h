@@ -12,12 +12,11 @@ public:
 
 public:
 	WSADATA wsaData;
-	SOCKET server;
+	static SOCKET server;
 
 	TCHAR str[256] = { 0 };
-	char buffer[256];
-	int len;
-
+	
+	//int len;
 	int count;
 	SOCKADDR_IN addr = { 0 };
 	int msgLen;

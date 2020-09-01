@@ -27,6 +27,8 @@
 #include <map>
 #include <math.h>
 #include <string.h>
+#include <tchar.h>
+#include <wchar.h>
 
 #pragma comment(lib, "ws2_32.lib")
 
@@ -48,3 +50,50 @@ using namespace std;
 const int MOVE_DELAY = 100;
 const float BtnZoom = 1.3;
 #define WM_ASYNC WM_USER + 2
+
+const int iWidth = 16;
+const int iHeight = 26;
+
+enum RoomRequestId
+{
+	CreateRoom = 0, //생성 요청
+	JoinRoom, //참가 요청
+	StartSession // 시작 요청
+
+};
+
+#define LOBBY_MESSAGE 100
+#define LOBBYRQ 99
+#define ROOM 200
+#define GAME 300
+
+
+typedef struct __pkHeader {
+	unsigned int Protocal;
+	unsigned int size;
+} pkHeader;
+
+typedef struct __pkLobby {
+	unsigned int User_Position;
+	char Buffer[64];
+} pkLobby;
+
+typedef struct __pkLobby_RQ {
+	char RooName[40];
+	unsigned int RoomNum;
+} pkLobby_RQ;
+
+
+typedef struct __pkRoom {
+	unsigned int User_Position;
+	char Buffer[64];
+	bool User_Ready;
+} pkRoom;
+
+
+typedef struct __pkGame {
+	unsigned int User_Position;
+	int User_GameBoard[iHeight][iWidth];
+	bool User_Survive;
+} pkGame;
+

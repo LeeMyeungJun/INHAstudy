@@ -162,6 +162,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			return 0;
 		}
 		WSAAsyncSelect(server, hWnd, WM_ASYNC, FD_READ);
+
 		break;
 		case WM_ASYNC:
 			switch (lParam)

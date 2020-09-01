@@ -3,10 +3,14 @@
 extern SoundManager* g_theSoundManager;
 extern NetWorkManager *g_NetworkManager;
 
+extern pkHeader pk_header;
+extern pkLobby pk_Lobby;
+extern pkLobby_RQ pk_Lobby_Request;
+
 LobbyScene::LobbyScene()
 {
 	g_NetworkManager = NetWorkManager::GetInstance();
-
+	g_NetworkManager->setHwnd(GameCenter::GetInstance()->getHwnd());
 	g_NetworkManager->Connect();
 }
 
@@ -20,8 +24,8 @@ void LobbyScene::Init(void)
 	ExitBtn = {900,0,900+245,105};
 	RoomMakeBtn = {700 , 450 , 700 + 165 , 450 + 165 };
 
-	//UnderChatRect;
-	//UserChatRect;
+	memset(pk_Lobby.Buffer, '\0', 64 * sizeof(char));
+	pk_Lobby.User_Position = 100;
 
 	m_ExitBtn_size = false;
 	m_RoomBtn_size = false;
@@ -197,6 +201,7 @@ void LobbyScene::LobbyUserBoardDraw(HDC hdc)
 	DeleteDC(hBackDC);
 
 	DeleteObject(hBackGround);
+
 }
 
 void LobbyScene::ExitBtnDraw(HDC hdc)
@@ -258,13 +263,13 @@ void LobbyScene::ChatDraw(HDC hdc)
 {
 	Rectangle(hdc, 130, 740, 1009, 783);
 
-	size_t chatLogSize = 0;
+	/*size_t chatLogSize = 0;
 	chatLogSize = NetWorkManager::GetInstance()->getChatLogSize();
 	for (size_t i = 0; i < chatLogSize; i++)
 	{
 		TextOut(hdc, 10, 520 - (i * 20), g_NetworkManager->chatLog[chatLogSize - 1 - i], _tcslen(g_NetworkManager->chatLog[chatLogSize - 1 - i]));
 	}
-
+	*/
 	RECT charRect = { 130, 740, 1009, 783 };
 	DrawText(hdc, NetWorkManager::GetInstance()->str, _tcslen(NetWorkManager::GetInstance()->str), &charRect, DT_LEFT | DT_VCENTER | DT_SINGLELINE);
 
@@ -276,13 +281,30 @@ void LobbyScene::InputProcess(WPARAM wParam)
 	{
 		if (NetWorkManager::GetInstance()->server == INVALID_SOCKET)
 			return ;
+		
+		pk_header.Protocal = LOBBY_MESSAGE;
+		pk_header.size = sizeof(pkLobby);
+		if (send(NetWorkManager::GetInstance()->server, (char*)&pk_header, sizeof(pkHeader), 0) == SOCKET_ERROR)
+		{
+			exit(1);
+		}
 		else
 		{
-			WideCharToMultiByte(CP_ACP, 0, NetWorkManager::GetInstance()->str, NetWorkManager::GetInstance()->len, NetWorkManager::GetInstance()->buffer, NetWorkManager::GetInstance()->len, NULL, NULL);
-			send(NetWorkManager::GetInstance()->server, (LPSTR)NetWorkManager::GetInstance()->buffer, strlen(NetWorkManager::GetInstance()->buffer), 0);
+			pk_header.Protocal = 0;
+			pk_header.size = 0;
+		}
+
+		WideCharToMultiByte(CP_ACP, 0, NetWorkManager::GetInstance()->str, 64, pk_Lobby.Buffer, 64, NULL, NULL);
+		if (send(NetWorkManager::GetInstance()->server, (char*)&pk_Lobby, sizeof(pkLobby), 0) == -1)
+		{
+			exit(-1);
+		}
+		else
+		{
 			NetWorkManager::GetInstance()->count = 0;
 			NetWorkManager::GetInstance()->str[NetWorkManager::GetInstance()->count] = NetWorkManager::GetInstance()->str[1] = '\0';
 		}
+
 	}
 	else if (wParam == VK_BACK)
 	{

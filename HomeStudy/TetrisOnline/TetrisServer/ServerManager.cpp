@@ -1,5 +1,10 @@
 #include "stdafx.h"
 
+extern pkHeader pk_header;
+extern pkLobby pk_Lobby;
+extern pkLobby_RQ pk_Lobby_Request;
+
+
 
 ServerManager::ServerManager(HWND hWnd_)
 {
@@ -45,42 +50,89 @@ void ServerManager::ServerListen()
 	}
 }
 
+
 void ServerManager::ServerAccept()
 {
 	size = sizeof(c_addr);
-	clientList.push_back(accept(server, (LPSOCKADDR)&c_addr, &size));
-	WSAAsyncSelect(clientList.back(), hWnd, WM_ASYNC, FD_READ | FD_CLOSE);
-	sprintf(msg, "%s %d", "Your Number is", clientList.back());
-	send(clientList.back(), msg, strlen(msg), NULL);
+	LobbyClient.push_back(accept(server, (LPSOCKADDR)&c_addr, &size));
+	//clientList[0].push_back(accept(server, (LPSOCKADDR)&c_addr, &size));
+	WSAAsyncSelect(LobbyClient.back(), hWnd, WM_ASYNC, FD_READ | FD_CLOSE);
+	//sprintf(msg, "%s %d", "Your Number is", LobbyClient.back());
+	//send(LobbyClient.back(), msg, strlen(msg), NULL);
 }
+
 
 void ServerManager::ServerRead(WPARAM wParam)
 {
-	msgLen = recv(wParam, buffer, 100, 0);
-	buffer[msgLen] = NULL;
-	sprintf(msg, "%d : %s", wParam, buffer);
-	for (SOCKET client : clientList)
-	{
-		send(client, msg, strlen(msg), NULL);
-	}
-}
+	recv(wParam, (char*)&pk_header, sizeof(pkHeader), 0);
 
-void ServerManager::ServerUserExit(WPARAM wParam)
-{
-	for (auto it = clientList.begin(); it != clientList.end(); it++)
+	//0 , 4
+	//0번쨰에는 프로토컬 번호 4번쨰에는 size
+
+	int protocol = pk_header.Protocal;
+	int size = pk_header.size;
+
+	switch (protocol)
 	{
-		if ((*it) == wParam)
+	case LOBBY_MESSAGE:
+		recv(wParam, (char*)&pk_Lobby, sizeof(pkLobby), 0);
+		
+		pk_header.Protocal = LOBBY_MESSAGE;
+		pk_header.size = sizeof(pkLobby);
+
+		for (SOCKET client : LobbyClient)
 		{
-			sprintf(msg, "%d %s", wParam, "user exit");
-			closesocket(*it);
-			clientList.erase(it);
-			break;
+			send(client, (char*)&pk_header, sizeof(pkHeader), NULL);
 		}
+
+		pk_header.Protocal = 0;
+		pk_header.size = 0;
+		
+
+		sprintf(msg, "%d : %s", wParam, pk_Lobby.Buffer);
+		
+		memcpy(pk_Lobby.Buffer, msg, sizeof(pk_Lobby.Buffer));
+
+		for (SOCKET client : LobbyClient)
+		{
+			send(client, (char*)&pk_Lobby, sizeof(pkLobby), NULL);
+		}
+
+		break;
+	case LOBBYRQ:
+		recv(wParam, (char*)&pk_Lobby_Request, sizeof(pkLobby_RQ), 0);
+		buffer[size] = NULL;
+		break;
+	case ROOM:
+	/*	recv(wParam, (char*)&pk_Lobby, sizeof(pkLobby), 0);
+		buffer[size] = NULL;*/
+		break;
+	case GAME:
+		/*recv(wParam, (char*)&pk_Lobby, sizeof(pkLobby), 0);
+		buffer[size] = NULL;*/
+		break;
+	default:
+		break;
 	}
-	for (SOCKET client : clientList)
-	{
-		send(client, msg, strlen(msg), NULL);
-	}
+
 }
 
 
+
+//void ServerManager::ServerUserExit(WPARAM wParam)
+//{
+//	for (auto it = clientList.begin(); it != clientList.end(); it++)
+//	{
+//		if ((*it) == wParam)
+//		{
+//			sprintf(msg, "%d %s", wParam, "user exit");
+//			closesocket(*it);
+//			clientList.erase(it);
+//			break;
+//		}
+//	}
+//	for (SOCKET client : clientList)
+//	{
+//		send(client, msg, strlen(msg), NULL);
+//	}
+//}

@@ -158,7 +158,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			InvalidateRect(hWnd, NULL, TRUE);
 			break;
 		case FD_CLOSE:
-			Server->ServerUserExit(wParam);
+			//Server->ServerUserExit(wParam);
 			break;
 		}
 		break;

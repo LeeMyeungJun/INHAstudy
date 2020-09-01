@@ -1,6 +1,11 @@
 #pragma once
+
+
 class LobbyScene :public Scene
 {
+private:
+
+
 private:
 	HBITMAP hBackGround;
 	BITMAP bitBackground;
