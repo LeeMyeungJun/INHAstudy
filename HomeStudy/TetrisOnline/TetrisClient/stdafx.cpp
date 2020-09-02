@@ -19,4 +19,6 @@ SoundManager* g_theSoundManager;
 pkHeader pk_header;
 pkLobby pk_Lobby;
 pkLobby_RQ pk_Lobby_Request;
+pkUser pk_User;
+
 

@@ -1,4 +1,5 @@
 #pragma once
+#include <vector>
 using namespace std;
 
 class NetWorkManager
@@ -20,7 +21,8 @@ public:
 	int count;
 	SOCKADDR_IN addr = { 0 };
 	int msgLen;
-	vector<TCHAR *> chatLog;
+	vector<wchar_t *> chatLog;
+	vector<wchar_t *> userID;
 	
 
 	

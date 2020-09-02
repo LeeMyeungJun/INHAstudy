@@ -6,6 +6,8 @@ SOCKET NetWorkManager::server;
 extern pkHeader pk_header;
 extern pkLobby pk_Lobby;
 extern pkLobby_RQ pk_Lobby_Request;
+extern pkUser pk_User;
+
 
 
 NetWorkManager::NetWorkManager()
@@ -57,39 +59,35 @@ NetWorkManager::~NetWorkManager()
 
 void NetWorkManager::Read_Fd()
 {
-	//char buffer[256];
-	//memset(buffer, 0, sizeof(buffer));
-	//recv(server, buffer, 100, 0);
-	////buffer[msgLen] = NULL;
-	//size_t stlength = strlen(buffer);
-	//TCHAR * newMsg = new TCHAR[stlength + 1];
-	//wsprintf(newMsg, L"%s", buffer);
-	//chatLog.push_back(newMsg);
-
-
-
-
 	recv(server, (char*)&pk_header, sizeof(pkHeader), 0);
 
 
-	//0 , 4
-	//0번쨰에는 프로토컬 번호 4번쨰에는 size
-
 	int protocol = pk_header.Protocal;
 	int size = pk_header.size;
-
 	switch (protocol)
 	{
 	case LOBBY_MESSAGE:
+	{
 		recv(server, (char*)&pk_Lobby, sizeof(pkLobby), 0);
 		size_t stlength = strlen(pk_Lobby.Buffer);
 		TCHAR *newMsg = new TCHAR[stlength + 1];
-	
-		//wsprintf(newMsg, TEXT("%s"), pk_Lobby.Buffer);
-		//sprintf(newMsg, TEXT("%s"), buffer);
+		memset(newMsg, 0, _msize(newMsg));
+		MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED, pk_Lobby.Buffer, strlen(pk_Lobby.Buffer), newMsg, _msize(newMsg) +1);
 		chatLog.push_back(newMsg);
-
 		break;
+	}
+	case USERLIST:
+	{
+		pk_User.UserID = new char[size];
+		list<SOCKET> temp;
+		temp.resize(size);
+		int a = recv(server, (char*)&temp.front(), size * sizeof(temp.front()), 0);
+		//list<SOCKET> temp = (list<SOCKET>)*(pk_User.UserID);
+		//auto temp = (list<SOCKET>)*(pk_User.UserID);
+	//	int a = _msize(pk_User.UserID);
+		//memcpy(&temp, pk_User.UserID, _msize(pk_User.UserID));
+		break;
+	}
 	//case LOBBYRQ:
 	//	//recv(wParam, (char*)&pk_Lobby_Request, sizeof(pkLobby_RQ), 0);
 	//	//buffer[size] = NULL;

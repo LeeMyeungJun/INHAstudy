@@ -31,6 +31,7 @@ private:
 
 	list<SOCKET> LobbyClient;
 	list<SOCKET> RoomClient;
-	list<SOCKET> GameClient;
+
+
 };
 

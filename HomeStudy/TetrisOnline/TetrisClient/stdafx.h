@@ -25,6 +25,7 @@
 #include <string>
 #include <vector>
 #include <map>
+#include <list>
 #include <math.h>
 #include <string.h>
 #include <tchar.h>
@@ -51,6 +52,7 @@ const int MOVE_DELAY = 100;
 const float BtnZoom = 1.3;
 #define WM_ASYNC WM_USER + 2
 
+
 const int iWidth = 16;
 const int iHeight = 26;
 
@@ -62,8 +64,9 @@ enum RoomRequestId
 
 };
 
-#define LOBBY_MESSAGE 100
+#define USERLIST 88
 #define LOBBYRQ 99
+#define LOBBY_MESSAGE 100
 #define ROOM 200
 #define GAME 300
 
@@ -72,6 +75,10 @@ typedef struct __pkHeader {
 	unsigned int Protocal;
 	unsigned int size;
 } pkHeader;
+
+typedef struct __pkUser {
+	char* UserID;
+} pkUser;
 
 typedef struct __pkLobby {
 	unsigned int User_Position;

@@ -6,6 +6,8 @@ extern NetWorkManager *g_NetworkManager;
 extern pkHeader pk_header;
 extern pkLobby pk_Lobby;
 extern pkLobby_RQ pk_Lobby_Request;
+extern pkUser pk_User;
+
 
 LobbyScene::LobbyScene()
 {
@@ -263,14 +265,22 @@ void LobbyScene::ChatDraw(HDC hdc)
 {
 	Rectangle(hdc, 130, 740, 1009, 783);
 
-	/*size_t chatLogSize = 0;
+	size_t chatLogSize = 0;
 	chatLogSize = NetWorkManager::GetInstance()->getChatLogSize();
+	if (chatLogSize > 6)
+	{
+		NetWorkManager::GetInstance()->chatLog.erase(NetWorkManager::GetInstance()->chatLog.begin());
+		chatLogSize = 6;
+	}
+
+
 	for (size_t i = 0; i < chatLogSize; i++)
 	{
-		TextOut(hdc, 10, 520 - (i * 20), g_NetworkManager->chatLog[chatLogSize - 1 - i], _tcslen(g_NetworkManager->chatLog[chatLogSize - 1 - i]));
+		TextOut(hdc, 140, 720 - (i * 20), g_NetworkManager->chatLog[chatLogSize - 1 - i], _tcslen(g_NetworkManager->chatLog[chatLogSize - 1 - i]));
 	}
-	*/
-	RECT charRect = { 130, 740, 1009, 783 };
+	
+
+	RECT charRect = { 135, 740, 1009, 783 };
 	DrawText(hdc, NetWorkManager::GetInstance()->str, _tcslen(NetWorkManager::GetInstance()->str), &charRect, DT_LEFT | DT_VCENTER | DT_SINGLELINE);
 
 }

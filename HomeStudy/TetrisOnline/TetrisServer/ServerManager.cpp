@@ -3,7 +3,7 @@
 extern pkHeader pk_header;
 extern pkLobby pk_Lobby;
 extern pkLobby_RQ pk_Lobby_Request;
-
+extern pkUser pk_User;
 
 
 ServerManager::ServerManager(HWND hWnd_)
@@ -55,10 +55,29 @@ void ServerManager::ServerAccept()
 {
 	size = sizeof(c_addr);
 	LobbyClient.push_back(accept(server, (LPSOCKADDR)&c_addr, &size));
-	//clientList[0].push_back(accept(server, (LPSOCKADDR)&c_addr, &size));
 	WSAAsyncSelect(LobbyClient.back(), hWnd, WM_ASYNC, FD_READ | FD_CLOSE);
 	//sprintf(msg, "%s %d", "Your Number is", LobbyClient.back());
 	//send(LobbyClient.back(), msg, strlen(msg), NULL);
+	//memset(pk_User.UserID, 0, _msize(pk_User.UserID));
+	//sprintf(msg, "%d", LobbyClient.back());
+
+	pk_header.Protocal = USERLIST;
+	pk_header.size = LobbyClient.size();
+
+	for (SOCKET client : LobbyClient)
+	{
+		send(client, (char*)&pk_header, sizeof(pkHeader), NULL);
+	}
+
+
+	pk_User.UserID = (char*)&LobbyClient;
+	for (SOCKET client : LobbyClient)
+	{
+		send(client, (char*)&LobbyClient.front(), sizeof(LobbyClient.front()) * pk_header.size , NULL);
+	}
+
+	pk_header.Protocal = 0;
+	pk_header.size = 0;
 }
 
 
