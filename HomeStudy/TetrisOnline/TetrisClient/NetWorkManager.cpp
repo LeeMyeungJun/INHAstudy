@@ -85,14 +85,10 @@ void NetWorkManager::Read_Fd()
 		size_t stlength = strlen(pk_Lobby.Buffer);
 		TCHAR *newMsg = new TCHAR[stlength + 1];
 	
-		sprintf(newMsg, "%s", pk_Lobby.Buffer);
+		//wsprintf(newMsg, TEXT("%s"), pk_Lobby.Buffer);
 		//sprintf(newMsg, TEXT("%s"), buffer);
 		chatLog.push_back(newMsg);
-	//	memcpy(newMsg,pk_Lobby.Buffer, sizeof(pk_Lobby.Buffer));
 
-	//	//sprintf(msg, "%d : %s", wParam, pk_Lobby.Buffer);
-
-	//	chatLog.push_back(newMsg);
 		break;
 	//case LOBBYRQ:
 	//	//recv(wParam, (char*)&pk_Lobby_Request, sizeof(pkLobby_RQ), 0);
