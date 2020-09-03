@@ -151,11 +151,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		{
 		case FD_ACCEPT:
 			Server->ServerAccept();
-			InvalidateRect(hWnd, NULL, TRUE);
 			break;
 		case FD_READ:
 			Server->ServerRead(wParam);
-			InvalidateRect(hWnd, NULL, TRUE);
 			break;
 		case FD_CLOSE:
 			//Server->ServerUserExit(wParam);

@@ -58,19 +58,20 @@ void ServerManager::ServerAccept()
 	WSAAsyncSelect(LobbyClient.back(), hWnd, WM_ASYNC, FD_READ | FD_CLOSE);
 	
 
-	//pk_Packet.Protocal = USERLIST;
-	//pk_User.UserID = (char*)&LobbyClient.front();
-	//char * buffer = new char[sizeof(pk_Packet.Protocal) + sizeof(pkUser)];
-	//memset(buffer, 0, _msize(buffer));
-	//memcpy(buffer, &pk_Packet.Protocal, sizeof(pk_Packet.Protocal));
-	//memcpy(&buffer[sizeof(pk_Packet.Protocal)], pk_User.UserID, sizeof(LobbyClient.front()) *LobbyClient.size());
-	//for (SOCKET client : LobbyClient)
-	//{
-	//	if (send(client, buffer, _msize(buffer), NULL) == -1)
-	//	{
-	//		exit(-1);
-	//	}
-	//}
+	pk_Packet.Protocal = USERLIST;
+	pk_User.UserID = (char*)&LobbyClient.front();
+	char * buffer = new char[sizeof(pk_Packet.Protocal) + sizeof(pkUser)];
+	memset(buffer, 0, _msize(buffer));
+	memcpy(buffer, &pk_Packet.Protocal, sizeof(pk_Packet.Protocal));
+	memcpy(&buffer[sizeof(pk_Packet.Protocal)], pk_User.UserID, sizeof(LobbyClient.front()) *LobbyClient.size());
+	for (SOCKET client : LobbyClient)
+	{
+		if (send(client, buffer, _msize(buffer), NULL) == -1)
+		{
+			exit(-1);
+		}
+	}
+
 
 }
 
@@ -118,6 +119,39 @@ void ServerManager::ServerRead(WPARAM wParam)
 			send(client, buffer, _msize(buffer), NULL);
 		}
 
+	}
+		break;
+	case USERLIST:
+	{
+		bool inCheck = false;
+		for (SOCKET client : LobbyClient)
+		{
+			if (client == wParam)
+			{
+				inCheck = true;
+				break;
+			}
+		}
+
+		if (!inCheck)
+		{
+			LobbyClient.push_back(wParam);
+		}
+
+
+		pk_Packet.Protocal = USERLIST;
+		pk_User.UserID = (char*)&LobbyClient.front();
+		char * buffer = new char[sizeof(pk_Packet.Protocal) + sizeof(pkUser)];
+		memset(buffer, 0, _msize(buffer));
+		memcpy(buffer, &pk_Packet.Protocal, sizeof(pk_Packet.Protocal));
+		memcpy(&buffer[sizeof(pk_Packet.Protocal)], pk_User.UserID, sizeof(LobbyClient.front()) *LobbyClient.size());
+		for (SOCKET client : LobbyClient)
+		{
+			if (send(client, buffer, _msize(buffer), NULL) == -1)
+			{
+				exit(-1);
+			}
+		}
 	}
 		break;
 	case LOBBYRQ:

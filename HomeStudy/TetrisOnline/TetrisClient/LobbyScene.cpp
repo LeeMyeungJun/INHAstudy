@@ -30,6 +30,8 @@ void LobbyScene::Init(void)
 
 	m_ExitBtn_size = false;
 	m_RoomBtn_size = false;
+
+	//LobbyUserCall();
 }
 
 void LobbyScene::Update(UINT message, WPARAM wParam, LPARAM lParam)
@@ -117,6 +119,20 @@ void LobbyScene::BtnAnimaition(LPARAM lParam)
 
 }
 
+void LobbyScene::LobbyUserCall()
+{
+	/*pk_Packet.Protocal = USERLIST;
+	char * buffer = new char[sizeof(pk_Packet.Protocal) + sizeof(pkUser)];
+	memset(buffer, 0, _msize(buffer));
+	memcpy(buffer, &pk_Packet.Protocal, sizeof(pk_Packet.Protocal));
+	memcpy(&buffer[sizeof(pk_Packet.Protocal)], pk_Lobby_Message.Buffer, sizeof(pkUser));
+	if (send(NetWorkManager::GetInstance()->server, buffer, _msize(buffer), 0) == -1)
+	{
+		exit(-1);
+	}
+*/
+}
+
 void LobbyScene::BackGroundDraw(HDC hdc)
 {
 	HBITMAP h01Bitmap;
@@ -132,7 +148,6 @@ void LobbyScene::BackGroundDraw(HDC hdc)
 	by = bitBackground.bmHeight;
 
 	StretchBlt(hdc, 0, 0, bx + 880, by + 644, hBackDC, 0, 0, bx, by, SRCCOPY);   //각 블럭의 색
-
 
 	DeleteDC(hBackDC);
 
@@ -152,7 +167,7 @@ void LobbyScene::ChattingDraw(HDC hdc)
 
 	bx = bitBackground.bmWidth;
 	by = bitBackground.bmHeight;
-
+	 
 	TransparentBlt(hdc, 0, 550, bx*8.7, by*4.5, hBackDC, 0, 0, bx, by, RGB(255, 0, 255));// bx*4 ,by*4 는 4배한것.
 
 

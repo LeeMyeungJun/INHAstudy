@@ -35,6 +35,9 @@ public:
 
 private:
 	void BtnAnimaition(LPARAM lParam);
+	void LobbyUserCall();
+
+
 
 	void BackGroundDraw(HDC hdc);
 	void ChattingDraw(HDC hdc);
@@ -44,6 +47,7 @@ private:
 	void RoomCreateBtnDraw(HDC hdc);
 	void ChatDraw(HDC hdc);
 	void InputProcess(WPARAM wParam);
+
 
 };
 
