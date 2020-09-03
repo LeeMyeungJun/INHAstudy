@@ -14,7 +14,7 @@ WCHAR szWindowClass[MAX_LOADSTRING];            // the main window class name
 //extern NetWorkManager *g_NetworkManager;
 extern SoundManager* g_theSoundManager;
 extern NetWorkManager *g_NetworkManager;
-extern int protocal;
+
 
 
 // Forward declarations of functions included in this code module:

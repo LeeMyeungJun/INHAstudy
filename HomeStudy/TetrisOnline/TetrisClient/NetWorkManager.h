@@ -22,7 +22,7 @@ public:
 	SOCKADDR_IN addr = { 0 };
 	int msgLen;
 	vector<wchar_t *> chatLog;
-	vector<wchar_t *> userID;
+	
 	
 
 	

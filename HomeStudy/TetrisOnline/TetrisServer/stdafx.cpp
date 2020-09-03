@@ -10,3 +10,4 @@
 pkLobbyMessage pk_Lobby_Message;
 pkLobby_RQ pk_Lobby_Request;
 pkUser pk_User;
+Packet pk_Packet;

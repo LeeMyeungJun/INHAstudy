@@ -11,7 +11,6 @@
 
 
 
-int protocol = 0;
 
 NetWorkManager *g_NetworkManager;
 SoundManager* g_theSoundManager;
@@ -20,5 +19,5 @@ SoundManager* g_theSoundManager;
 pkLobbyMessage pk_Lobby_Message;
 pkLobby_RQ pk_Lobby_Request;
 pkUser pk_User;
-
+Packet pk_Packet;
 

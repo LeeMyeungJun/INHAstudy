@@ -28,6 +28,7 @@
 #include "TetrisServer.h"
 #include "ServerManager.h"
 // TODO: reference additional headers your program requires here
+
 const int iWidth = 16;
 const int iHeight = 26;
 
@@ -46,25 +47,27 @@ enum RoomRequestId
 #define GAME 300
 
 
-typedef struct __pkUser {
+typedef struct __Packet {
 	unsigned int Protocal;
+	char* Buffer;
+} Packet;
+
+
+typedef struct __pkUser {
 	char* UserID;
 } pkUser;
 
 typedef struct __pkLobby_Message {
-	unsigned int Protocal;
 	char Buffer[64];
 } pkLobbyMessage;
 
 typedef struct __pkLobby_RQ {
-	unsigned int Protocal;
 	char RooName[40];
 	unsigned int RoomNum;
 } pkLobby_RQ;
 
 
 typedef struct __pkRoom {
-	unsigned int Protocal;
 	unsigned int User_Position;
 	char Buffer[64];
 	bool User_Ready;
@@ -72,7 +75,6 @@ typedef struct __pkRoom {
 
 
 typedef struct __pkGame {
-	unsigned int Protocal;
 	unsigned int User_Position;
 	int User_GameBoard[iHeight][iWidth];
 	bool User_Survive;

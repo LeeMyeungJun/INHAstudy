@@ -6,7 +6,7 @@ extern NetWorkManager *g_NetworkManager;
 extern pkLobbyMessage pk_Lobby_Message;
 extern pkLobby_RQ pk_Lobby_Request;
 extern pkUser pk_User;
-
+extern Packet pk_Packet;
 
 LobbyScene::LobbyScene()
 {
@@ -199,6 +199,20 @@ void LobbyScene::LobbyUserBoardDraw(HDC hdc)
 
 	TransparentBlt(hdc,900, 50, bx*3.5, by*4, hBackDC, 0, 0, bx, by, RGB(255, 0, 255));// bx*4 ,by*4 는 4배한것.
 
+
+	//size_t UserListSize = 0;
+	//UserListSize = g_NetworkManager->userList.size();
+	//if (UserListSize > 6)
+	//{
+	////	NetWorkManager::GetInstance()->chatLog.erase(NetWorkManager::GetInstance()->chatLog.begin());
+	//	UserListSize = 6;
+	//}
+
+	//for (size_t i = 0; i < UserListSize; i++)
+	//{
+	//	TextOut(hdc, 0, 720 - (i * 20), (LPCWSTR)g_NetworkManager->userList.front()+i, 4);
+	//}
+
 	DeleteDC(hBackDC);
 
 	DeleteObject(hBackGround);
@@ -272,7 +286,6 @@ void LobbyScene::ChatDraw(HDC hdc)
 		chatLogSize = 6;
 	}
 
-
 	for (size_t i = 0; i < chatLogSize; i++)
 	{
 		TextOut(hdc, 140, 720 - (i * 20), g_NetworkManager->chatLog[chatLogSize - 1 - i], _tcslen(g_NetworkManager->chatLog[chatLogSize - 1 - i]));
@@ -291,10 +304,15 @@ void LobbyScene::InputProcess(WPARAM wParam)
 		if (NetWorkManager::GetInstance()->server == INVALID_SOCKET)
 			return ;
 
-		pk_Lobby_Message.Protocal = LOBBY_MESSAGE;
-		
 		WideCharToMultiByte(CP_ACP, 0, NetWorkManager::GetInstance()->str, 64, pk_Lobby_Message.Buffer, 64, NULL, NULL);
-		if (send(NetWorkManager::GetInstance()->server, (char*)&pk_Lobby_Message, sizeof(pkLobbyMessage), 0) == -1)
+	
+		pk_Packet.Protocal = LOBBY_MESSAGE;
+		char * buffer = new char[sizeof(pk_Packet.Protocal) + sizeof(pkLobbyMessage)];
+		memset(buffer, 0, _msize(buffer));
+		memcpy(buffer, &pk_Packet.Protocal, sizeof(pk_Packet.Protocal));
+		memcpy(&buffer[sizeof(pk_Packet.Protocal)], pk_Lobby_Message.Buffer, sizeof(pkLobbyMessage));
+		
+		if (send(NetWorkManager::GetInstance()->server, buffer, _msize(buffer), 0) == -1)
 		{
 			exit(-1);
 		}
@@ -303,6 +321,7 @@ void LobbyScene::InputProcess(WPARAM wParam)
 			NetWorkManager::GetInstance()->count = 0;
 			NetWorkManager::GetInstance()->str[NetWorkManager::GetInstance()->count] = NetWorkManager::GetInstance()->str[1] = '\0';
 		}
+
 		/*
 		pk_header.Protocal = LOBBY_MESSAGE;
 		pk_header.size = sizeof(pkLobby);

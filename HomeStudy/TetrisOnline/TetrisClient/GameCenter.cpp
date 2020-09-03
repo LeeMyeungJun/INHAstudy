@@ -1,7 +1,6 @@
 #include "stdafx.h"
 
 
-extern int protocol;
 UI * GameCenter::m_UI = nullptr;
 
 GameCenter::GameCenter()
@@ -48,33 +47,28 @@ void GameCenter::SceneChange(Scene_enum nextScene)
 	switch (nextScene)
 	{
 	case Scene_enum::LOGIN_SCENE:
-		protocol = 0;
 		m_Scene = m_LoginScene;
 		m_Scene_enum = Scene_enum::LOGIN_SCENE;
 		break;
 	case Scene_enum::LOBBY_SCENE:
-		protocol = 100;
 		if (m_LobbyScene == nullptr)
 			m_LobbyScene = new LobbyScene;
 		m_Scene = m_LobbyScene;
 		m_Scene_enum = Scene_enum::LOBBY_SCENE;
 		break;
 	case Scene_enum::ROOM_SCENE:
-		protocol = 200;
 		if (m_RoomScene == nullptr)
 			m_RoomScene = new RoomScene;
 		m_Scene = m_RoomScene;
 		m_Scene_enum = Scene_enum::ROOM_SCENE;
 		break;
 	case Scene_enum::GAME_SCENE:
-		protocol = 300;
 		if (m_GameScene == nullptr)
 			m_GameScene = new GameScene;
 		m_Scene = m_GameScene;
 		m_Scene_enum = Scene_enum::GAME_SCENE;
 		break;
 	case Scene_enum::LOCALGAME_SCENE:
-		protocol = 400;
 		if (m_GameScene == nullptr)
 			m_GameScene = new GameScene;
 		m_Scene = m_GameScene;

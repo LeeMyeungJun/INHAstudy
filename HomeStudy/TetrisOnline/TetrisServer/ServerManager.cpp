@@ -3,6 +3,7 @@
 extern pkLobbyMessage pk_Lobby_Message;
 extern pkLobby_RQ pk_Lobby_Request;
 extern pkUser pk_User;
+extern Packet pk_Packet;
 
 
 ServerManager::ServerManager(HWND hWnd_)
@@ -55,57 +56,73 @@ void ServerManager::ServerAccept()
 	size = sizeof(c_addr);
 	LobbyClient.push_back(accept(server, (LPSOCKADDR)&c_addr, &size));
 	WSAAsyncSelect(LobbyClient.back(), hWnd, WM_ASYNC, FD_READ | FD_CLOSE);
-	//sprintf(msg, "%s %d", "Your Number is", LobbyClient.back());
-	//send(LobbyClient.back(), msg, strlen(msg), NULL);
-	//memset(pk_User.UserID, 0, _msize(pk_User.UserID));
-	//sprintf(msg, "%d", LobbyClient.back());
+	
 
-	//pk_header.Protocal = USERLIST;
-	//pk_header.size = LobbyClient.size();
-
-
-
-
-	//pk_User.UserID = (char*)&LobbyClient;
+	//pk_Packet.Protocal = USERLIST;
+	//pk_User.UserID = (char*)&LobbyClient.front();
+	//char * buffer = new char[sizeof(pk_Packet.Protocal) + sizeof(pkUser)];
+	//memset(buffer, 0, _msize(buffer));
+	//memcpy(buffer, &pk_Packet.Protocal, sizeof(pk_Packet.Protocal));
+	//memcpy(&buffer[sizeof(pk_Packet.Protocal)], pk_User.UserID, sizeof(LobbyClient.front()) *LobbyClient.size());
 	//for (SOCKET client : LobbyClient)
 	//{
-	//	send(client, (char*)&LobbyClient.front(), sizeof(LobbyClient.front()) * pk_header.size , NULL);
+	//	if (send(client, buffer, _msize(buffer), NULL) == -1)
+	//	{
+	//		exit(-1);
+	//	}
 	//}
 
-	//pk_header.Protocal = 0;
-	//pk_header.size = 0;
 }
 
 
 void ServerManager::ServerRead(WPARAM wParam)
 {
-	recv(wParam, (char*)&pk_Lobby_Message, sizeof(pkLobbyMessage), 0);
-	int protocol = pk_Lobby_Message.Protocal;
-
-
+	
+	int size = recv(wParam, (char*)&pk_Packet.Protocal, sizeof(pk_Packet.Protocal), 0);
+	int protocol = pk_Packet.Protocal;
 
 	switch (protocol)
 	{
 	case LOBBY_MESSAGE:
 	{
+		pk_Packet.Buffer = new char[sizeof(__pkLobby_Message)];
+		memset(pk_Packet.Buffer, 0, _msize(pk_Packet.Buffer));
+		recv(wParam, (char*)pk_Packet.Buffer, sizeof(pkLobbyMessage), 0);
+		char *buffer = pk_Packet.Buffer;
 
-			recv(wParam, (char*)&pk_Lobby_Message, sizeof(pkLobbyMessage), 0);
+		//pk_User.UserID = new char[size];
+		//list<SOCKET> temp;
+		//temp.resize(size);
+		//int a = recv(server, (char*)&temp.front(), size * sizeof(temp.front()), 0);
+		//list<SOCKET> temp = (list<SOCKET>)*(pk_User.UserID);
+		//auto temp = (list<SOCKET>)*(pk_User.UserID);
+		//int a = _msize(pk_User.UserID);
+		//memcpy(&temp, pk_User.UserID, _msize(pk_User.UserID));
 
-			sprintf(msg, "%d : %s", wParam, pk_Lobby_Message.Buffer);
-		
-			memcpy(pk_Lobby_Message.Buffer, msg, sizeof(pk_Lobby_Message.Buffer));
+		//로비패킷
+		pk_Lobby_Message = *(pkLobbyMessage*)(buffer);
+		sprintf(msg, "%d : %s", wParam, pk_Lobby_Message.Buffer);
+		memcpy(pk_Lobby_Message.Buffer, msg, sizeof(pk_Lobby_Message.Buffer));
 
-			for (SOCKET client : LobbyClient)
-			{
-				send(client, (char*)&pk_Lobby_Message, sizeof(pk_Lobby_Message), NULL);
-			}
+		delete[] buffer;
+		//패킷
+		buffer = new char[sizeof(pk_Packet.Protocal) + sizeof(pkLobbyMessage)];
+		memset(buffer, 0, _msize(buffer));
+		memcpy(buffer, &pk_Packet.Protocal, sizeof(pk_Packet.Protocal));
+		memcpy(&buffer[sizeof(pk_Packet.Protocal)], pk_Lobby_Message.Buffer, sizeof(pkLobbyMessage));
 
-			pk_Lobby_Message.Protocal = 0;
+
+
+		for (SOCKET client : LobbyClient)
+		{
+			send(client, buffer, _msize(buffer), NULL);
+		}
+
 	}
 		break;
 	case LOBBYRQ:
-		recv(wParam, (char*)&pk_Lobby_Request, sizeof(pkLobby_RQ), 0);
-		buffer[size] = NULL;
+		//recv(wParam, (char*)&pk_Lobby_Request, sizeof(pkLobby_RQ), 0);
+		//buffer[size] = NULL;
 		break;
 	case ROOM:
 	/*	recv(wParam, (char*)&pk_Lobby, sizeof(pkLobby), 0);
