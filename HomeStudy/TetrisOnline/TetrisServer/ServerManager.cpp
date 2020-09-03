@@ -58,7 +58,7 @@ void ServerManager::ServerAccept()
 	WSAAsyncSelect(LobbyClient.back(), hWnd, WM_ASYNC, FD_READ | FD_CLOSE);
 	
 
-	pk_Packet.Protocal = USERLIST;
+	/*pk_Packet.Protocal = USERLIST;
 	pk_User.UserID = (char*)&LobbyClient.front();
 	char * buffer = new char[sizeof(pk_Packet.Protocal) + sizeof(pkUser)];
 	memset(buffer, 0, _msize(buffer));
@@ -70,7 +70,7 @@ void ServerManager::ServerAccept()
 		{
 			exit(-1);
 		}
-	}
+	}*/
 
 
 }
