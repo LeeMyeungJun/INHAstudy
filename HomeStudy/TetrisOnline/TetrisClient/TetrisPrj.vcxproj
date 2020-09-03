@@ -71,8 +71,8 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>C:\c++\HomeStudy\TetrisOnline\TetrisClient;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\c++\HomeStudy\TetrisOnline\TetrisClient;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\c++\HomeStudy\TetrisOnline\TetrisClient;$(IncludePath);C:\Cstudy\git-sutdy\HomeStudy\TetrisOnline\TetrisClient</IncludePath>
+    <LibraryPath>C:\Cstudy\git-sutdy\HomeStudy\TetrisOnline\TetrisClient;C:\c++\HomeStudy\TetrisOnline\TetrisClient;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
@@ -81,8 +81,8 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>D:\C++sutdy\git_study2\HomeStudy\TetrisPrj;C:\Program Files %28x86%29\FMOD SoundSystem\FMOD Programmers API Win32\api\inc;$(IncludePath)</IncludePath>
-    <LibraryPath>D:\C++sutdy\git_study2\HomeStudy\TetrisPrj;C:\Program Files %28x86%29\FMOD SoundSystem\FMOD Programmers API Win32\api\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>D:\C++sutdy\git_study2\HomeStudy\TetrisPrj;C:\Program Files %28x86%29\FMOD SoundSystem\FMOD Programmers API Win32\api\inc;$(IncludePath);C:\Cstudy\git-sutdy\HomeStudy\TetrisOnline\TetrisClient</IncludePath>
+    <LibraryPath>C:\Cstudy\git-sutdy\HomeStudy\TetrisOnline\TetrisClient;D:\C++sutdy\git_study2\HomeStudy\TetrisPrj;C:\Program Files %28x86%29\FMOD SoundSystem\FMOD Programmers API Win32\api\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>

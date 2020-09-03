@@ -1,7 +1,6 @@
 #include "stdafx.h"
 
-extern pkHeader pk_header;
-extern pkLobby pk_Lobby;
+extern pkLobbyMessage pk_Lobby_Message;
 extern pkLobby_RQ pk_Lobby_Request;
 extern pkUser pk_User;
 
@@ -61,62 +60,48 @@ void ServerManager::ServerAccept()
 	//memset(pk_User.UserID, 0, _msize(pk_User.UserID));
 	//sprintf(msg, "%d", LobbyClient.back());
 
-	pk_header.Protocal = USERLIST;
-	pk_header.size = LobbyClient.size();
-
-	for (SOCKET client : LobbyClient)
-	{
-		send(client, (char*)&pk_header, sizeof(pkHeader), NULL);
-	}
+	//pk_header.Protocal = USERLIST;
+	//pk_header.size = LobbyClient.size();
 
 
-	pk_User.UserID = (char*)&LobbyClient;
-	for (SOCKET client : LobbyClient)
-	{
-		send(client, (char*)&LobbyClient.front(), sizeof(LobbyClient.front()) * pk_header.size , NULL);
-	}
 
-	pk_header.Protocal = 0;
-	pk_header.size = 0;
+
+	//pk_User.UserID = (char*)&LobbyClient;
+	//for (SOCKET client : LobbyClient)
+	//{
+	//	send(client, (char*)&LobbyClient.front(), sizeof(LobbyClient.front()) * pk_header.size , NULL);
+	//}
+
+	//pk_header.Protocal = 0;
+	//pk_header.size = 0;
 }
 
 
 void ServerManager::ServerRead(WPARAM wParam)
 {
-	recv(wParam, (char*)&pk_header, sizeof(pkHeader), 0);
+	recv(wParam, (char*)&pk_Lobby_Message, sizeof(pkLobbyMessage), 0);
+	int protocol = pk_Lobby_Message.Protocal;
 
-	//0 , 4
-	//0번쨰에는 프로토컬 번호 4번쨰에는 size
 
-	int protocol = pk_header.Protocal;
-	int size = pk_header.size;
 
 	switch (protocol)
 	{
 	case LOBBY_MESSAGE:
-		recv(wParam, (char*)&pk_Lobby, sizeof(pkLobby), 0);
+	{
+
+			recv(wParam, (char*)&pk_Lobby_Message, sizeof(pkLobbyMessage), 0);
+
+			sprintf(msg, "%d : %s", wParam, pk_Lobby_Message.Buffer);
 		
-		pk_header.Protocal = LOBBY_MESSAGE;
-		pk_header.size = sizeof(pkLobby);
+			memcpy(pk_Lobby_Message.Buffer, msg, sizeof(pk_Lobby_Message.Buffer));
 
-		for (SOCKET client : LobbyClient)
-		{
-			send(client, (char*)&pk_header, sizeof(pkHeader), NULL);
-		}
+			for (SOCKET client : LobbyClient)
+			{
+				send(client, (char*)&pk_Lobby_Message, sizeof(pk_Lobby_Message), NULL);
+			}
 
-		pk_header.Protocal = 0;
-		pk_header.size = 0;
-		
-
-		sprintf(msg, "%d : %s", wParam, pk_Lobby.Buffer);
-		
-		memcpy(pk_Lobby.Buffer, msg, sizeof(pk_Lobby.Buffer));
-
-		for (SOCKET client : LobbyClient)
-		{
-			send(client, (char*)&pk_Lobby, sizeof(pkLobby), NULL);
-		}
-
+			pk_Lobby_Message.Protocal = 0;
+	}
 		break;
 	case LOBBYRQ:
 		recv(wParam, (char*)&pk_Lobby_Request, sizeof(pkLobby_RQ), 0);
@@ -130,9 +115,59 @@ void ServerManager::ServerRead(WPARAM wParam)
 		/*recv(wParam, (char*)&pk_Lobby, sizeof(pkLobby), 0);
 		buffer[size] = NULL;*/
 		break;
-	default:
+	case 0:
+		exit(1);
 		break;
+
 	}
+
+
+	/*recv(wParam, (char*)&pk_header, sizeof(pkHeader), 0);
+	int protocol = pk_header.Protocal;
+	int size = pk_header.size;*/
+
+	//switch (protocol)
+	//{
+	//case LOBBY_MESSAGE:`
+	//	recv(wParam, (char*)&pk_Lobby, sizeof(pkLobby), 0);
+	//	
+	//	pk_header.Protocal = LOBBY_MESSAGE;
+	//	pk_header.size = sizeof(pkLobby);
+
+	//	for (SOCKET client : LobbyClient)
+	//	{
+	//		send(client, (char*)&pk_header, sizeof(pkHeader), NULL);
+	//	}
+
+	//	pk_header.Protocal = 0;
+	//	pk_header.size = 0;
+	//	
+
+	//	sprintf(msg, "%d : %s", wParam, pk_Lobby.Buffer);
+	//	
+	//	memcpy(pk_Lobby.Buffer, msg, sizeof(pk_Lobby.Buffer));
+
+	//	for (SOCKET client : LobbyClient)
+	//	{
+	//		send(client, (char*)&pk_Lobby, sizeof(pkLobby), NULL);
+	//	}
+
+	//	break;
+	//case LOBBYRQ:
+	//	recv(wParam, (char*)&pk_Lobby_Request, sizeof(pkLobby_RQ), 0);
+	//	buffer[size] = NULL;
+	//	break;
+	//case ROOM:
+	///*	recv(wParam, (char*)&pk_Lobby, sizeof(pkLobby), 0);
+	//	buffer[size] = NULL;*/
+	//	break;
+	//case GAME:
+	//	/*recv(wParam, (char*)&pk_Lobby, sizeof(pkLobby), 0);
+	//	buffer[size] = NULL;*/
+	//	break;
+	//default:
+	//	break;
+	//}
 
 }
 

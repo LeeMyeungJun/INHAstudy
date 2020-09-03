@@ -3,8 +3,7 @@
 extern SoundManager* g_theSoundManager;
 extern NetWorkManager *g_NetworkManager;
 
-extern pkHeader pk_header;
-extern pkLobby pk_Lobby;
+extern pkLobbyMessage pk_Lobby_Message;
 extern pkLobby_RQ pk_Lobby_Request;
 extern pkUser pk_User;
 
@@ -26,8 +25,8 @@ void LobbyScene::Init(void)
 	ExitBtn = {900,0,900+245,105};
 	RoomMakeBtn = {700 , 450 , 700 + 165 , 450 + 165 };
 
-	memset(pk_Lobby.Buffer, '\0', 64 * sizeof(char));
-	pk_Lobby.User_Position = 100;
+	memset(pk_Lobby_Message.Buffer, '\0', 64 * sizeof(char));
+	//pk_Lobby.User_Position = 100;
 
 	m_ExitBtn_size = false;
 	m_RoomBtn_size = false;
@@ -291,7 +290,20 @@ void LobbyScene::InputProcess(WPARAM wParam)
 	{
 		if (NetWorkManager::GetInstance()->server == INVALID_SOCKET)
 			return ;
+
+		pk_Lobby_Message.Protocal = LOBBY_MESSAGE;
 		
+		WideCharToMultiByte(CP_ACP, 0, NetWorkManager::GetInstance()->str, 64, pk_Lobby_Message.Buffer, 64, NULL, NULL);
+		if (send(NetWorkManager::GetInstance()->server, (char*)&pk_Lobby_Message, sizeof(pkLobbyMessage), 0) == -1)
+		{
+			exit(-1);
+		}
+		else
+		{
+			NetWorkManager::GetInstance()->count = 0;
+			NetWorkManager::GetInstance()->str[NetWorkManager::GetInstance()->count] = NetWorkManager::GetInstance()->str[1] = '\0';
+		}
+		/*
 		pk_header.Protocal = LOBBY_MESSAGE;
 		pk_header.size = sizeof(pkLobby);
 		if (send(NetWorkManager::GetInstance()->server, (char*)&pk_header, sizeof(pkHeader), 0) == SOCKET_ERROR)
@@ -313,7 +325,7 @@ void LobbyScene::InputProcess(WPARAM wParam)
 		{
 			NetWorkManager::GetInstance()->count = 0;
 			NetWorkManager::GetInstance()->str[NetWorkManager::GetInstance()->count] = NetWorkManager::GetInstance()->str[1] = '\0';
-		}
+		}*/
 
 	}
 	else if (wParam == VK_BACK)
