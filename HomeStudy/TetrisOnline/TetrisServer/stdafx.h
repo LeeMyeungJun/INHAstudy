@@ -20,6 +20,7 @@
 #include <list>
 #include <map>
 #include <WinSock2.h>
+#include <iostream>
 #pragma comment(lib, "ws2_32.lib")
 
 #define WM_ASYNC WM_USER + 2
@@ -49,6 +50,7 @@ enum RoomRequestId
 
 typedef struct __Packet {
 	unsigned int Protocal;
+	unsigned int size;
 	char* Buffer;
 } Packet;
 

@@ -29,8 +29,8 @@ private:
 	char buffer[1024];
 	int size;
 
-	list<SOCKET> LobbyClient;
-	list<SOCKET> RoomClient;
+	vector<SOCKET> LobbyClient;
+	vector<SOCKET> RoomClient;
 
 
 };
