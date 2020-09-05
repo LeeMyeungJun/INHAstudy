@@ -61,8 +61,9 @@ NetWorkManager::~NetWorkManager()
 void NetWorkManager::Read_Fd()
 {
 
-	int size = recv(server, (char*)&pk_Packet.Protocal, sizeof(pk_Packet.Protocal), 0);
+	recv(server, (char*)&pk_Packet.Protocal, sizeof(pk_Packet.Protocal), 0);
 	int protocol = pk_Packet.Protocal;
+	recv(server, (char*)&pk_Packet.size, sizeof(pk_Packet.size), 0);
 
 	switch (protocol)
 	{
@@ -85,18 +86,18 @@ void NetWorkManager::Read_Fd()
 	}
 	case USERLIST:
 	{
-		pk_User.UserID = new char[size];
+		userList.clear();
 
-		list<SOCKET> userList;
-		int userListSize = size;
-		userList.resize(userListSize);
+		pk_Packet.Buffer = new char[pk_Packet.size];
+		memset(pk_Packet.Buffer, 0, pk_Packet.size);
 
-		pk_Packet.Buffer = new char[sizeof(pkUser)];
-		memset(pk_Packet.Buffer, 0, _msize(pk_Packet.Buffer));
-		recv(server, (char*)pk_Packet.Buffer, sizeof(userList.front())* size, 0);
+		recv(server, (char*)pk_Packet.Buffer, pk_Packet.size, 0);
+	
+		vector<SOCKET> temp;
+		temp.resize(pk_Packet.size / sizeof(SOCKET));
+		memcpy(&temp.front(), pk_Packet.Buffer, pk_Packet.size);
 
-		memcpy(&userList.front(), pk_Packet.Buffer, sizeof(userList.front())* size);
-
+		userList = temp;
 		pk_Packet.Protocal = 0;
 
 		break;

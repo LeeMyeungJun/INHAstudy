@@ -8,8 +8,27 @@ extern pkLobby_RQ pk_Lobby_Request;
 extern pkUser pk_User;
 extern Packet pk_Packet;
 
+
+
+typedef std::basic_string<TCHAR> tstring;
+
+TCHAR* StringToTCHAR(string& s)
+{
+	tstring tstr;
+	const char* all = s.c_str();
+	int len = 1 + strlen(all);
+	wchar_t* t = new wchar_t[len];
+	if (NULL == t) throw std::bad_alloc();
+	mbstowcs(t, all, len);
+	return (TCHAR*)t;
+}
+
+
+
 LobbyScene::LobbyScene()
 {
+
+	pk_User.UserID = '\0';
 	g_NetworkManager = NetWorkManager::GetInstance();
 	g_NetworkManager->setHwnd(GameCenter::GetInstance()->getHwnd());
 	g_NetworkManager->Connect();
@@ -27,7 +46,7 @@ void LobbyScene::Init(void)
 
 	memset(pk_Lobby_Message.Buffer, '\0', 64 * sizeof(char));
 	//pk_Lobby.User_Position = 100;
-
+	
 	m_ExitBtn_size = false;
 	m_RoomBtn_size = false;
 
@@ -213,20 +232,20 @@ void LobbyScene::LobbyUserBoardDraw(HDC hdc)
 	by = bitBackground.bmHeight;
 
 	TransparentBlt(hdc,900, 50, bx*3.5, by*4, hBackDC, 0, 0, bx, by, RGB(255, 0, 255));// bx*4 ,by*4 는 4배한것.
+	char msg[16];
+	TCHAR szUniCode[32] = { 0, };
+	memset(msg, 0, 16);
+	//유저명단띄우기 하다가 포기
+	for (int i = 0; i<g_NetworkManager->userList.size(); i++)
+	{
+		sprintf(msg, "%d", g_NetworkManager->userList[i]);
+		MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED, msg, strlen(msg), szUniCode, 32);
 
+		TextOut(hdc, 950, 110 + (i * 20), szUniCode, _tcslen(szUniCode));
 
-	//size_t UserListSize = 0;
-	//UserListSize = g_NetworkManager->userList.size();
-	//if (UserListSize > 6)
-	//{
-	////	NetWorkManager::GetInstance()->chatLog.erase(NetWorkManager::GetInstance()->chatLog.begin());
-	//	UserListSize = 6;
-	//}
-
-	//for (size_t i = 0; i < UserListSize; i++)
-	//{
-	//	TextOut(hdc, 0, 720 - (i * 20), (LPCWSTR)g_NetworkManager->userList.front()+i, 4);
-	//}
+	}
+	
+	
 
 	DeleteDC(hBackDC);
 

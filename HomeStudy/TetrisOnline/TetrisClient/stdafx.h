@@ -72,6 +72,7 @@ enum RoomRequestId
 
 typedef struct __Packet {
 	unsigned int Protocal;
+	unsigned int size;
 	char* Buffer;
 } Packet;
 
