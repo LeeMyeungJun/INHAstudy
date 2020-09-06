@@ -29,7 +29,8 @@ void NetWorkManager::Init()
 {
 	str[256] = { 0 };
 	//memset(buffer, 0, sizeof(buffer));
-	//count = 0;
+	count = 0;
+	count2 = 0;
 	addr = { 0 };
 	msgLen = 0;
 	chatLog.clear();
@@ -69,9 +70,9 @@ void NetWorkManager::Read_Fd()
 	{
 	case LOBBY_MESSAGE:
 	{
-		pk_Packet.Buffer = new char[sizeof(__pkLobby_Message)];
+		pk_Packet.Buffer = new char[pk_Packet.size];
 		memset(pk_Packet.Buffer, 0, _msize(pk_Packet.Buffer));
-		recv(server, (char*)pk_Packet.Buffer, sizeof(pkLobbyMessage), 0);
+		recv(server, (char*)pk_Packet.Buffer, pk_Packet.size, 0);
 		char *buffer = pk_Packet.Buffer;
 
 		//로비패킷

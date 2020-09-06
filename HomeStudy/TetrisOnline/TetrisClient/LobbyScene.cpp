@@ -43,13 +43,16 @@ void LobbyScene::Init(void)
 {
 	ExitBtn = {900,0,900+245,105};
 	RoomMakeBtn = {700 , 450 , 700 + 165 , 450 + 165 };
+	RoomMakeExitBtn = { 645, 315, 663, 333 };
+	CrateRoomBtn = { 515, 475, 642, 510 } ;
+
 
 	memset(pk_Lobby_Message.Buffer, '\0', 64 * sizeof(char));
 	//pk_Lobby.User_Position = 100;
 	
 	m_ExitBtn_size = false;
 	m_RoomBtn_size = false;
-
+	m_CreateRoom = false;
 	//LobbyUserCall();
 }
 
@@ -78,6 +81,11 @@ void LobbyScene::Render(HWND hWnd, HDC hdc)
 
 void LobbyScene::Free(void)
 {
+	memset(NetWorkManager::GetInstance()->str2, 0, sizeof(TCHAR) * 256);
+	memset(NetWorkManager::GetInstance()->str, 0, sizeof(TCHAR) * 256);
+	NetWorkManager::GetInstance()->count = 0;
+	NetWorkManager::GetInstance()->count2 = 0;
+
 }
 
 void LobbyScene::UI(HDC hdc)
@@ -89,6 +97,8 @@ void LobbyScene::UI(HDC hdc)
 	ExitBtnDraw(hdc);
 	RoomCreateBtnDraw(hdc);
 	ChatDraw(hdc);
+
+	RoomCreateDraw(hdc);
 }
 
 void LobbyScene::ClickEvent(LPARAM lParam)
@@ -105,10 +115,28 @@ void LobbyScene::ClickEvent(LPARAM lParam)
 		&& Clicky >= RoomMakeBtn.top && Clicky <= RoomMakeBtn.bottom)
 	{
 		g_theSoundManager->PlaySFX("Select");
+		m_CreateRoom = !m_CreateRoom;
+
+		memset(NetWorkManager::GetInstance()->str2, 0, sizeof(TCHAR) * 256);
+		memset(NetWorkManager::GetInstance()->str, 0, sizeof(TCHAR) * 256);
+		NetWorkManager::GetInstance()->count = 0;
+		NetWorkManager::GetInstance()->count2 = 0;
+	}
+	else if (Clickx >= RoomMakeExitBtn.left &&Clickx <= RoomMakeExitBtn.right
+		&& Clicky >= RoomMakeExitBtn.top && Clicky <= RoomMakeExitBtn.bottom  &&m_CreateRoom)
+	{
+		m_CreateRoom = !m_CreateRoom;
+		memset(NetWorkManager::GetInstance()->str2, 0, sizeof(TCHAR) * 256);
+		memset(NetWorkManager::GetInstance()->str, 0, sizeof(TCHAR) * 256);
+		NetWorkManager::GetInstance()->count = 0;
+		NetWorkManager::GetInstance()->count2 = 0;
+		
+	}
+	else if (Clickx >= CrateRoomBtn.left &&Clickx <= CrateRoomBtn.right
+		&& Clicky >= CrateRoomBtn.top && Clicky <= CrateRoomBtn.bottom  &&m_CreateRoom)
+	{
 		GameCenter::GetInstance()->SceneChange(GameCenter::Scene_enum::ROOM_SCENE);
 	}
-	
-
 }
 
 void LobbyScene::BtnAnimaition(LPARAM lParam)
@@ -308,6 +336,43 @@ void LobbyScene::RoomCreateBtnDraw(HDC hdc)
 	DeleteObject(hBackGround);
 }
 
+void LobbyScene::RoomCreateDraw(HDC hdc)
+{
+	if (!m_CreateRoom)
+	{
+		return;
+	}
+
+	HBITMAP h01Bitmap;
+	int bx, by;
+
+	hBackGround = (HBITMAP)LoadImage(NULL, TEXT("IMG/RoomMakeUI.bmp"), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
+	GetObject(hBackGround, sizeof(BITMAP), &bitBackground);
+
+	hBackDC = CreateCompatibleDC(hdc);
+	h01Bitmap = (HBITMAP)SelectObject(hBackDC, hBackGround);
+
+	bx = bitBackground.bmWidth;
+	by = bitBackground.bmHeight;
+
+
+	TransparentBlt(hdc, 270, 200, bx*2, by*2, hBackDC, 0, 0, bx, by, RGB(255, 0, 255));// bx*4 ,by*4 는 4배한것
+
+	//Rectangle(hdc, 645, 315, 663, 333);
+
+	//Rectangle(hdc, 515, 475, 642, 510);
+	
+	HFONT oldFont = (HFONT)SelectObject(hdc, GameCenter::GetInstance()->getUI()->CommonFont);
+	RECT charRect = { 450, 400, 1009, 450 };
+	DrawText(hdc, NetWorkManager::GetInstance()->str2, _tcslen(NetWorkManager::GetInstance()->str2), &charRect, DT_LEFT | DT_VCENTER | DT_SINGLELINE);
+	SelectObject(hdc, oldFont);
+
+	
+	DeleteDC(hBackDC);
+
+	DeleteObject(hBackGround);
+}
+
 void LobbyScene::ChatDraw(HDC hdc)
 {
 	Rectangle(hdc, 130, 740, 1009, 783);
@@ -333,67 +398,68 @@ void LobbyScene::ChatDraw(HDC hdc)
 
 void LobbyScene::InputProcess(WPARAM wParam)
 {
-	if (wParam == VK_RETURN)
+	if (!m_CreateRoom)
 	{
-		if (NetWorkManager::GetInstance()->server == INVALID_SOCKET)
-			return ;
+		if (wParam == VK_RETURN)
+		{
+			if (NetWorkManager::GetInstance()->server == INVALID_SOCKET)
+				return;
 
-		WideCharToMultiByte(CP_ACP, 0, NetWorkManager::GetInstance()->str, 64, pk_Lobby_Message.Buffer, 64, NULL, NULL);
-	
-		pk_Packet.Protocal = LOBBY_MESSAGE;
-		char * buffer = new char[sizeof(pk_Packet.Protocal) + sizeof(pkLobbyMessage)];
-		memset(buffer, 0, _msize(buffer));
-		memcpy(buffer, &pk_Packet.Protocal, sizeof(pk_Packet.Protocal));
-		memcpy(&buffer[sizeof(pk_Packet.Protocal)], pk_Lobby_Message.Buffer, sizeof(pkLobbyMessage));
-		
-		if (send(NetWorkManager::GetInstance()->server, buffer, _msize(buffer), 0) == -1)
-		{
-			exit(-1);
-		}
-		else
-		{
-			NetWorkManager::GetInstance()->count = 0;
-			NetWorkManager::GetInstance()->str[NetWorkManager::GetInstance()->count] = NetWorkManager::GetInstance()->str[1] = '\0';
-		}
+			WideCharToMultiByte(CP_ACP, 0, NetWorkManager::GetInstance()->str, 64, pk_Lobby_Message.Buffer, 64, NULL, NULL);
 
-		/*
-		pk_header.Protocal = LOBBY_MESSAGE;
-		pk_header.size = sizeof(pkLobby);
-		if (send(NetWorkManager::GetInstance()->server, (char*)&pk_header, sizeof(pkHeader), 0) == SOCKET_ERROR)
-		{
-			exit(1);
-		}
-		else
-		{
-			pk_header.Protocal = 0;
-			pk_header.size = 0;
-		}
+			pk_Packet.Protocal = LOBBY_MESSAGE;
+			pk_Packet.size = sizeof(TCHAR)*NetWorkManager::GetInstance()->count;
+			char * buffer = new char[sizeof(pk_Packet.Protocal) + sizeof(pk_Packet.size) + pk_Packet.size];
+			memset(buffer, 0, _msize(buffer));
+			memcpy(buffer, &pk_Packet.Protocal, sizeof(pk_Packet.Protocal));
+			memcpy(&buffer[sizeof(pk_Packet.Protocal)], &pk_Packet.size, sizeof(pk_Packet.size));
+			memcpy(&buffer[sizeof(pk_Packet.Protocal) + sizeof(pk_Packet.size)], pk_Lobby_Message.Buffer, sizeof(pk_Packet.size));
 
-		WideCharToMultiByte(CP_ACP, 0, NetWorkManager::GetInstance()->str, 64, pk_Lobby.Buffer, 64, NULL, NULL);
-		if (send(NetWorkManager::GetInstance()->server, (char*)&pk_Lobby, sizeof(pkLobby), 0) == -1)
-		{
-			exit(-1);
-		}
-		else
-		{
-			NetWorkManager::GetInstance()->count = 0;
-			NetWorkManager::GetInstance()->str[NetWorkManager::GetInstance()->count] = NetWorkManager::GetInstance()->str[1] = '\0';
-		}*/
+			if (send(NetWorkManager::GetInstance()->server, buffer, _msize(buffer), 0) == -1)
+			{
+				exit(-1);
+			}
+			else
+			{
+				NetWorkManager::GetInstance()->count = 0;
+				NetWorkManager::GetInstance()->str[NetWorkManager::GetInstance()->count] = NetWorkManager::GetInstance()->str[1] = '\0';
+			}
 
+		}
+		else if (wParam == VK_BACK)
+		{
+			if (NetWorkManager::GetInstance()->server == INVALID_SOCKET)
+				return;
+			if (NetWorkManager::GetInstance()->count != 0)
+				NetWorkManager::GetInstance()->str[--NetWorkManager::GetInstance()->count] = '\0';
+		}
+		else if (wParam != 0)
+		{
+			if (NetWorkManager::GetInstance()->count < 40)
+			{
+				NetWorkManager::GetInstance()->str[NetWorkManager::GetInstance()->count++] = (TCHAR)wParam;
+				NetWorkManager::GetInstance()->str[NetWorkManager::GetInstance()->count] = '\0';
+			}
+		}
 	}
-	else if (wParam == VK_BACK)
+	else
 	{
-		if (NetWorkManager::GetInstance()->server == INVALID_SOCKET)
-			return;
-		if (NetWorkManager::GetInstance()->count != 0)
-			NetWorkManager::GetInstance()->str[--NetWorkManager::GetInstance()->count] = '\0';
-	}
-	else if(wParam != 0)
-	{
-		if (NetWorkManager::GetInstance()->count < 40)
-		{
-			NetWorkManager::GetInstance()->str[NetWorkManager::GetInstance()->count++] = (TCHAR)wParam;
-			NetWorkManager::GetInstance()->str[NetWorkManager::GetInstance()->count] = '\0';
-		}
+			if (wParam == VK_BACK)
+			{
+				if (NetWorkManager::GetInstance()->server == INVALID_SOCKET)
+					return;
+				if (NetWorkManager::GetInstance()->count2 != 0)
+					NetWorkManager::GetInstance()->str2[--NetWorkManager::GetInstance()->count2] = '\0';
+			}
+			else if (wParam != 0)
+			{
+				if (NetWorkManager::GetInstance()->count2 < 6)
+				{
+					NetWorkManager::GetInstance()->str2[NetWorkManager::GetInstance()->count2++] = (TCHAR)wParam;
+					NetWorkManager::GetInstance()->str2[NetWorkManager::GetInstance()->count2] = '\0';
+				}
+			}
+
+
 	}
 }

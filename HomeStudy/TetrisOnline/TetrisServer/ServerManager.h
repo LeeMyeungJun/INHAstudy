@@ -14,7 +14,7 @@ public:
 	void ServerListen();
 	void ServerAccept();
 	void ServerRead(WPARAM wParam);
-//	void ServerUserExit(WPARAM wParam);
+	void ServerUserExit(WPARAM wParam);
 private:
 	HDC hdc;
 	HWND hWnd;

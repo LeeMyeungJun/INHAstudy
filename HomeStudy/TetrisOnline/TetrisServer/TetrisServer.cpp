@@ -156,7 +156,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			Server->ServerRead(wParam);
 			break;
 		case FD_CLOSE:
-			//Server->ServerUserExit(wParam);
+			Server->ServerUserExit(wParam);
 			break;
 		}
 		break;

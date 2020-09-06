@@ -28,7 +28,7 @@ void RoomScene::Update(UINT message, WPARAM wParam, LPARAM lParam)
 
 void RoomScene::Render(HWND hWnd, HDC hdc)
 {
-	GameCenter::GetInstance()->getUI()->UIRender(hdc);
+	RoomDraw(hdc);
 }
 
 void RoomScene::Free(void)
@@ -55,4 +55,25 @@ void RoomScene::ClickEvent(LPARAM lParam)
 	{
 		GameCenter::GetInstance()->SceneChange(GameCenter::Scene_enum::LOBBY_SCENE);
 	}
+}
+
+void RoomScene::RoomDraw(HDC hdc)
+{
+	HBITMAP h01Bitmap;
+	int bx, by;
+
+	hBackGround = (HBITMAP)LoadImage(NULL, TEXT("IMG/Room.bmp"), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
+	GetObject(hBackGround, sizeof(BITMAP), &bitBackground);
+
+	hBackDC = CreateCompatibleDC(hdc);
+	h01Bitmap = (HBITMAP)SelectObject(hBackDC, hBackGround);
+
+	bx = bitBackground.bmWidth;
+	by = bitBackground.bmHeight;
+
+	StretchBlt(hdc, 0, 0, bx*8, by*5.2, hBackDC, 0, 0, bx, by, SRCCOPY);   //각 블럭의 색
+
+	DeleteDC(hBackDC);
+
+	DeleteObject(hBackGround);
 }

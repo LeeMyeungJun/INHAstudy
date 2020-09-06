@@ -101,20 +101,17 @@ void GameScene::Update(UINT message, WPARAM wParam, LPARAM lParam)
 		}
 		return;
 	}
-	
-	
 
-	
-		switch (message)
-		{
-		case WM_KEYDOWN:	
-			
-			Input();
-			break;
-		default:
-			break;
-		}
-		GuidBlock();
+	switch (message)
+	{
+	case WM_KEYDOWN:	
+		Input();
+		break;
+	default:
+		break;
+	}
+
+	GuidBlock();
 	
 }
 
@@ -632,10 +629,6 @@ void GameScene::InputProcess(UINT message)
 
 		m_iCurBlocksY--;
 		SetBlockToGameBoard();
-
-
-
-		
 		LineFullCheck();
 		CreateRandomBlocks();
 
@@ -842,6 +835,7 @@ void GameScene::GuidBlock()
 	int i;
 	m_iGuideBlocksY = m_iCurBlocksY + 4;
 	m_iGuideBlocksX = m_iCurBlocksX;
+
 	GuidePositionSave();
 
 	if (CheckGuideCollision())

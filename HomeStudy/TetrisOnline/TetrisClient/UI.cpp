@@ -4,7 +4,7 @@
 UI::UI(GameCenter * wrapped):m_gameCenter(wrapped)
 {
 	TitleFont = CreateFont(FONT_TITLE_SIZE, 0, 0, 0, 0, 0, 0, 0, DEFAULT_CHARSET, 0, 0, 0, 0, L"1ÈÆ»õ¸¶À»¿îµ¿ R");
-	CommonFont = CreateFont(FONT_COMMON_SIZE, 0, 0, 0, 0, 0, 0, 0, DEFAULT_CHARSET, 0, 0, 0, 0, L"ºù±×·¹Ã¼");
+	CommonFont = CreateFont(FONT_COMMON_SIZE, 0, 0, 0, 0, 0, 0, 0, DEFAULT_CHARSET, 0, 0, 0, 0, L"1ÈÆ»õ¸¶À»¿îµ¿ R");
 	EndFont = CreateFont(FONT_END_SIZE, 0, 0, 0, 0, 0, 0, 0, DEFAULT_CHARSET, 0, 0, 0, 0, L"ºù±×·¹Ã¼");
 	GameFont = CreateFont(FONT_GAME_SIZE, 0, 0, 0, FW_BOLD, 0, 0, 0, DEFAULT_CHARSET, 0, 0, 0, 0, L"1ÈÆ»õ¸¶À»¿îµ¿ R");
 	ManualFont = CreateFont(FONT_MANUAL_SIZE, 0, 0, 0, 0, 0, 0, 0, DEFAULT_CHARSET, 0, 0, 0, 0, L"1ÈÆ»õ¸¶À»¿îµ¿ R");
@@ -93,6 +93,7 @@ void UI::LoginRender(HDC hdc)
 	rectTemp.top += 30;
 	DrawText(hdc, m_Title.c_str(), m_Title.size(), &rectTemp, DT_TOP | DT_CENTER | DT_SINGLELINE);
 
+	SelectObject(hdc, oldFont);
 	/*LOCAL BUTTON
 	Rectangle(hdc, m_rcLogin_LocalBtn.left, m_rcLogin_LocalBtn.top, m_rcLogin_LocalBtn.right, m_rcLogin_LocalBtn.bottom);
 	
@@ -118,7 +119,7 @@ void UI::LoginRender(HDC hdc)
 	//DrawText(hdc, m_Exit.c_str(), m_Exit.size(), &rectTemp, DT_TOP | DT_CENTER | DT_SINGLELINE);
 
 
-	SelectObject(hdc, oldFont);
+	
 
 
 }

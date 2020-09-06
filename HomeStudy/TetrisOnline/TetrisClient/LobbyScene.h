@@ -16,9 +16,14 @@ private:
 	RECT RoomMakeBtn;
 	RECT UnderChatRect;
 	RECT UserChatRect;
+	RECT CrateRoomBtn;
+	RECT RoomMakeExitBtn;
+
 
 	bool m_ExitBtn_size;
 	bool m_RoomBtn_size;
+
+	bool m_CreateRoom;
 
 
 public:
@@ -45,6 +50,7 @@ private:
 	void LobbyUserBoardDraw(HDC hdc);
 	void ExitBtnDraw(HDC hdc);
 	void RoomCreateBtnDraw(HDC hdc);
+	void RoomCreateDraw(HDC hdc);
 	void ChatDraw(HDC hdc);
 	void InputProcess(WPARAM wParam);
 

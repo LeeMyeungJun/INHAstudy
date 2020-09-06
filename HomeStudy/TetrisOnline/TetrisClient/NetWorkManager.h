@@ -16,9 +16,12 @@ public:
 	static SOCKET server;
 
 	TCHAR str[256] = { 0 };
+	TCHAR str2[256] = { 0 };
+
 	
 	//int len;
 	int count;
+	int count2;
 	SOCKADDR_IN addr = { 0 };
 	int msgLen;
 	vector<wchar_t *> chatLog;
