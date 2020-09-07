@@ -8,7 +8,7 @@ extern pkLobbyMessage pk_Lobby_Message;
 extern pkLobby_RQ pk_Lobby_Request;
 extern pkUser pk_User;
 extern Packet pk_Packet;
-
+extern pkRoom pk_Room;
 
 NetWorkManager::NetWorkManager()
 {
@@ -80,9 +80,9 @@ void NetWorkManager::Read_Fd()
 		size_t stlength = strlen(pk_Lobby_Message.Buffer);
 		TCHAR *newMsg = new TCHAR[stlength + 1];
 		memset(newMsg, 0, _msize(newMsg));
-		MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED, pk_Lobby_Message.Buffer, strlen(pk_Lobby_Message.Buffer), newMsg, _msize(newMsg) +1);
+		MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED, pk_Lobby_Message.Buffer, strlen(pk_Lobby_Message.Buffer), newMsg, _msize(newMsg));
+		//이위가문제같음
 		chatLog.push_back(newMsg);
-		pk_Packet.Protocal = 0;
 		break;
 	}
 	case USERLIST:
@@ -99,13 +99,30 @@ void NetWorkManager::Read_Fd()
 		memcpy(&temp.front(), pk_Packet.Buffer, pk_Packet.size);
 
 		userList = temp;
-		pk_Packet.Protocal = 0;
+
 
 		break;
 	}
-	
+	case LOBBYRQ:
+	{
+		pk_Packet.Buffer = new char[pk_Packet.size];
+		memset(pk_Packet.Buffer, 0, pk_Packet.size);
+
+		recv(server, (char*)pk_Packet.Buffer, pk_Packet.size, 0);
+		char *buffer = pk_Packet.Buffer;
+
+		pk_Lobby_Request = *(pkLobby_RQ*)(buffer);
+		pk_Room.PlayGame = false;
+		memcpy(pk_Room.RoomName, pk_Lobby_Request.RoomName, strlen(pk_Lobby_Request.RoomName));
+		pk_Room.RoomNum = pk_Lobby_Request.RoomNum;
+		pk_Room.UserCount = 1;
+		pk_Room.User_Ready = false;
+
+		break;
 	}
 
+	}
+	pk_Packet.Protocal = 0;
 }
 
 void NetWorkManager::Send_message()

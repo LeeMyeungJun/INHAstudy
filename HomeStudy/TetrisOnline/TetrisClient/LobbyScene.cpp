@@ -135,7 +135,37 @@ void LobbyScene::ClickEvent(LPARAM lParam)
 	else if (Clickx >= CrateRoomBtn.left &&Clickx <= CrateRoomBtn.right
 		&& Clicky >= CrateRoomBtn.top && Clicky <= CrateRoomBtn.bottom  &&m_CreateRoom)
 	{
+
+		if (NetWorkManager::GetInstance()->server == INVALID_SOCKET)
+			return;
+
+ 		WideCharToMultiByte(CP_ACP, 0, NetWorkManager::GetInstance()->str2, 64, pk_Lobby_Request.RoomName, 64, NULL, NULL);
+		pk_Packet.Protocal = LOBBYRQ;
+		pk_Lobby_Request.RoomNum = 99;
+		char temp[4] = {0};
+		sprintf(temp, "%c", pk_Lobby_Request.RoomNum);
+		pk_Packet.size = sizeof(TCHAR)*NetWorkManager::GetInstance()->count2 + 1 + sizeof(unsigned int);
+		char * buffer = new char[sizeof(pk_Packet.Protocal) + sizeof(pk_Packet.size)+ pk_Packet.size];
+		memset(buffer, 0, _msize(buffer));
+		memcpy(buffer, &pk_Packet.Protocal, sizeof(pk_Packet.Protocal));
+		memcpy(&buffer[sizeof(pk_Packet.Protocal)], &pk_Packet.size, sizeof(pk_Packet.size));
+		memcpy(&buffer[sizeof(pk_Packet.Protocal) + sizeof(pk_Packet.size)], temp, sizeof(unsigned int));
+		memcpy(&buffer[sizeof(pk_Packet.Protocal) + sizeof(pk_Packet.size) + sizeof(unsigned int)], pk_Lobby_Request.RoomName,pk_Packet.size - sizeof(unsigned int));
+
+
+
+		if (send(NetWorkManager::GetInstance()->server, buffer, _msize(buffer), 0) == -1)
+		{
+			exit(-1);
+		}
+		else
+		{
+			NetWorkManager::GetInstance()->count2 = 0;
+			NetWorkManager::GetInstance()->str2[NetWorkManager::GetInstance()->count2] = NetWorkManager::GetInstance()->str2[1] = '\0';
+		}
+
 		GameCenter::GetInstance()->SceneChange(GameCenter::Scene_enum::ROOM_SCENE);
+		
 	}
 }
 
@@ -294,6 +324,7 @@ void LobbyScene::ExitBtnDraw(HDC hdc)
 
 	bx = bitBackground.bmWidth;
 	by = bitBackground.bmHeight;
+
 	if (m_ExitBtn_size == false)
 	{
 		TransparentBlt(hdc, 900, 0, bx * 2, by*1.5, hBackDC, 0, 0, bx, by, RGB(255, 0, 255));// bx*4 ,by*4 는 4배한것.
@@ -413,7 +444,8 @@ void LobbyScene::InputProcess(WPARAM wParam)
 			memset(buffer, 0, _msize(buffer));
 			memcpy(buffer, &pk_Packet.Protocal, sizeof(pk_Packet.Protocal));
 			memcpy(&buffer[sizeof(pk_Packet.Protocal)], &pk_Packet.size, sizeof(pk_Packet.size));
-			memcpy(&buffer[sizeof(pk_Packet.Protocal) + sizeof(pk_Packet.size)], pk_Lobby_Message.Buffer, sizeof(pk_Packet.size));
+			memcpy(&buffer[sizeof(pk_Packet.Protocal) + sizeof(pk_Packet.size)], pk_Lobby_Message.Buffer, pk_Packet.size);
+		
 
 			if (send(NetWorkManager::GetInstance()->server, buffer, _msize(buffer), 0) == -1)
 			{
@@ -444,7 +476,40 @@ void LobbyScene::InputProcess(WPARAM wParam)
 	}
 	else
 	{
-			if (wParam == VK_BACK)
+			if (wParam == VK_RETURN)
+			{
+				if (NetWorkManager::GetInstance()->server == INVALID_SOCKET)
+					return;
+
+				WideCharToMultiByte(CP_ACP, 0, NetWorkManager::GetInstance()->str2, 64, pk_Lobby_Request.RoomName, 64, NULL, NULL);
+				pk_Packet.Protocal = LOBBYRQ;
+				pk_Lobby_Request.RoomNum = 99;
+				char temp[4] = { 0 };
+				sprintf(temp, "%c", pk_Lobby_Request.RoomNum);
+				pk_Packet.size = sizeof(TCHAR)*NetWorkManager::GetInstance()->count2 + 1 + sizeof(unsigned int);
+				char * buffer = new char[sizeof(pk_Packet.Protocal) + sizeof(pk_Packet.size) + pk_Packet.size];
+				memset(buffer, 0, _msize(buffer));
+				memcpy(buffer, &pk_Packet.Protocal, sizeof(pk_Packet.Protocal));
+				memcpy(&buffer[sizeof(pk_Packet.Protocal)], &pk_Packet.size, sizeof(pk_Packet.size));
+				memcpy(&buffer[sizeof(pk_Packet.Protocal) + sizeof(pk_Packet.size)], temp, sizeof(unsigned int));
+				memcpy(&buffer[sizeof(pk_Packet.Protocal) + sizeof(pk_Packet.size) + sizeof(unsigned int)], pk_Lobby_Request.RoomName, pk_Packet.size - sizeof(unsigned int));
+
+
+
+				if (send(NetWorkManager::GetInstance()->server, buffer, _msize(buffer), 0) == -1)
+				{
+					exit(-1);
+				}
+				else
+				{
+					NetWorkManager::GetInstance()->count2 = 0;
+					NetWorkManager::GetInstance()->str2[NetWorkManager::GetInstance()->count2] = NetWorkManager::GetInstance()->str2[1] = '\0';
+				}
+
+				GameCenter::GetInstance()->SceneChange(GameCenter::Scene_enum::ROOM_SCENE);
+
+			}
+			else if (wParam == VK_BACK)
 			{
 				if (NetWorkManager::GetInstance()->server == INVALID_SOCKET)
 					return;

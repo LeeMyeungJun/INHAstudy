@@ -64,15 +64,18 @@ typedef struct __pkLobby_Message {
 } pkLobbyMessage;
 
 typedef struct __pkLobby_RQ {
-	char RooName[40];
 	unsigned int RoomNum;
+	char RoomName[40];
 } pkLobby_RQ;
 
 
+
 typedef struct __pkRoom {
-	unsigned int User_Position;
-	char Buffer[64];
+	unsigned int RoomNum;
+	char RoomName[40];
+	unsigned int UserCount;
 	bool User_Ready;
+	bool PlayGame;
 } pkRoom;
 
 

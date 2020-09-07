@@ -15,6 +15,7 @@ public:
 	void ServerAccept();
 	void ServerRead(WPARAM wParam);
 	void ServerUserExit(WPARAM wParam);
+	void LobbyExit(WPARAM wParam);
 private:
 	HDC hdc;
 	HWND hWnd;
@@ -30,7 +31,7 @@ private:
 	int size;
 
 	vector<SOCKET> LobbyClient;
-	vector<SOCKET> RoomClient;
+	vector<vector<SOCKET>> RoomClient; //RoomClient[방번호][유저]
 
 
 };
