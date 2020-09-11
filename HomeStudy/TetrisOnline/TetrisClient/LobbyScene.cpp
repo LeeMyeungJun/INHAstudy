@@ -269,6 +269,19 @@ void LobbyScene::LobbyRoomDraw(HDC hdc)
 
 	TransparentBlt(hdc, 0, 0, bx*7, by * 8, hBackDC, 0, 0, bx, by, RGB(255, 0, 255));// bx*4 ,by*4 는 4배한것.
 
+	string temp;
+	HFONT oldFont = (HFONT)SelectObject(hdc, GameCenter::GetInstance()->getUI()->TitleFont);
+	for (int i = 0; i < NetWorkManager::GetInstance()->LobbyRoom.size(); i++)
+	{
+		Rectangle(hdc, 105, 112*(1+i), 815, 200*(1+i));
+		temp = g_NetworkManager->LobbyRoom[i]->RoomNum + g_NetworkManager->LobbyRoom[i]->RoomName;
+		TextOut(hdc, 140, 115 - (i * 20), StringToTCHAR(temp), _tcslen(StringToTCHAR(temp)));
+
+	}
+	
+	SelectObject(hdc, oldFont);
+
+
 
 	DeleteDC(hBackDC);
 

@@ -16,6 +16,7 @@ public:
 	void ServerRead(WPARAM wParam);
 	void ServerUserExit(WPARAM wParam);
 	void LobbyExit(WPARAM wParam);
+	void LobbyAccept();
 private:
 	HDC hdc;
 	HWND hWnd;
@@ -30,9 +31,10 @@ private:
 	char buffer[1024];
 	int size;
 
-	vector<SOCKET> LobbyClient;
-	vector<vector<SOCKET>> RoomClient; //RoomClient[방번호][유저]
 
+	vector<SOCKET> LobbyClient;
+	//vector<vector<SOCKET>> RoomClient; //RoomClient[방번호][유저]
+	vector<RoomManager*> RoomClient;
 
 };
 

@@ -63,11 +63,15 @@ enum RoomRequestId
 
 };
 
+
 #define USERLIST 88
 #define LOBBYRQ 99
 #define LOBBY_MESSAGE 100
-#define ROOM 200
-#define GAME 300
+#define ROOM 70
+#define ROOMCREATE 71
+#define GAME 68
+#define GAMETRUE 12
+#define GAMEFALSE 11
 
 
 typedef struct __Packet {
@@ -91,17 +95,17 @@ typedef struct __pkLobby_RQ {
 } pkLobby_RQ;
 
 
+
 typedef struct __pkRoom {
 	unsigned int RoomNum;
+	int User_Ready;
+	int Exit;
 	char RoomName[40];
-	unsigned int UserCount;
-	bool User_Ready;
-	bool PlayGame;
 } pkRoom;
 
 
 typedef struct __pkGame {
 	unsigned int User_Position;
 	int User_GameBoard[iHeight][iWidth];
-	bool User_Survive;
+	int User_Survive;
 } pkGame;

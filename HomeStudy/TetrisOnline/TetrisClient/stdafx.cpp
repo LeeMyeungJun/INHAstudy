@@ -8,17 +8,17 @@
 // and not in this file
 
 
-
-
-
-
+			  
+			 
 NetWorkManager *g_NetworkManager;
 SoundManager* g_theSoundManager;
 
 
 pkLobbyMessage pk_Lobby_Message;
 pkLobby_RQ pk_Lobby_Request;
+pkRoom pk_Room;
 pkUser pk_User;
 Packet pk_Packet;
-pkRoom pk_Room;
+
+
 

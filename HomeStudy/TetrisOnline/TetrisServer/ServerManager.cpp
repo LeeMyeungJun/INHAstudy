@@ -28,6 +28,7 @@ void ServerManager::Init()
 	addr.sin_port = htons(6543);
 	addr.sin_addr.S_un.S_addr = inet_addr("127.0.0.1");//inet_addr("127.0.0.1");
 	memset(msg, 0, 1024);
+	memset(buffer, 0, 1024);
 	ServerBind();
 	ServerListen();
 
@@ -59,59 +60,7 @@ void ServerManager::ServerAccept()
 	LobbyClient.push_back(accept(server, (LPSOCKADDR)&c_addr, &size));
 	WSAAsyncSelect(LobbyClient.back(), hWnd, WM_ASYNC, FD_READ | FD_CLOSE);
 	
-	pk_Packet.Protocal = USERLIST;
-	pk_Packet.size = sizeof(SOCKET)*LobbyClient.size();
-	pk_User.UserID = (char *)&LobbyClient.front();
-	
-	char * buffer = new char[sizeof(pk_Packet.Protocal) + sizeof(pk_Packet.size) +pk_Packet.size];
-	memset(buffer, 0, sizeof(pk_Packet.Protocal) + sizeof(pk_Packet.size) + pk_Packet.size);
-	memcpy(buffer, &pk_Packet.Protocal, sizeof(pk_Packet.Protocal));
-	memcpy(&buffer[sizeof(pk_Packet.Protocal)], &pk_Packet.size, sizeof(pk_Packet.size));
-	memcpy(&buffer[sizeof(pk_Packet.Protocal) + sizeof(pk_Packet.size)], pk_User.UserID, pk_Packet.size);
-
-	for (SOCKET client : LobbyClient)
-	{
-		if (send(client, buffer, sizeof(pk_Packet.Protocal) + sizeof(pk_Packet.size) + pk_Packet.size, NULL) == -1)
-		{
-			exit(-1);
-		}
-	}
-
-	delete[] buffer;
-
-
-	//list<SOCKET>::iterator it;
-
-	//memset(buffer, 0, 1024*sizeof(char));
-	//memset(msg, 0, 1024 * sizeof(char));
-
-	//for (it = LobbyClient.begin(); it != LobbyClient.end(); it++)
-	//{
-	//	sprintf(buffer, "%d", *it);
-	//	sprintf(msg,"%s%s", msg,buffer); //723|686|245        >> ,,,
-	//}
-	
-
-	//pk_User.UserID = msg;
-	//pk_User.count = LobbyClient.size();
-	//char * buffer = new char[sizeof(pk_Packet.Protocal) + sizeof(pkUser)];
-	//memset(buffer, 0, 1024 * sizeof(char));
-	//memset(msg, 0, _msize(msg));
-	//memcpy(buffer, &pk_Packet.Protocal, sizeof(pk_Packet.Protocal));
-	//memcpy(&buffer[sizeof(pk_Packet.Protocal)], pk_User.UserID, _msize(msg));
-
-
-
-
-	
-	//for (SOCKET client : LobbyClient)
-	//{
-	//	if (send(client, buffer, _msize(buffer), NULL) == -1)
-	//	{
-	//		exit(-1);
-	//	}
-	//}
-
+	LobbyAccept();
 
 }
 
@@ -139,7 +88,7 @@ void ServerManager::ServerRead(WPARAM wParam)
 		memcpy(pk_Lobby_Message.Buffer, msg, sizeof(pk_Lobby_Message.Buffer));
 		pk_Packet.size = sizeof(TCHAR)*strlen(pk_Lobby_Message.Buffer);
 
-		delete[] buffer;
+		
 		//패킷
 		buffer = new char[sizeof(pk_Packet.Protocal) + sizeof(pk_Packet.size) + sizeof(pkLobbyMessage)];
 		memset(buffer, 0, _msize(buffer));
@@ -151,6 +100,8 @@ void ServerManager::ServerRead(WPARAM wParam)
 		{
 			send(client, buffer, _msize(buffer), NULL);
 		}
+
+		delete[] buffer;
 	}
 	break;
 	case USERLIST:
@@ -170,42 +121,52 @@ void ServerManager::ServerRead(WPARAM wParam)
 		//로비방만들기 패킷
 		pk_Lobby_Request = *(pkLobby_RQ*)(buffer);
 
-		vector<SOCKET> temp;
-		temp.push_back(wParam);
 
-		RoomClient.push_back(temp);
-		pk_Lobby_Request.RoomNum = RoomClient.size() - 1;
+		RoomManager* CreateRoom = new RoomManager;
+		RoomClient.push_back(CreateRoom);
+		RoomClient[RoomClient.size() - 1]->AddUser(wParam);
 
+		memcpy(pk_Room.RoomName, pk_Lobby_Request.RoomName, sizeof(char)*strlen(pk_Lobby_Request.RoomName));
+		pk_Room.RoomNum = RoomClient.size() - 1;
+		pk_Room.User_Ready = GAMEFALSE;
+		pk_Room.Exit = GAMEFALSE;
 
-		//여기서 룸에대한 구조체로 send 해줘야함 
-		//패킷
-		char chRoomNum[4] = { 0 };
-		sprintf(chRoomNum, "%c", pk_Lobby_Request.RoomNum);
-
-		//pk_Packet.size -= sizeof(unsigned int);
-		//pk_Packet.size += sizeof(unsigned int) + sizeof(unsigned int) + sizeof(bool) + sizeof(bool);
-
-		//unsigned int RoomNum;
-		//char RoomName[40];
-		//unsigned int UserCount;
-		//bool User_Ready;
-		//bool PlayGame;
-
+		pk_Packet.Protocal = ROOMCREATE;
+		char chTemp[4] = { 0 };
+		sprintf(chTemp, "%c", pk_Room.RoomNum);
+		pk_Packet.size = strlen(pk_Room.RoomName) + sizeof(unsigned int) + sizeof(int) + sizeof(int)+1;
 		buffer = new char[sizeof(pk_Packet.Protocal) + sizeof(pk_Packet.size) + pk_Packet.size];
 
 		memset(buffer, 0, _msize(buffer));
 		memcpy(buffer, &pk_Packet.Protocal, sizeof(pk_Packet.Protocal));
 		memcpy(&buffer[sizeof(pk_Packet.Protocal)], &pk_Packet.size, sizeof(pk_Packet.size));
-		memcpy(&buffer[sizeof(pk_Packet.Protocal) + sizeof(pk_Packet.size)], chRoomNum, sizeof(unsigned int));
-		memcpy(&buffer[sizeof(pk_Packet.Protocal) + sizeof(pk_Packet.size) + sizeof(unsigned int)], pk_Lobby_Request.RoomName, pk_Packet.size - sizeof(unsigned int));
+
+		memcpy(&buffer[sizeof(pk_Packet.Protocal) + sizeof(pk_Packet.size)], chTemp, sizeof(unsigned int));
+
+		memset(chTemp, 0, 4 * sizeof(char));
+		sprintf(chTemp, "%c", pk_Room.User_Ready);
+		memcpy(&buffer[sizeof(pk_Packet.Protocal) + sizeof(pk_Packet.size) + sizeof(unsigned int)], chTemp, sizeof(int));
+
+		memset(chTemp, 0, 4 * sizeof(char));
+		sprintf(chTemp, "%c", pk_Room.Exit);
+		memcpy(&buffer[sizeof(pk_Packet.Protocal) + sizeof(pk_Packet.size) + sizeof(unsigned int) + sizeof(int)], chTemp, sizeof(int));
+
+
+
+		memcpy(&buffer[sizeof(pk_Packet.Protocal) + sizeof(pk_Packet.size) + sizeof(unsigned int) + sizeof(int) + sizeof(int)], pk_Room.RoomName, strlen(pk_Room.RoomName));
+
+
+
 
 		for (SOCKET client : LobbyClient)
 		{
 			send(client, buffer, _msize(buffer), NULL);
 		}
+
 		//send(wParam, buffer, _msize(buffer), NULL);
 
 		delete[] buffer;
+
 	}
 		break;
 	case ROOM:
@@ -282,7 +243,13 @@ void ServerManager::ServerUserExit(WPARAM wParam)
 
 void ServerManager::LobbyExit(WPARAM wParam)
 {
+
+	if (LobbyClient.size() <= 0)
+		return;
+
+
 	int count = 0;
+
 	for (SOCKET client : LobbyClient)
 	{
 		if (wParam == client)
@@ -292,6 +259,8 @@ void ServerManager::LobbyExit(WPARAM wParam)
 		}
 		count++;
 	}
+
+
 
 	if (LobbyClient.size() >= 1)
 	{
@@ -315,4 +284,28 @@ void ServerManager::LobbyExit(WPARAM wParam)
 
 		delete[] buffer;
 	}
+}
+
+void ServerManager::LobbyAccept()
+{
+	pk_Packet.Protocal = USERLIST;
+	pk_Packet.size = sizeof(SOCKET)*LobbyClient.size();
+	pk_User.UserID = (char *)&LobbyClient.front();
+
+	char * buffer = new char[sizeof(pk_Packet.Protocal) + sizeof(pk_Packet.size) + pk_Packet.size];
+	memset(buffer, 0, sizeof(pk_Packet.Protocal) + sizeof(pk_Packet.size) + pk_Packet.size);
+	memcpy(buffer, &pk_Packet.Protocal, sizeof(pk_Packet.Protocal));
+	memcpy(&buffer[sizeof(pk_Packet.Protocal)], &pk_Packet.size, sizeof(pk_Packet.size));
+	memcpy(&buffer[sizeof(pk_Packet.Protocal) + sizeof(pk_Packet.size)], pk_User.UserID, pk_Packet.size);
+
+	for (SOCKET client : LobbyClient)
+	{
+		if (send(client, buffer, sizeof(pk_Packet.Protocal) + sizeof(pk_Packet.size) + pk_Packet.size, NULL) == -1)
+		{
+			exit(-1);
+		}
+	}
+
+	delete[] buffer;
+
 }

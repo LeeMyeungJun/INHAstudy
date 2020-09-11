@@ -105,19 +105,18 @@ void NetWorkManager::Read_Fd()
 	}
 	case LOBBYRQ:
 	{
+
+		break;
+	}
+	case ROOMCREATE:
+	{
 		pk_Packet.Buffer = new char[pk_Packet.size];
-		memset(pk_Packet.Buffer, 0, pk_Packet.size);
-
+		memset(pk_Packet.Buffer, 0, _msize(pk_Packet.Buffer));
 		recv(server, (char*)pk_Packet.Buffer, pk_Packet.size, 0);
-		char *buffer = pk_Packet.Buffer;
-
-		pk_Lobby_Request = *(pkLobby_RQ*)(buffer);
-		pk_Room.PlayGame = false;
-		memcpy(pk_Room.RoomName, pk_Lobby_Request.RoomName, strlen(pk_Lobby_Request.RoomName));
-		pk_Room.RoomNum = pk_Lobby_Request.RoomNum;
-		pk_Room.UserCount = 1;
-		pk_Room.User_Ready = false;
-
+		memset(pk_Room.RoomName, 0, sizeof(char) * 40);
+		pk_Room = *(pkRoom*)pk_Packet.Buffer;
+		LobbyRoom.push_back(&pk_Room);
+		
 		break;
 	}
 

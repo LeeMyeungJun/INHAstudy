@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 using namespace std;
+typedef struct __pkRoom;
 
 class NetWorkManager
 {
@@ -26,6 +27,7 @@ public:
 	int msgLen;
 	vector<wchar_t *> chatLog;
 	vector<SOCKET> userList;
+	vector<__pkRoom*> LobbyRoom;
 
 	
 public:

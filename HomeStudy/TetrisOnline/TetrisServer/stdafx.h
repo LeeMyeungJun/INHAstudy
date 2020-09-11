@@ -23,11 +23,16 @@
 #include <iostream>
 #pragma comment(lib, "ws2_32.lib")
 
+#include <crtdbg.h>
+
 #define WM_ASYNC WM_USER + 2
 
 //class
+#include "RoomManager.h"
 #include "TetrisServer.h"
 #include "ServerManager.h"
+
+
 // TODO: reference additional headers your program requires here
 
 const int iWidth = 16;
@@ -41,11 +46,15 @@ enum RoomRequestId
 
 };
 
+
 #define USERLIST 88
 #define LOBBYRQ 99
 #define LOBBY_MESSAGE 100
-#define ROOM 200
-#define GAME 300
+#define ROOM 70
+#define ROOMCREATE 71
+#define GAME 68
+#define GAMETRUE 12
+#define GAMEFALSE 11
 
 
 typedef struct __Packet {
@@ -72,15 +81,14 @@ typedef struct __pkLobby_RQ {
 
 typedef struct __pkRoom {
 	unsigned int RoomNum;
+	int User_Ready;
+	int Exit;
 	char RoomName[40];
-	unsigned int UserCount;
-	bool User_Ready;
-	bool PlayGame;
 } pkRoom;
 
 
 typedef struct __pkGame {
 	unsigned int User_Position;
 	int User_GameBoard[iHeight][iWidth];
-	bool User_Survive;
+	unsigned int User_Survive;
 } pkGame;
