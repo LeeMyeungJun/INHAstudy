@@ -51,6 +51,7 @@ enum RoomRequestId
 #define LOBBYRQ 99
 #define LOBBY_MESSAGE 100
 #define ROOM 70
+#define ROOMRQ 74
 #define ROOMCREATE 71
 #define GAME 68
 #define GAMETRUE 12
@@ -86,6 +87,13 @@ typedef struct __pkRoom {
 	char RoomName[40];
 } pkRoom;
 
+typedef struct __pkRoom_RQ {
+	unsigned int RoomNum;
+} pkRoom_RQ;
+
+typedef struct __pkRoom_User {
+	unsigned int UserCount;
+} pkRoom_User;
 
 typedef struct __pkGame {
 	unsigned int User_Position;

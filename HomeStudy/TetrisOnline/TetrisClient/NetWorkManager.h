@@ -20,9 +20,10 @@ public:
 	TCHAR str2[256] = { 0 };
 
 	
-	//int len;
+	bool bPlay;
 	int count;
 	int count2;
+	int UserCount;
 	SOCKADDR_IN addr = { 0 };
 	int msgLen;
 	vector<wchar_t *> chatLog;

@@ -16,9 +16,10 @@ SoundManager* g_theSoundManager;
 
 pkLobbyMessage pk_Lobby_Message;
 pkLobby_RQ pk_Lobby_Request;
-pkRoom pk_Room;
 pkUser pk_User;
 Packet pk_Packet;
-
+pkRoom pk_Room;
+pkRoom_RQ pk_Room_Request;
+pkRoom_User pk_Room_User;
 
 

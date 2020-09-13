@@ -167,6 +167,43 @@ void LobbyScene::ClickEvent(LPARAM lParam)
 		GameCenter::GetInstance()->SceneChange(GameCenter::Scene_enum::ROOM_SCENE);
 		
 	}
+	else if (NetWorkManager::GetInstance()->LobbyRoom.size()>0)
+	{
+		for (int i = 0; i < NetWorkManager::GetInstance()->LobbyRoom.size(); i++)
+		{
+			if (Clickx >= 105 && Clickx <= 813 && Clicky >= 112 * (1 + i) && Clicky <= 200 * (1 + i))
+			{
+
+				if (NetWorkManager::GetInstance()->server == INVALID_SOCKET)
+					return;
+
+				pk_Packet.Protocal = ROOMRQ;
+				pk_Packet.size = sizeof(unsigned int);
+
+				char * buffer = new char[sizeof(pk_Packet.Protocal) + sizeof(pk_Packet.size) + pk_Packet.size];
+
+				char temp[4] = { 0 };
+				sprintf(temp, "%c", pk_Lobby_Request.RoomNum);
+
+				memset(buffer, 0, _msize(buffer));
+				memcpy(buffer, &pk_Packet.Protocal, sizeof(pk_Packet.Protocal));
+				memcpy(&buffer[sizeof(pk_Packet.Protocal)], &pk_Packet.size, sizeof(pk_Packet.size));
+				memcpy(&buffer[sizeof(pk_Packet.Protocal) + sizeof(pk_Packet.size)], temp, sizeof(unsigned int));
+
+				if (send(NetWorkManager::GetInstance()->server, buffer, _msize(buffer), 0) == -1)
+				{
+					exit(-1);
+				}
+
+
+				GameCenter::GetInstance()->SceneChange(GameCenter::Scene_enum::ROOM_SCENE);
+				break;
+
+			}
+
+
+		}
+	}
 }
 
 void LobbyScene::BtnAnimaition(LPARAM lParam)
@@ -247,7 +284,6 @@ void LobbyScene::ChattingDraw(HDC hdc)
 	 
 	TransparentBlt(hdc, 0, 550, bx*8.7, by*4.5, hBackDC, 0, 0, bx, by, RGB(255, 0, 255));// bx*4 ,by*4 는 4배한것.
 
-
 	DeleteDC(hBackDC);
 
 	DeleteObject(hBackGround);
@@ -273,10 +309,9 @@ void LobbyScene::LobbyRoomDraw(HDC hdc)
 	HFONT oldFont = (HFONT)SelectObject(hdc, GameCenter::GetInstance()->getUI()->TitleFont);
 	for (int i = 0; i < NetWorkManager::GetInstance()->LobbyRoom.size(); i++)
 	{
-		Rectangle(hdc, 105, 112*(1+i), 815, 200*(1+i));
+		Rectangle(hdc, 105, 112*(1+i), 813, 200*(1+i));
 		temp = g_NetworkManager->LobbyRoom[i]->RoomNum + g_NetworkManager->LobbyRoom[i]->RoomName;
 		TextOut(hdc, 140, 115 - (i * 20), StringToTCHAR(temp), _tcslen(StringToTCHAR(temp)));
-
 	}
 	
 	SelectObject(hdc, oldFont);

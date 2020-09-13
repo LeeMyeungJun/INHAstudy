@@ -12,3 +12,5 @@ pkLobby_RQ pk_Lobby_Request;
 pkUser pk_User;
 Packet pk_Packet;
 pkRoom pk_Room;
+pkRoom_RQ pk_Room_Request;
+pkRoom_User pk_Room_User;

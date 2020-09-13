@@ -9,6 +9,7 @@ private:
 	HBITMAP hBackGround;
 	BITMAP bitBackground;
 	HDC hBackDC;
+
 public:
 	void Init(void);
 	void Update(UINT message, WPARAM wParam, LPARAM lParam);
@@ -19,6 +20,7 @@ public:
 
 public:
 	void RoomDraw(HDC hdc);
-
+	void CharacterDraw(HDC hdc);
+		
 };
 

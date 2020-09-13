@@ -2,13 +2,14 @@
 class RoomManager
 {
 private:
-	std::vector<SOCKET> m_RoomUseer;
 	int m_UserCount;
 	char* m_RoomName;
 
 public:
 	RoomManager();
 	~RoomManager();
+
+	std::vector<SOCKET> m_RoomUseer;
 	void setRoomName(char* RoomName);
 	char* getRoomName();
 	int AddUser(WPARAM wParam);

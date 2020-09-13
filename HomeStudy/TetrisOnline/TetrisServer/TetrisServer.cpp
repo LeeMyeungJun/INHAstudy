@@ -48,8 +48,14 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
         if (!TranslateAccelerator(msg.hwnd, hAccelTable, &msg))
         {
             TranslateMessage(&msg);
+			_try{
+				DispatchMessage(&msg);
+			}_except(EXCEPTION_EXECUTE_HANDLER)
+			{
 
-            DispatchMessage(&msg);
+			}
+
+            
         }
     }
 

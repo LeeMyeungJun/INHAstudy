@@ -9,6 +9,8 @@ extern pkLobby_RQ pk_Lobby_Request;
 extern pkUser pk_User;
 extern Packet pk_Packet;
 extern pkRoom pk_Room;
+extern pkRoom_RQ pk_Room_Request;
+extern pkRoom_User pk_Room_User;
 
 NetWorkManager::NetWorkManager()
 {
@@ -31,12 +33,11 @@ void NetWorkManager::Init()
 	//memset(buffer, 0, sizeof(buffer));
 	count = 0;
 	count2 = 0;
+	UserCount = 0;
 	addr = { 0 };
 	msgLen = 0;
 	chatLog.clear();
-	//len = 256;
-	
-
+	bPlay = false;
 }
 
 void NetWorkManager::Connect()
@@ -105,7 +106,6 @@ void NetWorkManager::Read_Fd()
 	}
 	case LOBBYRQ:
 	{
-
 		break;
 	}
 	case ROOMCREATE:
@@ -119,8 +119,24 @@ void NetWorkManager::Read_Fd()
 		
 		break;
 	}
+	case ROOMRQ:
+	{
+		pk_Packet.Buffer = new char[pk_Packet.size];
+		memset(pk_Packet.Buffer, 0, _msize(pk_Packet.Buffer));
+		recv(server, (char*)pk_Packet.Buffer, pk_Packet.size, 0);
+		pk_Room_User = *(pkRoom_User*)pk_Packet.Buffer;
+		UserCount = pk_Room_User.UserCount;
+		if (UserCount == 3)
+		{
+			bPlay = true;
+		}
+
+
+		break;
+	}
 
 	}
+	
 	pk_Packet.Protocal = 0;
 }
 

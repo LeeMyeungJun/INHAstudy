@@ -5,6 +5,8 @@ extern pkLobby_RQ pk_Lobby_Request;
 extern pkUser pk_User;
 extern Packet pk_Packet;
 extern pkRoom pk_Room;
+extern pkRoom_RQ pk_Room_Request;
+extern pkRoom_User pk_Room_User;
 using namespace std;
 
 
@@ -163,7 +165,27 @@ void ServerManager::ServerRead(WPARAM wParam)
 			send(client, buffer, _msize(buffer), NULL);
 		}
 
-		//send(wParam, buffer, _msize(buffer), NULL);
+
+		//방을만들엇으니 로비에뿌리고 방안에있는유저에게 유저정보들을 뿌려준다 . 
+		delete[] buffer;
+
+
+		pk_Room_User.UserCount = RoomClient[RoomClient.size() - 1]->getUserCount();
+		pk_Packet.Protocal = ROOMRQ;
+		pk_Packet.size = sizeof(unsigned int);
+		
+		buffer = new char[sizeof(pk_Packet.Protocal) + sizeof(pk_Packet.size) + pk_Packet.size];
+
+		char temp[4] = { 0 };
+		sprintf(temp, "%c", pk_Room_User.UserCount);
+
+		memset(buffer, 0, _msize(buffer));
+		memcpy(buffer, &pk_Packet.Protocal, sizeof(pk_Packet.Protocal));
+		memcpy(&buffer[sizeof(pk_Packet.Protocal)], &pk_Packet.size, sizeof(pk_Packet.size));
+		memcpy(&buffer[sizeof(pk_Packet.Protocal) + sizeof(pk_Packet.size)], temp, sizeof(unsigned int));
+
+
+		send(wParam, buffer, _msize(buffer), NULL);
 
 		delete[] buffer;
 
@@ -177,59 +199,53 @@ void ServerManager::ServerRead(WPARAM wParam)
 		/*recv(wParam, (char*)&pk_Lobby, sizeof(pkLobby), 0);
 		buffer[size] = NULL;*/
 		break;
-	case 0:
+	case ROOMRQ:
+	{
+		pk_Packet.Buffer = new char[sizeof(pk_Packet.size)];
+		memset(pk_Packet.Buffer, 0, _msize(pk_Packet.Buffer));
+		recv(wParam, (char*)pk_Packet.Buffer, sizeof(pk_Packet.size), 0);
+		pk_Room_Request = *(pkRoom_RQ*)pk_Packet.Buffer;
+		//로비패킷
 	
-		break;
+		if (RoomClient[pk_Room_Request.RoomNum]->AddUser(wParam) == -1)
+		{
+			// wParam친구한테 send 해서 SeneChange로 Lobby에 접속하게 하면된다 .
+		}
+		else
+		{
+			LobbyExit(wParam);
+	
+			pk_Room_User.UserCount = RoomClient[pk_Room_Request.RoomNum]->getUserCount();
+			pk_Packet.Protocal = ROOMRQ;
+			pk_Packet.size = sizeof(unsigned int);
 
+			char* buffer = new char[sizeof(pk_Packet.Protocal) + sizeof(pk_Packet.size) + pk_Packet.size];
+
+			char temp[4] = { 0 };
+			sprintf(temp, "%c", pk_Room_User.UserCount);
+
+			memset(buffer, 0, _msize(buffer));
+			memcpy(buffer, &pk_Packet.Protocal, sizeof(pk_Packet.Protocal));
+			memcpy(&buffer[sizeof(pk_Packet.Protocal)], &pk_Packet.size, sizeof(pk_Packet.size));
+			memcpy(&buffer[sizeof(pk_Packet.Protocal) + sizeof(pk_Packet.size)], temp, sizeof(unsigned int));
+
+
+			send(wParam, buffer, _msize(buffer), NULL);
+
+			for (SOCKET client : RoomClient[pk_Room_Request.RoomNum]->m_RoomUseer)
+			{
+				send(client, buffer, _msize(buffer), NULL);
+			}
+
+
+			delete[] buffer;
+		}
 	}
-
-
-	/*recv(wParam, (char*)&pk_header, sizeof(pkHeader), 0);
-	int protocol = pk_header.Protocal;
-	int size = pk_header.size;*/
-
-	//switch (protocol)
-	//{
-	//case LOBBY_MESSAGE:`
-	//	recv(wParam, (char*)&pk_Lobby, sizeof(pkLobby), 0);
-	//	
-	//	pk_header.Protocal = LOBBY_MESSAGE;
-	//	pk_header.size = sizeof(pkLobby);
-
-	//	for (SOCKET client : LobbyClient)
-	//	{
-	//		send(client, (char*)&pk_header, sizeof(pkHeader), NULL);
-	//	}
-
-	//	pk_header.Protocal = 0;
-	//	pk_header.size = 0;
-	//	
-
-	//	sprintf(msg, "%d : %s", wParam, pk_Lobby.Buffer);
-	//	
-	//	memcpy(pk_Lobby.Buffer, msg, sizeof(pk_Lobby.Buffer));
-
-	//	for (SOCKET client : LobbyClient)
-	//	{
-	//		send(client, (char*)&pk_Lobby, sizeof(pkLobby), NULL);
-	//	}
-
-	//	break;
-	//case LOBBYRQ:
-	//	recv(wParam, (char*)&pk_Lobby_Request, sizeof(pkLobby_RQ), 0);
-	//	buffer[size] = NULL;
-	//	break;
-	//case ROOM:
-	///*	recv(wParam, (char*)&pk_Lobby, sizeof(pkLobby), 0);
-	//	buffer[size] = NULL;*/
-	//	break;
-	//case GAME:
-	//	/*recv(wParam, (char*)&pk_Lobby, sizeof(pkLobby), 0);
-	//	buffer[size] = NULL;*/
-	//	break;
-	//default:
-	//	break;
-	//}
+		
+		break;
+	default:
+		break;
+	}
 
 }
 
