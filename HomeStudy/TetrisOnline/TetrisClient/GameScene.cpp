@@ -90,29 +90,41 @@ void GameScene::Init(void)
 
 void GameScene::Update(UINT message, WPARAM wParam, LPARAM lParam)
 {
-	//ClickEvent(lParam);
-	if (!m_GameStart)
+	switch (GameCenter::GetInstance()->getScene())
 	{
-		if(message == WM_MOUSEMOVE)
-			BtnAnimaition(lParam);
-		else if (message == WM_LBUTTONDOWN)
-		{
-			ClickEvent(lParam);
-		}
-		return;
+	case GameCenter::Scene_enum::GAME_SCENE:
+	{
+
 	}
-	
+		break;
+	case GameCenter::Scene_enum::LOCALGAME_SCENE:
+	{
+		if (!m_GameStart)
+		{
+			if (message == WM_MOUSEMOVE)
+				BtnAnimaition(lParam);
+			else if (message == WM_LBUTTONDOWN)
+			{
+				ClickEvent(lParam);
+			}
+			return;
+		}
 
 		switch (message)
 		{
-		case WM_KEYDOWN:	
-			
+		case WM_KEYDOWN:
+
 			Input();
 			break;
 		default:
 			break;
 		}
 		GuidBlock();
+	}
+		break;
+	}
+
+
 	
 }
 
@@ -133,6 +145,8 @@ void GameScene::UI(HDC hdc)
 	switch (GameCenter::GetInstance()->getScene())
 	{
 	case GameCenter::Scene_enum::GAME_SCENE:
+		DrawOnlineBackGround(hdc);
+		DrawOnlineBlock(hdc);
 		break;
 	case GameCenter::Scene_enum::LOCALGAME_SCENE:
 		DrawBackGround(hdc);
@@ -143,9 +157,7 @@ void GameScene::UI(HDC hdc)
 		if (!m_GameStart)
 		{
 			DrawGameOver(hdc);
-			
-
-     			switch (m_iAnimation)
+     		switch (m_iAnimation)
 			{
 			case 0:
 				DrawContinue(hdc);
@@ -238,6 +250,8 @@ void GameScene::DrawBlock(HDC hdc)
 				TransparentBlt(hdc, BoardPoint[i][j].x, BoardPoint[i][j].y, m_iBlockWidth, m_iBlockWidth, hBlocksDc, 16 * 8, 0, 16, by, RGB(255, 0, 255));// bx*4 ,by*4 는 4배한것.
 			}
 		}
+
+
 
 	//다음블럭
 	for (i = 0; i < 4; i++)
@@ -453,7 +467,7 @@ void GameScene::BlockMove()
 		m_iCurBlocksY--;
 		SetBlockToGameBoard();
 
-		LineFullCheck();
+		LineFullCheck(); 
 		CreateRandomBlocks();
 	}
 	else
@@ -708,6 +722,69 @@ void GameScene::DrawBackGround(HDC hdc)
 	DeleteObject(hBackGround);
 }
 
+void GameScene::DrawOnlineBlock(HDC hdc)
+{
+	HBITMAP hBitmap;
+	hBlocks = (HBITMAP)LoadImage(NULL, TEXT("IMG/Block.bmp"), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
+	GetObject(hBlocks, sizeof(BITMAP), &bitBlcok);
+
+	hBlocksDc = CreateCompatibleDC(hdc);
+	hBitmap = (HBITMAP)SelectObject(hBlocksDc, hBlocks);
+
+	int bx, by;
+	bx = bitBlcok.bmWidth;
+	by = bitBlcok.bmHeight;
+
+	int i, j;
+	//움직이는 블럭
+	for (i = 0; i < HEIGHT; i++)
+		for (j = 0; j < WIDTH; j++)
+		{
+			if (m_iGameBoard[i][j] > 0)   //블럭이 존재할 때
+				StretchBlt(hdc, BoardPoint[i][j].x, BoardPoint[i][j].y, m_iBlockWidth, m_iBlockWidth, hBlocksDc, 16 * (m_iGameBoard[i][j] - 1), 0, 16, by, SRCCOPY);   //각 블럭의 색
+			else if (m_iGameBoard[i][j] == -2)
+			{
+				//가이드 블럭
+				TransparentBlt(hdc, BoardPoint[i][j].x, BoardPoint[i][j].y, m_iBlockWidth, m_iBlockWidth, hBlocksDc, 16 * 8, 0, 16, by, RGB(255, 0, 255));// bx*4 ,by*4 는 4배한것.
+			}
+		}
+
+
+
+	////다음블럭
+	//for (i = 0; i < 4; i++)
+	//	for (j = 0; j < 4; j++)
+	//	{
+	//		if (m_BlockList[m_iNextBlocksType][0][i][j] > 0)
+	//		{
+	//			StretchBlt(hdc, NextBlockPosition[i][j].x, NextBlockPosition[i][j].y, m_iBlockWidth, m_iBlockWidth, hBlocksDc, 16 * (8 - 1), 0, 16, by, SRCCOPY);   //각 블럭의 색
+	//		}
+	//	}
+	DeleteDC(hBlocksDc);
+	DeleteObject(hBlocks);
+}
+
+void GameScene::DrawOnlineBackGround(HDC hdc)
+{
+	HBITMAP h01Bitmap;
+	int bx, by;
+
+	hBackGround = (HBITMAP)LoadImage(NULL, TEXT("IMG/GameBoard.bmp"), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
+	GetObject(hBackGround, sizeof(BITMAP), &bitBackground);
+
+	hBlocksDc = CreateCompatibleDC(hdc);
+	h01Bitmap = (HBITMAP)SelectObject(hBlocksDc, hBackGround);
+
+	bx = bitBackground.bmWidth;
+	by = bitBackground.bmHeight;
+
+	TransparentBlt(hdc, 0, 0, bx + 872, by + 644, hBlocksDc, 0, 0, bx, by, RGB(255, 0, 255));   //각 블럭의 색
+
+	DeleteDC(hBlocksDc);
+
+	DeleteObject(hBackGround);
+}
+
 void GameScene::nonStaticUpdate()
 {
 
@@ -716,7 +793,7 @@ void GameScene::nonStaticUpdate()
 	switch (GameCenter::GetInstance()->getScene())
 	{
 	case GameCenter::Scene_enum::GAME_SCENE:
-
+		//BlockMove();
 		break;
 	case GameCenter::Scene_enum::LOCALGAME_SCENE:
 		BlockMove();

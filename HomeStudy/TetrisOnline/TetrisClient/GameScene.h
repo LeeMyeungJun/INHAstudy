@@ -31,6 +31,13 @@ public:
 	~GameScene();
 	HDC hBlocksDc;
 
+	POINT Player1BoardPoint[HEIGHT - 1][WIDTH - 1];
+	//POINT Player2BoardPoint[HEIGHT - 1][WIDTH - 1];
+	//POINT Player3BoardPoint[HEIGHT - 1][WIDTH - 1];
+
+
+
+
 	POINT BoardPoint[HEIGHT-1][WIDTH-1];
 	POINT NextBlockPosition[4][4];
 	POINT GuideBlockPosition[4][4];
@@ -53,6 +60,7 @@ public:
 	void UI(HDC hdc);
 	void ClickEvent(LPARAM lParam);
 public:
+	//LocalRender
 	/*Render*/
 	void PrintScore(HDC hdc);
 	void PrintLevel(HDC hdc);
@@ -62,7 +70,13 @@ public:
 	void DrawContinue2(HDC hdc);
 	void DrawContinue3(HDC hdc);
 	void DrawBackGround(HDC hdc);
+public:
+	//OnlineRender
+	void DrawOnlineBlock(HDC hdc);
+	void DrawOnlineBackGround(HDC hdc);
 
+
+public:
 	/*Update*/
 	void PositionSave();
 	void GuidePositionSave();
