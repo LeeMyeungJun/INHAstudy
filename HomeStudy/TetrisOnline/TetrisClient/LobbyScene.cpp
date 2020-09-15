@@ -309,7 +309,7 @@ void LobbyScene::LobbyRoomDraw(HDC hdc)
 	HFONT oldFont = (HFONT)SelectObject(hdc, GameCenter::GetInstance()->getUI()->TitleFont);
 	for (int i = 0; i < NetWorkManager::GetInstance()->LobbyRoom.size(); i++)
 	{
-		Rectangle(hdc, 105, 112*(1+i), 813, 200*(1+i));
+		Rectangle(hdc, 105, 112*(1+i), 813, 112*(2+i));
 		temp = g_NetworkManager->LobbyRoom[i]->RoomNum + g_NetworkManager->LobbyRoom[i]->RoomName;
 		TextOut(hdc, 140, 115 - (i * 20), StringToTCHAR(temp), _tcslen(StringToTCHAR(temp)));
 	}

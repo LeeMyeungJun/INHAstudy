@@ -144,7 +144,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			g_theSoundManager->AddSFX("sound/effMelem.mp3", "Melem");
 			g_theSoundManager->AddSFX("sound/effSelect.mp3", "Select");
 		}
-		//g_theSoundManager->PlayBGM();
+		g_theSoundManager->PlayBGM();
 		Gamecenter = GameCenter::GetInstance();
 		
 		

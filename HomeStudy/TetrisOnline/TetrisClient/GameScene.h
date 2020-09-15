@@ -82,11 +82,12 @@ public:
 	void GuidePositionSave();
 	void SetBlockToGameBoard();
 	bool CheckCollision();
+	bool TurnCheckCollision();
 	bool CheckGuideCollision();
 	void GuidBlock();
 	void SetGuideBlockToGameBoard();
 	void ClearGuideBlocks();
-	bool TurnCheckCollision();
+	
 	void CreateRandomBlocks();
 	bool GameOver();
 	void BlockMove();
