@@ -175,7 +175,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		{
 		case FD_READ:
 		{
-			g_NetworkManager->Read_Fd();
+			g_NetworkManager->GetInstance()->Read_Fd();
 		}
 		break;
 		}
