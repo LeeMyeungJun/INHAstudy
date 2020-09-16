@@ -6,6 +6,7 @@ extern Packet pk_Packet;
 extern pkLobbyMessage pk_Lobby_Message;
 extern pkLobby_RQ pk_Lobby_Request;
 extern pkUser pk_User;
+extern pkGame pk_Game;
 
 
 
@@ -184,6 +185,8 @@ void LobbyScene::ClickEvent(LPARAM lParam)
 
 				char temp[4] = { 0 };
 				sprintf(temp, "%c", pk_Lobby_Request.RoomNum);
+
+				pk_Game.RoomNum = pk_Lobby_Request.RoomNum;
 
 				memset(buffer, 0, _msize(buffer));
 				memcpy(buffer, &pk_Packet.Protocal, sizeof(pk_Packet.Protocal));

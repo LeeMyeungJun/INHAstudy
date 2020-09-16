@@ -4,6 +4,7 @@
 extern SoundManager* g_theSoundManager;
 extern NetWorkManager *g_NetworkManager;
 extern Packet pk_Packet;
+extern pkGame pk_Game;
 
 void CALLBACK BlockUpdate(HWND, UINT, UINT_PTR, DWORD);
 
@@ -927,51 +928,65 @@ void GameScene::SendOnlineScreen(HDC hdc)
 	HBITMAP hOldBitmap = (HBITMAP)SelectObject(hMemDC, hBackGround);
 
 	StretchBlt(hMemDC, 0, 0, 780, 865, hdc, 0, 0,780,865, SRCCOPY);   //각 블럭의 색
-	GetObject(hBackGround, sizeof(BITMAP), &bitBackground);
+	//GetObject(hBackGround, sizeof(BITMAP), &bitBackground);
+	GetObject(hBackGround, sizeof(BITMAP), &pk_Game.Bitmap);
 
 	//Rectangle(hdc, 0, 0, 780, 865);
-	//test용  
+	/* test용 
 	SelectObject(hMemDC, hOldBitmap);
 	DeleteDC(hMemDC);
-
 	HBITMAP h01Bitmap;
 	int bx, by;
-
 	hBlocksDc = CreateCompatibleDC(hdc);
 	h01Bitmap = (HBITMAP)SelectObject(hBlocksDc, hBackGround);
-
 	bx = bitBackground.bmWidth;
 	by = bitBackground.bmHeight;
 
-	//BitBlt(hdc, 500, 0, bx, by, hBlocksDc, 0, 0, SRCCOPY);
-	StretchBlt(hdc, 781 ,0,350, 435, hBlocksDc, 0,0, bx, by, SRCCOPY);   //각 블럭의 색
-	StretchBlt(hdc, 781, 435, 350, 435, hBlocksDc, 0, 0, bx, by, SRCCOPY);   //각 블럭의 색
-
+	StretchBlt(hdc, 781 ,0,350, 435, hBlocksDc, 0,0, bx, by, SRCCOPY);   //위
+	StretchBlt(hdc, 781, 435, 350, 435, hBlocksDc, 0, 0, bx, by, SRCCOPY);   //아래
 	DeleteDC(hBlocksDc);
-
 	DeleteObject(hBackGround);
+	*/
+
+	pk_Packet.Protocal = GAME;
+	pk_Packet.size = sizeof(unsigned int) + sizeof(BITMAP) + sizeof(int) + sizeof(unsigned int)+ sizeof(int);
+	pk_Game.User_Survive = 1;
+	pk_Game.AttackLine = 0;
+	pk_Game.UserIndex = 50;
+
+	char * buffer = new char[sizeof(pk_Packet.Protocal) + sizeof(pk_Packet.size) + pk_Packet.size];
+	memset(buffer, 0, _msize(buffer));
+	memcpy(buffer, &pk_Packet.Protocal, sizeof(pk_Packet.Protocal));
+	memcpy(&buffer[sizeof(pk_Packet.Protocal)], &pk_Packet.size, sizeof(pk_Packet.size));
+	char temp[4] = { 0 };
+	sprintf(temp, "%c", pk_Game.RoomNum);
+	memcpy(&buffer[sizeof(pk_Packet.Protocal)+ sizeof(pk_Packet.size)], temp, sizeof(unsigned int));
+
+	char * BitTemp = new char[sizeof(BITMAP)];
+	memset(BitTemp, 0, _msize(BitTemp));
+	memcpy(BitTemp, &pk_Game.Bitmap, sizeof(BITMAP)); //이부분 
+	memcpy(&buffer[sizeof(pk_Packet.Protocal) + sizeof(pk_Packet.size)+ sizeof(unsigned int)], BitTemp, sizeof(BITMAP));
+
+	memset(temp, 0, sizeof(4));
+	sprintf(temp, "%c", pk_Game.User_Survive);
+	memcpy(&buffer[sizeof(pk_Packet.Protocal) + sizeof(pk_Packet.size) + sizeof(unsigned int) + sizeof(BITMAP)], temp, sizeof(int));
+
+	memset(temp, 0, sizeof(4));
+	sprintf(temp, "%c", pk_Game.AttackLine);
+	memcpy(&buffer[sizeof(pk_Packet.Protocal) + sizeof(pk_Packet.size) + sizeof(unsigned int) + sizeof(BITMAP)+ sizeof(int)], temp, sizeof(int));
+
+	memset(temp, 0, sizeof(4));
+	sprintf(temp, "%c", pk_Game.UserIndex);
+	memcpy(&buffer[sizeof(pk_Packet.Protocal) + sizeof(pk_Packet.size) + sizeof(unsigned int) + sizeof(BITMAP) + sizeof(int) + sizeof(int)], temp, sizeof(int));
 
 
+	if (send(NetWorkManager::GetInstance()->server, buffer, _msize(buffer), 0) == -1)
+	{
+	
+	}
 
-
-
-
-	//pk_Packet.Protocal = LOBBYRQ;
-	//pk_Lobby_Request.RoomNum = 99;
-	//char temp[4] = { 0 };
-	//sprintf(temp, "%c", pk_Lobby_Request.RoomNum);
-	//pk_Packet.size = sizeof(TCHAR)*NetWorkManager::GetInstance()->count2 + 1 + sizeof(unsigned int);
-	//char * buffer = new char[sizeof(pk_Packet.Protocal) + sizeof(pk_Packet.size) + pk_Packet.size];
-	//memset(buffer, 0, _msize(buffer));
-	//memcpy(buffer, &pk_Packet.Protocal, sizeof(pk_Packet.Protocal));
-	//memcpy(&buffer[sizeof(pk_Packet.Protocal)], &pk_Packet.size, sizeof(pk_Packet.size));
-	//memcpy(&buffer[sizeof(pk_Packet.Protocal) + sizeof(pk_Packet.size)], temp, sizeof(unsigned int));
-	//memcpy(&buffer[sizeof(pk_Packet.Protocal) + sizeof(pk_Packet.size) + sizeof(unsigned int)], pk_Lobby_Request.RoomName, pk_Packet.size - sizeof(unsigned int));
-
-	//if (send(NetWorkManager::GetInstance()->server, buffer, _msize(buffer), 0) == -1)
-	//{
-	//	exit(-1);
-	//}
+	delete[] temp;
+	delete[] buffer;
 }
 
 void GameScene::nonStaticUpdate()

@@ -7,6 +7,7 @@ extern Packet pk_Packet;
 extern pkRoom pk_Room;
 extern pkRoom_RQ pk_Room_Request;
 extern pkRoom_User pk_Room_User;
+extern pkGame pk_Game;
 using namespace std;
 
 
@@ -196,8 +197,11 @@ void ServerManager::ServerRead(WPARAM wParam)
 		buffer[size] = NULL;*/
 		break;	
 	case GAME:
-		/*recv(wParam, (char*)&pk_Lobby, sizeof(pkLobby), 0);
-		buffer[size] = NULL;*/
+		pk_Packet.Buffer = new char[sizeof(pk_Packet.size)];
+		memset(pk_Packet.Buffer, 0, _msize(pk_Packet.Buffer));
+		recv(wParam, (char*)pk_Packet.Buffer, sizeof(pk_Packet.size), 0);
+		pk_Game = *(pkGame*)pk_Packet.Buffer;
+
 		break;
 	case ROOMRQ:
 	{

@@ -82,7 +82,6 @@ void NetWorkManager::Read_Fd()
 		TCHAR *newMsg = new TCHAR[stlength + 1];
 		memset(newMsg, 0, _msize(newMsg));
 		MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED, pk_Lobby_Message.Buffer, strlen(pk_Lobby_Message.Buffer), newMsg, _msize(newMsg));
-		//이위가문제같음
 		chatLog.push_back(newMsg);
 		break;
 	}

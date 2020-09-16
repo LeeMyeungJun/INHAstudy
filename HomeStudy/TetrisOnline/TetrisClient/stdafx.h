@@ -96,7 +96,6 @@ typedef struct __pkLobby_RQ {
 } pkLobby_RQ;
 
 
-
 typedef struct __pkRoom {
 	unsigned int RoomNum;
 	int User_Ready;
@@ -113,7 +112,9 @@ typedef struct __pkRoom_User {
 } pkRoom_User;
 
 typedef struct __pkGame {
-	unsigned int User_Position;
-	int User_GameBoard[iHeight][iWidth];
+	unsigned int RoomNum;
+	BITMAP Bitmap;
 	int User_Survive;
+	unsigned int AttackLine;
+	int UserIndex;
 } pkGame;

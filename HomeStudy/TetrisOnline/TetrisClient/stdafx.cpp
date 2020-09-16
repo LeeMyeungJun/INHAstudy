@@ -21,5 +21,5 @@ Packet pk_Packet;
 pkRoom pk_Room;
 pkRoom_RQ pk_Room_Request;
 pkRoom_User pk_Room_User;
-
+pkGame pk_Game;
 
