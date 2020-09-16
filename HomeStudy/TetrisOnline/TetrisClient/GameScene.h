@@ -69,8 +69,9 @@ public:
 	void DrawOnlineBlock(HDC hdc);
 	void DrawOnlineGameBoard(HDC hdc);
 	void DrawOnlineBackGround(HDC hdc);
-	void DrawOnlinePlayerBoardDraw(HDC hdc);
-
+	void RecvOnlinePlayerBoardDraw(HDC hdc);
+	void DrawOnlineGameOverDraw(HDC hdc);
+	void SendOnlineScreen(HDC hdc);
 
 public:
 	/*Update*/

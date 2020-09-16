@@ -2,11 +2,11 @@
 
 extern SoundManager* g_theSoundManager;
 extern NetWorkManager *g_NetworkManager;
-
+extern Packet pk_Packet;
 extern pkLobbyMessage pk_Lobby_Message;
 extern pkLobby_RQ pk_Lobby_Request;
 extern pkUser pk_User;
-extern Packet pk_Packet;
+
 
 
 

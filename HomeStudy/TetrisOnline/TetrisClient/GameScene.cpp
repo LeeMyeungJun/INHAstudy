@@ -2,6 +2,8 @@
 
 
 extern SoundManager* g_theSoundManager;
+extern NetWorkManager *g_NetworkManager;
+extern Packet pk_Packet;
 
 void CALLBACK BlockUpdate(HWND, UINT, UINT_PTR, DWORD);
 
@@ -146,7 +148,9 @@ void GameScene::Update(UINT message, WPARAM wParam, LPARAM lParam)
 		break;
 	}
 
-
+	if (!m_GameStart)
+		return;
+	
 	switch (message)
 	{
 	case WM_KEYDOWN:
@@ -162,6 +166,10 @@ void GameScene::Update(UINT message, WPARAM wParam, LPARAM lParam)
 void GameScene::Render(HWND hWnd, HDC hdc)
 {
 	UI(hdc);
+	if (GameCenter::GetInstance()->getScene() == GameCenter::Scene_enum::GAME_SCENE)
+	{
+
+	}
 }
 
 void GameScene::Free(void)
@@ -177,10 +185,15 @@ void GameScene::UI(HDC hdc)
 	{
 	case GameCenter::Scene_enum::GAME_SCENE:
 		DrawOnlineBackGround(hdc);
-		DrawOnlinePlayerBoardDraw(hdc);
+		RecvOnlinePlayerBoardDraw(hdc);
 		DrawOnlineGameBoard(hdc);
 		DrawOnlineBlock(hdc);
-		
+		if (!m_GameStart)
+		{
+			DrawOnlineGameOverDraw(hdc);
+		}
+
+		SendOnlineScreen(hdc);
 		break;
 	case GameCenter::Scene_enum::LOCALGAME_SCENE:
 		DrawBackGround(hdc);
@@ -477,6 +490,16 @@ void GameScene::CreateRandomBlocks()
 	if (GameOver())
 	{
 		m_GameStart = false;
+
+		//패배시 예시 1
+		//for (int i = 0; i < HEIGHT; i++)
+		//{
+		//	for (int j = 0; j < WIDTH; j++)
+		//	{
+		//		m_iGameBoard[i][j] = (j == 0 || i == HEIGHT - 1 || j == WIDTH - 1) ? -1 : 1;
+		//	}
+		//}
+
 		return;
 	}
 
@@ -864,7 +887,7 @@ void GameScene::DrawOnlineBackGround(HDC hdc)
 	DeleteObject(hBackGround);
 }
 
-void GameScene::DrawOnlinePlayerBoardDraw(HDC hdc)
+void GameScene::RecvOnlinePlayerBoardDraw(HDC hdc)
 {
 	//일단 내꺼의 크기를 알아보자 . 
 	//Rectangle(hdc, 0, 0, 780, 865);
@@ -872,6 +895,83 @@ void GameScene::DrawOnlinePlayerBoardDraw(HDC hdc)
 	Rectangle(hdc, 780, 0, 1130, 430);
 	//플레이어 3
 	Rectangle(hdc, 780, 430, 1130, 865);
+}
+
+void GameScene::DrawOnlineGameOverDraw(HDC hdc)
+{
+	HBITMAP h01Bitmap;
+	int bx, by;
+
+	hBackGround = (HBITMAP)LoadImage(NULL, TEXT("IMG/OnlineLose.bmp"), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
+	GetObject(hBackGround, sizeof(BITMAP), &bitBackground);
+
+	hBlocksDc = CreateCompatibleDC(hdc);
+	h01Bitmap = (HBITMAP)SelectObject(hBlocksDc, hBackGround);
+
+	bx = bitBackground.bmWidth;
+	by = bitBackground.bmHeight;
+
+	TransparentBlt(hdc, 128, 53, bx+335, by + 587, hBlocksDc, 0, 0, bx, by, RGB(255, 0, 255));   //각 블럭의 색
+
+	DeleteDC(hBlocksDc);
+
+	DeleteObject(hBackGround);
+}
+
+void GameScene::SendOnlineScreen(HDC hdc)
+{
+	if (NetWorkManager::GetInstance()->server == INVALID_SOCKET)
+		return;
+	HDC hMemDC = CreateCompatibleDC(hdc);
+	hBackGround = CreateCompatibleBitmap(hdc,780, 865);
+	HBITMAP hOldBitmap = (HBITMAP)SelectObject(hMemDC, hBackGround);
+
+	StretchBlt(hMemDC, 0, 0, 780, 865, hdc, 0, 0,780,865, SRCCOPY);   //각 블럭의 색
+	GetObject(hBackGround, sizeof(BITMAP), &bitBackground);
+
+	//Rectangle(hdc, 0, 0, 780, 865);
+	//test용  
+	SelectObject(hMemDC, hOldBitmap);
+	DeleteDC(hMemDC);
+
+	HBITMAP h01Bitmap;
+	int bx, by;
+
+	hBlocksDc = CreateCompatibleDC(hdc);
+	h01Bitmap = (HBITMAP)SelectObject(hBlocksDc, hBackGround);
+
+	bx = bitBackground.bmWidth;
+	by = bitBackground.bmHeight;
+
+	//BitBlt(hdc, 500, 0, bx, by, hBlocksDc, 0, 0, SRCCOPY);
+	StretchBlt(hdc, 781 ,0,350, 435, hBlocksDc, 0,0, bx, by, SRCCOPY);   //각 블럭의 색
+	StretchBlt(hdc, 781, 435, 350, 435, hBlocksDc, 0, 0, bx, by, SRCCOPY);   //각 블럭의 색
+
+	DeleteDC(hBlocksDc);
+
+	DeleteObject(hBackGround);
+
+
+
+
+
+
+	//pk_Packet.Protocal = LOBBYRQ;
+	//pk_Lobby_Request.RoomNum = 99;
+	//char temp[4] = { 0 };
+	//sprintf(temp, "%c", pk_Lobby_Request.RoomNum);
+	//pk_Packet.size = sizeof(TCHAR)*NetWorkManager::GetInstance()->count2 + 1 + sizeof(unsigned int);
+	//char * buffer = new char[sizeof(pk_Packet.Protocal) + sizeof(pk_Packet.size) + pk_Packet.size];
+	//memset(buffer, 0, _msize(buffer));
+	//memcpy(buffer, &pk_Packet.Protocal, sizeof(pk_Packet.Protocal));
+	//memcpy(&buffer[sizeof(pk_Packet.Protocal)], &pk_Packet.size, sizeof(pk_Packet.size));
+	//memcpy(&buffer[sizeof(pk_Packet.Protocal) + sizeof(pk_Packet.size)], temp, sizeof(unsigned int));
+	//memcpy(&buffer[sizeof(pk_Packet.Protocal) + sizeof(pk_Packet.size) + sizeof(unsigned int)], pk_Lobby_Request.RoomName, pk_Packet.size - sizeof(unsigned int));
+
+	//if (send(NetWorkManager::GetInstance()->server, buffer, _msize(buffer), 0) == -1)
+	//{
+	//	exit(-1);
+	//}
 }
 
 void GameScene::nonStaticUpdate()

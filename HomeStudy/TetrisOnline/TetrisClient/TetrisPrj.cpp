@@ -130,12 +130,13 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	static GameCenter *Gamecenter = nullptr;
+
 	//g_NetworkManager = nullptr;
     switch (message)
     {
 	case WM_CREATE:
 		srand(time(NULL));
-		
+	
 		if (g_theSoundManager == nullptr)
 		{
 			g_theSoundManager = new SoundManager();
