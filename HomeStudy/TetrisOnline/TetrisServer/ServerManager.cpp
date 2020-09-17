@@ -201,17 +201,45 @@ void ServerManager::ServerRead(WPARAM wParam)
 		memset(pk_Packet.Buffer, 0, _msize(pk_Packet.Buffer));
 		recv(wParam, (char*)pk_Packet.Buffer, pk_Packet.size, 0);
 		pk_Game = *(pkGame*)pk_Packet.Buffer;
+		pk_Game.UserIndex = wParam;
 
 
-		char* buffer = new char[sizeof(pk_Packet.Protocal) + sizeof(pk_Packet.size) + pk_Packet.size];
+		char * buffer = new char[sizeof(pk_Packet.Protocal) + sizeof(pk_Packet.size) + pk_Packet.size];
 		memset(buffer, 0, _msize(buffer));
+		memcpy(buffer, &pk_Packet.Protocal, sizeof(pk_Packet.Protocal));
+		memcpy(&buffer[sizeof(pk_Packet.Protocal)], &pk_Packet.size, sizeof(pk_Packet.size));
+
+		char temp[4] = { 0 };
+		sprintf(temp, "%c", pk_Game.RoomNum);
+		memcpy(&buffer[sizeof(pk_Packet.Protocal) + sizeof(pk_Packet.size)], temp, sizeof(unsigned int));
+
+		memset(temp, 0, sizeof(4));
+		sprintf(temp, "%c", pk_Game.UserIndex);
+		memcpy(&buffer[sizeof(pk_Packet.Protocal) + sizeof(pk_Packet.size) + sizeof(unsigned int)], temp, sizeof(int));
+
+
+		char * BitTemp = new char[sizeof(BITMAP)];
+
+		memset(BitTemp, 0, _msize(BitTemp));
+		memcpy(BitTemp, &pk_Game.Bitmap, sizeof(BITMAP)); //이부분 
+
+		memcpy(&buffer[sizeof(pk_Packet.Protocal) + sizeof(pk_Packet.size) + sizeof(unsigned int) + sizeof(int)], BitTemp, sizeof(BITMAP));
+
+
 
 		for (int i = 0; i < RoomClient[pk_Game.RoomNum]->getUserCount(); i++)
 		{
-			if (RoomClient[pk_Game.RoomNum]->m_RoomUseer[i] == wParam)
-				continue;
+		
 
 			//이상태로 똑같은정보를 플레이어에게 뿌려주면 된다 . 
+
+			for (SOCKET client : RoomClient[pk_Game.RoomNum]->m_RoomUseer)
+			{
+				if (RoomClient[pk_Game.RoomNum]->m_RoomUseer[i] == wParam)
+					continue;
+
+				send(client, buffer, _msize(buffer), NULL);
+			}
 		}
 
 		delete[] buffer;

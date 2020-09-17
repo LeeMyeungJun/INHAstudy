@@ -11,7 +11,7 @@ extern Packet pk_Packet;
 extern pkRoom pk_Room;
 extern pkRoom_RQ pk_Room_Request;
 extern pkRoom_User pk_Room_User;
-
+extern pkGame pk_Game;
 NetWorkManager::NetWorkManager()
 {
 	WSAStartup(MAKEWORD(2, 2), &wsaData);
@@ -129,6 +129,16 @@ void NetWorkManager::Read_Fd()
 		{
 			bPlay = true;
 		}
+
+
+		break;
+	}
+	case GAME:
+	{
+		pk_Packet.Buffer = new char[sizeof(pk_Packet.size)];
+		memset(pk_Packet.Buffer, 0, _msize(pk_Packet.Buffer));
+		recv(server, (char*)pk_Packet.Buffer, pk_Packet.size, 0);
+		pk_Game = *(pkGame*)pk_Packet.Buffer;
 
 
 		break;
