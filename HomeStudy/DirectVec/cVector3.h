@@ -20,6 +20,7 @@ public:
 	cVector3 operator*(float f) const;
 	cVector3 operator/(float f) const;
 
+
 	static float Dot(cVector3& v1, cVector3& v2);
 	static cVector3 Cross(cVector3& v1, cVector3& v2);
 
@@ -31,6 +32,7 @@ public:
 
 	float Length();
 	cVector3 Normlize();
+	static float Angele(cVector3& v1, cVector3& v2);
 
 };
 

@@ -141,11 +141,13 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="cMatrix.h" />
     <ClInclude Include="cVector3.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="cMatrix.cpp" />
     <ClCompile Include="cVector3.cpp" />
     <ClCompile Include="DirectVec.cpp" />
     <ClCompile Include="stdafx.cpp">

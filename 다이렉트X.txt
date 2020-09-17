@@ -19,3 +19,21 @@ fabs(lhs- rhs) < EPILON ? true; false;
 2. 각각 벡터크기 구하고 곱해줌 또 그cos각 만큼 곱해줌
 
 법선벡터 : 면에 수직인 벡터 
+
+내적해서 0   이면 직각 
+내적 > 0     90보다 작다
+내적 < 0     90보다 크다 
+
+
+행렬
+상등, 스칼라 곱, 더하기 
+
+항등행렬
+역행렬 = Confactor(행렬식 )
+행렬의 전치 Transpose 전치행렬
+minor 행렬 
+Determinant 
+Confactor 을 전치행렬해주면 Adjoint가 나온다 . 
+역행렬 = (1/Determinant) * Adjoint 
+
+이동 회전 다 행렬로 표현할거다 . 

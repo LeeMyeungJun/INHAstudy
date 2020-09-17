@@ -22,7 +22,7 @@ bool cVector3::operator==(cVector3 & vec) const
 	float vec1 = sqrt(powf(this->m_x,2) + powf(this->m_y,2) + powf(this->m_z,2));
 	float vec2 = sqrt(powf(vec.m_x, 2) + powf(vec.m_y, 2) + powf(vec.m_z, 2));
 
-	return fabs(vec1 - vec2) < EPSILON ? true : false;
+	return fabs(vec1 - vec2) < EPSILON ? false : true;
 }
 
 bool cVector3::operator!=(cVector3 & vec) const
@@ -30,7 +30,7 @@ bool cVector3::operator!=(cVector3 & vec) const
 	float vec1 = sqrt(powf(this->m_x, 2) + powf(this->m_y, 2) + powf(this->m_z, 2));
 	float vec2 = sqrt(powf(vec.m_x, 2) + powf(vec.m_y, 2) + powf(vec.m_z, 2));
 
-	return fabs(vec1 - vec2) < EPSILON ? false : true;
+	return fabs(vec1 - vec2) < EPSILON ? true : false;
 }
 
 cVector3 cVector3::operator+(cVector3 & vec) const
@@ -73,6 +73,8 @@ cVector3 cVector3::operator/(float f) const
 	return vecTemp;
 }
 
+
+
 float cVector3::Dot(cVector3 & v1, cVector3 & v2)
 {
 	return v1.m_x*v2.m_x + v1.m_y*v2.m_y + v1.m_z*v2.m_z;
@@ -102,4 +104,11 @@ cVector3 cVector3::Normlize()
 	vecTemp.m_z = this->m_z / Length();
 
 	return vecTemp;
+}
+
+float cVector3::Angele(cVector3 & v1, cVector3 & v2)
+{
+	float temp = Dot(v1, v2) / (v1.Length()*v2.Length());
+
+	return acos(temp) * 180 / 3.14159265359;
 }
