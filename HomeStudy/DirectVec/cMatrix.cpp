@@ -70,7 +70,6 @@ bool cMatrix::operator!=(cMatrix & mat)
 		return true;
 
 	return false;
-
 }
 
 cMatrix cMatrix::operator+(cMatrix & mat)
@@ -154,6 +153,7 @@ cMatrix cMatrix::Transpose() //전치행렬
 	return temp;
 }
 
+
 cMatrix cMatrix::Inverse(OUT float & fDeterminant)
 {
 	return cMatrix();
@@ -169,14 +169,27 @@ cMatrix cMatrix::Adjoint()
 	return cMatrix();
 }
 
-float cMatrix::Cofactor(int nRow, int nCol)
+float cMatrix::Cofactor(int nRow, int nCol) //여인수
 {
-	return pow(-1, nRow + nCol) * Minor(nRow, nCol);
+	return 0;
 }
 
-float cMatrix::Minor(int nRow, int nCol)
+float cMatrix::Minor(int nRow, int nCol) //소행렬
 {
+	float minor;
 
+	for (int i = 0; i < dimension; i++)
+	{
+		if (i == nRow)
+			continue;
+
+		for (int j = 0; j < dimension; j++)
+		{
+			if (j == nCol)
+				continue;
+
+		}
+	}
 
 	
 	return 0.0f;

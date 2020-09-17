@@ -203,6 +203,19 @@ void ServerManager::ServerRead(WPARAM wParam)
 		pk_Game = *(pkGame*)pk_Packet.Buffer;
 
 
+		char* buffer = new char[sizeof(pk_Packet.Protocal) + sizeof(pk_Packet.size) + pk_Packet.size];
+		memset(buffer, 0, _msize(buffer));
+
+		for (int i = 0; i < RoomClient[pk_Game.RoomNum]->getUserCount(); i++)
+		{
+			if (RoomClient[pk_Game.RoomNum]->m_RoomUseer[i] == wParam)
+				continue;
+
+			//이상태로 똑같은정보를 플레이어에게 뿌려주면 된다 . 
+		}
+
+		delete[] buffer;
+
 		break;
 	case ROOMRQ:
 	{
