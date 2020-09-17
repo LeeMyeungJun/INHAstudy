@@ -199,8 +199,9 @@ void ServerManager::ServerRead(WPARAM wParam)
 	case GAME:
 		pk_Packet.Buffer = new char[sizeof(pk_Packet.size)];
 		memset(pk_Packet.Buffer, 0, _msize(pk_Packet.Buffer));
-		recv(wParam, (char*)pk_Packet.Buffer, sizeof(pk_Packet.size), 0);
+		recv(wParam, (char*)pk_Packet.Buffer, pk_Packet.size, 0);
 		pk_Game = *(pkGame*)pk_Packet.Buffer;
+
 
 		break;
 	case ROOMRQ:

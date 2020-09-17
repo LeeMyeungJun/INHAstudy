@@ -111,10 +111,9 @@ typedef struct __pkRoom_User {
 	unsigned int UserCount;
 } pkRoom_User;
 
+
 typedef struct __pkGame {
 	unsigned int RoomNum;
-	BITMAP Bitmap;
-	int User_Survive;
-	unsigned int AttackLine;
 	int UserIndex;
+	BITMAP Bitmap;
 } pkGame;

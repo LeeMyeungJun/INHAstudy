@@ -949,35 +949,29 @@ void GameScene::SendOnlineScreen(HDC hdc)
 	*/
 
 	pk_Packet.Protocal = GAME;
-	pk_Packet.size = sizeof(unsigned int) + sizeof(BITMAP) + sizeof(int) + sizeof(unsigned int)+ sizeof(int);
-	pk_Game.User_Survive = 1;
-	pk_Game.AttackLine = 0;
-	pk_Game.UserIndex = 50;
+	pk_Packet.size = sizeof(unsigned int) + sizeof(BITMAP) + sizeof(int);
+	pk_Game.UserIndex = 0;
 
 	char * buffer = new char[sizeof(pk_Packet.Protocal) + sizeof(pk_Packet.size) + pk_Packet.size];
 	memset(buffer, 0, _msize(buffer));
 	memcpy(buffer, &pk_Packet.Protocal, sizeof(pk_Packet.Protocal));
 	memcpy(&buffer[sizeof(pk_Packet.Protocal)], &pk_Packet.size, sizeof(pk_Packet.size));
+
 	char temp[4] = { 0 };
 	sprintf(temp, "%c", pk_Game.RoomNum);
 	memcpy(&buffer[sizeof(pk_Packet.Protocal)+ sizeof(pk_Packet.size)], temp, sizeof(unsigned int));
 
+	memset(temp, 0, sizeof(4));
+	sprintf(temp, "%c", pk_Game.UserIndex);
+	memcpy(&buffer[sizeof(pk_Packet.Protocal) + sizeof(pk_Packet.size) + sizeof(unsigned int)], temp, sizeof(int));
+
+
 	char * BitTemp = new char[sizeof(BITMAP)];
 	memset(BitTemp, 0, _msize(BitTemp));
 	memcpy(BitTemp, &pk_Game.Bitmap, sizeof(BITMAP)); //ÀÌºÎºÐ 
-	memcpy(&buffer[sizeof(pk_Packet.Protocal) + sizeof(pk_Packet.size)+ sizeof(unsigned int)], BitTemp, sizeof(BITMAP));
+	memcpy(&buffer[sizeof(pk_Packet.Protocal) + sizeof(pk_Packet.size)+ sizeof(unsigned int)+ sizeof(int)], BitTemp, sizeof(BITMAP));
 
-	memset(temp, 0, sizeof(4));
-	sprintf(temp, "%c", pk_Game.User_Survive);
-	memcpy(&buffer[sizeof(pk_Packet.Protocal) + sizeof(pk_Packet.size) + sizeof(unsigned int) + sizeof(BITMAP)], temp, sizeof(int));
 
-	memset(temp, 0, sizeof(4));
-	sprintf(temp, "%c", pk_Game.AttackLine);
-	memcpy(&buffer[sizeof(pk_Packet.Protocal) + sizeof(pk_Packet.size) + sizeof(unsigned int) + sizeof(BITMAP)+ sizeof(int)], temp, sizeof(int));
-
-	memset(temp, 0, sizeof(4));
-	sprintf(temp, "%c", pk_Game.UserIndex);
-	memcpy(&buffer[sizeof(pk_Packet.Protocal) + sizeof(pk_Packet.size) + sizeof(unsigned int) + sizeof(BITMAP) + sizeof(int) + sizeof(int)], temp, sizeof(int));
 
 
 	if (send(NetWorkManager::GetInstance()->server, buffer, _msize(buffer), 0) == -1)
@@ -985,7 +979,7 @@ void GameScene::SendOnlineScreen(HDC hdc)
 	
 	}
 
-	delete[] temp;
+	delete[] BitTemp;
 	delete[] buffer;
 }
 
