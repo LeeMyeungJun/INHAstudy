@@ -1,6 +1,7 @@
 #pragma once
 class RoomScene :public Scene
 {
+
 public:
 	RoomScene();
 	~RoomScene();

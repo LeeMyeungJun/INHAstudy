@@ -892,10 +892,40 @@ void GameScene::RecvOnlinePlayerBoardDraw(HDC hdc)
 {
 	//일단 내꺼의 크기를 알아보자 . 
 	//Rectangle(hdc, 0, 0, 780, 865);
-	//플레이어 2
-	Rectangle(hdc, 780, 0, 1130, 430);
-	//플레이어 3
-	Rectangle(hdc, 780, 430, 1130, 865);
+	////플레이어 2
+	//Rectangle(hdc, 780, 0, 1130, 430);
+	////플레이어 3
+	//Rectangle(hdc, 780, 430, 1130, 865);
+
+
+	HBITMAP h01Bitmap;
+	HBITMAP h02Bitmap;
+
+
+	HBITMAP h03Bitmap;
+	HBITMAP h04Bitmap;
+	
+	int bx, by;
+	hBlocksDc = CreateCompatibleDC(hdc);
+	
+	GetObject(h01Bitmap, sizeof(BITMAP), &g_NetworkManager->userCheck[0].UserBitmap);
+	GetObject(h02Bitmap, sizeof(BITMAP), &g_NetworkManager->userCheck[1].UserBitmap);
+
+	h03Bitmap = (HBITMAP)SelectObject(hBlocksDc, h01Bitmap);
+	h04Bitmap = (HBITMAP)SelectObject(hBlocksDc, h02Bitmap);
+
+
+	bx = bitBackground.bmWidth;
+	by = bitBackground.bmHeight;
+
+	StretchBlt(hdc, 781, 0, 350, 435, hBlocksDc, 0, 0, bx, by, SRCCOPY);   //위
+	StretchBlt(hdc, 781, 435, 350, 435, hBlocksDc, 0, 0, bx, by, SRCCOPY);   //아래
+	
+	DeleteDC(hBlocksDc);
+
+	DeleteObject(h01Bitmap);
+	DeleteObject(h02Bitmap);
+
 }
 
 void GameScene::DrawOnlineGameOverDraw(HDC hdc)
@@ -976,7 +1006,7 @@ void GameScene::SendOnlineScreen(HDC hdc)
 
 	if (send(NetWorkManager::GetInstance()->server, buffer, _msize(buffer), 0) == -1)
 	{
-	
+		exit(-1);
 	}
 
 	delete[] BitTemp;

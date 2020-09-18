@@ -21,8 +21,14 @@ NetWorkManager::NetWorkManager()
 	{
 		MessageBox(NULL, _T("socket faield"), _T("Error"), MB_OK);
 		return;
-
 	}
+
+	userCheck[0].Screen_Position = 0;
+	userCheck[0].userID = 99999;
+
+	userCheck[1].Screen_Position = 1;
+	userCheck[1].userID = 99999;
+
 	
 	Init();
 }
@@ -140,6 +146,19 @@ void NetWorkManager::Read_Fd()
 		recv(server, (char*)pk_Packet.Buffer, pk_Packet.size, 0);
 		pk_Game = *(pkGame*)pk_Packet.Buffer;
 
+		for(int i = 0 ; i < 2; i++)
+		{
+			if(userCheck[i].userID == 99999)
+			{
+				userCheck[i].userID = pk_Game.UserIndex;
+				userCheck[i].Screen_Position = i;
+			}
+
+			if(userCheck[i].userID == pk_Game.UserIndex)
+			{
+				userCheck[i].UserBitmap = pk_Game.Bitmap;
+			}
+		}
 
 		break;
 	}

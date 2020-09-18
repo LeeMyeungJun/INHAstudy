@@ -6,6 +6,14 @@ typedef struct __pkRoom;
 class NetWorkManager
 {
 private:
+	struct RoomUser
+	{
+		int userID;
+		int Screen_Position;
+		BITMAP UserBitmap;
+	};
+	
+private:
 	HWND hWnd;
 	UINT message;
 public:
@@ -19,7 +27,7 @@ public:
 	TCHAR str[256] = { 0 };
 	TCHAR str2[256] = { 0 };
 
-	
+	RoomUser userCheck[2];
 	bool bPlay;
 	int count;
 	int count2;

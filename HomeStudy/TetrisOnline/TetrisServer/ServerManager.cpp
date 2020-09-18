@@ -197,6 +197,7 @@ void ServerManager::ServerRead(WPARAM wParam)
 		buffer[size] = NULL;*/
 		break;	
 	case GAME:
+		{
 		pk_Packet.Buffer = new char[sizeof(pk_Packet.size)];
 		memset(pk_Packet.Buffer, 0, _msize(pk_Packet.Buffer));
 		recv(wParam, (char*)pk_Packet.Buffer, pk_Packet.size, 0);
@@ -229,7 +230,7 @@ void ServerManager::ServerRead(WPARAM wParam)
 
 		for (int i = 0; i < RoomClient[pk_Game.RoomNum]->getUserCount(); i++)
 		{
-		
+
 
 			//이상태로 똑같은정보를 플레이어에게 뿌려주면 된다 . 
 
@@ -243,7 +244,7 @@ void ServerManager::ServerRead(WPARAM wParam)
 		}
 
 		delete[] buffer;
-
+		}
 		break;
 	case ROOMRQ:
 	{
@@ -288,8 +289,6 @@ void ServerManager::ServerRead(WPARAM wParam)
 		}
 	}
 		
-		break;
-	default:
 		break;
 	}
 

@@ -112,3 +112,36 @@ float cVector3::Angele(cVector3 & v1, cVector3 & v2)
 
 	return acos(temp) * 180 / 3.14159265359;
 }
+
+cVector3 cVector3::TransformCoord(cVector3& v, cMatrix& mat)
+{//1·ÎµÐ´Ù (x,y,z)
+	
+	//float x = v.getX(), y = v.getY(), z = v.getZ() , w = 1; ¹Ø¿¡²¬·ç ¹Ù²Þ
+	float temp[4] = { v.getX() ,v.getY(),v.getZ(),1 };
+	float temp2[3] = { 0, };
+	for(int i = 0 ; i <3; i++)
+	{
+		for(int j = 0 ; j <4; j++)
+		{
+			temp2[i]+=mat[i][j] * temp[j];
+		}
+	}
+	cVector3 vecTemp(temp2[0],temp2[1],temp2[2]);
+	return vecTemp;
+}
+
+cVector3 cVector3::TransformNormal(cVector3& v, cMatrix& mat)
+{ //0À¸·ÎµÐ´Ù 
+	float temp[4] = { v.getX() ,v.getY(),v.getZ(),0 };
+	float temp2[3] = { 0, };
+	for (int i = 0; i <3; i++)
+	{
+		for (int j = 0; j <4; j++)
+		{
+			temp2[i] += mat[i][j] * temp[j];
+		}
+	}
+	cVector3 vecTemp(temp2[0], temp2[1], temp2[2]);
+	return vecTemp;
+}
+
