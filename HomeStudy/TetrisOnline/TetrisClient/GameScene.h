@@ -1,6 +1,8 @@
 #pragma once
+#include "Scene.h"
 #define WIDTH 16
 #define HEIGHT 26
+
 
 class GameScene :public Scene
 {
@@ -71,7 +73,7 @@ public:
 	void DrawOnlineBackGround(HDC hdc);
 	void RecvOnlinePlayerBoardDraw(HDC hdc);
 	void DrawOnlineGameOverDraw(HDC hdc);
-	void SendOnlineScreen(HDC hdc);
+	
 
 public:
 	/*Update*/
@@ -96,6 +98,10 @@ public:
 	void MoveCollision();
 	void BtnAnimaition(LPARAM lParam);
 
+
+	/*Online*/
+	void SendOnlineScreen();
+	
 	/*Block Time*/
 	void nonStaticUpdate();
 

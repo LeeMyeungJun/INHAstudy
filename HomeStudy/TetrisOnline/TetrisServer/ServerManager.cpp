@@ -103,7 +103,7 @@ void ServerManager::ServerRead(WPARAM wParam)
 		{
 			send(client, buffer, _msize(buffer), NULL);
 		}
-
+		delete[] pk_Packet.Buffer;
 		delete[] buffer;
 	}
 	break;
@@ -117,12 +117,12 @@ void ServerManager::ServerRead(WPARAM wParam)
 		pk_Packet.Buffer = new char[sizeof(pk_Packet.size)];
 		memset(pk_Packet.Buffer, 0, _msize(pk_Packet.Buffer));
 		recv(wParam, (char*)pk_Packet.Buffer,pk_Packet.size, 0);
-		char *buffer = pk_Packet.Buffer;
+		char *buffer2 = pk_Packet.Buffer;
 
 		LobbyExit(wParam);
 
 		//로비방만들기 패킷
-		pk_Lobby_Request = *(pkLobby_RQ*)(buffer);
+		pk_Lobby_Request = *(pkLobby_RQ*)(buffer2);
 
 
 		RoomManager* CreateRoom = new RoomManager;
@@ -138,7 +138,8 @@ void ServerManager::ServerRead(WPARAM wParam)
 		char chTemp[4] = { 0 };
 		sprintf(chTemp, "%c", pk_Room.RoomNum);
 		pk_Packet.size = strlen(pk_Room.RoomName) + sizeof(unsigned int) + sizeof(int) + sizeof(int)+1;
-		buffer = new char[sizeof(pk_Packet.Protocal) + sizeof(pk_Packet.size) + pk_Packet.size];
+			
+		char *buffer = new char[sizeof(pk_Packet.Protocal) + sizeof(pk_Packet.size) + pk_Packet.size];
 
 		memset(buffer, 0, _msize(buffer));
 		memcpy(buffer, &pk_Packet.Protocal, sizeof(pk_Packet.Protocal));
@@ -187,7 +188,8 @@ void ServerManager::ServerRead(WPARAM wParam)
 
 
 		send(wParam, buffer, _msize(buffer), NULL);
-
+			
+		delete[] pk_Packet.Buffer;
 		delete[] buffer;
 
 	}
@@ -211,6 +213,7 @@ void ServerManager::ServerRead(WPARAM wParam)
 		memcpy(&buffer[sizeof(pk_Packet.Protocal)], &pk_Packet.size, sizeof(pk_Packet.size));
 
 		char temp[4] = { 0 };
+		memset(temp, 0, sizeof(4));
 		sprintf(temp, "%c", pk_Game.RoomNum);
 		memcpy(&buffer[sizeof(pk_Packet.Protocal) + sizeof(pk_Packet.size)], temp, sizeof(unsigned int));
 
@@ -218,17 +221,12 @@ void ServerManager::ServerRead(WPARAM wParam)
 		sprintf(temp, "%c", pk_Game.UserIndex);
 		memcpy(&buffer[sizeof(pk_Packet.Protocal) + sizeof(pk_Packet.size) + sizeof(unsigned int)], temp, sizeof(int));
 
-
-		char * BitTemp = new char[sizeof(BITMAP)];
-
-		memset(BitTemp, 0, _msize(BitTemp));
-		memcpy(BitTemp, &pk_Game.Bitmap, sizeof(BITMAP)); //이부분 
-
-		memcpy(&buffer[sizeof(pk_Packet.Protocal) + sizeof(pk_Packet.size) + sizeof(unsigned int) + sizeof(int)], BitTemp, sizeof(BITMAP));
+	
+		memcpy(&buffer[sizeof(pk_Packet.Protocal) + sizeof(pk_Packet.size) + sizeof(unsigned int) + sizeof(int)], pk_Game.UserGameBoard, sizeof(int)*iWidth*iHeight);
 
 
 
-		for (int i = 0; i < RoomClient[pk_Game.RoomNum]->getUserCount(); i++)
+		for (int i = 0; i < 3; i++)
 		{
 
 
@@ -242,7 +240,8 @@ void ServerManager::ServerRead(WPARAM wParam)
 				send(client, buffer, _msize(buffer), NULL);
 			}
 		}
-
+			
+		delete[] pk_Packet.Buffer;
 		delete[] buffer;
 		}
 		break;
@@ -284,11 +283,12 @@ void ServerManager::ServerRead(WPARAM wParam)
 				send(client, buffer, _msize(buffer), NULL);
 			}
 
-
+		
 			delete[] buffer;
 		}
+		delete[] pk_Packet.Buffer;
 	}
-		
+	
 		break;
 	}
 

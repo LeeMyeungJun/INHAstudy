@@ -1,8 +1,11 @@
 #pragma once
 #include <vector>
+
+#include "GameScene.h"
 using namespace std;
 typedef struct __pkRoom;
-
+#define WIDTH 16
+#define HEIGHT 26
 class NetWorkManager
 {
 private:
@@ -10,7 +13,7 @@ private:
 	{
 		int userID;
 		int Screen_Position;
-		BITMAP UserBitmap;
+		int	UserGameBoard[HEIGHT][WIDTH];
 	};
 	
 private:
@@ -37,7 +40,8 @@ public:
 	vector<wchar_t *> chatLog;
 	vector<SOCKET> userList;
 	vector<__pkRoom*> LobbyRoom;
-
+	
+	
 	
 public:
 	void Init();
