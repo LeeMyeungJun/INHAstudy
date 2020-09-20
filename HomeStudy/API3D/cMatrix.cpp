@@ -375,7 +375,9 @@ cMatrix cMatrix::View(cVector3& vEye, cVector3& vLookAt, cVector3& vUp)
 	*/
 
 	vLookAt = vLookAt - vEye;
+	vLookAt = vLookAt.Normlize();
 	cVector3 rightVector = cVector3::Cross(vUp, vLookAt);
+	rightVector = rightVector.Normlize();
 	vUp = cVector3::Cross(vLookAt, rightVector).Normlize();
 	cMatrix matRet(4);
 	for (int i = 0; i < 4; i++)

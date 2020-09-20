@@ -126,7 +126,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	//시야시점 벡터랑 내가바라보는 방향의 벡터와 내머리위 
 	//뷰에서 > 프로젝션을 > 뷰포트를 프로젝션에 투영  
 	//내눈위치-5 5 0     0 0 0			 머리위0 1 0
-	static cVector3 vecEye(0,1,-10);
+	static cVector3 vecEye(0,0,-10);
 	static cVector3 vecLookAt(0, 0, 0);
 	static cVector3 vecUp(0, 1, 0);
 
