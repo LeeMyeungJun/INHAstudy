@@ -115,18 +115,20 @@ float cVector3::Angele(cVector3 & v1, cVector3 & v2)
 
 cVector3 cVector3::TransformCoord(cVector3& v, cMatrix& mat)
 {//1·ÎµÐ´Ù (x,y,z)
-	
+
 	//float x = v.getX(), y = v.getY(), z = v.getZ() , w = 1; ¹Ø¿¡²¬·ç ¹Ù²Þ
 	float temp[4] = { v.getX() ,v.getY(),v.getZ(),1 };
-	float temp2[3] = { 0, };
-	for(int i = 0 ; i <3; i++)
+	float temp2[4] = { 0, };
+	for(int i = 0 ; i <4; i++)
 	{
 		for(int j = 0 ; j <4; j++)
 		{
-			temp2[i]+=mat[i][j] * temp[j];
+			float temp3 = mat[j][i];
+			temp2[i]+=mat[j][i] * temp[j];
 		}
 	}
-	cVector3 vecTemp(temp2[0],temp2[1],temp2[2]);
+
+	cVector3 vecTemp(temp2[0] / temp2[3],temp2[1] / temp2[3],temp2[2] / temp2[3]);
 	return vecTemp;
 }
 

@@ -263,9 +263,9 @@ cMatrix cMatrix::Translation(float x, float y, float z)
 		matRet[i][i] = 1;
 	}
 
-	matRet[0][3] = x;
-	matRet[1][3] = y;
-	matRet[2][3] = z;
+	matRet[3][0] = x;
+	matRet[3][1] = y;
+	matRet[3][2] = z;
 
 	return matRet;
 }
@@ -373,8 +373,9 @@ cMatrix cMatrix::View(cVector3& vEye, cVector3& vLookAt, cVector3& vUp)
 	* 내가바라볼 지점에서 물건이랑 빼서 외적을해서 right vector가나옴   
 	*/
 
-	cVector3 rightVector = cVector3::Cross(vUp, vLookAt - vEye);
-	
+	vLookAt = vLookAt - vEye;
+	cVector3 rightVector = cVector3::Cross(vUp, vLookAt);
+	vUp = cVector3::Cross(vLookAt, rightVector).Normlize();
 	cMatrix matRet(4);
 	for (int i = 0; i < 4; i++)
 	{
@@ -385,19 +386,19 @@ cMatrix cMatrix::View(cVector3& vEye, cVector3& vLookAt, cVector3& vUp)
 	}
 
 	matRet[0][0] = rightVector.getX();
-	matRet[0][1] = rightVector.getY();
-	matRet[0][2] = rightVector.getZ();
-	matRet[0][3] = cVector3::Dot(rightVector*-1,vEye);
+	matRet[1][0] = rightVector.getY();
+	matRet[2][0] = rightVector.getZ();
+	matRet[3][0] = cVector3::Dot(rightVector*-1,vEye);
 
-	matRet[1][0] = vUp.getX();
+	matRet[0][1] = vUp.getX();
 	matRet[1][1] = vUp.getY();
-	matRet[1][2] = vUp.getZ();
-	matRet[1][3] = cVector3::Dot(vUp*-1, vEye);
+	matRet[2][1] = vUp.getZ();
+	matRet[3][1] = cVector3::Dot(vUp*-1, vEye);
 
-	matRet[2][0] = vLookAt.getX();
-	matRet[2][1] = vLookAt.getY();
+	matRet[0][2] = vLookAt.getX();
+	matRet[1][2] = vLookAt.getY();
 	matRet[2][2] = vLookAt.getZ();
-	matRet[2][3] = cVector3::Dot(vLookAt*-1, vEye);
+	matRet[3][2] = cVector3::Dot(vLookAt*-1, vEye);
 
 	
 	return matRet;
@@ -413,8 +414,8 @@ cMatrix cMatrix::Projection(float fFovY, float fAspect, float fNearZ, float fFar
 	 *		0		0		 fz/(fz-nz)		  1
 	 *		0		0		 -fz*nz / (fz-nz) 0
 	 */
-
-	float sy =  1.0f / tanf(fFovY / 2.0f);
+	
+	float sy =  1.0f / tanf(degreesToRadians(fFovY) / 2.0f);
 	float sx = sy / fAspect;
 	
 	cMatrix matRet(4);
@@ -431,13 +432,13 @@ cMatrix cMatrix::Projection(float fFovY, float fAspect, float fNearZ, float fFar
 	matRet[0][0] = sx;
 	matRet[1][1] = sy;
 	matRet[2][2] = fFarZ / (fFarZ - fNearZ);
-	matRet[2][3] = -fFarZ * fNearZ / (fFarZ - fNearZ);
-	matRet[3][2] = 1;
+	matRet[3][2] = -fFarZ * fNearZ / (fFarZ - fNearZ);
+	matRet[2][3] = 1;
 
 	return matRet;
 }
 
-cMatrix cMatrix::ViewPort(float x, float y, float w, float h, float minz = 1, float maxz = 0)
+cMatrix cMatrix::ViewPort(float x, float y, float w, float h, float minz, float maxz)
 {
 	/*
 	 *	w/2.0f		 0			0		    0
@@ -462,8 +463,8 @@ cMatrix cMatrix::ViewPort(float x, float y, float w, float h, float minz = 1, fl
 	matRet[2][2] = maxz - minz;
 	
 	matRet[3][0] = x+(w/2.0f);
-	matRet[3][3] = y + (w/2.0f);
-	matRet[3][3] = minz;
+	matRet[3][1] = y + (h/2.0f);
+	matRet[3][2] = minz;
 	matRet[3][3] = 1;
 
 	return matRet;
