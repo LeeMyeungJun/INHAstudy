@@ -123,7 +123,7 @@ cVector3 cVector3::TransformCoord(cVector3& v, cMatrix& mat)
 	{
 		for(int j = 0 ; j <4; j++)
 		{
-			float temp3 = mat[j][i];
+
 			temp2[i]+=mat[j][i] * temp[j];
 		}
 	}

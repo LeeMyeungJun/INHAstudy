@@ -126,7 +126,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	//시야시점 벡터랑 내가바라보는 방향의 벡터와 내머리위 
 	//뷰에서 > 프로젝션을 > 뷰포트를 프로젝션에 투영  
 	//내눈위치-5 5 0     0 0 0			 머리위0 1 0
-	static cVector3 vecEye(2,1,-5);
+	static cVector3 vecEye(0,1,-10);
 	static cVector3 vecLookAt(0, 0, 0);
 	static cVector3 vecUp(0, 1, 0);
 
@@ -186,7 +186,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             HDC hdc = BeginPaint(hWnd, &ps);
 			RECT windRect;
 			GetClientRect(hWnd,&windRect);
-
+			cMatrix::Translation(0, 0, 0).Print();
+			cMatrix::View(vecEye, vecLookAt, vecUp).Print();
+			cMatrix::Projection(45, windRect.right / windRect.bottom, 1, 1000).Print();
+			cMatrix::ViewPort(0, 0, windRect.right, windRect.bottom, 0, 1).Print();
 			static cMatrix temp = cMatrix::Translation(0, 0, 0) * cMatrix::View(vecEye, vecLookAt, vecUp) * cMatrix::Projection(45, windRect.right / windRect.bottom, 1, 1000) * cMatrix::ViewPort(0, 0, windRect.right, windRect.bottom, 0, 1);
 			vector<cVector3> coord;
 			for (cVector3 c_vector3 : cube)

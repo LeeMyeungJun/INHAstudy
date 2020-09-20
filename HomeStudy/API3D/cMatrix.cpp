@@ -47,6 +47,7 @@ void cMatrix::Print()
 		}
 		printf("\n");
 	}
+	printf("\n");
 }
 
 void cMatrix::Resize(int nDimension)
