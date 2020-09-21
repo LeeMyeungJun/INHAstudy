@@ -121,22 +121,30 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 //  WM_DESTROY  - post a quit message and return
 //
 //
+
+const int line = 15; // 20 ~ 10 사이로 
+const int lineBold = 3; // 1~ 4 사이로 하는게 이쁨
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	//시야시점 벡터랑 내가바라보는 방향의 벡터와 내머리위 
 	//뷰에서 > 프로젝션을 > 뷰포트를 프로젝션에 투영  
 	//내눈위치-5 5 0     0 0 0			 머리위0 1 0
-	static cVector3 vecEye(0,0,-10);
+	static cVector3 vecEye(0, 10, -20);
 	static cVector3 vecLookAt(0, 0, 0);
 	static cVector3 vecUp(0, 1, 0);
 
 	static std::vector<cVector3> cube;
 	static std::vector<cVector3> polygon;
-	
+	static std::vector<cVector3> row;
+	static std::vector<cVector3> col;
+
+
+
     switch (message)
     {
 	case WM_CREATE:
 		{
+
 		std::vector<int> dir = { -2, 2 };
 		for (size_t i = 0; i < 2; i++)
 		{
@@ -148,6 +156,21 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				}
 			}
 		}
+
+		
+		for (int i = 0; i < line; i++)
+		{	
+			row.emplace_back(-line, 0, -line + (lineBold * i));
+			row.emplace_back(-line- lineBold +(lineBold*line), 0, -line + (lineBold * i));
+		}
+
+		for (int i = 0; i < line; i++)
+		{
+			col.emplace_back(-line + (lineBold * i), 0, -line);
+			col.emplace_back(-line + (lineBold * i), 0, -line - lineBold + (lineBold * line));
+
+		}
+
 
 		polygon.emplace_back(1, 5, 3);
 		polygon.emplace_back(5, 7, 3);
@@ -192,6 +215,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			cMatrix::ViewPort(0, 0, windRect.right, windRect.bottom, 0, 1).Print();
 			static cMatrix temp = cMatrix::Translation(0, 0, 0) * cMatrix::View(vecEye, vecLookAt, vecUp) * cMatrix::Projection(45, windRect.right / windRect.bottom, 1, 1000) * cMatrix::ViewPort(0, 0, windRect.right, windRect.bottom, 0, 1);
 			vector<cVector3> coord;
+			vector<cVector3> RowCoord;
+			vector<cVector3> ColCoord;
+
+
 			for (cVector3 c_vector3 : cube)
 			{
 				coord.push_back(cVector3::TransformCoord(c_vector3, temp));
@@ -205,6 +232,32 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				LineTo(hdc, coord[poly.getZ()].getX(), coord[poly.getZ()].getY());
 				LineTo(hdc, coord[poly.getX()].getX(), coord[poly.getX()].getY());
 			}
+
+
+			for (cVector3 c_vectorRow : row)
+			{
+				RowCoord.push_back(cVector3::TransformCoord(c_vectorRow, temp));
+
+			}
+
+			for (int i = 0; i < line*2; i += 2)
+			{
+				MoveToEx(hdc, RowCoord[i].getX(), RowCoord[i].getY(), NULL);
+				LineTo(hdc, RowCoord[i + 1].getX(), RowCoord[i + 1].getY());
+			}
+
+			for (cVector3 c_vectorRow : col)
+			{
+				ColCoord.push_back(cVector3::TransformCoord(c_vectorRow, temp));
+
+			}
+
+			for (int i = 0; i < line*2; i += 2)
+			{
+				MoveToEx(hdc, ColCoord[i].getX(), ColCoord[i].getY(), NULL);
+				LineTo(hdc, ColCoord[i + 1].getX(), ColCoord[i + 1].getY());
+			}
+
             EndPaint(hWnd, &ps);
         }
         break;
