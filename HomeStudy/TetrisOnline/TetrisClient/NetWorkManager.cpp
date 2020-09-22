@@ -156,7 +156,7 @@ void NetWorkManager::Read_Fd()
 
 			if(userCheck[i].userID == pk_Game.UserIndex)
 			{
-				userCheck[i].UserBitmap = pk_Game.Bitmap;
+				memcpy(userCheck[i].UserGameBoard, pk_Game.UserGameBoard, sizeof(int)*WIDTH*HEIGHT);
 			}
 		}
 

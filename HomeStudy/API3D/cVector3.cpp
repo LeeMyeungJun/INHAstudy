@@ -4,7 +4,7 @@
 #include <iostream>
 const float EPSILON = 0.00001f;
 
-cVector3::cVector3()
+cVector3::cVector3():m_x(0),m_y(0),m_z(0)
 {
 }
 
@@ -112,22 +112,42 @@ float cVector3::Angele(cVector3 & v1, cVector3 & v2)
 
 	return acos(temp) * 180 / 3.14159265359;
 }
+//
+//cVector3 cVector3::TransformCoord(cVector3& v, cMatrix& mat)
+//{//1·ÎµÐ´Ù (x,y,z)
+//
+//	//float x = v.getX(), y = v.getY(), z = v.getZ() , w = 1; ¹Ø¿¡²¬·ç ¹Ù²Þ
+//	float temp[4] = { v.getX() ,v.getY(),v.getZ(),1 };
+//	float temp2[4] = { 0, };
+//	for(int i = 0 ; i <4; i++)
+//	{
+//		for(int j = 0 ; j <4; j++)
+//		{
+//
+//			temp2[i]+=mat[j][i] * temp[j];
+//		}
+//	}
+//
+//	cVector3 vecTemp(temp2[0] / temp2[3],temp2[1] / temp2[3],temp2[2] / temp2[3]);
+//	return vecTemp;
+//}
 
 cVector3 cVector3::TransformCoord(cVector3& v, cMatrix& mat)
-{//1·ÎµÐ´Ù (x,y,z)
-	
-	//float x = v.getX(), y = v.getY(), z = v.getZ() , w = 1; ¹Ø¿¡²¬·ç ¹Ù²Þ
-	float temp[4] = { v.getX() ,v.getY(),v.getZ(),1 };
-	float temp2[3] = { 0, };
-	for(int i = 0 ; i <3; i++)
-	{
-		for(int j = 0 ; j <4; j++)
-		{
-			temp2[i]+=mat[i][j] * temp[j];
-		}
-	}
-	cVector3 vecTemp(temp2[0],temp2[1],temp2[2]);
-	return vecTemp;
+{
+	cVector3 TransformVector3;
+	float w = 1.0f;
+	TransformVector3.SetX(v.getX() * mat[0][0] + v.getY() * mat[1][0] + v.getZ() * mat[2][0] + w * mat[3][0]);
+	TransformVector3.SetY(v.getX() * mat[0][1] + v.getY() * mat[1][1] + v.getZ() * mat[2][1] + w * mat[3][1]);
+	TransformVector3.SetZ(v.getX() * mat[0][2] + v.getY() * mat[1][2] + v.getZ() * mat[2][2] + w * mat[3][2]);
+	w = v.getX() * mat[0][3] + v.getY() * mat[1][3] + v.getZ() * mat[2][3] + w * mat[3][3];
+
+	if (w <= EPSILON && w >= -EPSILON) return TransformVector3;
+
+	TransformVector3.SetX(TransformVector3.getX() / w);
+	TransformVector3.SetY(TransformVector3.getY() / w);
+	TransformVector3.SetZ(TransformVector3.getZ() / w);
+
+	return TransformVector3;
 }
 
 cVector3 cVector3::TransformNormal(cVector3& v, cMatrix& mat)

@@ -29,6 +29,11 @@ public:
 	float getX() const { return m_x; }
 	float getY() const { return m_y; }
 	float getZ() const { return m_z; }
+
+	void SetX(float x) { m_x = x; }
+	void SetY(float y) { m_y = y; }
+	void SetZ(float z) { m_z = z; }
+
 	
 	void setVector(float x, float y, float z) { this->m_x = x; this->m_y = y; this->m_z = z; }
 

@@ -3,8 +3,18 @@
 
 #include "stdafx.h"
 #include "API3D.h"
+#include "cMainGame.h"
 
 #define MAX_LOADSTRING 100
+
+//>>:
+HWND g_hWnd;
+cMainGame *g_pMainGame;
+#define  TIMER_ID 123
+
+//<<:
+
+
 
 // Global Variables:
 HINSTANCE hInst;                                // current instance
@@ -40,6 +50,15 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
     HACCEL hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_API3D));
 
+	//>>:
+	g_pMainGame = new cMainGame;
+	g_pMainGame->Setup();
+	SetTimer(g_hWnd, TIMER_ID, 10, NULL);
+	
+	//<<:
+
+
+	
     MSG msg;
 
     // Main message loop:
@@ -52,6 +71,13 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
         }
     }
 
+	//>>:
+	KillTimer(g_hWnd, TIMER_ID);
+	delete g_pMainGame;
+
+	//<<:
+
+	
     return (int) msg.wParam;
 }
 
@@ -105,6 +131,9 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
       return FALSE;
    }
 
+	//>>:
+	 g_hWnd = hWnd;
+	//<<
    ShowWindow(hWnd, nCmdShow);
    UpdateWindow(hWnd);
 
@@ -121,24 +150,29 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 //  WM_DESTROY  - post a quit message and return
 //
 //
+
+const int line = 15; // 20 ~ 10 사이로 
+const int lineBold = 3; // 1~ 4 사이로 하는게 이쁨
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
-	//시야시점 벡터랑 내가바라보는 방향의 벡터와 내머리위 
-	//뷰에서 > 프로젝션을 > 뷰포트를 프로젝션에 투영  
-	//내눈위치-5 5 0     0 0 0			 머리위0 1 0
-	static cVector3 vecEye(-5,5,0);
-	static cVector3 vecLookAt(0, 0, 0);
-	static cVector3 vecUp(0, 1, 0);
-
-	static std::vector<cVector3> rectangle;
-	static std::vector<cVector3> polygon;
+	if(g_pMainGame)
+	{
+		g_pMainGame->WndProc(hWnd, message, wParam,lParam);
+	}
 
     switch (message)
     {
+	case WM_TIMER:
+	{
+		if (g_pMainGame)
+			g_pMainGame->Update();
+		InvalidateRect(g_hWnd, NULL, false);
+	}
+		break;
 	case WM_CREATE:
-		{
-			
-		}
+	{
+
+	}
 		break;
     case WM_COMMAND:
         {
@@ -161,32 +195,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         {
             PAINTSTRUCT ps;
             HDC hdc = BeginPaint(hWnd, &ps);
-			static cVector3 eye(0, 5, -5);
-			static cVector3 lookAt(0, 0, 0);
-			cVector3 up(0, 1, 0);
-			RECT clientRect = { 0,0,0,0 };
-			GetClientRect(hWnd, &clientRect);
+			if (g_pMainGame)
+				g_pMainGame->Render(hdc);
 
-			static cMatrix world = cMatrix::Translation(0, 0, 0) *
-				cMatrix::View(eye, lookAt, up) *
-				cMatrix::Projection(45, clientRect.right / clientRect.bottom) *
-				cMatrix::ViewPort(0, 0, clientRect.right, clientRect.bottom);
-			std::vector<cVector3> coord;
-
-			for (cVector3 c_vector3 : rectangle)
-			{
-				coord.push_back(cVector3::TransformCoord(c_vector3, world));
-
-				//Rectangle(hdc, coord.back().get_x() -2, coord.back().get_y() -2, coord.back().get_x() +2, coord.back().get_y() + 2);
-			}
-			for (cVector3 poly : polygon)
-			{
-				MoveToEx(hdc, coord[poly.getX()].getX(), coord[poly.getX()].getY(), NULL);
-				LineTo(hdc, coord[poly.getY()].getX(), coord[poly.getY()].getY());
-				LineTo(hdc, coord[poly.getZ()].getX(), coord[poly.getZ()].getY());
-				LineTo(hdc, coord[poly.getX()].getX(), coord[poly.getX()].getY());
-			}
-    		
             EndPaint(hWnd, &ps);
         }
         break;

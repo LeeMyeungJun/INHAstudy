@@ -98,5 +98,5 @@ typedef struct __pkRoom_User {
 typedef struct __pkGame {
 	unsigned int RoomNum;
 	int UserIndex;
-	BITMAP Bitmap;
+	int UserGameBoard[iHeight][iWidth];
 } pkGame;

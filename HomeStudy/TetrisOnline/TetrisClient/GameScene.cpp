@@ -161,6 +161,7 @@ void GameScene::Update(UINT message, WPARAM wParam, LPARAM lParam)
 		break;
 	}
 	GuidBlock();
+	SendOnlineScreen();
 	
 }
 
@@ -194,7 +195,7 @@ void GameScene::UI(HDC hdc)
 			DrawOnlineGameOverDraw(hdc);
 		}
 
-		SendOnlineScreen(hdc);
+	
 		break;
 	case GameCenter::Scene_enum::LOCALGAME_SCENE:
 		DrawBackGround(hdc);
@@ -842,6 +843,23 @@ void GameScene::DrawOnlineBlock(HDC hdc)
 			}
 		}
 
+
+
+
+
+	//0번째 유저꺼
+	for (i = 0; i < HEIGHT; i++)
+		for (j = 0; j < WIDTH; j++)
+		{
+			if (NetWorkManager::GetInstance()->userCheck[0].UserGameBoard[i][j] > 0)   //0번째 유저
+				StretchBlt(hdc, BoardPoint[i][j].x+300, BoardPoint[i][j].y, m_iBlockWidth, m_iBlockWidth, hBlocksDc, 16 * (m_iGameBoard[i][j] - 1), 0, 16, by, SRCCOPY);   //각 블럭의 색
+			else if (NetWorkManager::GetInstance()->userCheck[0].UserGameBoard[i][j] == -2)
+			{
+				//가이드 블럭
+				TransparentBlt(hdc, BoardPoint[i][j].x + 300, BoardPoint[i][j].y, m_iBlockWidth, m_iBlockWidth, hBlocksDc, 16 * 8, 0, 16, by, RGB(255, 0, 255));// bx*4 ,by*4 는 4배한것.
+			}
+		}
+
 	DeleteDC(hBlocksDc);
 	DeleteObject(hBlocks);
 }
@@ -898,33 +916,7 @@ void GameScene::RecvOnlinePlayerBoardDraw(HDC hdc)
 	//Rectangle(hdc, 780, 430, 1130, 865);
 
 
-	HBITMAP h01Bitmap;
-	HBITMAP h02Bitmap;
-
-
-	HBITMAP h03Bitmap;
-	HBITMAP h04Bitmap;
-	
-	int bx, by;
-	hBlocksDc = CreateCompatibleDC(hdc);
-	
-	GetObject(h01Bitmap, sizeof(BITMAP), &g_NetworkManager->userCheck[0].UserBitmap);
-	GetObject(h02Bitmap, sizeof(BITMAP), &g_NetworkManager->userCheck[1].UserBitmap);
-
-	h03Bitmap = (HBITMAP)SelectObject(hBlocksDc, h01Bitmap);
-	h04Bitmap = (HBITMAP)SelectObject(hBlocksDc, h02Bitmap);
-
-
-	bx = bitBackground.bmWidth;
-	by = bitBackground.bmHeight;
-
-	StretchBlt(hdc, 781, 0, 350, 435, hBlocksDc, 0, 0, bx, by, SRCCOPY);   //위
-	StretchBlt(hdc, 781, 435, 350, 435, hBlocksDc, 0, 0, bx, by, SRCCOPY);   //아래
-	
-	DeleteDC(hBlocksDc);
-
-	DeleteObject(h01Bitmap);
-	DeleteObject(h02Bitmap);
+	//
 
 }
 
@@ -949,37 +941,13 @@ void GameScene::DrawOnlineGameOverDraw(HDC hdc)
 	DeleteObject(hBackGround);
 }
 
-void GameScene::SendOnlineScreen(HDC hdc)
+void GameScene::SendOnlineScreen()
 {
 	if (NetWorkManager::GetInstance()->server == INVALID_SOCKET)
 		return;
-	HDC hMemDC = CreateCompatibleDC(hdc);
-	hBackGround = CreateCompatibleBitmap(hdc,780, 865);
-	HBITMAP hOldBitmap = (HBITMAP)SelectObject(hMemDC, hBackGround);
-
-	StretchBlt(hMemDC, 0, 0, 780, 865, hdc, 0, 0,780,865, SRCCOPY);   //각 블럭의 색
-	//GetObject(hBackGround, sizeof(BITMAP), &bitBackground);
-	GetObject(hBackGround, sizeof(BITMAP), &pk_Game.Bitmap);
-
-	//Rectangle(hdc, 0, 0, 780, 865);
-	/* test용 
-	SelectObject(hMemDC, hOldBitmap);
-	DeleteDC(hMemDC);
-	HBITMAP h01Bitmap;
-	int bx, by;
-	hBlocksDc = CreateCompatibleDC(hdc);
-	h01Bitmap = (HBITMAP)SelectObject(hBlocksDc, hBackGround);
-	bx = bitBackground.bmWidth;
-	by = bitBackground.bmHeight;
-
-	StretchBlt(hdc, 781 ,0,350, 435, hBlocksDc, 0,0, bx, by, SRCCOPY);   //위
-	StretchBlt(hdc, 781, 435, 350, 435, hBlocksDc, 0, 0, bx, by, SRCCOPY);   //아래
-	DeleteDC(hBlocksDc);
-	DeleteObject(hBackGround);
-	*/
 
 	pk_Packet.Protocal = GAME;
-	pk_Packet.size = sizeof(unsigned int) + sizeof(BITMAP) + sizeof(int);
+	pk_Packet.size = sizeof(unsigned int) + sizeof(int) + sizeof(int)*WIDTH*HEIGHT ;
 	pk_Game.UserIndex = 0;
 
 	char * buffer = new char[sizeof(pk_Packet.Protocal) + sizeof(pk_Packet.size) + pk_Packet.size];
@@ -994,14 +962,7 @@ void GameScene::SendOnlineScreen(HDC hdc)
 	memset(temp, 0, sizeof(4));
 	sprintf(temp, "%c", pk_Game.UserIndex);
 	memcpy(&buffer[sizeof(pk_Packet.Protocal) + sizeof(pk_Packet.size) + sizeof(unsigned int)], temp, sizeof(int));
-
-
-	char * BitTemp = new char[sizeof(BITMAP)];
-	memset(BitTemp, 0, _msize(BitTemp));
-	memcpy(BitTemp, &pk_Game.Bitmap, sizeof(BITMAP)); //이부분 
-	memcpy(&buffer[sizeof(pk_Packet.Protocal) + sizeof(pk_Packet.size)+ sizeof(unsigned int)+ sizeof(int)], BitTemp, sizeof(BITMAP));
-
-
+	memcpy(&buffer[sizeof(pk_Packet.Protocal) + sizeof(pk_Packet.size)+ sizeof(unsigned int)+ sizeof(int)], m_iGameBoard, sizeof(int)*WIDTH*HEIGHT);
 
 
 	if (send(NetWorkManager::GetInstance()->server, buffer, _msize(buffer), 0) == -1)
@@ -1009,7 +970,7 @@ void GameScene::SendOnlineScreen(HDC hdc)
 		exit(-1);
 	}
 
-	delete[] BitTemp;
+
 	delete[] buffer;
 }
 

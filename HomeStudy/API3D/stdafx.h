@@ -4,10 +4,20 @@
 //
 
 #pragma once
-
+#ifdef UNICODE
+#pragma comment(linker, "/entry:wWinMainCRTStartup /subsystem:console")
+#else
+#pragma comment(linker, "/entry:WinMainCRTStartup /subsystem:console")
+#endif
 #include "targetver.h"
 
+#define M_PI 3.14159782
 #define WIN32_LEAN_AND_MEAN             // Exclude rarely-used stuff from Windows headers
+// Converts degrees to radians.
+#define degreesToRadians(angleDegrees) (angleDegrees * M_PI / 180.0)
+
+// Converts radians to degrees.
+#define radiansToDegrees(angleRadians) (angleRadians * 180.0 / M_PI)
 // Windows Header Files:
 #include <windows.h>
 
@@ -23,6 +33,8 @@
 #include <math.h>
 
 using namespace std;
+
+extern HWND g_hWnd;
 
 
 
