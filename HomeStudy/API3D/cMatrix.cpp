@@ -6,6 +6,7 @@
 #define PI 3.141592
 cMatrix::cMatrix()
 {
+	Resize(4);
 }
 
 
@@ -254,15 +255,8 @@ float cMatrix::Minor(int nRow, int nCol)
 
 cMatrix cMatrix::Translation(float x, float y, float z)
 {
-	cMatrix matRet(4);
-	for(int i = 0 ; i < 4; i++)
-	{
-		for(int j = 0 ; j < 4; j++)
-		{
-			matRet[i][j] = 0;
-		}
-		matRet[i][i] = 1;
-	}
+	cMatrix matRet = cMatrix::Identity(4);
+
 
 	matRet[3][0] = x;
 	matRet[3][1] = y;
@@ -273,15 +267,7 @@ cMatrix cMatrix::Translation(float x, float y, float z)
 
 cMatrix cMatrix::Translation(cVector3& v)
 {
-	cMatrix matRet(4);
-	for (int i = 0; i < 4; i++)
-	{
-		for (int j = 0; j < 4; j++)
-		{
-			matRet[i][j] = 0;
-		}
-		matRet[i][i] = 1;
-	}
+	cMatrix matRet = cMatrix::Identity(4);
 
 
 	matRet[0][3] = v.getX();
@@ -293,37 +279,19 @@ cMatrix cMatrix::Translation(cVector3& v)
 
 cMatrix cMatrix::RotatinX(float Angle)
 {
-	cMatrix matRet(4);
-	for (int i = 0; i < 4; i++)
-	{
-		for (int j = 0; j < 4; j++)
-		{
-			matRet[i][j] = 0;
-		}
-		matRet[i][i] = 1;
-	}
+	cMatrix matRet= cMatrix::Identity(4);
 
-	matRet[1][1] = cos(Angle * (PI / 180));
-	matRet[2][2] = cos(Angle * (PI / 180));
-	matRet[1][2] = sin(Angle * (PI / 180));
-	matRet[2][1] = sin(Angle * (PI / 180)) * -1;
+	matRet[1][1] = cosf(Angle * (PI / 180));
+	matRet[2][2] = cosf(Angle * (PI / 180));
+	matRet[1][2] = sinf(Angle * (PI / 180));
+	matRet[2][1] = sinf(Angle * (PI / 180)) * -1;
 
 	return matRet;
 }
 
 cMatrix cMatrix::RotatinY(float Angle)
 {
-	cMatrix matRet(4);
-	for (int i = 0; i < 4; i++)
-	{
-		for (int j = 0; j < 4; j++)
-		{
-			matRet[i][j] = 0;
-		}
-		matRet[i][i] = 1;
-	}
-
-
+	cMatrix matRet = cMatrix::Identity(4);
 
 	matRet[0][0] = cos(Angle * (PI / 180));
 	matRet[2][2] = cos(Angle * (PI / 180));
@@ -334,17 +302,7 @@ cMatrix cMatrix::RotatinY(float Angle)
 
 cMatrix cMatrix::RotatinZ(float Angle)
 {
-	cMatrix matRet(4);
-	for (int i = 0; i < 4; i++)
-	{
-		for (int j = 0; j < 4; j++)
-		{
-			matRet[i][j] = 0;
-		}
-		matRet[i][i] = 1;
-	}
-
-
+	cMatrix matRet = cMatrix::Identity(4);
 
 	matRet[0][0] = cos(Angle * (PI / 180));
 	matRet[1][1] = cos(Angle * (PI / 180));
@@ -369,40 +327,32 @@ cMatrix cMatrix::View(cVector3& vEye, cVector3& vLookAt, cVector3& vUp)
 	*		r.x						u.x		l.x				0
 	*		r.y						u.y		l.y				0
 	*		r.z						u.z		l.z				0
-	*		-r dot eye		-u dot eye		-l dot eye		0
+	*		-r dot eye		-u dot eye		-l dot eye		1
 	*		
 	* 내가바라볼 지점에서 물건이랑 빼서 외적을해서 right vector가나옴   
 	*/
 
-	vLookAt = vLookAt - vEye;
-	vLookAt = vLookAt.Normlize();
-	cVector3 rightVector = cVector3::Cross(vUp, vLookAt);
-	rightVector = rightVector.Normlize();
-	vUp = cVector3::Cross(vLookAt, rightVector).Normlize();
-	cMatrix matRet(4);
-	for (int i = 0; i < 4; i++)
-	{
-		for (int j = 0; j < 4; j++)
-		{
-			matRet[i][j] = 0;
-		}
-	}
+	cVector3 l = (vLookAt - vEye).Normlize();
+	cVector3 r = cVector3::Cross(vUp, l).Normlize();
+	cVector3 u = cVector3::Cross(l, r).Normlize();
+	cMatrix matRet = cMatrix::Identity(4);
 
-	matRet[0][0] = rightVector.getX();
-	matRet[1][0] = rightVector.getY();
-	matRet[2][0] = rightVector.getZ();
-	matRet[3][0] = cVector3::Dot(rightVector*-1,vEye);
+	matRet[0][0] = r.getX();
+	matRet[1][0] = r.getY();
+	matRet[2][0] = r.getZ();
+	matRet[3][0] = cVector3::Dot(r*-1,vEye);
 
-	matRet[0][1] = vUp.getX();
-	matRet[1][1] = vUp.getY();
-	matRet[2][1] = vUp.getZ();
-	matRet[3][1] = cVector3::Dot(vUp*-1, vEye);
+	matRet[0][1] = u.getX();
+	matRet[1][1] = u.getY();
+	matRet[2][1] = u.getZ();
+	matRet[3][1] = cVector3::Dot(u*-1, vEye);
 
-	matRet[0][2] = vLookAt.getX();
-	matRet[1][2] = vLookAt.getY();
-	matRet[2][2] = vLookAt.getZ();
-	matRet[3][2] = cVector3::Dot(vLookAt*-1, vEye);
+	matRet[0][2] = l.getX();
+	matRet[1][2] = l.getY();
+	matRet[2][2] = l.getZ();
+	matRet[3][2] = cVector3::Dot(l*-1, vEye);
 
+	
 	
 	return matRet;
 }
@@ -421,24 +371,18 @@ cMatrix cMatrix::Projection(float fFovY, float fAspect, float fNearZ, float fFar
 	float sy =  1.0f / tanf(degreesToRadians(fFovY) / 2.0f);
 	float sx = sy / fAspect;
 	
-	cMatrix matRet(4);
-	for (int i = 0; i < 4; i++)
-	{
-		for (int j = 0; j < 4; j++)
-		{
-			matRet[i][j] = 0;
-		}
-	}
-
+	cMatrix matRet=cMatrix::Identity(4);
 
 
 	matRet[0][0] = sx;
 	matRet[1][1] = sy;
 	matRet[2][2] = fFarZ / (fFarZ - fNearZ);
-	matRet[3][2] = -fFarZ * fNearZ / (fFarZ - fNearZ);
 	matRet[2][3] = 1;
+	matRet[3][2] = -fFarZ * fNearZ / (fFarZ - fNearZ);
+	matRet[3][3] = 0;
 
 	return matRet;
+
 }
 
 cMatrix cMatrix::ViewPort(float x, float y, float w, float h, float minz, float maxz)
@@ -452,14 +396,7 @@ cMatrix cMatrix::ViewPort(float x, float y, float w, float h, float minz, float 
 	 *	default -> maxz = 1 ,minz = 0
 	 */
 
-	cMatrix matRet(4);
-	for (int i = 0; i < 4; i++)
-	{
-		for (int j = 0; j < 4; j++)
-		{
-			matRet[i][j] = 0;
-		}
-	}
+	cMatrix matRet =cMatrix::Identity(4) ;
 
 	matRet[0][0] = w / 2.0f;
 	matRet[1][1] = -h / 2.0f;
@@ -468,7 +405,6 @@ cMatrix cMatrix::ViewPort(float x, float y, float w, float h, float minz, float 
 	matRet[3][0] = x+(w/2.0f);
 	matRet[3][1] = y + (h/2.0f);
 	matRet[3][2] = minz;
-	matRet[3][3] = 1;
 
 	return matRet;
 }

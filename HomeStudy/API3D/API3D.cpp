@@ -3,8 +3,18 @@
 
 #include "stdafx.h"
 #include "API3D.h"
+#include "cMainGame.h"
 
 #define MAX_LOADSTRING 100
+
+//>>:
+HWND g_hWnd;
+cMainGame *g_pMainGame;
+#define  TIMER_ID 123
+
+//<<:
+
+
 
 // Global Variables:
 HINSTANCE hInst;                                // current instance
@@ -40,6 +50,15 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
     HACCEL hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_API3D));
 
+	//>>:
+	g_pMainGame = new cMainGame;
+	g_pMainGame->Setup();
+	SetTimer(g_hWnd, TIMER_ID, 10, NULL);
+	
+	//<<:
+
+
+	
     MSG msg;
 
     // Main message loop:
@@ -52,6 +71,13 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
         }
     }
 
+	//>>:
+	KillTimer(g_hWnd, TIMER_ID);
+	delete g_pMainGame;
+
+	//<<:
+
+	
     return (int) msg.wParam;
 }
 
@@ -105,6 +131,9 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
       return FALSE;
    }
 
+	//>>:
+	 g_hWnd = hWnd;
+	//<<
    ShowWindow(hWnd, nCmdShow);
    UpdateWindow(hWnd);
 
@@ -126,65 +155,24 @@ const int line = 15; // 20 ~ 10 사이로
 const int lineBold = 3; // 1~ 4 사이로 하는게 이쁨
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
-	//시야시점 벡터랑 내가바라보는 방향의 벡터와 내머리위 
-	//뷰에서 > 프로젝션을 > 뷰포트를 프로젝션에 투영  
-	//내눈위치-5 5 0     0 0 0			 머리위0 1 0
-	static cVector3 vecEye(0, 10, -20);
-	static cVector3 vecLookAt(0, 0, 0);
-	static cVector3 vecUp(0, 1, 0);
-
-	static std::vector<cVector3> cube;
-	static std::vector<cVector3> polygon;
-	static std::vector<cVector3> row;
-	static std::vector<cVector3> col;
-
-
+	if(g_pMainGame)
+	{
+		g_pMainGame->WndProc(hWnd, message, wParam,lParam);
+	}
 
     switch (message)
     {
+	case WM_TIMER:
+	{
+		if (g_pMainGame)
+			g_pMainGame->Update();
+		InvalidateRect(g_hWnd, NULL, false);
+	}
+		break;
 	case WM_CREATE:
-		{
+	{
 
-		std::vector<int> dir = { -2, 2 };
-		for (size_t i = 0; i < 2; i++)
-		{
-			for (size_t j = 0; j < 2; j++)
-			{
-				for (size_t k = 0; k < 2; k++)
-				{
-					cube.emplace_back(dir[i], dir[j], dir[k]);
-				}
-			}
-		}
-
-		
-		for (int i = 0; i < line; i++)
-		{	
-			row.emplace_back(-line, 0, -line + (lineBold * i));
-			row.emplace_back(-line- lineBold +(lineBold*line), 0, -line + (lineBold * i));
-		}
-
-		for (int i = 0; i < line; i++)
-		{
-			col.emplace_back(-line + (lineBold * i), 0, -line);
-			col.emplace_back(-line + (lineBold * i), 0, -line - lineBold + (lineBold * line));
-
-		}
-
-
-		polygon.emplace_back(1, 5, 3);
-		polygon.emplace_back(5, 7, 3);
-		polygon.emplace_back(1, 0, 2);
-		polygon.emplace_back(1, 3, 2);
-		polygon.emplace_back(0, 4, 2);
-		polygon.emplace_back(4, 6, 2);
-		polygon.emplace_back(4, 5, 7);
-		polygon.emplace_back(4, 6, 7);
-		polygon.emplace_back(1, 4, 5);
-		polygon.emplace_back(1, 4, 0);
-		polygon.emplace_back(3, 7, 6);
-		polygon.emplace_back(3, 2, 6);
-		}
+	}
 		break;
     case WM_COMMAND:
         {
@@ -207,56 +195,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         {
             PAINTSTRUCT ps;
             HDC hdc = BeginPaint(hWnd, &ps);
-			RECT windRect;
-			GetClientRect(hWnd,&windRect);
-			cMatrix::Translation(0, 0, 0).Print();
-			cMatrix::View(vecEye, vecLookAt, vecUp).Print();
-			cMatrix::Projection(45, windRect.right / windRect.bottom, 1, 1000).Print();
-			cMatrix::ViewPort(0, 0, windRect.right, windRect.bottom, 0, 1).Print();
-			static cMatrix temp = cMatrix::Translation(0, 0, 0) * cMatrix::View(vecEye, vecLookAt, vecUp) * cMatrix::Projection(45, windRect.right / windRect.bottom, 1, 1000) * cMatrix::ViewPort(0, 0, windRect.right, windRect.bottom, 0, 1);
-			vector<cVector3> coord;
-			vector<cVector3> RowCoord;
-			vector<cVector3> ColCoord;
-
-
-			for (cVector3 c_vector3 : cube)
-			{
-				coord.push_back(cVector3::TransformCoord(c_vector3, temp));
-
-				//Rectangle(hdc, coord.back().getX() -2, coord.back().getY() -2, coord.back().getX() +2, coord.back().getY() + 2);
-			}
-			for (cVector3 poly : polygon)
-			{
-				MoveToEx(hdc, coord[poly.getX()].getX(), coord[poly.getX()].getY(), NULL);
-				LineTo(hdc, coord[poly.getY()].getX(), coord[poly.getY()].getY());
-				LineTo(hdc, coord[poly.getZ()].getX(), coord[poly.getZ()].getY());
-				LineTo(hdc, coord[poly.getX()].getX(), coord[poly.getX()].getY());
-			}
-
-
-			for (cVector3 c_vectorRow : row)
-			{
-				RowCoord.push_back(cVector3::TransformCoord(c_vectorRow, temp));
-
-			}
-
-			for (int i = 0; i < line*2; i += 2)
-			{
-				MoveToEx(hdc, RowCoord[i].getX(), RowCoord[i].getY(), NULL);
-				LineTo(hdc, RowCoord[i + 1].getX(), RowCoord[i + 1].getY());
-			}
-
-			for (cVector3 c_vectorRow : col)
-			{
-				ColCoord.push_back(cVector3::TransformCoord(c_vectorRow, temp));
-
-			}
-
-			for (int i = 0; i < line*2; i += 2)
-			{
-				MoveToEx(hdc, ColCoord[i].getX(), ColCoord[i].getY(), NULL);
-				LineTo(hdc, ColCoord[i + 1].getX(), ColCoord[i + 1].getY());
-			}
+			if (g_pMainGame)
+				g_pMainGame->Render(hdc);
 
             EndPaint(hWnd, &ps);
         }

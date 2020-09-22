@@ -34,6 +34,8 @@
 
 using namespace std;
 
+extern HWND g_hWnd;
+
 
 
 // TODO: reference additional headers your program requires here

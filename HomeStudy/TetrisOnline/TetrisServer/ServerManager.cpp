@@ -117,19 +117,15 @@ void ServerManager::ServerRead(WPARAM wParam)
 		pk_Packet.Buffer = new char[sizeof(pk_Packet.size)];
 		memset(pk_Packet.Buffer, 0, _msize(pk_Packet.Buffer));
 		recv(wParam, (char*)pk_Packet.Buffer,pk_Packet.size, 0);
-		char *buffer2 = pk_Packet.Buffer;
+		pk_Lobby_Request = *(pkLobby_RQ*)pk_Packet.Buffer;
 
 		LobbyExit(wParam);
-
-		//로비방만들기 패킷
-		pk_Lobby_Request = *(pkLobby_RQ*)(buffer2);
-
 
 		RoomManager* CreateRoom = new RoomManager;
 		RoomClient.push_back(CreateRoom);
 		RoomClient[RoomClient.size() - 1]->AddUser(wParam);
 
-		memcpy(pk_Room.RoomName, pk_Lobby_Request.RoomName, sizeof(char)*strlen(pk_Lobby_Request.RoomName));
+		memcpy(pk_Room.RoomName, pk_Lobby_Request.RoomName, sizeof(char)*strlen(pk_Lobby_Request.RoomName)+1);
 		pk_Room.RoomNum = RoomClient.size() - 1;
 		pk_Room.User_Ready = GAMEFALSE;
 		pk_Room.Exit = GAMEFALSE;
@@ -142,37 +138,39 @@ void ServerManager::ServerRead(WPARAM wParam)
 		char *buffer = new char[sizeof(pk_Packet.Protocal) + sizeof(pk_Packet.size) + pk_Packet.size];
 
 		memset(buffer, 0, _msize(buffer));
-		memcpy(buffer, &pk_Packet.Protocal, sizeof(pk_Packet.Protocal));
-		memcpy(&buffer[sizeof(pk_Packet.Protocal)], &pk_Packet.size, sizeof(pk_Packet.size));
+		memcpy(buffer, &pk_Packet.Protocal, sizeof(pk_Packet.Protocal)); //4바이트 
+		memcpy(&buffer[sizeof(pk_Packet.Protocal)], &pk_Packet.size, sizeof(pk_Packet.size)); //4바이트
 
-		memcpy(&buffer[sizeof(pk_Packet.Protocal) + sizeof(pk_Packet.size)], chTemp, sizeof(unsigned int));
+
+			
+		memcpy(&buffer[sizeof(pk_Packet.Protocal) + sizeof(pk_Packet.size)], chTemp, sizeof(unsigned int)); //4바이트
 
 		memset(chTemp, 0, 4 * sizeof(char));
 		sprintf(chTemp, "%c", pk_Room.User_Ready);
-		memcpy(&buffer[sizeof(pk_Packet.Protocal) + sizeof(pk_Packet.size) + sizeof(unsigned int)], chTemp, sizeof(int));
+		memcpy(&buffer[sizeof(pk_Packet.Protocal) + sizeof(pk_Packet.size) + sizeof(unsigned int)], chTemp, sizeof(int)); //4바이트
 
 		memset(chTemp, 0, 4 * sizeof(char));
 		sprintf(chTemp, "%c", pk_Room.Exit);
-		memcpy(&buffer[sizeof(pk_Packet.Protocal) + sizeof(pk_Packet.size) + sizeof(unsigned int) + sizeof(int)], chTemp, sizeof(int));
+		memcpy(&buffer[sizeof(pk_Packet.Protocal) + sizeof(pk_Packet.size) + sizeof(unsigned int) + sizeof(int)], chTemp, sizeof(int)); //4바이트
 
 
 
-		memcpy(&buffer[sizeof(pk_Packet.Protocal) + sizeof(pk_Packet.size) + sizeof(unsigned int) + sizeof(int) + sizeof(int)], pk_Room.RoomName, strlen(pk_Room.RoomName));
+		memcpy(&buffer[sizeof(pk_Packet.Protocal) + sizeof(pk_Packet.size) + sizeof(unsigned int) + sizeof(int) + sizeof(int)], pk_Room.RoomName+1, strlen(pk_Room.RoomName)+1);
 
 
 
 
-		for (SOCKET client : LobbyClient)
-		{
-			send(client, buffer, _msize(buffer), NULL);
-		}
+		//for (SOCKET client : LobbyClient)
+		//{
+		//	send(client, buffer, _msize(buffer), NULL);
+		//}
 
 
 		//방을만들엇으니 로비에뿌리고 방안에있는유저에게 유저정보들을 뿌려준다 . 
 		delete[] buffer;
+		delete[] pk_Packet.Buffer;
 
-
-		pk_Room_User.UserCount = RoomClient[RoomClient.size() - 1]->getUserCount();
+		/*pk_Room_User.UserCount = RoomClient[RoomClient.size() - 1]->getUserCount();
 		pk_Packet.Protocal = ROOMRQ;
 		pk_Packet.size = sizeof(unsigned int);
 		
@@ -190,7 +188,7 @@ void ServerManager::ServerRead(WPARAM wParam)
 		send(wParam, buffer, _msize(buffer), NULL);
 			
 		delete[] pk_Packet.Buffer;
-		delete[] buffer;
+		delete[] buffer;*/
 
 	}
 		break;
