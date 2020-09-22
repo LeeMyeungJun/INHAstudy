@@ -130,7 +130,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	static cVector3 vecLookAt(0, 0, 0);
 	static cVector3 vecUp(0, 1, 0);
 
-	
+	static std::vector<cVector3> rectangle;
+	static std::vector<cVector3> polygon;
 
     switch (message)
     {
@@ -160,7 +161,31 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         {
             PAINTSTRUCT ps;
             HDC hdc = BeginPaint(hWnd, &ps);
+			static cVector3 eye(0, 5, -5);
+			static cVector3 lookAt(0, 0, 0);
+			cVector3 up(0, 1, 0);
+			RECT clientRect = { 0,0,0,0 };
+			GetClientRect(hWnd, &clientRect);
 
+			static cMatrix world = cMatrix::Translation(0, 0, 0) *
+				cMatrix::View(eye, lookAt, up) *
+				cMatrix::Projection(45, clientRect.right / clientRect.bottom) *
+				cMatrix::ViewPort(0, 0, clientRect.right, clientRect.bottom);
+			std::vector<cVector3> coord;
+
+			for (cVector3 c_vector3 : rectangle)
+			{
+				coord.push_back(cVector3::TransformCoord(c_vector3, world));
+
+				//Rectangle(hdc, coord.back().get_x() -2, coord.back().get_y() -2, coord.back().get_x() +2, coord.back().get_y() + 2);
+			}
+			for (cVector3 poly : polygon)
+			{
+				MoveToEx(hdc, coord[poly.getX()].getX(), coord[poly.getX()].getY(), NULL);
+				LineTo(hdc, coord[poly.getY()].getX(), coord[poly.getY()].getY());
+				LineTo(hdc, coord[poly.getZ()].getX(), coord[poly.getZ()].getY());
+				LineTo(hdc, coord[poly.getX()].getX(), coord[poly.getX()].getY());
+			}
     		
             EndPaint(hWnd, &ps);
         }

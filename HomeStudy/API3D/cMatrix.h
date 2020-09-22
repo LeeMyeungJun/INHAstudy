@@ -66,8 +66,8 @@ public:
 	static cMatrix RotatinZ(float Angle);
 	
 	static cMatrix View(cVector3& vEye,cVector3& vLookAt,cVector3& vUp);
-	static cMatrix Projection(float fFovY, float fAspect, float fNearZ, float fFarZ);
-	static cMatrix ViewPort(float x, float y, float w, float h, float minz, float maxz);
+	static cMatrix Projection(float fFovY, float fAspect, float fNearZ = 1, float fFarZ = 1000);
+	static cMatrix ViewPort(float x, float y, float w, float h, float minz = 1, float maxz = 0);
 
 
 

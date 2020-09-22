@@ -437,7 +437,7 @@ cMatrix cMatrix::Projection(float fFovY, float fAspect, float fNearZ, float fFar
 	return matRet;
 }
 
-cMatrix cMatrix::ViewPort(float x, float y, float w, float h, float minz = 1, float maxz = 0)
+cMatrix cMatrix::ViewPort(float x, float y, float w, float h, float minz, float maxz)
 {
 	/*
 	 *	w/2.0f		 0			0		    0
