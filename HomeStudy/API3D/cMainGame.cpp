@@ -1,7 +1,8 @@
 #include "stdafx.h"
 #include "cMainGame.h"
 
-const int speed = 1;
+const int speed = 2;
+const int angle = 10;
 cMainGame::cMainGame()
 	:m_hBitmap(NULL)
 	, m_vEye(0, 0, -5) //카메라를 살짝 뒤로
@@ -21,6 +22,9 @@ cMainGame::~cMainGame()
 
 void cMainGame::Setup()
 {
+	m_iMouseX = 0, m_iMouseY = 0;
+	m_bMouseClickCheck = false;
+	m_fAngle = 0.0f;
 	HDC hdc = GetDC(g_hWnd);
 	m_MemDC = CreateCompatibleDC(hdc);
 	RECT rc;
@@ -122,7 +126,8 @@ void cMainGame::Setup()
 	m_matProj = cMatrix::Identity(4);
 	m_matViewport = cMatrix::Identity(4);
 
-	m_FrontVec = cVector3(0, 0, 1);
+
+	m_FrontVec = cVector3(0, 0, 1).Normlize();
 
 	m_GridRotation  = cMatrix::Identity(4);
 	m_GridScale		= cMatrix::Identity(4);
@@ -131,8 +136,11 @@ void cMainGame::Setup()
 	m_RectRotation  = cMatrix::Identity(4);
 	m_RectScale		= cMatrix::Identity(4);
 	m_RectTranslate = cMatrix::Identity(4);
-	
-
+	m_fCameraZoom = 20.0f;
+	m_fCameraDistance = -5;
+	m_fCameraAngle = 0;
+	RowCoord.resize(20);
+	ColCoord.resize(20);
 }
 
 void cMainGame::Update()
@@ -141,7 +149,7 @@ void cMainGame::Update()
 	RECT rc;
 	GetClientRect(g_hWnd, &rc);
 	m_vLookAt = cVector3(0.0f, 0.0f, 0.0f);
-	m_vEye = cVector3(0.0f, 10.0f, -20.0f);//뒤로 물러나서 봐야겠지
+	m_vEye = cVector3(m_fCameraAngle, m_fCameraZoom, m_fCameraDistance);//뒤로 물러나서 봐야겠지
 
 	m_matView	  = cMatrix::View(m_vEye, m_vLookAt, m_vUp);
 	m_matProj	  = cMatrix::Projection(45, rc.right / (float)rc.bottom, 1.0f, 1000.0f);
@@ -152,11 +160,13 @@ void cMainGame::Render(HDC hdc)
 {
 	RECT rc;
 	GetClientRect(g_hWnd, &rc);
-	PatBlt(m_MemDC, rc.left, rc.top, rc.right, rc.bottom, WHITENESS); //배경을 하양색으로 싹칠해버리겠다는ㅇ ㅢ미
-	m_matGridWorld =  m_GridScale *m_GridRotation* m_GridTranslate;
-	m_matRectWorld = m_RectScale * m_RectRotation * m_RectTranslate;
+	PatBlt(m_MemDC, rc.left, rc.top, rc.right, rc.bottom, WHITENESS); //배경을 하양색으로 싹칠해버리겠다는 의미
+
+	m_matGridWorld =  m_GridScale * m_GridRotation * m_GridTranslate;
+	m_matRectWorld =  m_RectScale * m_RectRotation * m_RectTranslate;
 
 	cMatrix matGridWVP = m_matGridWorld * m_matView * m_matProj;
+
 	cMatrix matRectWVP = m_matRectWorld * m_matView * m_matProj;
 	
 	
@@ -180,28 +190,30 @@ void cMainGame::Render(HDC hdc)
 		LineTo(m_MemDC, v1.getX(), v1.getY());	
 	}
 	
-
-
 	{
+		
+		int i = 0;
 		for (cVector3 c_vectorRow : row)
 		{
 			c_vectorRow = cVector3::TransformCoord(c_vectorRow, matGridWVP);
-			RowCoord.push_back(c_vectorRow = cVector3::TransformCoord(c_vectorRow, m_matViewport));
-
+			RowCoord[i] = (c_vectorRow = cVector3::TransformCoord(c_vectorRow, m_matViewport));
+			i++;
 		}
+		i = 0;
 		for (cVector3 c_vectorCol : col)
 		{
 			c_vectorCol = cVector3::TransformCoord(c_vectorCol, matGridWVP);
-			ColCoord.push_back(c_vectorCol = cVector3::TransformCoord(c_vectorCol, m_matViewport));
+			ColCoord[i] = (c_vectorCol = cVector3::TransformCoord(c_vectorCol, m_matViewport));
+			i++;
 		}
 
-		for (int i = 0; i < 10 * 2; i += 2)
+		for (i = 0; i < 10 * 2; i += 2)
 		{
 			MoveToEx(m_MemDC, RowCoord[i].getX(), RowCoord[i].getY(), NULL);
 			LineTo(m_MemDC, RowCoord[i + 1].getX(), RowCoord[i + 1].getY());
 		}
 
-		for (int i = 0; i < 10 * 2; i += 2)
+		for (i = 0; i < 10 * 2; i += 2)
 		{
 			MoveToEx(m_MemDC, ColCoord[i].getX(), ColCoord[i].getY(), NULL);
 			LineTo(m_MemDC, ColCoord[i + 1].getX(), ColCoord[i + 1].getY());
@@ -213,48 +225,89 @@ void cMainGame::Render(HDC hdc)
 
 void cMainGame::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
+
+
 	switch (message)
 	{
 	case WM_LBUTTONDOWN:
+		m_bMouseClickCheck = true;
+		m_iMouseX = LOWORD(lParam);
+		m_iMouseY = HIWORD(lParam);
 		break;
 	case WM_LBUTTONUP:
+		m_bMouseClickCheck = false;
 		break;
 	case WM_MOUSEMOVE:
+		if (m_bMouseClickCheck)
+		{
+			if (m_iMouseX > LOWORD(lParam))
+			{
+				m_fCameraAngle++;
+			}
+			else
+			{
+				m_fCameraAngle--;
+			}
+
+			if (m_iMouseY > HIWORD(lParam))
+			{
+				m_fCameraDistance++;
+			}
+			else
+			{
+				m_fCameraDistance--;
+			}
+
+			m_iMouseX = LOWORD(lParam);
+			m_iMouseY = HIWORD(lParam);
+		}
 		break;
 	case WM_MOUSEWHEEL:
-		//GET_WHEEL_DELTA_WPARAM(wParam);
+	{
+		short mouse = GET_WHEEL_DELTA_WPARAM(wParam);
+
+		if (mouse > 0)
+		{
+			m_fCameraZoom++;
+		}
+		else if (mouse < 0)
+		{
+			m_fCameraZoom--;
+		}
+
+
+
+
+
+	}
 		break;
 	case WM_KEYDOWN:
 		{
 		if (GetAsyncKeyState(VK_RIGHT) & 0x8000)
 		{
-			/*m_FrontVec = cVector3::TransformCoord(m_FrontVec, cMatrix::RotatinY(10));
-			for (size_t i = 0; i < m_vecVecrtex.size(); i++)
-			{
-				m_vecVecrtex[i] = cVector3::TransformCoord(m_vecVecrtex[i], cMatrix::RotatinY(10));
-			}*/
-			m_FrontVec = cVector3::TransformNormal(m_FrontVec, cMatrix::RotatinY(10));
-			m_RectRotation = m_RectRotation*cMatrix::RotatinY(10);
-			
+			m_fAngle += angle;
+			m_FrontVec = cVector3::TransformNormal(m_FrontVec, cMatrix::RotatinY(10 * -1)).Normlize(); //좌표가아닌 점곱이아닌 벡터 곱에쓰는함수 .
+			m_RectRotation = cMatrix::RotatinY(m_fAngle); //회전각도이기떄문에 누적값이지만.  
+			//방향과 힘
+
+			m_vLookAt = m_vLookAt + m_FrontVec;
 		}
 		if (GetAsyncKeyState(VK_LEFT) & 0x8000)
 		{
-	/*		m_FrontVec = cVector3::TransformCoord(m_FrontVec, cMatrix::RotatinY(-10));
-			for (size_t i = 0; i < m_vecVecrtex.size(); i++)
-			{
-				m_vecVecrtex[i] = cVector3::TransformCoord(m_vecVecrtex[i], cMatrix::RotatinY(-10));
-			}*/
-			m_FrontVec = cVector3::TransformNormal(m_FrontVec, cMatrix::RotatinY(-10));
-			m_RectRotation = m_RectRotation*cMatrix::RotatinY(-10);
-			
+			//float으로 값을 누적을받아 넘겨줘라 .
+			m_fAngle -= angle;
+			m_FrontVec = cVector3::TransformNormal(m_FrontVec, cMatrix::RotatinY(10)).Normlize(); //누계된 변수값이 들어가면된다 ? 
+			m_RectRotation = cMatrix::RotatinY(m_fAngle);
+
+			m_vLookAt = m_vLookAt + m_FrontVec;
 		}
 		if (GetAsyncKeyState(VK_UP) & 0x8000)
 		{
-			//for (size_t i = 0; i < m_vecVecrtex.size(); i++)
-			//{
-			//	m_vecVecrtex[i] = m_vecVecrtex[i] +m_FrontVec;
-			//}
-			m_RectTranslate = m_RectTranslate * cMatrix::Translation(m_FrontVec);
+			m_PositionVec = m_PositionVec + (m_FrontVec*speed);
+			m_RectTranslate = cMatrix::Translation(m_PositionVec);
+			//Translation 에넣어야할것은 변이값인데 내가 넣은값은 방향벡터, 속도가 곱해져있는값 
+
+			m_vLookAt = m_vLookAt + m_PositionVec;
 		}
 		if (GetAsyncKeyState(VK_DOWN) & 0x8000)
 		{
@@ -262,7 +315,11 @@ void cMainGame::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			//{
 			//	m_vecVecrtex[i] = m_vecVecrtex[i] - m_FrontVec;
 			//}
-			m_RectTranslate = m_RectTranslate * cMatrix::Translation(m_FrontVec);
+
+			m_PositionVec = m_PositionVec - (m_FrontVec*speed);
+			m_RectTranslate = cMatrix::Translation(m_PositionVec);
+
+			m_vLookAt = m_vLookAt + m_PositionVec;
 		}
 	
 

@@ -39,6 +39,7 @@ private:
 	cMatrix			m_RectScale;
 	cMatrix			m_RectTranslate;
 
+	cVector3		m_PositionVec;
 
 	cVector3		m_vEye;
 	cVector3		m_vLookAt;
@@ -46,6 +47,14 @@ private:
 
 	cVector3		m_FrontVec;
 
+	float			m_fAngle;
+
+	float			m_fCameraZoom;
+	float			m_fCameraAngle;
+	float			m_fCameraDistance;
+
+	bool			m_bMouseClickCheck;
+	int m_iMouseX, m_iMouseY;
 
 
 public:

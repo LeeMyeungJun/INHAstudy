@@ -269,10 +269,9 @@ cMatrix cMatrix::Translation(cVector3& v)
 {
 	cMatrix matRet = cMatrix::Identity(4);
 
-
-	matRet[0][3] = v.getX();
-	matRet[1][3] = v.getY();
-	matRet[2][3] = v.getZ();
+	matRet[3][0] = v.getX();
+	matRet[3][1] = v.getY();
+	matRet[3][2] = v.getZ();
 
 	return matRet;
 }
