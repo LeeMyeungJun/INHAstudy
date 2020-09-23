@@ -19,7 +19,7 @@ fabs(lhs- rhs) < EPILON ? true; false;
 2. 각각 벡터크기 구하고 곱해줌 또 그cos각 만큼 곱해줌
 
 법선벡터 : 면에 수직인 벡터 
-
+m_vEye 
 내적해서 0   이면 직각 
 내적 > 0     90보다 작다
 내적 < 0     90보다 크다 
@@ -68,3 +68,11 @@ dot하면 어떻게된다고
 아 이건 내눈에 안보이는거구나 .그거를 만들어봐
 
 백페이스 컬링
+
+View - >otherManager - > Property Manager - > Microsoft.cpp.win32.user 더블클릭 
+UserMacros 
+$(VC_IncludePath);$(WindowsSDK_IncludePath);$(DH);
+DL도해주고 
+프로젝트 프로포티 ->Configuration Properties - > Configuration - > Configuration Manager클릭 -> 64bit 제거 86만사용할거
+sln 프로포티 -> C++ ->General - > SDL checks = No,  Multi-process = YES ->Conde Generation->
+Minimal Rebuild= no 끝

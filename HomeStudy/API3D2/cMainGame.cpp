@@ -63,6 +63,7 @@ void cMainGame::DrawGrid()
 {
 	cMatrix mat = m_matView * m_matProj * m_matViewport;
 
+
 	for(size_t i = 0 ; i < m_vecLineVertex.size();  i+= 2)
 	{
 		cVector3 v1 = m_vecLineVertex[i + 0];
@@ -110,6 +111,20 @@ void cMainGame::Update_Rotation()
 		m_fBoxRotY += 1.5f;
 	}
 }
+
+bool cMainGame::IsBackFace(cVector3& v1, cVector3& v2, cVector3& v3)
+{
+	cVector3 bc1 = v2 - v1;
+	cVector3 bc2 = v3 - v1;
+	cVector3 bc3 = cVector3::Cross(bc1, bc2).Normlize();
+	if (bc3.getZ() > 0)
+	{
+		return true;
+	}
+
+	return false;
+}
+
 
 void cMainGame::Setup()
 {
@@ -256,6 +271,7 @@ void cMainGame::Render(HDC hdc)
 	/*m_matRectWorld =  m_RectScale * m_RectRotation * m_RectTranslate;
 	*/
 	cMatrix matRectWVP = m_matWorld * m_matView * m_matProj;
+
 	
 	
 	for(size_t i = 0 ; i < m_vecIndex.size(); i+=3)
@@ -267,10 +283,17 @@ void cMainGame::Render(HDC hdc)
 		v1 = cVector3::TransformCoord(v1, matRectWVP);
 		v2 = cVector3::TransformCoord(v2, matRectWVP);
 		v3 = cVector3::TransformCoord(v3, matRectWVP);
-
+		//위아래 구지 나눠준이유는 백페이스컬링하려고
+		if (IsBackFace(v1, v2, v3))
+			continue;
+		
 		v1 = cVector3::TransformCoord(v1, m_matViewport);
 		v2 = cVector3::TransformCoord(v2, m_matViewport);
 		v3 = cVector3::TransformCoord(v3, m_matViewport);
+
+	
+		
+		
 
 		MoveToEx(m_MemDC, v1.getX(), v1.getY(), NULL);
 		LineTo(m_MemDC, v2.getX(), v2.getY());

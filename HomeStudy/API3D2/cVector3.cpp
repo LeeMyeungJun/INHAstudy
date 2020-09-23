@@ -73,6 +73,12 @@ cVector3 cVector3::operator/(float f) const
 	return vecTemp;
 }
 
+void cVector3::print()
+{
+	printf("(%f, %f, %f)\n",m_x,m_y,m_z);
+	
+
+}
 
 
 float cVector3::Dot(cVector3 & v1, cVector3 & v2)

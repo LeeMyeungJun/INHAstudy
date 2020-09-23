@@ -12,6 +12,7 @@ extern pkRoom pk_Room;
 extern pkRoom_RQ pk_Room_Request;
 extern pkRoom_User pk_Room_User;
 extern pkGame pk_Game;
+#define IDNULL 99999
 NetWorkManager::NetWorkManager()
 {
 	WSAStartup(MAKEWORD(2, 2), &wsaData);
@@ -24,10 +25,10 @@ NetWorkManager::NetWorkManager()
 	}
 
 	userCheck[0].Screen_Position = 0;
-	userCheck[0].userID = 99999;
+	userCheck[0].userID = IDNULL;
 
 	userCheck[1].Screen_Position = 1;
-	userCheck[1].userID = 99999;
+	userCheck[1].userID = IDNULL;
 
 	
 	Init();
@@ -89,6 +90,13 @@ void NetWorkManager::Read_Fd()
 		memset(newMsg, 0, _msize(newMsg));
 		MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED, pk_Lobby_Message.Buffer, strlen(pk_Lobby_Message.Buffer), newMsg, _msize(newMsg));
 		chatLog.push_back(newMsg);
+
+		if (pk_Packet.Buffer != NULL)
+			delete[] pk_Packet.Buffer;
+
+		if (buffer != NULL)
+			delete[] buffer;
+			
 		break;
 	}
 	case USERLIST:
@@ -106,6 +114,8 @@ void NetWorkManager::Read_Fd()
 
 		userList = temp;
 
+		if (pk_Packet.Buffer != NULL)
+			delete[] pk_Packet.Buffer;
 
 		break;
 	}
@@ -121,7 +131,9 @@ void NetWorkManager::Read_Fd()
 		memset(pk_Room.RoomName, 0, sizeof(char) * 40);
 		pk_Room = *(pkRoom*)pk_Packet.Buffer;
 		LobbyRoom.push_back(&pk_Room);
-		
+
+		if (pk_Packet.Buffer != NULL)
+			delete[] pk_Packet.Buffer;
 		break;
 	}
 	case ROOMRQ:
@@ -137,18 +149,21 @@ void NetWorkManager::Read_Fd()
 		}
 
 
+		if (pk_Packet.Buffer != NULL)
+			delete[] pk_Packet.Buffer;
+
 		break;
 	}
 	case GAME:
 	{
-		pk_Packet.Buffer = new char[sizeof(pk_Packet.size)];
+		pk_Packet.Buffer = new char[pk_Packet.size];
 		memset(pk_Packet.Buffer, 0, _msize(pk_Packet.Buffer));
 		recv(server, (char*)pk_Packet.Buffer, pk_Packet.size, 0);
 		pk_Game = *(pkGame*)pk_Packet.Buffer;
-
+	
 		for(int i = 0 ; i < 2; i++)
 		{
-			if(userCheck[i].userID == 99999)
+			if(userCheck[i].userID == IDNULL)
 			{
 				userCheck[i].userID = pk_Game.UserIndex;
 				userCheck[i].Screen_Position = i;
@@ -160,6 +175,10 @@ void NetWorkManager::Read_Fd()
 			}
 		}
 
+
+		if (pk_Packet.Buffer != NULL)
+			delete[] pk_Packet.Buffer;
+			
 		break;
 	}
 

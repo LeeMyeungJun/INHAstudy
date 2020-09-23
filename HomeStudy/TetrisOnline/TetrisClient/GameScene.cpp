@@ -947,7 +947,7 @@ void GameScene::SendOnlineScreen()
 		return;
 
 	pk_Packet.Protocal = GAME;
-	pk_Packet.size = sizeof(unsigned int) + sizeof(int) + sizeof(int)*WIDTH*HEIGHT ;
+	pk_Packet.size = sizeof(unsigned int) + sizeof(int) + sizeof(int)*WIDTH*HEIGHT+1 ;
 	pk_Game.UserIndex = 0;
 
 	char * buffer = new char[sizeof(pk_Packet.Protocal) + sizeof(pk_Packet.size) + pk_Packet.size];

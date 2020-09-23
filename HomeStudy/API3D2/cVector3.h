@@ -21,6 +21,7 @@ public:
 	cVector3 operator-(cVector3& vec) const;
 	cVector3 operator*(float f) const;
 	cVector3 operator/(float f) const;
+	void print();
 
 
 	static float Dot(cVector3& v1, cVector3& v2);

@@ -20,8 +20,6 @@ private:
 	cMatrix			m_matView;
 	cMatrix			m_matProj;
 	cMatrix			m_matViewport;
-
-
 	cMatrix			m_matWorld;
 
 	cMatrix			m_Rotation;
@@ -57,10 +55,11 @@ private:
 	void DrawGrid();
 	void Update_Move();
 	void Update_Rotation();
+	bool IsBackFace(cVector3& v1, cVector3& v2, cVector3& v3);
 	// << :
 	
 
-
+	//
 
 
 	

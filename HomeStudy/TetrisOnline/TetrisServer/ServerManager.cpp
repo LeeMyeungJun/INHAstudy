@@ -203,7 +203,7 @@ void ServerManager::ServerRead(WPARAM wParam)
 		break;	
 	case GAME:
 		{
-		pk_Packet.Buffer = new char[sizeof(pk_Packet.size)];
+		pk_Packet.Buffer = new char[pk_Packet.size];
 		memset(pk_Packet.Buffer, 0, _msize(pk_Packet.Buffer));
 		recv(wParam, (char*)pk_Packet.Buffer, pk_Packet.size, 0);
 		pk_Game = *(pkGame*)pk_Packet.Buffer;
@@ -229,20 +229,17 @@ void ServerManager::ServerRead(WPARAM wParam)
 
 
 
-		for (int i = 0; i < 3; i++)
-		{
-
-
+	
 			//이상태로 똑같은정보를 플레이어에게 뿌려주면 된다 . 
+		
+		for (SOCKET client : RoomClient[pk_Game.RoomNum]->m_RoomUseer)
+		{
+			if (client == wParam)
+				continue;
 
-			for (SOCKET client : RoomClient[pk_Game.RoomNum]->m_RoomUseer)
-			{
-				if (RoomClient[pk_Game.RoomNum]->m_RoomUseer[i] == wParam)
-					continue;
-
-				send(client, buffer, _msize(buffer), NULL);
-			}
+			send(client, buffer, _msize(buffer), NULL);
 		}
+		
 			
 		if (pk_Packet.Buffer != NULL)
 			delete[] pk_Packet.Buffer;

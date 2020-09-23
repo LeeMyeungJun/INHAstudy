@@ -33,7 +33,8 @@ private:
 
 
 	vector<SOCKET> LobbyClient;
-	//vector<vector<SOCKET>> RoomClient; //RoomClient[방번호][유저]
+	//vector<vector<SOCKET>>
+	; //RoomClient[방번호][유저]
 	vector<RoomManager*> RoomClient;
 
 };
