@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "cMainGame.h"
 
-const int speed = 2;
+const float speed = 0.1f;
 const int angle = 10;
 cMainGame::cMainGame()
 	:m_hBitmap(NULL)
@@ -249,14 +249,14 @@ void cMainGame::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				m_fCameraAngle--;
 			}
 
-			if (m_iMouseY > HIWORD(lParam))
+	/*		if (m_iMouseY > HIWORD(lParam))
 			{
 				m_fCameraDistance++;
 			}
 			else
 			{
 				m_fCameraDistance--;
-			}
+			}*/
 
 			m_iMouseX = LOWORD(lParam);
 			m_iMouseY = HIWORD(lParam);
@@ -274,10 +274,6 @@ void cMainGame::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		{
 			m_fCameraZoom--;
 		}
-
-
-
-
 
 	}
 		break;

@@ -103,8 +103,11 @@ void ServerManager::ServerRead(WPARAM wParam)
 		{
 			send(client, buffer, _msize(buffer), NULL);
 		}
-		delete[] pk_Packet.Buffer;
-		delete[] buffer;
+		if (pk_Packet.Buffer != NULL)
+			delete[] pk_Packet.Buffer;
+
+		if (buffer != NULL)
+			delete[] buffer;
 	}
 	break;
 	case USERLIST:
@@ -114,7 +117,7 @@ void ServerManager::ServerRead(WPARAM wParam)
 	break;
 	case LOBBYRQ:
 	{
-		pk_Packet.Buffer = new char[sizeof(pk_Packet.size)];
+		pk_Packet.Buffer = new char[pk_Packet.size]; //11 Byte
 		memset(pk_Packet.Buffer, 0, _msize(pk_Packet.Buffer));
 		recv(wParam, (char*)pk_Packet.Buffer,pk_Packet.size, 0);
 		pk_Lobby_Request = *(pkLobby_RQ*)pk_Packet.Buffer;
@@ -133,7 +136,7 @@ void ServerManager::ServerRead(WPARAM wParam)
 		pk_Packet.Protocal = ROOMCREATE;
 		char chTemp[4] = { 0 };
 		sprintf(chTemp, "%c", pk_Room.RoomNum);
-		pk_Packet.size = strlen(pk_Room.RoomName) + sizeof(unsigned int) + sizeof(int) + sizeof(int)+1;
+		pk_Packet.size = strlen(pk_Room.RoomName) + sizeof(unsigned int) + sizeof(int) + sizeof(int) +1;
 			
 		char *buffer = new char[sizeof(pk_Packet.Protocal) + sizeof(pk_Packet.size) + pk_Packet.size];
 
@@ -155,22 +158,22 @@ void ServerManager::ServerRead(WPARAM wParam)
 
 
 
-		memcpy(&buffer[sizeof(pk_Packet.Protocal) + sizeof(pk_Packet.size) + sizeof(unsigned int) + sizeof(int) + sizeof(int)], pk_Room.RoomName+1, strlen(pk_Room.RoomName)+1);
+		memcpy(&buffer[sizeof(pk_Packet.Protocal) + sizeof(pk_Packet.size) + sizeof(unsigned int) + sizeof(int) + sizeof(int)], pk_Room.RoomName, strlen(pk_Room.RoomName));
 
 
 
 
-		//for (SOCKET client : LobbyClient)
-		//{
-		//	send(client, buffer, _msize(buffer), NULL);
-		//}
+		for (SOCKET client : LobbyClient)
+		{
+			send(client, buffer, _msize(buffer), NULL);
+		}
 
 
 		//방을만들엇으니 로비에뿌리고 방안에있는유저에게 유저정보들을 뿌려준다 . 
-		delete[] buffer;
-		delete[] pk_Packet.Buffer;
+		if (buffer != NULL)
+			delete[] buffer;
 
-		/*pk_Room_User.UserCount = RoomClient[RoomClient.size() - 1]->getUserCount();
+		pk_Room_User.UserCount = RoomClient[RoomClient.size() - 1]->getUserCount();
 		pk_Packet.Protocal = ROOMRQ;
 		pk_Packet.size = sizeof(unsigned int);
 		
@@ -186,9 +189,11 @@ void ServerManager::ServerRead(WPARAM wParam)
 
 
 		send(wParam, buffer, _msize(buffer), NULL);
-			
-		delete[] pk_Packet.Buffer;
-		delete[] buffer;*/
+		if(pk_Packet.Buffer != NULL)
+			delete[] pk_Packet.Buffer;
+		
+		if(buffer != NULL)
+			delete[] buffer;
 
 	}
 		break;
@@ -239,8 +244,11 @@ void ServerManager::ServerRead(WPARAM wParam)
 			}
 		}
 			
-		delete[] pk_Packet.Buffer;
-		delete[] buffer;
+		if (pk_Packet.Buffer != NULL)
+			delete[] pk_Packet.Buffer;
+
+		if (buffer != NULL)
+			delete[] buffer;
 		}
 		break;
 	case ROOMRQ:
@@ -282,9 +290,13 @@ void ServerManager::ServerRead(WPARAM wParam)
 			}
 
 		
-			delete[] buffer;
+			if (buffer != NULL)
+				delete[] buffer;
 		}
-		delete[] pk_Packet.Buffer;
+		if (pk_Packet.Buffer != NULL)
+			delete[] pk_Packet.Buffer;
+
+		
 	}
 	
 		break;
