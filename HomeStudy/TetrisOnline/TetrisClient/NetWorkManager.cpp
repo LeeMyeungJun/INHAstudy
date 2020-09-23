@@ -30,6 +30,7 @@ NetWorkManager::NetWorkManager()
 	userCheck[1].Screen_Position = 1;
 	userCheck[1].userID = IDNULL;
 
+
 	
 	Init();
 }
@@ -167,6 +168,8 @@ void NetWorkManager::Read_Fd()
 			{
 				userCheck[i].userID = pk_Game.UserIndex;
 				userCheck[i].Screen_Position = i;
+				memcpy(userCheck[i].UserGameBoard, pk_Game.UserGameBoard, sizeof(int)*WIDTH*HEIGHT);
+				break;
 			}
 
 			if(userCheck[i].userID == pk_Game.UserIndex)

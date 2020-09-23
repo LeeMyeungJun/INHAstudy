@@ -35,6 +35,11 @@ public:
 
 
 	POINT BoardPoint[HEIGHT-1][WIDTH-1];
+
+
+
+
+
 	POINT NextBlockPosition[4][4];
 	POINT GuideBlockPosition[4][4];
 
@@ -69,8 +74,8 @@ public:
 public:
 	//OnlineRender
 	void DrawOnlineBlock(HDC hdc);
-	void DrawOnlineGameBoard(HDC hdc);
 	void DrawOnlineBackGround(HDC hdc);
+	void DrawOnlineGameBoard(HDC hdc);
 	void RecvOnlinePlayerBoardDraw(HDC hdc);
 	void DrawOnlineGameOverDraw(HDC hdc);
 	

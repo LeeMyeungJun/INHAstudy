@@ -78,13 +78,6 @@ void LoginScene::ClickEvent(LPARAM lParam)
 		{
 			g_theSoundManager->PlaySFX("Select");
 			GameCenter::GetInstance()->SceneChange(GameCenter::Scene_enum::LOBBY_SCENE);
-		}//Å×½ºÆ® 
-		else if (Clickx >= 0 &&Clickx <= 100
-			&& Clicky >= 0 && Clicky <= 50)
-		{
-			g_theSoundManager->PlaySFX("Select");
-			GameCenter::GetInstance()->SceneChange(GameCenter::Scene_enum::GAME_SCENE);
-
 		}
 
 

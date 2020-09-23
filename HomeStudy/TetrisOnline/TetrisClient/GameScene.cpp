@@ -187,8 +187,9 @@ void GameScene::UI(HDC hdc)
 	{
 	case GameCenter::Scene_enum::GAME_SCENE:
 		DrawOnlineBackGround(hdc);
-		RecvOnlinePlayerBoardDraw(hdc);
+		
 		DrawOnlineGameBoard(hdc);
+		RecvOnlinePlayerBoardDraw(hdc);
 		DrawOnlineBlock(hdc);
 		if (!m_GameStart)
 		{
@@ -844,22 +845,6 @@ void GameScene::DrawOnlineBlock(HDC hdc)
 		}
 
 
-
-
-
-	//0번째 유저꺼
-	for (i = 0; i < HEIGHT; i++)
-		for (j = 0; j < WIDTH; j++)
-		{
-			if (NetWorkManager::GetInstance()->userCheck[0].UserGameBoard[i][j] > 0)   //0번째 유저
-				StretchBlt(hdc, BoardPoint[i][j].x+300, BoardPoint[i][j].y, m_iBlockWidth, m_iBlockWidth, hBlocksDc, 16 * (m_iGameBoard[i][j] - 1), 0, 16, by, SRCCOPY);   //각 블럭의 색
-			else if (NetWorkManager::GetInstance()->userCheck[0].UserGameBoard[i][j] == -2)
-			{
-				//가이드 블럭
-				TransparentBlt(hdc, BoardPoint[i][j].x + 300, BoardPoint[i][j].y, m_iBlockWidth, m_iBlockWidth, hBlocksDc, 16 * 8, 0, 16, by, RGB(255, 0, 255));// bx*4 ,by*4 는 4배한것.
-			}
-		}
-
 	DeleteDC(hBlocksDc);
 	DeleteObject(hBlocks);
 }
@@ -878,7 +863,7 @@ void GameScene::DrawOnlineGameBoard(HDC hdc)
 	bx = bitBackground.bmWidth;
 	by = bitBackground.bmHeight;
 
-	TransparentBlt(hdc, 16, 0, bx + 574, by + 644, hBlocksDc, 0, 0, bx, by, RGB(255, 0, 255));   //각 블럭의 색
+	TransparentBlt(hdc, 18, 0, bx + 835, by + 644, hBlocksDc, 0, 0, bx, by, RGB(255, 0, 255));   //각 블럭의 색
 
 	DeleteDC(hBlocksDc);
 
@@ -890,7 +875,7 @@ void GameScene::DrawOnlineBackGround(HDC hdc)
 	HBITMAP h01Bitmap;
 	int bx, by;
 
-	hBackGround = (HBITMAP)LoadImage(NULL, TEXT("IMG/OnlineBackGround.bmp"), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
+	hBackGround = (HBITMAP)LoadImage(NULL, TEXT("IMG/login.bmp"), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
 	GetObject(hBackGround, sizeof(BITMAP), &bitBackground);
 
 	hBlocksDc = CreateCompatibleDC(hdc);
@@ -914,6 +899,50 @@ void GameScene::RecvOnlinePlayerBoardDraw(HDC hdc)
 	//Rectangle(hdc, 780, 0, 1130, 430);
 	////플레이어 3
 	//Rectangle(hdc, 780, 430, 1130, 865);
+
+
+	HBITMAP hBitmap;
+	hBlocks = (HBITMAP)LoadImage(NULL, TEXT("IMG/Block.bmp"), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
+	GetObject(hBlocks, sizeof(BITMAP), &bitBlcok);
+
+	hBlocksDc = CreateCompatibleDC(hdc);
+	hBitmap = (HBITMAP)SelectObject(hBlocksDc, hBlocks);
+
+	int bx, by;
+	bx = bitBlcok.bmWidth;
+	by = bitBlcok.bmHeight;
+
+	int i, j;
+
+	//NetWorkManager::GetInstance()->testCheck[0].UserGameBoard[0][1] = 4;
+	//0번째 유저꺼
+	for (i = 0; i < HEIGHT; i++)
+		for (j = 0; j < WIDTH; j++)
+		{
+			if (NetWorkManager::GetInstance()->userCheck[0].UserGameBoard[i][j] > 0)   //0번째 유저
+				StretchBlt(hdc, 811 + j*(m_iBlockWidth / 2), 24 + i*(m_iBlockWidth / 2), m_iBlockWidth / 2, m_iBlockWidth / 2, hBlocksDc, 16 * (NetWorkManager::GetInstance()->userCheck[0].UserGameBoard[i][j] - 1), 0, 16, by, SRCCOPY);   //각 블럭의 색
+			else if (NetWorkManager::GetInstance()->userCheck[0].UserGameBoard[i][j] == -2)
+			{
+				//가이드 블럭
+				TransparentBlt(hdc, 811 + j*(m_iBlockWidth / 2), 24 + i*(m_iBlockWidth / 2), m_iBlockWidth / 2, m_iBlockWidth / 2, hBlocksDc, 16 * 8, 0, 16, by, RGB(255, 0, 255));// bx*4 ,by*4 는 4배한것.
+			}
+		}
+
+	////1번째 유저
+	for (i = 0; i < HEIGHT; i++)
+		for (j = 0; j < WIDTH; j++)
+		{
+			if (NetWorkManager::GetInstance()->userCheck[1].UserGameBoard[i][j] > 0)   //0번째 유저
+				StretchBlt(hdc, 811 + j*(m_iBlockWidth / 2), 467 + i*(m_iBlockWidth / 2), m_iBlockWidth / 2, m_iBlockWidth / 2, hBlocksDc, 16 * (NetWorkManager::GetInstance()->userCheck[1].UserGameBoard[i][j] - 1), 0, 16, by, SRCCOPY);   //각 블럭의 색
+			else if (NetWorkManager::GetInstance()->userCheck[1].UserGameBoard[i][j] == -2)
+			{
+				//가이드 블럭
+				TransparentBlt(hdc, 811 + j*(m_iBlockWidth / 2), 467 + i*(m_iBlockWidth / 2), m_iBlockWidth / 2, m_iBlockWidth / 2, hBlocksDc, 16 * 8, 0, 16, by, RGB(255, 0, 255));// bx*4 ,by*4 는 4배한것.
+			}
+		}
+
+	DeleteDC(hBlocksDc);
+	DeleteObject(hBlocks);
 
 
 	//
