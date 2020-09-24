@@ -69,6 +69,7 @@ dot하면 어떻게된다고
 
 백페이스 컬링
 
+//다이렉트X 설정
 View - >otherManager - > Property Manager - > Microsoft.cpp.win32.user 더블클릭 
 UserMacros 
 $(VC_IncludePath);$(WindowsSDK_IncludePath);$(DH);
@@ -76,3 +77,8 @@ DL도해주고
 프로젝트 프로포티 ->Configuration Properties - > Configuration - > Configuration Manager클릭 -> 64bit 제거 86만사용할거
 sln 프로포티 -> C++ ->General - > SDL checks = No,  Multi-process = YES ->Conde Generation->
 Minimal Rebuild= no 끝
+
+
+
+//장치관련을 cMainGame이아닌 장치관리 클래스를만들자 . CDeviceManager
+

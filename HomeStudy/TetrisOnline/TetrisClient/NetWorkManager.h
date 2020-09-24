@@ -14,6 +14,7 @@ private:
 		int userID;
 		int Screen_Position;
 		int	UserGameBoard[HEIGHT][WIDTH];
+		bool bDead;
 	};
 	
 private:

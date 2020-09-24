@@ -77,7 +77,9 @@ public:
 	void DrawOnlineBackGround(HDC hdc);
 	void DrawOnlineGameBoard(HDC hdc);
 	void RecvOnlinePlayerBoardDraw(HDC hdc);
-	void DrawOnlineGameOverDraw(HDC hdc);
+	void DrawOnlineMyGameOverDraw(HDC hdc);
+	void DrawOnlineUserGameOverDraw(HDC hdc);
+
 	
 
 public:

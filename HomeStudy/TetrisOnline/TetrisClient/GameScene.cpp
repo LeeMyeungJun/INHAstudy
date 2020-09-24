@@ -5,7 +5,7 @@ extern SoundManager* g_theSoundManager;
 extern NetWorkManager *g_NetworkManager;
 extern Packet pk_Packet;
 extern pkGame pk_Game;
-
+extern pkGameLose pk_GameLose;
 void CALLBACK BlockUpdate(HWND, UINT, UINT_PTR, DWORD);
 
 const int speed = 15;
@@ -186,16 +186,22 @@ void GameScene::UI(HDC hdc)
 	switch (GameCenter::GetInstance()->getScene())
 	{
 	case GameCenter::Scene_enum::GAME_SCENE:
+		{
 		DrawOnlineBackGround(hdc);
-		
+
 		DrawOnlineGameBoard(hdc);
 		RecvOnlinePlayerBoardDraw(hdc);
 		DrawOnlineBlock(hdc);
 		if (!m_GameStart)
 		{
-			DrawOnlineGameOverDraw(hdc);
+			DrawOnlineMyGameOverDraw(hdc);
 		}
+		DrawOnlineUserGameOverDraw(hdc);
 
+			
+		}
+		
+		
 	
 		break;
 	case GameCenter::Scene_enum::LOCALGAME_SCENE:
@@ -251,8 +257,6 @@ void GameScene::ClickEvent(LPARAM lParam)
 void GameScene::PrintScore(HDC hdc)
 {
 	HFONT oldFont = (HFONT)SelectObject(hdc, GameCenter::GetInstance()->getUI()->GameFont);
-
-	//TextOut(hdc, 100, 100,L"SCORE", strlen("SCORE"));
 
 	TCHAR tcScore[30];
 	_ltow(GameCenter::GetInstance()->getLocalScore(), tcScore, 10);
@@ -494,14 +498,45 @@ void GameScene::CreateRandomBlocks()
 	{
 		m_GameStart = false;
 
-		//패배시 예시 1
-		for (int i = 0; i < HEIGHT; i++)
+		if (NetWorkManager::GetInstance()->server == INVALID_SOCKET)
+			return;
+
+		pk_Packet.Protocal = GAMELOSE;
+		pk_Packet.size = sizeof(unsigned int) + sizeof(int);
+		pk_GameLose.UserIndex = pk_Game.UserIndex;
+		pk_GameLose.RoomNum = pk_Game.RoomNum;
+
+		char * buffer = new char[sizeof(pk_Packet.Protocal) + sizeof(pk_Packet.size) + pk_Packet.size];
+		memset(buffer, 0, _msize(buffer));
+		memcpy(buffer, &pk_Packet.Protocal, sizeof(pk_Packet.Protocal));
+		memcpy(&buffer[sizeof(pk_Packet.Protocal)], &pk_Packet.size, sizeof(pk_Packet.size));
+
+		char temp[4] = { 0 };
+		sprintf(temp, "%c", pk_GameLose.RoomNum);
+		memcpy(&buffer[sizeof(pk_Packet.Protocal) + sizeof(pk_Packet.size)], temp, sizeof(unsigned int));
+
+		memset(temp, 0, sizeof(4));
+		sprintf(temp, "%c", pk_GameLose.UserIndex);
+		memcpy(&buffer[sizeof(pk_Packet.Protocal) + sizeof(pk_Packet.size) + sizeof(unsigned int)], temp, sizeof(int));
+
+
+
+		if (send(NetWorkManager::GetInstance()->server, buffer, _msize(buffer), 0) == -1)
 		{
-			for (int j = 0; j < WIDTH; j++)
-			{
-				m_iGameBoard[i][j] = (j == 0 || i == HEIGHT - 1 || j == WIDTH - 1) ? -1 : 1;
-			}
+			exit(-1);
 		}
+
+
+		delete[] buffer;
+
+		////패배시 예시 1
+		//for (int i = 0; i < HEIGHT; i++)
+		//{
+		//	for (int j = 0; j < WIDTH; j++)
+		//	{
+		//		m_iGameBoard[i][j] = (j == 0 || i == HEIGHT - 1 || j == WIDTH - 1) ? -1 : 1;
+		//	}
+		//}
 
 		return;
 	}
@@ -949,7 +984,7 @@ void GameScene::RecvOnlinePlayerBoardDraw(HDC hdc)
 
 }
 
-void GameScene::DrawOnlineGameOverDraw(HDC hdc)
+void GameScene::DrawOnlineMyGameOverDraw(HDC hdc)
 {
 	HBITMAP h01Bitmap;
 	int bx, by;
@@ -964,6 +999,37 @@ void GameScene::DrawOnlineGameOverDraw(HDC hdc)
 	by = bitBackground.bmHeight;
 
 	TransparentBlt(hdc, 128, 53, bx+335, by + 587, hBlocksDc, 0, 0, bx, by, RGB(255, 0, 255));   //각 블럭의 색
+
+	DeleteDC(hBlocksDc);
+
+	DeleteObject(hBackGround);
+}
+
+void GameScene::DrawOnlineUserGameOverDraw(HDC hdc)
+{
+	HBITMAP h01Bitmap;
+	int bx, by;
+
+	hBackGround = (HBITMAP)LoadImage(NULL, TEXT("IMG/OnlineLose.bmp"), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
+	GetObject(hBackGround, sizeof(BITMAP), &bitBackground);
+
+	hBlocksDc = CreateCompatibleDC(hdc);
+	h01Bitmap = (HBITMAP)SelectObject(hBlocksDc, hBackGround);
+
+	bx = bitBackground.bmWidth;
+	by = bitBackground.bmHeight;
+
+
+	if (NetWorkManager::GetInstance()->userCheck[0].bDead == true)
+	{
+		StretchBlt(hdc, 827, 23, bx + 121, by + 183, hBlocksDc, 0, 0, bx, by, SRCCOPY);   //각 블럭의 색
+	}
+
+	if (NetWorkManager::GetInstance()->userCheck[1].bDead == true)
+	{
+		StretchBlt(hdc, 827, 463, bx + 121, by + 183, hBlocksDc, 0, 0, bx, by, SRCCOPY);   //각 블럭의 색
+	}
+															
 
 	DeleteDC(hBlocksDc);
 

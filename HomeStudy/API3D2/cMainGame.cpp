@@ -11,7 +11,7 @@ cMainGame::cMainGame()
 	, m_vPosition(0, 0, 0)
 	, m_fCameraDistance(5.0f)
 	, m_isButtonDown(false)
-	, m_vCamRotAngle(0,0,0)
+	, m_vCamRotAngle(0,0,1)
 	, m_fBoxRotY(0.0f)
 	, m_vBoxDirection(0,0,1)
 	, m_ptPrevMouse{0,0}

@@ -12,6 +12,7 @@ extern pkRoom pk_Room;
 extern pkRoom_RQ pk_Room_Request;
 extern pkRoom_User pk_Room_User;
 extern pkGame pk_Game;
+extern pkGameLose pk_GameLose;
 #define IDNULL 99999
 NetWorkManager::NetWorkManager()
 {
@@ -24,14 +25,6 @@ NetWorkManager::NetWorkManager()
 		return;
 	}
 
-	userCheck[0].Screen_Position = 0;
-	userCheck[0].userID = IDNULL;
-
-	userCheck[1].Screen_Position = 1;
-	userCheck[1].userID = IDNULL;
-
-
-	
 	Init();
 }
 
@@ -46,6 +39,15 @@ void NetWorkManager::Init()
 	msgLen = 0;
 	chatLog.clear();
 	bPlay = false;
+	
+	userCheck[0].Screen_Position = 0;
+	userCheck[0].userID = IDNULL;
+	userCheck[0].bDead = false;
+	
+	userCheck[1].Screen_Position = 1;
+	userCheck[1].userID = IDNULL;
+	userCheck[1].bDead = false;
+
 }
 
 void NetWorkManager::Connect()
@@ -184,7 +186,27 @@ void NetWorkManager::Read_Fd()
 			
 		break;
 	}
+	case GAMELOSE:
+		{
+		pk_Packet.Buffer = new char[pk_Packet.size];
+		memset(pk_Packet.Buffer, 0, _msize(pk_Packet.Buffer));
+		recv(server, (char*)pk_Packet.Buffer, pk_Packet.size, 0);
+		pk_GameLose = *(pkGameLose*)pk_Packet.Buffer;
 
+			for(int i = 0 ; i <2; i++)
+			{
+				if(userCheck[i].userID == pk_GameLose.UserIndex)
+				{
+					userCheck[i].bDead = true;
+					break;
+				}
+			}
+
+
+			delete[] pk_Packet.Buffer;
+		}
+		break;
+		
 	}
 	
 	pk_Packet.Protocal = 0;

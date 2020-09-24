@@ -8,6 +8,7 @@ extern pkRoom pk_Room;
 extern pkRoom_RQ pk_Room_Request;
 extern pkRoom_User pk_Room_User;
 extern pkGame pk_Game;
+extern pkGameLose pk_GameLose;
 using namespace std;
 
 
@@ -295,7 +296,42 @@ void ServerManager::ServerRead(WPARAM wParam)
 
 		
 	}
-	
+		break;
+	case GAMELOSE:
+		{
+		pk_Packet.Buffer = new char[sizeof(pk_Packet.size)];
+		memset(pk_Packet.Buffer, 0, _msize(pk_Packet.Buffer));
+		recv(wParam, (char*)pk_Packet.Buffer, sizeof(pk_Packet.size), 0);
+		pk_GameLose = *(pkGameLose*)pk_Packet.Buffer;
+
+		char * buffer = new char[sizeof(pk_Packet.Protocal) + sizeof(pk_Packet.size) + pk_Packet.size];
+		memset(buffer, 0, _msize(buffer));
+		memcpy(buffer, &pk_Packet.Protocal, sizeof(pk_Packet.Protocal));
+		memcpy(&buffer[sizeof(pk_Packet.Protocal)], &pk_Packet.size, sizeof(pk_Packet.size));
+
+		char temp[4] = { 0 };
+		sprintf(temp, "%c", pk_GameLose.RoomNum);
+		memcpy(&buffer[sizeof(pk_Packet.Protocal) + sizeof(pk_Packet.size)], temp, sizeof(unsigned int));
+
+		memset(temp, 0, sizeof(4));
+		sprintf(temp, "%c", pk_GameLose.UserIndex);
+		memcpy(&buffer[sizeof(pk_Packet.Protocal) + sizeof(pk_Packet.size) + sizeof(unsigned int)], temp, sizeof(int));
+
+			
+		for (SOCKET client : RoomClient[pk_GameLose.RoomNum]->m_RoomUseer)
+		{
+			if (client == wParam)
+				continue;
+
+			send(client, buffer, _msize(buffer), NULL);
+		}
+
+
+
+		if (buffer != NULL)
+			delete[] buffer;
+		
+		}
 		break;
 	}
 

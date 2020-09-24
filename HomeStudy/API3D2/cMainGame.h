@@ -33,6 +33,7 @@ private:
 
 	// >> :
 	vector<cVector3>m_vecLineVertex; //선을그리기위한 Vertex
+	
 	cVector3		m_vPosition; //박스위치
 	POINT			m_ptPrevMouse; //마우스 이동량체크하면서 회전을 체크
 	bool			m_isButtonDown;//마우스가 눌렷나안눌렸나
@@ -43,7 +44,9 @@ private:
 	cVector3		m_vAxisZTexPosition;
 
 	float			m_fBoxRotY; //박스자체 회전량
-	cVector3		m_vBoxDirection; //박스가바라보고있는 방향
+	cVector3 m_vBoxDirection; //박스가바라보고있는 방향
+	
+
 	// << :
 
 	
