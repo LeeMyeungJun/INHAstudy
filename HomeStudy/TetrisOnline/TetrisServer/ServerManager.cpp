@@ -303,6 +303,7 @@ void ServerManager::ServerRead(WPARAM wParam)
 		memset(pk_Packet.Buffer, 0, _msize(pk_Packet.Buffer));
 		recv(wParam, (char*)pk_Packet.Buffer, sizeof(pk_Packet.size), 0);
 		pk_GameLose = *(pkGameLose*)pk_Packet.Buffer;
+		pk_GameLose.UserIndex = wParam;
 
 		char * buffer = new char[sizeof(pk_Packet.Protocal) + sizeof(pk_Packet.size) + pk_Packet.size];
 		memset(buffer, 0, _msize(buffer));
@@ -326,7 +327,12 @@ void ServerManager::ServerRead(WPARAM wParam)
 			send(client, buffer, _msize(buffer), NULL);
 		}
 
+		
+		if (RoomClient[pk_GameLose.RoomNum]->LoseUserPlus())
+		{
 
+		}
+		
 
 		if (buffer != NULL)
 			delete[] buffer;

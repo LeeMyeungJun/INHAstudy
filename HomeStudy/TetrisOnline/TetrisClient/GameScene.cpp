@@ -1041,7 +1041,7 @@ void GameScene::SendOnlineScreen()
 	if (NetWorkManager::GetInstance()->server == INVALID_SOCKET)
 		return;
 
-	pk_Packet.Protocal = GAME;
+		pk_Packet.Protocal = GAME;
 	pk_Packet.size = sizeof(unsigned int) + sizeof(int) + sizeof(int)*WIDTH*HEIGHT+1 ;
 	pk_Game.UserIndex = 0;
 

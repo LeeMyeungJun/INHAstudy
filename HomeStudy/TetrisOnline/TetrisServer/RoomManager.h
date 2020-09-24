@@ -15,6 +15,8 @@ public:
 	int AddUser(WPARAM wParam);
 	int ExitUser(WPARAM wParam);
 	int getUserCount();
+
+	bool LoseUserPlus();
 };
 
         

@@ -55,3 +55,12 @@ int RoomManager::getUserCount()
 {
 	return m_UserCount;
 }
+
+bool RoomManager::LoseUserPlus()
+{
+	m_iLoseUser++;
+	if (m_iLoseUser == 2)
+		return true;
+
+	return false;
+}
