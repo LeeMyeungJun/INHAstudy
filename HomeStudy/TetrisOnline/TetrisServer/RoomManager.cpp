@@ -2,9 +2,11 @@
 
 
 
-RoomManager::RoomManager()
+RoomManager::RoomManager():
+m_UserCount(0),
+m_iLoseUser(0)
 {
-	m_UserCount = 0;
+
 }
 
 

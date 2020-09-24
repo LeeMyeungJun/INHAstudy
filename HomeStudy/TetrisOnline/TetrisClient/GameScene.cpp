@@ -495,13 +495,13 @@ void GameScene::CreateRandomBlocks()
 		m_GameStart = false;
 
 		//패배시 예시 1
-		//for (int i = 0; i < HEIGHT; i++)
-		//{
-		//	for (int j = 0; j < WIDTH; j++)
-		//	{
-		//		m_iGameBoard[i][j] = (j == 0 || i == HEIGHT - 1 || j == WIDTH - 1) ? -1 : 1;
-		//	}
-		//}
+		for (int i = 0; i < HEIGHT; i++)
+		{
+			for (int j = 0; j < WIDTH; j++)
+			{
+				m_iGameBoard[i][j] = (j == 0 || i == HEIGHT - 1 || j == WIDTH - 1) ? -1 : 1;
+			}
+		}
 
 		return;
 	}

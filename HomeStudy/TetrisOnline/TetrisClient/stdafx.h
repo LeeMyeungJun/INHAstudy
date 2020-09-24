@@ -73,7 +73,7 @@ enum RoomRequestId
 #define GAME 68
 #define GAMETRUE 12
 #define GAMEFALSE 11
-
+#define GAMELOSE 43
 
 typedef struct __Packet {
 	unsigned int Protocal;
@@ -117,3 +117,8 @@ typedef struct __pkGame {
 	int UserIndex;
 	int UserGameBoard[iHeight][iWidth];
 } pkGame;
+
+typedef struct __pkGameLose {
+	unsigned int RoomNum;
+	int UserIndex;
+} pkGameLose;
