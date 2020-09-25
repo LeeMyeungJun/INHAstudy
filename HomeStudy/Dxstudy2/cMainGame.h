@@ -15,8 +15,8 @@ private:
 	vector<ST_PC_VERTEX> m_vecTriangleVertex;
 
 	//À§¿¡²«¾È¾¸
-
-	cCubePC*		m_pCubePC;
+	Player*			m_pPlayer;
+	//cCubePC*		m_pCubePC;
 	cCamera*		m_pCamera;
 	cGrid*			m_pGrid;
 

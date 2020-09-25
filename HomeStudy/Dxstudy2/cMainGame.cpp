@@ -4,15 +4,16 @@
 #include "cCubePC.h"
 #include "cCamera.h"
 #include "cGrid.h"
+#include "Player.h"
 
 
 //D3DXMatrixRotationX()
 //D3Dxvec3TransformNormal 사용  등등 이름비슷하니까 찾아쓰도록
 
 cMainGame::cMainGame()
-	:m_pCubePC(NULL)
-	,m_pCamera(NULL)
+	:m_pCamera(NULL)
 	,m_pGrid(NULL)
+	,m_pPlayer(NULL)
 {
 	
 }
@@ -20,7 +21,7 @@ cMainGame::cMainGame()
 
 cMainGame::~cMainGame()
 {
-	SafeDelete(m_pCubePC);
+	SafeDelete(m_pPlayer);
 	SafeDelete(m_pCamera);
 	SafeDelete(m_pGrid);
 	g_pDeveceManager->Destroy();
@@ -31,11 +32,15 @@ void cMainGame::Setup()
 	//Setup_Line();
 	//Setup_Triangle();
 
-	m_pCubePC = new cCubePC;
-	m_pCubePC->Setup();
+	//m_pCubePC = new cCubePC;
+	//m_pCubePC->Setup();
+
+
+	m_pPlayer = new Player;
+	m_pPlayer->Setup();
 
 	m_pCamera = new cCamera;
-	m_pCamera->Setup(&m_pCubePC->GetPosition());
+	m_pCamera->Setup(&m_pPlayer->GetPosition());
 
 	m_pGrid = new cGrid;
 	m_pGrid->Setup();
@@ -49,8 +54,8 @@ void cMainGame::Setup()
 
 void cMainGame::Update()
 {
-	if (m_pCubePC)
-		m_pCubePC->Update();
+	if (m_pPlayer)
+		m_pPlayer->Update();
 
 	if (m_pCamera)
 		m_pCamera->Update();
@@ -67,8 +72,8 @@ void cMainGame::Render()
 	if (m_pGrid)
 		m_pGrid->Render();
 
-	if (m_pCubePC)
-		m_pCubePC->Render();
+	if (m_pPlayer)
+		m_pPlayer->Render();
 
 	g_pD3DDvice->EndScene();
 	g_pD3DDvice->Present(NULL, NULL, NULL, NULL);

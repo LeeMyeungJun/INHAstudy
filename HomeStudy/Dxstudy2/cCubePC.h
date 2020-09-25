@@ -6,16 +6,19 @@ public:
 	~cCubePC();
 private:
 	vector<ST_PC_VERTEX> m_vecVertex;
-	
-	float             m_fRotY;
-	D3DXVECTOR3           m_vDirection;
-	D3DXVECTOR3          m_vPosition;
 	D3DXMATRIXA16       m_matWorld;
-
+	D3DXMATRIXA16		m_matS;
+	FLOAT				m_fRotX;
+	D3DXVECTOR3			m_vPosition;
 public:
-	void Setup();
-	void Update();
+	void Setup(D3DXVECTOR3 position);
+	void Update(D3DXMATRIXA16& matWrold);
 	void Render();
-	D3DXVECTOR3&      GetPosition();
+
+
+	void setScale(D3DXVECTOR3 s);
+
+
+
 
 };

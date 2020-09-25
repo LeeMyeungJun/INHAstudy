@@ -58,6 +58,6 @@ struct ST_PC_VERTEX //point & color¿«πÃ
 };
 
 #include "cDeviceManager.h"
-
+#include "Player.h"
 
 

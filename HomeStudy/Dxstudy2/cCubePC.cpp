@@ -2,9 +2,10 @@
 #include "cCubePC.h"
 
 
-cCubePC::cCubePC() : m_vDirection(0, 0, 1), m_vPosition(0, 0, 0), m_fRotY(0.0f)
+cCubePC::cCubePC() :m_fRotX(0.0f), m_vPosition(0,0,0)
 {
 	D3DXMatrixIdentity(&m_matWorld);
+	D3DXMatrixIdentity(&m_matS);
 }
 
 
@@ -12,11 +13,11 @@ cCubePC::~cCubePC()
 {
 }
 
-void cCubePC::Setup()
+void cCubePC::Setup(D3DXVECTOR3 position)
 {
 	ST_PC_VERTEX v;
 	//front
-	v.c = D3DCOLOR_XRGB(rand() % 256, rand() % 256, rand() % 256);
+	v.c = D3DCOLOR_XRGB(120,125,0);
 	v.p = D3DXVECTOR3(-1.0f, -1.0f, -1.0f);
 	m_vecVertex.push_back(v);
 	v.p = D3DXVECTOR3(-1.0f, 1.0f, -1.0f);
@@ -32,7 +33,7 @@ void cCubePC::Setup()
 	m_vecVertex.push_back(v);
 
 	//back
-	v.c = D3DCOLOR_XRGB(rand() % 256, rand() % 256, rand() % 256);
+	v.c = D3DCOLOR_XRGB(168, 130,180);
 	v.p = D3DXVECTOR3(-1.0f, -1.0f, 1.0f);
 	m_vecVertex.push_back(v);
 	v.p = D3DXVECTOR3(1.0f, 1.0f, 1.0f);
@@ -48,7 +49,7 @@ void cCubePC::Setup()
 	m_vecVertex.push_back(v);
 
 	//left
-	v.c = D3DCOLOR_XRGB(rand() % 256, rand() % 256, rand() % 256);
+	v.c = D3DCOLOR_XRGB(90, 111,17);
 	v.p = D3DXVECTOR3(-1.0f, -1.0f, 1.0f);
 	m_vecVertex.push_back(v);
 	v.p = D3DXVECTOR3(-1.0f, 1.0f, 1.0f);
@@ -64,7 +65,7 @@ void cCubePC::Setup()
 	m_vecVertex.push_back(v);
 
 	//right
-	v.c = D3DCOLOR_XRGB(rand() % 256, rand() % 256, rand() % 256);
+	v.c = D3DCOLOR_XRGB(168,0, 170);
 	v.p = D3DXVECTOR3(1.0f, -1.0f, -1.0f);
 	m_vecVertex.push_back(v);
 	v.p = D3DXVECTOR3(1.0f, 1.0f, -1.0f);
@@ -80,7 +81,7 @@ void cCubePC::Setup()
 	m_vecVertex.push_back(v);
 
 	//top
-	v.c = D3DCOLOR_XRGB(rand() % 256, rand() % 256, rand() % 256);
+	v.c = D3DCOLOR_XRGB(166,166,0);
 	v.p = D3DXVECTOR3(-1.0f, 1.0f, -1.0f);
 	m_vecVertex.push_back(v);
 	v.p = D3DXVECTOR3(-1.0f, 1.0f, 1.0f);
@@ -96,7 +97,7 @@ void cCubePC::Setup()
 	m_vecVertex.push_back(v);
 
 	//bottom
-	v.c = D3DCOLOR_XRGB(rand() % 256, rand() % 256, rand() % 256);
+	v.c = D3DCOLOR_XRGB(60,30, 120);
 	v.p = D3DXVECTOR3(-1.0f, -1.0f, 1.0f);
 	m_vecVertex.push_back(v);
 	v.p = D3DXVECTOR3(-1.0f, -1.0f, -1.0f);
@@ -111,38 +112,22 @@ void cCubePC::Setup()
 	v.p = D3DXVECTOR3(1.0f, -1.0f, 1.0f);
 	m_vecVertex.push_back(v);
 
+
+	m_vPosition = position;
+
 }
 
-void cCubePC::Update()
+void cCubePC::Update(D3DXMATRIXA16& matWrold)
 {
-	if(GetKeyState('A')&0X8000)
-	{
-		m_fRotY -= 0.1f;
-	}
-
-	if (GetKeyState('D') & 0X8000)
-	{
-		m_fRotY += 0.1f;
-	}
-	
-	if (GetKeyState('W') & 0X8000)
-	{
-		m_vPosition += (m_vDirection * 0.1f);
-	}
-	if (GetKeyState('S') & 0X8000)
-	{
-		m_vPosition -= (m_vDirection * 0.1f);
-	}
-
 	RECT rc;
 	GetClientRect(g_hWnd, &rc);
 	D3DXMATRIXA16 matR,matT;
-	D3DXMatrixRotationY(&matR, m_fRotY);
+	D3DXMatrixRotationY(&matR, m_fRotX);
 
-	m_vDirection = D3DXVECTOR3(0, 0, 1);
+	D3DXVECTOR3 m_vDirection = D3DXVECTOR3(0, 0, 1);
 	D3DXVec3TransformNormal(&m_vDirection, &m_vDirection, &matR);
 	D3DXMatrixTranslation(&matT, m_vPosition.x, m_vPosition.y, m_vPosition.z);
-	m_matWorld = matR * matT;
+	m_matWorld = m_matS *matR * matT;
 }
 
 void cCubePC::Render()
@@ -156,7 +141,8 @@ void cCubePC::Render()
 		sizeof(ST_PC_VERTEX));
 }
 
-D3DXVECTOR3& cCubePC::GetPosition()
+void cCubePC::setScale(D3DXVECTOR3 s)
 {
-	return m_vPosition; //카메라가 가지고사용한다.
+	D3DXMatrixScaling(&m_matS, s.x, s.y,s.z);
 }
+
