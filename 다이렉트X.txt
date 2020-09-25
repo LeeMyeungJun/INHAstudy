@@ -82,3 +82,30 @@ Minimal Rebuild= no 끝
 
 //장치관련을 cMainGame이아닌 장치관리 클래스를만들자 . CDeviceManager
 
+
+float rotY = playerBody[0]->m_fRotY;
+	D3DXMATRIXA16 rotYMat;
+	D3DXMatrixRotationY(&rotYMat, rotY);
+	
+	for each(auto p in playerBody)
+	{
+		D3DXVECTOR3 newPos = p->GetPosition();
+		D3DXVec3TransformNormal(&newPos, &newPos, &rotYMat);
+		p->setPosition(newPos);
+	}
+
+공전 위에 
+
+
+m_Tmat =playerBody[0]->GetTmat();
+
+	for each(auto p in playerBody)
+	{
+
+		p->setTmat(m_Tmat);
+		p->Update();
+	}
+
+자전 위에
+
+
