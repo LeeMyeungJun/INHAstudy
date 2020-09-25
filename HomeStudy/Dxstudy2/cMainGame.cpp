@@ -59,40 +59,6 @@ void cMainGame::Update()
 
 void cMainGame::Render()
 {
-	//RECT rc;
-	//GetClientRect(g_hWnd, &rc);
-
-	//D3DXVECTOR3 vEye = D3DXVECTOR3(0, 0, -5.0f);
-	//D3DXVECTOR3 vLookAt = D3DXVECTOR3(0, 0, 0);
-	//D3DXVECTOR3 vUp = D3DXVECTOR3(0, 1, 0);
-
-	//D3DXMATRIXA16 matView;
-	//
-	//D3DXMatrixLookAtLH(&matView, &vEye, &vLookAt, &vUp);
-
-	//g_pD3DDvice->SetTransform(D3DTS_VIEW, &matView);
-
-	//D3DXMATRIXA16 matProj;
-	//D3DXMatrixPerspectiveFovLH(&matProj, D3DX_PI / 4.0f, rc.right / (float)rc.bottom, 1.0f, 1000.0f);
-	//g_pD3DDvice->SetTransform(D3DTS_PROJECTION, &matProj);
-	//
-	//
-	//g_pD3DDvice->Clear(0, 0, D3DCLEAR_TARGET|D3DCLEAR_ZBUFFER,D3DCOLOR_XRGB(0, 0,255), 1.0f, 0);
-
-	//g_pD3DDvice->BeginScene();
-
-	////Draw_Line();
-	////Draw_Triangle();
-	//if (m_pGrid)
-	//	m_pGrid->Render();
-
-	//if (m_pCubePC)
-	//	m_pCubePC->Render();
-	//
-	//g_pD3DDvice->EndScene();
-	//
-	//g_pD3DDvice->Present(NULL, NULL, NULL, NULL);
-
 	if (g_pD3DDvice)
 		g_pD3DDvice->Clear(0, 0, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, D3DCOLOR_XRGB(45, 45, 48), 1.0f, 0);
 
