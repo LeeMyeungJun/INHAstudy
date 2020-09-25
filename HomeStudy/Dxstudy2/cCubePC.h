@@ -12,8 +12,8 @@ private:
 	D3DXVECTOR3			m_vPosition;
 public:
 	void Setup(D3DXVECTOR3 position);
-	void Update(D3DXMATRIXA16& matWrold);
-	void Render();
+	void Update();
+	void Render(D3DXMATRIXA16& matWrold);
 
 
 	void setScale(D3DXVECTOR3 s);

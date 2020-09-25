@@ -39,7 +39,7 @@ void cMainGame::Setup()
 	m_pPlayer = new Player;
 	m_pPlayer->Setup();
 
-	m_pCamera = new cCamera;
+	m_pCamera = new cCamera; //0,0,0
 	m_pCamera->Setup(&m_pPlayer->GetPosition());
 
 	m_pGrid = new cGrid;

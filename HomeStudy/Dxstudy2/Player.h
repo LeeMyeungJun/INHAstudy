@@ -20,7 +20,7 @@ public:
 	void Update();
 	void Render();
 	void Input();
-	D3DXVECTOR3 GetPosition();
+	D3DXVECTOR3& GetPosition();
 	
 };
 

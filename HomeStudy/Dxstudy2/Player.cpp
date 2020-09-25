@@ -23,6 +23,9 @@ void Player::Setup()
 	cCubePC* head = new cCubePC;
 	head->setScale(s);
 	head->Setup(p);
+	m_vPosition = D3DXVECTOR3(0, 0, 0);
+	m_vDirection = D3DXVECTOR3(0, 0, 1);
+	m_fRotY = 0.0f;
 
 
 
@@ -34,27 +37,28 @@ void Player::Update()
 {
 	Input();
 
-	D3DXMATRIXA16 matR, matT, m_matWorld;
-	D3DXMatrixRotationY(&matR, m_fRotY);
-
-	D3DXVECTOR3 m_vDirection = D3DXVECTOR3(0, 0, 1);
-	D3DXVec3TransformNormal(&m_vDirection, &m_vDirection, &matR);
-	D3DXMatrixTranslation(&matT, m_vPosition.x, m_vPosition.y, m_vPosition.z);
-
-	m_matWorld = matR * matT;
-
 	for each(auto p in m_vCubeVertexStorage)
 	{
-		p->Update(m_matWorld);
+		p->Update();
 	}
 
 }
 
 void Player::Render()
 {
+
+	D3DXMATRIXA16 matR, matT, m_matWorld;
+	D3DXMatrixRotationY(&matR, m_fRotY);
+
+	D3DXVec3TransformNormal(&m_vDirection, &m_vDirection, &matR);
+	D3DXMatrixTranslation(&matT, m_vPosition.x, m_vPosition.y, m_vPosition.z);
+
+	m_matWorld = matR * matT;
+
+	
 	for each(auto p in m_vCubeVertexStorage)
 	{
-		p->Render();
+		p->Render(m_matWorld);
 	}
 }
 
@@ -64,7 +68,6 @@ void Player::Input()
 	{
 		m_fRotY -= 0.1f;
 	}
-
 	if (GetKeyState('D') & 0X8000)
 	{
 		m_fRotY += 0.1f;
@@ -79,7 +82,7 @@ void Player::Input()
 	}
 }
 
-D3DXVECTOR3 Player::GetPosition()
+D3DXVECTOR3& Player::GetPosition()
 {
 	return m_vPosition;
 }
