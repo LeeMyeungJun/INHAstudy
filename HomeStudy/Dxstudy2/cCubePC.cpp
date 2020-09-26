@@ -117,27 +117,23 @@ void cCubePC::Setup(D3DXVECTOR3 position)
 
 }
 
-void cCubePC::Update()
+void cCubePC::Update(D3DXMATRIXA16& matWorld, FLOAT m_fRotY)
 {
-
+	D3DXMATRIXA16 matR, matT;
+	D3DXMatrixRotationY(&matR, 0); //자식은 안돌아도됨 
+	D3DXMatrixTranslation(&matT, m_vPosition.x, m_vPosition.y, m_vPosition.z);
+	D3DXMatrixIdentity(&m_matWorld);
+	m_matWorld = m_matS *matR * matT * matWorld;
+	
 }
 
-void cCubePC::Render(D3DXMATRIXA16& matWrold)
+void cCubePC::Render()
 {
-
-	D3DXMatrixIdentity(&m_matWorld);
+	
 
 	RECT rc;
 	GetClientRect(g_hWnd, &rc);
-	D3DXMATRIXA16 matR, matT;
-	D3DXMatrixRotationY(&matR, m_fRotX);
-
-	D3DXVECTOR3 m_vDirection = D3DXVECTOR3(0, 0, 1);
-	//D3DXVec3TransformNormal(&m_vDirection, &m_vDirection, &matR);
-	D3DXMatrixTranslation(&matT, m_vPosition.x, m_vPosition.y, m_vPosition.z);
-	m_matWorld = m_matS *matR * matT;
-	m_matWorld = matWrold * m_matWorld;
-
+	
 	g_pD3DDvice->SetRenderState(D3DRS_CULLMODE, false);
 	g_pD3DDvice->SetTransform(D3DTS_WORLD, &m_matWorld);
 	g_pD3DDvice->SetFVF(ST_PC_VERTEX::FVF);

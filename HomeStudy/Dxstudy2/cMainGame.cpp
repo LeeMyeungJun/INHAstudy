@@ -55,7 +55,9 @@ void cMainGame::Setup()
 void cMainGame::Update()
 {
 	if (m_pPlayer)
+	{
 		m_pPlayer->Update();
+	}
 
 	if (m_pCamera)
 		m_pCamera->Update();
