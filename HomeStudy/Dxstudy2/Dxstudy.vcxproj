@@ -146,11 +146,13 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="cAnimation.h" />
     <ClInclude Include="cCamera.h" />
     <ClInclude Include="cCubePC.h" />
     <ClInclude Include="cDeviceManager.h" />
     <ClInclude Include="cGrid.h" />
     <ClInclude Include="cMainGame.h" />
+    <ClInclude Include="cPlayer.h" />
     <ClInclude Include="cPyramid.h" />
     <ClInclude Include="Dxstudy.h" />
     <ClInclude Include="Resource.h" />
@@ -158,11 +160,13 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="cAnimation.cpp" />
     <ClCompile Include="cCamera.cpp" />
     <ClCompile Include="cCubePC.cpp" />
     <ClCompile Include="cDeviceManager.cpp" />
     <ClCompile Include="cGrid.cpp" />
     <ClCompile Include="cMainGame.cpp" />
+    <ClCompile Include="cPlayer.cpp" />
     <ClCompile Include="cPyramid.cpp" />
     <ClCompile Include="Dxstudy.cpp" />
     <ClCompile Include="stdafx.cpp">

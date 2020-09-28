@@ -2,9 +2,9 @@
 #include "cCubePC.h"
 
 
-cCubePC::cCubePC() : m_vDirection(0, 0, 1), m_vPosition(0, 0, 0), m_fRotY(0.0f)
+cCubePC::cCubePC() : m_vPosition(0, 0, 0), m_Rot(0,0,0)
 {
-	D3DXMatrixIdentity(&m_matWorld);
+	
 }
 
 
@@ -12,8 +12,11 @@ cCubePC::~cCubePC()
 {
 }
 
-void cCubePC::Setup()
+void cCubePC::Setup(D3DXVECTOR3 position, D3DXVECTOR3 scale)
 {
+	{
+
+
 	ST_PC_VERTEX v;
 	//front
 	v.c = D3DCOLOR_XRGB(rand() % 256, rand() % 256, rand() % 256);
@@ -110,39 +113,31 @@ void cCubePC::Setup()
 	m_vecVertex.push_back(v);
 	v.p = D3DXVECTOR3(1.0f, -1.0f, 1.0f);
 	m_vecVertex.push_back(v);
+	}
+
+	m_vPosition = position;
+
+	m_vScale = scale;
 
 }
 
-void cCubePC::Update()
+void cCubePC::Update(D3DXMATRIXA16& world)
 {
-	if(GetKeyState('A')&0X8000)
-	{
-		m_fRotY -= 0.1f;
-	}
-
-	if (GetKeyState('D') & 0X8000)
-	{
-		m_fRotY += 0.1f;
-	}
 	
-	if (GetKeyState('W') & 0X8000)
-	{
-		m_vPosition += (m_vDirection * 0.1f);
-	}
-	if (GetKeyState('S') & 0X8000)
-	{
-		m_vPosition -= (m_vDirection * 0.1f);
-	}
 
 	RECT rc;
 	GetClientRect(g_hWnd, &rc);
-	D3DXMATRIXA16 matR,matT;
-	D3DXMatrixRotationY(&matR, m_fRotY);
-
-	m_vDirection = D3DXVECTOR3(0, 0, 1);
-	D3DXVec3TransformNormal(&m_vDirection, &m_vDirection, &matR);
+	
+	D3DXMATRIXA16 matS,matT, matR;
+	D3DXMatrixScaling(&matS, m_vScale.x, m_vScale.y, m_vScale.z);
 	D3DXMatrixTranslation(&matT, m_vPosition.x, m_vPosition.y, m_vPosition.z);
-	m_matWorld = matR * matT;
+	
+	D3DXQUATERNION quarRot;
+	D3DXQuaternionIdentity(&quarRot);
+	D3DXQuaternionRotationYawPitchRoll(&quarRot, m_Rot.y, m_Rot.x, m_Rot.z);
+	D3DXMatrixRotationQuaternion(&matR, &quarRot);
+
+	m_matWorld = matS * matR * matT * world;
 }
 
 void cCubePC::Render()
@@ -156,7 +151,9 @@ void cCubePC::Render()
 		sizeof(ST_PC_VERTEX));
 }
 
-D3DXVECTOR3& cCubePC::GetPosition()
+D3DXVECTOR3 & cCubePC::getRot()
 {
-	return m_vPosition; //카메라가 가지고사용한다.
+	return m_Rot;
+	// TODO: insert return statement here
 }
+
