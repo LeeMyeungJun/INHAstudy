@@ -1,8 +1,8 @@
 #pragma once
 #include "stdafx.h"
-class cCubePC;
 class cCamera;
 class cGrid;
+class cPlayer;
 
 class cMainGame
 {
@@ -16,7 +16,7 @@ private:
 
 	//À§¿¡²«¾È¾¸
 
-	cCubePC*		m_pCubePC;
+	cPlayer*		m_pPlayer;
 	cCamera*		m_pCamera;
 	cGrid*			m_pGrid;
 
