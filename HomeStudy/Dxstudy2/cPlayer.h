@@ -1,5 +1,7 @@
 #pragma once
+#include "cAnimation.h"
 class cCubePC;
+class cAnimation;
 
 class cPlayer
 {
@@ -9,6 +11,11 @@ private:
 	FLOAT					m_fRotY;
 	D3DXVECTOR3				m_vDirection;
 	D3DXVECTOR3				m_vPosition;
+
+	cAnimation				m_Animation;
+	D3DXVECTOR3*			m_PlayerBody[6];
+	vector<D3DXVECTOR3*>	m_partsAnimaiton;
+
 public:
 	cPlayer();
 	~cPlayer();

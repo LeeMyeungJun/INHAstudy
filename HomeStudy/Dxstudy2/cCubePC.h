@@ -7,7 +7,7 @@ public:
 private:
 	vector<ST_PC_VERTEX> m_vecVertex;
 	
-	float				m_fRotX;
+	D3DXVECTOR3			m_Rot;
 	D3DXVECTOR3         m_vPosition;
 	D3DXVECTOR3			m_vScale;
 	D3DXMATRIXA16       m_matWorld;
@@ -17,5 +17,5 @@ public:
 	void Update(D3DXMATRIXA16& world);
 	void Render();
 
-
+	D3DXVECTOR3& getRot();
 };

@@ -2,9 +2,9 @@
 #include "cCubePC.h"
 
 
-cCubePC::cCubePC() : m_vPosition(0, 0, 0)
+cCubePC::cCubePC() : m_vPosition(0, 0, 0), m_Rot(0,0,0)
 {
-
+	
 }
 
 
@@ -131,7 +131,13 @@ void cCubePC::Update(D3DXMATRIXA16& world)
 	D3DXMATRIXA16 matS,matT, matR;
 	D3DXMatrixScaling(&matS, m_vScale.x, m_vScale.y, m_vScale.z);
 	D3DXMatrixTranslation(&matT, m_vPosition.x, m_vPosition.y, m_vPosition.z);
-	m_matWorld = matS * matT * world;
+	
+	D3DXQUATERNION quarRot;
+	D3DXQuaternionIdentity(&quarRot);
+	D3DXQuaternionRotationYawPitchRoll(&quarRot, m_Rot.y, m_Rot.x, m_Rot.z);
+	D3DXMatrixRotationQuaternion(&matR, &quarRot);
+
+	m_matWorld = matS * matR * matT * world;
 }
 
 void cCubePC::Render()
@@ -143,5 +149,11 @@ void cCubePC::Render()
 		m_vecVertex.size() / 3,
 		&m_vecVertex[0],
 		sizeof(ST_PC_VERTEX));
+}
+
+D3DXVECTOR3 & cCubePC::getRot()
+{
+	return m_Rot;
+	// TODO: insert return statement here
 }
 

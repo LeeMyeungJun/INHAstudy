@@ -146,6 +146,7 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="cAnimation.h" />
     <ClInclude Include="cCamera.h" />
     <ClInclude Include="cCubePC.h" />
     <ClInclude Include="cDeviceManager.h" />
@@ -159,6 +160,7 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="cAnimation.cpp" />
     <ClCompile Include="cCamera.cpp" />
     <ClCompile Include="cCubePC.cpp" />
     <ClCompile Include="cDeviceManager.cpp" />
