@@ -22,7 +22,7 @@ void cLeftArm::Setup()
 	{
 		D3DXVec3TransformCoord(&m_vecVertex[i].p, &m_vecVertex[i].p, &mat);
 	}
-
+	//이게 기준점 
 	m_vLocalPos.y = 0.3f;
 
 }
