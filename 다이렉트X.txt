@@ -82,3 +82,6 @@ Minimal Rebuild= no 끝
 
 //장치관련을 cMainGame이아닌 장치관리 클래스를만들자 . CDeviceManager
 
+노멀은 반사같은걸 처리하는애임 
+픽셀과 노멀과 텍스쳐
+

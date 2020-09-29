@@ -154,12 +154,22 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="cBody.h" />
     <ClInclude Include="cCamera.h" />
+    <ClInclude Include="cCharacter.h" />
+    <ClInclude Include="cCubeMan.h" />
+    <ClInclude Include="cCubeNode.h" />
     <ClInclude Include="cCubePC.h" />
+    <ClInclude Include="cCubePNT.h" />
     <ClInclude Include="cDeviceManager.h" />
     <ClInclude Include="cGrid.h" />
+    <ClInclude Include="cHead.h" />
+    <ClInclude Include="cLeftArm.h" />
+    <ClInclude Include="cLeftLeg.h" />
     <ClInclude Include="cMainGame.h" />
     <ClInclude Include="cPyramid.h" />
+    <ClInclude Include="cRightArm.h" />
+    <ClInclude Include="cRightLeg.h" />
     <ClInclude Include="Dxstudy.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Resource.h" />
@@ -167,12 +177,22 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="cBody.cpp" />
     <ClCompile Include="cCamera.cpp" />
+    <ClCompile Include="cCharacter.cpp" />
+    <ClCompile Include="cCubeMan.cpp" />
+    <ClCompile Include="cCubeNode.cpp" />
     <ClCompile Include="cCubePC.cpp" />
+    <ClCompile Include="cCubePNT.cpp" />
     <ClCompile Include="cDeviceManager.cpp" />
     <ClCompile Include="cGrid.cpp" />
+    <ClCompile Include="cHead.cpp" />
+    <ClCompile Include="cLeftArm.cpp" />
+    <ClCompile Include="cLeftLeg.cpp" />
     <ClCompile Include="cMainGame.cpp" />
     <ClCompile Include="cPyramid.cpp" />
+    <ClCompile Include="cRightArm.cpp" />
+    <ClCompile Include="cRightLeg.cpp" />
     <ClCompile Include="Dxstudy.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="stdafx.cpp">
