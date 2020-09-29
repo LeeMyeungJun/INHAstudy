@@ -7,15 +7,15 @@ public:
 private:
 	vector<ST_PC_VERTEX> m_vecVertex;
 	
-	D3DXVECTOR3			m_Rot;
-	D3DXVECTOR3         m_vPosition;
-	D3DXVECTOR3			m_vScale;
+	float             m_fRotY;
+	D3DXVECTOR3           m_vDirection;
+	D3DXVECTOR3          m_vPosition;
 	D3DXMATRIXA16       m_matWorld;
 
 public:
-	void Setup(D3DXVECTOR3 position , D3DXVECTOR3 scale);
-	void Update(D3DXMATRIXA16& world);
+	void Setup();
+	void Update();
 	void Render();
+	D3DXVECTOR3&      GetPosition();
 
-	D3DXVECTOR3& getRot();
 };

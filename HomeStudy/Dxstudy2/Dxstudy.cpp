@@ -56,7 +56,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     MSG msg;
 
 
-	static DWORD FramCheck;
+	
     // Main message loop:
     while (true)
     {
@@ -66,21 +66,14 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 				break;
 			else
 			{
-				
-					TranslateMessage(&msg);
-					DispatchMessage(&msg);
-				
-
+				TranslateMessage(&msg);
+				DispatchMessage(&msg);
 			}
     	}
 		else
 		{
-			if (GetTickCount() - FramCheck > 16)
-			{
 			g_pMaingame->Update();
 			g_pMaingame->Render();
-			FramCheck = GetTickCount();
-			}
 		}
     }
 
