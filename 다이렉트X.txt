@@ -82,6 +82,35 @@ Minimal Rebuild= no 끝
 
 //장치관련을 cMainGame이아닌 장치관리 클래스를만들자 . CDeviceManager
 
+<<<<<<< HEAD
 노멀은 반사같은걸 처리하는애임 
 픽셀과 노멀과 텍스쳐
+=======
+
+float rotY = playerBody[0]->m_fRotY;
+	D3DXMATRIXA16 rotYMat;
+	D3DXMatrixRotationY(&rotYMat, rotY);
+	
+	for each(auto p in playerBody)
+	{
+		D3DXVECTOR3 newPos = p->GetPosition();
+		D3DXVec3TransformNormal(&newPos, &newPos, &rotYMat);
+		p->setPosition(newPos);
+	}
+
+공전 위에 
+
+
+m_Tmat =playerBody[0]->GetTmat();
+
+	for each(auto p in playerBody)
+	{
+
+		p->setTmat(m_Tmat);
+		p->Update();
+	}
+
+자전 위에
+
+>>>>>>> 7de175dd1b18d603c947e6fd2b5ced6dc0b34ce0
 

@@ -333,6 +333,7 @@ void ServerManager::ServerRead(WPARAM wParam)
 
 		}
 		
+		
 
 		if (buffer != NULL)
 			delete[] buffer;
