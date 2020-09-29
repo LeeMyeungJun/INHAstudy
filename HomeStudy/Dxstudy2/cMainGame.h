@@ -23,6 +23,10 @@ private:
 
 	cCubeMan*		m_pCubeMan;
 
+
+	//::texture
+	LPDIRECT3DTEXTURE9		m_pTexture;
+	vector<ST_PT_VERTEX>	m_vecVertex;
 public:
 	void Setup();
 	void Update();
@@ -37,5 +41,7 @@ public:
 	void Draw_Triangle();
 
 	void Set_Light();
+
+	void Draw_Texture();
 };
 
