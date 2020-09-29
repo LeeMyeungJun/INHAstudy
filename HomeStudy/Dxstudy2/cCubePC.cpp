@@ -115,7 +115,7 @@ void cCubePC::Setup()
 
 void cCubePC::Update()
 {
-	if(GetKeyState('A')&0X8000)
+	/*if(GetKeyState('A')&0X8000)
 	{
 		m_fRotY -= 0.1f;
 	}
@@ -142,7 +142,7 @@ void cCubePC::Update()
 	m_vDirection = D3DXVECTOR3(0, 0, 1);
 	D3DXVec3TransformNormal(&m_vDirection, &m_vDirection, &matR);
 	D3DXMatrixTranslation(&matT, m_vPosition.x, m_vPosition.y, m_vPosition.z);
-	m_matWorld = matR * matT;
+	m_matWorld = matR * matT;*/
 }
 
 void cCubePC::Render()

@@ -1,5 +1,6 @@
 #pragma once
 #include "stdafx.h"
+class cCubeMan;
 class cCubePC;
 class cCamera;
 class cGrid;
@@ -20,6 +21,8 @@ private:
 	cCamera*		m_pCamera;
 	cGrid*			m_pGrid;
 
+	cCubeMan*		m_pCubeMan;
+
 public:
 	void Setup();
 	void Update();
@@ -32,5 +35,7 @@ public:
 
 	void Setup_Triangle();
 	void Draw_Triangle();
+
+	void Set_Light();
 };
 
