@@ -84,6 +84,7 @@ void cCubePNT::Update()
 
 void cCubePNT::Render()
 {
+
 	g_pD3DDvice->SetFVF(ST_PNT_VERTEX::FVF);
 	g_pD3DDvice->DrawPrimitiveUP(D3DPT_TRIANGLELIST,
 		m_vecVertex.size() / 3,
