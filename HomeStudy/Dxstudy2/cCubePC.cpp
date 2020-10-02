@@ -113,9 +113,8 @@ void cCubePC::Setup()
 
 }
 
-void cCubePC::Update(D3DXMATRIXA16& matWorld, FLOAT m_fRotY)
+void cCubePC::Update()
 {
-<<<<<<< HEAD
 	/*if(GetKeyState('A')&0X8000)
 	{
 		m_fRotY -= 0.1f;
@@ -148,22 +147,6 @@ void cCubePC::Update(D3DXMATRIXA16& matWorld, FLOAT m_fRotY)
 
 void cCubePC::Render()
 {
-=======
-	D3DXMATRIXA16 matR, matT;
-	D3DXMatrixRotationY(&matR, 0); //자식은 안돌아도됨 
-	D3DXMatrixTranslation(&matT, m_vPosition.x, m_vPosition.y, m_vPosition.z);
-	D3DXMatrixIdentity(&m_matWorld);
-	m_matWorld = m_matS *matR * matT * matWorld;
-	
-}
-
-void cCubePC::Render()
-{
-	
-
-	RECT rc;
-	GetClientRect(g_hWnd, &rc);
-	
 	g_pD3DDvice->SetRenderState(D3DRS_CULLMODE, false);
 	g_pD3DDvice->SetTransform(D3DTS_WORLD, &m_matWorld);
 	g_pD3DDvice->SetFVF(ST_PC_VERTEX::FVF);

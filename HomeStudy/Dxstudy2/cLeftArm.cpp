@@ -87,5 +87,4 @@ void cLeftArm::Setup()
 	//이게 기준점 
 	m_vLocalPos.y = 0.3f;
 
-
 }

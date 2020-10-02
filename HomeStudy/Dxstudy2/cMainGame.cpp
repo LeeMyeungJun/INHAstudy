@@ -95,15 +95,8 @@ void cMainGame::Setup()
 
 void cMainGame::Update()
 {
-<<<<<<< HEAD
 	//if (m_pCubePC)
 	//	m_pCubePC->Update();
-=======
-	if (m_pPlayer)
-	{
-		m_pPlayer->Update();
-	}
->>>>>>> 339cd8aedbed4c3b5b5368db2d6356bcc31f3644
 
 	if (m_pCubeMan)
 		m_pCubeMan->Update();
