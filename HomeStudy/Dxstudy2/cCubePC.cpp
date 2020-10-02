@@ -164,7 +164,6 @@ void cCubePC::Render()
 	RECT rc;
 	GetClientRect(g_hWnd, &rc);
 	
->>>>>>> 339cd8aedbed4c3b5b5368db2d6356bcc31f3644
 	g_pD3DDvice->SetRenderState(D3DRS_CULLMODE, false);
 	g_pD3DDvice->SetTransform(D3DTS_WORLD, &m_matWorld);
 	g_pD3DDvice->SetFVF(ST_PC_VERTEX::FVF);
