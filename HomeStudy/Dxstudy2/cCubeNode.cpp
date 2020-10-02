@@ -40,7 +40,7 @@ void cCubeNode::Setup()
 
 void cCubeNode::Update()
 {
-	cCubePNT::Update();
+	//cCubePNT::Update();
 
 
 	m_fRotX += m_fRotDeltaX;

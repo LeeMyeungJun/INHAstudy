@@ -122,9 +122,9 @@ void cMainGame::Render()
 		m_pCubePC->Render();*/
 
 
-	//
-	//if (m_pCubeMan)
-	//	m_pCubeMan->Render();
+	
+	if (m_pCubeMan)
+		m_pCubeMan->Render();
 
 	g_pD3DDvice->EndScene();
 	g_pD3DDvice->Present(NULL, NULL, NULL, NULL);
