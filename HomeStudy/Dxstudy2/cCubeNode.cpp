@@ -66,6 +66,7 @@ void cCubeNode::Update()
 	m_matLocalTM = matR * matT;
 
 	m_matWorldTM = m_matLocalTM;
+
 	if(m_pParentWorldTM)
 	{//몸통이아니라 팔이라면 
 		m_matWorldTM *= *m_pParentWorldTM;
@@ -80,6 +81,7 @@ void cCubeNode::Update()
 void cCubeNode::Render()
 {
 	g_pD3DDvice->SetTransform(D3DTS_WORLD, &m_matWorldTM);
+
 	cCubePNT::Render();
 	//자식들한테도 그리라해야함 몸통밖에없잖아
 	for each(auto p in m_vecChild)

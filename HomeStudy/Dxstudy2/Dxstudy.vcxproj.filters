@@ -137,6 +137,9 @@
     <ClCompile Include="cCubeMan.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="매크로 모음.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Dxstudy.rc">
@@ -150,5 +153,8 @@
     <Image Include="Dxstudy.ico">
       <Filter>Resource Files</Filter>
     </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ClassDiagram.cd" />
   </ItemGroup>
 </Project>
