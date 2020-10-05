@@ -20,7 +20,6 @@ private:
 	cCubePC*		m_pCubePC;
 	cCamera*		m_pCamera;
 	cGrid*			m_pGrid;
-
 	cCubeMan*		m_pCubeMan;
 
 

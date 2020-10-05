@@ -29,3 +29,10 @@ public:\
 	protected: varType varName; \
 	public: inline varType& Get##funName(void) const{ return varName;}\
 	public: inline void Set##funName(varType& var) {varName = var;}
+
+/* 회전시킬떄 사용하는 것 .
+D3DXQUATERNION quarRot;
+D3DXQuaternionIdentity(&quarRot);
+D3DXQuaternionRotationYawPitchRoll(&quarRot, m_fRotY, m_fRotX, 0.0f);
+D3DXMatrixRotationQuaternion(&matR, &quarRot);
+*/

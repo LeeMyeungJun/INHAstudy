@@ -1,30 +1,22 @@
-// Dxstudy.cpp : Defines the entry point for the application.
+// dxTest.cpp : Defines the entry point for the application.
 //
 
 #include "stdafx.h"
-#include "Dxstudy.h"
-#include "cMainGame.h"
+#include "dxTest.h"
 
 #define MAX_LOADSTRING 100
 
 // Global Variables:
+HWND g_hWnd;
 HINSTANCE hInst;                                // current instance
 WCHAR szTitle[MAX_LOADSTRING];                  // The title bar text
 WCHAR szWindowClass[MAX_LOADSTRING];            // the main window class name
-
-
 
 // Forward declarations of functions included in this code module:
 ATOM                MyRegisterClass(HINSTANCE hInstance);
 BOOL                InitInstance(HINSTANCE, int);
 LRESULT CALLBACK    WndProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK    About(HWND, UINT, WPARAM, LPARAM);
-
-
-//>>
-cMainGame* g_pMaingame;
-HWND g_hWnd;
-//<<
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
                      _In_opt_ HINSTANCE hPrevInstance,
@@ -38,7 +30,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
     // Initialize global strings
     LoadStringW(hInstance, IDS_APP_TITLE, szTitle, MAX_LOADSTRING);
-    LoadStringW(hInstance, IDC_DXSTUDY, szWindowClass, MAX_LOADSTRING);
+    LoadStringW(hInstance, IDC_DXTEST, szWindowClass, MAX_LOADSTRING);
     MyRegisterClass(hInstance);
 
     // Perform application initialization:
@@ -47,44 +39,20 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
         return FALSE;
     }
 
-    HACCEL hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_DXSTUDY));
+    HACCEL hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_DXTEST));
 
-
-	g_pMaingame = new cMainGame;
-	g_pMaingame->Setup();
-	
     MSG msg;
 
-
-	
     // Main message loop:
-    while (true)
+    while (GetMessage(&msg, nullptr, 0, 0))
     {
-    	if(PeekMessage(&msg,NULL,0,0,PM_REMOVE))
-    	{
-			if (msg.message == WM_QUIT)
-				break;
-			else
-			{
-				TranslateMessage(&msg);
-				DispatchMessage(&msg);
-			}
-    	}
-		else
-		{
-			g_pMaingame->Update();
-			g_pMaingame->Render();
-		}
+        if (!TranslateAccelerator(msg.hwnd, hAccelTable, &msg))
+        {
+            TranslateMessage(&msg);
+            DispatchMessage(&msg);
+        }
     }
 
-
-	SafeDelete(g_pMaingame); 
-	
-	if (g_pMaingame)
-		delete g_pMaingame;
-
-	
-	
     return (int) msg.wParam;
 }
 
@@ -106,10 +74,10 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
     wcex.cbClsExtra     = 0;
     wcex.cbWndExtra     = 0;
     wcex.hInstance      = hInstance;
-    wcex.hIcon          = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_DXSTUDY));
+    wcex.hIcon          = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_DXTEST));
     wcex.hCursor        = LoadCursor(nullptr, IDC_ARROW);
     wcex.hbrBackground  = (HBRUSH)(COLOR_WINDOW+1);
-    wcex.lpszMenuName   = MAKEINTRESOURCEW(IDC_DXSTUDY);
+    wcex.lpszMenuName   = MAKEINTRESOURCEW(IDC_DXTEST);
     wcex.lpszClassName  = szWindowClass;
     wcex.hIconSm        = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
 
@@ -133,13 +101,12 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
    HWND hWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
       CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, nullptr, nullptr, hInstance, nullptr);
 
-	
    if (!hWnd)
    {
       return FALSE;
    }
    g_hWnd = hWnd;
-	
+
    ShowWindow(hWnd, nCmdShow);
    UpdateWindow(hWnd);
 
@@ -158,9 +125,6 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 //
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
-	if (g_pMaingame)
-		g_pMaingame->wndProc(hWnd, message, wParam, lParam);
-	
     switch (message)
     {
     case WM_COMMAND:

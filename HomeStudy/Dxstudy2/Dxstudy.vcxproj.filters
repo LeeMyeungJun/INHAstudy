@@ -137,9 +137,6 @@
     <ClCompile Include="cCubeMan.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="매크로 모음.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Dxstudy.rc">
