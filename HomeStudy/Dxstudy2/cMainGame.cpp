@@ -5,7 +5,7 @@
 #include "cCamera.h"
 #include "cGrid.h"
 #include "cCubeMan.h"
-
+#include "cLight.h"
 
 //D3DXMatrixRotationX()
 //D3Dxvec3TransformNormal 사용  등등 이름비슷하니까 찾아쓰도록
@@ -16,6 +16,7 @@ cMainGame::cMainGame()
 	,m_pGrid(NULL)
 	,m_pCubeMan(NULL)
 	,m_pTexture(NULL)
+	,m_pLight(NULL)
 {
 	
 }
@@ -36,8 +37,11 @@ void cMainGame::Setup()
 	//Setup_Line();
 	//Setup_Triangle();
 
-	m_pCubePC = new cCubePC;
-	m_pCubePC->Setup();
+	m_pLight = new cLight;
+	m_pLight->Setup();
+	
+	//m_pCubePC = new cCubePC;
+	//m_pCubePC->Setup();
 
 	m_pCubeMan = new cCubeMan;
 	m_pCubeMan->Setup();
@@ -48,6 +52,8 @@ void cMainGame::Setup()
 	m_pGrid = new cGrid;
 	m_pGrid->Setup();
 
+	
+	
 	// >> : for texture
 	D3DXCreateTextureFromFile(g_pD3DDvice, L"수지.png",&m_pTexture);
 	{
@@ -67,9 +73,6 @@ void cMainGame::Setup()
 		v.t = D3DXVECTOR2(1, 0);
 		m_vecVertex.push_back(v);
 
-
-		
-
 		v.p = D3DXVECTOR3(0, 0, 0);
 		v.t = D3DXVECTOR2(0, 1);
 		m_vecVertex.push_back(v);
@@ -86,8 +89,8 @@ void cMainGame::Setup()
 
 	}
 	
-	Set_Light();
-	g_pD3DDvice->SetRenderState(D3DRS_LIGHTING, false);//라이트 끄기
+	//Set_Light();
+	//g_pD3DDvice->SetRenderState(D3DRS_LIGHTING, false);//라이트 끄기
 
 	
 
@@ -103,6 +106,9 @@ void cMainGame::Update()
 	
 	if (m_pCamera)
 		m_pCamera->Update();
+
+	if (m_pLight)
+		m_pLight->Update();
 	
 }
 
@@ -113,15 +119,16 @@ void cMainGame::Render()
 
 	g_pD3DDvice->BeginScene();
 
-	Draw_Texture();
-	
+	//Draw_Texture();
+
 	if (m_pGrid)
 		m_pGrid->Render();
 
 	/*if (m_pCubePC)
 		m_pCubePC->Render();*/
 
-
+	if (m_pLight)
+		m_pLight->Render();
 	
 	if (m_pCubeMan)
 		m_pCubeMan->Render();
@@ -134,6 +141,9 @@ void cMainGame::wndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	if (m_pCamera)
 		m_pCamera->WndProc(hWnd, message, wParam, lParam);
+
+	//if (m_pLight)
+	//	m_pLight->WndProc(hWnd, message, wParam, lParam);
 }
 
 void cMainGame::Setup_Line()
