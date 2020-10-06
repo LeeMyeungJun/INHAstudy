@@ -114,3 +114,6 @@ m_Tmat =playerBody[0]->GetTmat();
 
 >>>>>>> 7de175dd1b18d603c947e6fd2b5ced6dc0b34ce0
 
+PNT N 법선벡터잖아 
+법선벡터에따라 그림자가 생기는거 디렉셔널 라이트
+

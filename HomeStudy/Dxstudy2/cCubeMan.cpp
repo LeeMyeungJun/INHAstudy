@@ -20,7 +20,8 @@ cCubeMan::~cCubeMan()
 {
 	if (m_pRoot)
 		m_pRoot->Destroy();
-	delete this;
+
+	SafeRelease(m_pTexture);
 }
 
 void cCubeMan::Setup()
@@ -98,4 +99,3 @@ void cCubeMan::Render()
 		g_pD3DDvice->SetTexture(0, NULL); //월드에 텍스쳐빼기
 	}
 }
-
