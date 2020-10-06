@@ -81,6 +81,9 @@
     <ClInclude Include="cCubeMan.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="cLight.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -135,6 +138,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="cCubeMan.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="cLight.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

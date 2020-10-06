@@ -73,6 +73,14 @@ struct ST_PT_VERTEX
 	D3DXVECTOR2 t;
 	enum { FVF = D3DFVF_XYZ | D3DFVF_TEX1 };
 };
+
+struct ST_PN_VERTEX
+{
+	D3DXVECTOR3 p;
+	D3DXVECTOR3 n;
+	enum { FVF = D3DFVF_XYZ | D3DFVF_NORMAL};
+};
+
 #define Synthesize(varType , varName, funName) \
 	protected: varType varName; \
 	public: inline varType Get##funName(void) const{ return varName;}\
