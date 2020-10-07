@@ -55,6 +55,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	
     MSG msg;
 
+
 	int frameEndTime = 0;
 	
     // Main message loop:
@@ -74,12 +75,11 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 		{
 			if (GetTickCount() - frameEndTime > 8)
 			{
+
 				g_pMaingame->Update();
 				g_pMaingame->Render();
 				frameEndTime = GetTickCount();
-
 			}
-			
 		}
     }
 
