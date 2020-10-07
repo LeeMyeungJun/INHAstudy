@@ -6,7 +6,6 @@ public:
 	~cLight();
 private:
 	float fRange;
-
 public:
 	void Update();
 	void Setup();

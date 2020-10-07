@@ -131,7 +131,7 @@ void cLight::LightUpdate_DirectionLight()
 	D3DXMATRIXA16 matR;
 	D3DXVECTOR3 temp = stLight.Direction;
 
-	D3DXMatrixRotationZ(&matR, 0.1f);
+	D3DXMatrixRotationZ(&matR, 0.01f);
 	D3DXVec3TransformNormal(&temp, &temp, &matR);
 	stLight.Direction = temp;
 
