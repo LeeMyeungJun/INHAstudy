@@ -3,6 +3,13 @@ class cCubePNT
 {
 public:
 	cCubePNT();
-	~cCubePNT();
+
+
+public:
+	virtual ~cCubePNT(void);
+	virtual void Setup();
+	virtual void Update();
+	virtual void Render();
+
 };
 
