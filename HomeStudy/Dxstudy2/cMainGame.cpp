@@ -113,7 +113,7 @@ void cMainGame::Render()
 
 	g_pD3DDvice->BeginScene();
 
-	Draw_Texture();
+	//Draw_Texture();
 	
 	if (m_pGrid)
 		m_pGrid->Render();

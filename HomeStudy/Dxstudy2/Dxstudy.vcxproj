@@ -163,10 +163,12 @@
     <ClInclude Include="cLeftArm.h" />
     <ClInclude Include="cLeftLeg.h" />
     <ClInclude Include="cMainGame.h" />
+    <ClInclude Include="cPath.h" />
     <ClInclude Include="cPyramid.h" />
     <ClInclude Include="cRightArm.h" />
     <ClInclude Include="cRightLeg.h" />
     <ClInclude Include="Dxstudy.h" />
+    <ClInclude Include="ObjLoader.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
@@ -185,10 +187,12 @@
     <ClCompile Include="cLeftArm.cpp" />
     <ClCompile Include="cLeftLeg.cpp" />
     <ClCompile Include="cMainGame.cpp" />
+    <ClCompile Include="cPath.cpp" />
     <ClCompile Include="cPyramid.cpp" />
     <ClCompile Include="cRightArm.cpp" />
     <ClCompile Include="cRightLeg.cpp" />
     <ClCompile Include="Dxstudy.cpp" />
+    <ClCompile Include="ObjLoader.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
