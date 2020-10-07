@@ -5,6 +5,7 @@
 #include "cCamera.h"
 #include "cGrid.h"
 #include "cCubeMan.h"
+#include "cLight.h"
 
 
 //D3DXMatrixRotationX()
@@ -16,6 +17,7 @@ cMainGame::cMainGame()
 	,m_pGrid(NULL)
 	,m_pCubeMan(NULL)
 	,m_pTexture(NULL)
+	,m_pLight(NULL)
 {
 	
 }
@@ -27,7 +29,10 @@ cMainGame::~cMainGame()
 	SafeDelete(m_pCamera);
 	SafeDelete(m_pGrid);
 	SafeDelete(m_pCubeMan);
+	SafeDelete(m_pLight);
+
 	SafeRelease(m_pTexture);
+
 	g_pDeveceManager->Destroy();
 }
 
@@ -35,9 +40,11 @@ void cMainGame::Setup()
 {
 	//Setup_Line();
 	//Setup_Triangle();
+	m_pLight = new cLight;
+	m_pLight->Setup();
 
-	m_pCubePC = new cCubePC;
-	m_pCubePC->Setup();
+	//m_pCubePC = new cCubePC;
+	//m_pCubePC->Setup();
 
 	m_pCubeMan = new cCubeMan;
 	m_pCubeMan->Setup();
@@ -49,45 +56,45 @@ void cMainGame::Setup()
 	m_pGrid->Setup();
 
 	// >> : for texture
-	D3DXCreateTextureFromFile(g_pD3DDvice, L"수지.png",&m_pTexture);
+//	D3DXCreateTextureFromFile(g_pD3DDvice, L"수지.png",&m_pTexture);
 	{
-		//좌하단먼저 그릴거야 
-		ST_PT_VERTEX v;
-		v.p = D3DXVECTOR3(0, 0, 0);
-		v.t = D3DXVECTOR2(0, 1);
-		m_vecVertex.push_back(v);
+		////좌하단먼저 그릴거야 
+		//ST_PT_VERTEX v;
+		//v.p = D3DXVECTOR3(0, 0, 0);
+		//v.t = D3DXVECTOR2(0, 1);
+		//m_vecVertex.push_back(v);
 
-		//상단으로가면
-		v.p = D3DXVECTOR3(0, 2, 0);
-		v.t = D3DXVECTOR2(0, 0);
-		m_vecVertex.push_back(v);
+		////상단으로가면
+		//v.p = D3DXVECTOR3(0, 2, 0);
+		//v.t = D3DXVECTOR2(0, 0);
+		//m_vecVertex.push_back(v);
 
-		
-		v.p = D3DXVECTOR3(2, 2, 0);
-		v.t = D3DXVECTOR2(1, 0);
-		m_vecVertex.push_back(v);
-
-
-		
-
-		v.p = D3DXVECTOR3(0, 0, 0);
-		v.t = D3DXVECTOR2(0, 1);
-		m_vecVertex.push_back(v);
-
-		//상단으로가면
-		v.p = D3DXVECTOR3(2, 2, 0);
-		v.t = D3DXVECTOR2(1, 0);
-		m_vecVertex.push_back(v);
+		//
+		//v.p = D3DXVECTOR3(2, 2, 0);
+		//v.t = D3DXVECTOR2(1, 0);
+		//m_vecVertex.push_back(v);
 
 
-		v.p = D3DXVECTOR3(2, 0, 0);
-		v.t = D3DXVECTOR2(1, 1);
-		m_vecVertex.push_back(v);
+		//
+
+		//v.p = D3DXVECTOR3(0, 0, 0);
+		//v.t = D3DXVECTOR2(0, 1);
+		//m_vecVertex.push_back(v);
+
+		////상단으로가면
+		//v.p = D3DXVECTOR3(2, 2, 0);
+		//v.t = D3DXVECTOR2(1, 0);
+		//m_vecVertex.push_back(v);
+
+
+		//v.p = D3DXVECTOR3(2, 0, 0);
+		//v.t = D3DXVECTOR2(1, 1);
+		//m_vecVertex.push_back(v);
 
 	}
 	
-	Set_Light();
-	g_pD3DDvice->SetRenderState(D3DRS_LIGHTING, false);//라이트 끄기
+	//Set_Light();
+	//g_pD3DDvice->SetRenderState(D3DRS_LIGHTING, false);//라이트 끄기
 
 	
 
@@ -97,6 +104,8 @@ void cMainGame::Update()
 {
 	//if (m_pCubePC)
 	//	m_pCubePC->Update();
+	if (m_pLight)
+		m_pLight->Update();
 
 	if (m_pCubeMan)
 		m_pCubeMan->Update();
@@ -113,7 +122,7 @@ void cMainGame::Render()
 
 	g_pD3DDvice->BeginScene();
 
-	//Draw_Texture();
+	/*Draw_Texture();*/
 	
 	if (m_pGrid)
 		m_pGrid->Render();
@@ -121,7 +130,8 @@ void cMainGame::Render()
 	/*if (m_pCubePC)
 		m_pCubePC->Render();*/
 
-
+	if (m_pLight)
+		m_pLight->Render();
 	
 	if (m_pCubeMan)
 		m_pCubeMan->Render();
