@@ -12,8 +12,11 @@ cCubePC::~cCubePC()
 {
 }
 
-void cCubePC::Setup()
+void cCubePC::Setup(float x, float y, float z)
 {
+	{
+		
+	
 	ST_PC_VERTEX v;
 	//front
 	v.c = D3DCOLOR_XRGB(rand() % 256, rand() % 256, rand() % 256);
@@ -110,6 +113,11 @@ void cCubePC::Setup()
 	m_vecVertex.push_back(v);
 	v.p = D3DXVECTOR3(1.0f, -1.0f, 1.0f);
 	m_vecVertex.push_back(v);
+	}
+	D3DXMATRIXA16 matT;
+	m_vPosition = D3DXVECTOR3(x, y, z);
+	D3DXMatrixTranslation(&matT, m_vPosition.x, m_vPosition.y, m_vPosition.z);
+	m_matWorld = matT;
 
 }
 

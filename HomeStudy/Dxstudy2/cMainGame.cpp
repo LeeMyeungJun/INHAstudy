@@ -7,7 +7,6 @@
 #include "cCubeMan.h"
 #include "cLight.h"
 
-
 //D3DXMatrixRotationX()
 //D3Dxvec3TransformNormal 사용  등등 이름비슷하니까 찾아쓰도록
 
@@ -29,10 +28,7 @@ cMainGame::~cMainGame()
 	SafeDelete(m_pCamera);
 	SafeDelete(m_pGrid);
 	SafeDelete(m_pCubeMan);
-	SafeDelete(m_pLight);
-
 	SafeRelease(m_pTexture);
-
 	g_pDeveceManager->Destroy();
 }
 
@@ -40,9 +36,10 @@ void cMainGame::Setup()
 {
 	//Setup_Line();
 	//Setup_Triangle();
+
 	m_pLight = new cLight;
 	m_pLight->Setup();
-
+	
 	//m_pCubePC = new cCubePC;
 	//m_pCubePC->Setup();
 
@@ -55,41 +52,40 @@ void cMainGame::Setup()
 	m_pGrid = new cGrid;
 	m_pGrid->Setup();
 
+	
+	
 	// >> : for texture
-//	D3DXCreateTextureFromFile(g_pD3DDvice, L"수지.png",&m_pTexture);
+	D3DXCreateTextureFromFile(g_pD3DDvice, L"수지.png",&m_pTexture);
 	{
-		////좌하단먼저 그릴거야 
-		//ST_PT_VERTEX v;
-		//v.p = D3DXVECTOR3(0, 0, 0);
-		//v.t = D3DXVECTOR2(0, 1);
-		//m_vecVertex.push_back(v);
+		//좌하단먼저 그릴거야 
+		ST_PT_VERTEX v;
+		v.p = D3DXVECTOR3(0, 0, 0);
+		v.t = D3DXVECTOR2(0, 1);
+		m_vecVertex.push_back(v);
 
-		////상단으로가면
-		//v.p = D3DXVECTOR3(0, 2, 0);
-		//v.t = D3DXVECTOR2(0, 0);
-		//m_vecVertex.push_back(v);
+		//상단으로가면
+		v.p = D3DXVECTOR3(0, 2, 0);
+		v.t = D3DXVECTOR2(0, 0);
+		m_vecVertex.push_back(v);
 
-		//
-		//v.p = D3DXVECTOR3(2, 2, 0);
-		//v.t = D3DXVECTOR2(1, 0);
-		//m_vecVertex.push_back(v);
+		
+		v.p = D3DXVECTOR3(2, 2, 0);
+		v.t = D3DXVECTOR2(1, 0);
+		m_vecVertex.push_back(v);
 
+		v.p = D3DXVECTOR3(0, 0, 0);
+		v.t = D3DXVECTOR2(0, 1);
+		m_vecVertex.push_back(v);
 
-		//
-
-		//v.p = D3DXVECTOR3(0, 0, 0);
-		//v.t = D3DXVECTOR2(0, 1);
-		//m_vecVertex.push_back(v);
-
-		////상단으로가면
-		//v.p = D3DXVECTOR3(2, 2, 0);
-		//v.t = D3DXVECTOR2(1, 0);
-		//m_vecVertex.push_back(v);
+		//상단으로가면
+		v.p = D3DXVECTOR3(2, 2, 0);
+		v.t = D3DXVECTOR2(1, 0);
+		m_vecVertex.push_back(v);
 
 
-		//v.p = D3DXVECTOR3(2, 0, 0);
-		//v.t = D3DXVECTOR2(1, 1);
-		//m_vecVertex.push_back(v);
+		v.p = D3DXVECTOR3(2, 0, 0);
+		v.t = D3DXVECTOR2(1, 1);
+		m_vecVertex.push_back(v);
 
 	}
 	
@@ -104,14 +100,15 @@ void cMainGame::Update()
 {
 	//if (m_pCubePC)
 	//	m_pCubePC->Update();
-	if (m_pLight)
-		m_pLight->Update();
 
 	if (m_pCubeMan)
 		m_pCubeMan->Update();
 	
 	if (m_pCamera)
 		m_pCamera->Update();
+
+	if (m_pLight)
+		m_pLight->Update();
 	
 }
 
@@ -122,8 +119,8 @@ void cMainGame::Render()
 
 	g_pD3DDvice->BeginScene();
 
-	/*Draw_Texture();*/
-	
+	//Draw_Texture();
+
 	if (m_pGrid)
 		m_pGrid->Render();
 
@@ -144,6 +141,9 @@ void cMainGame::wndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	if (m_pCamera)
 		m_pCamera->WndProc(hWnd, message, wParam, lParam);
+
+	//if (m_pLight)
+	//	m_pLight->WndProc(hWnd, message, wParam, lParam);
 }
 
 void cMainGame::Setup_Line()
