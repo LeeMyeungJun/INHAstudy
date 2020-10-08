@@ -59,3 +59,8 @@ D3DXVECTOR3& cCharacter::GetPosition()
 {
 	return m_vPosition;
 }
+
+D3DXVECTOR3& cCharacter::GetDirection()
+{
+	return m_vDirection;
+}
