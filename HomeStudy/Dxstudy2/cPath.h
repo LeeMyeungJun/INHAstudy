@@ -6,16 +6,16 @@ private:
 	D3DXVECTOR3 m_vNode;
 	D3DXVECTOR3* m_vPosition;
 	D3DXVECTOR3* m_vDirection;
-	cPath*		m_NextNode;
+
 	
 public:
-	void Update();
+	void Update(D3DXMATRIXA16* matR);
 
 
 public:
-	D3DXVECTOR3* get_m_v_position() const
+	D3DXVECTOR3 get_m_v_position() const
 	{
-		return m_vPosition;
+		return *m_vPosition;
 	}
 
 	void set_m_v_position(D3DXVECTOR3* m_v_position)
@@ -47,15 +47,6 @@ public:
 	
 	
 
-	void set_m_next_node(cPath* m_next_node)
-	{
-		m_NextNode = m_next_node;
-	}
-
-	cPath* get_m_next_node() const
-	{
-		return m_NextNode;
-	}
 
 	
 
