@@ -37,8 +37,8 @@ void cMainGame::Setup()
 	//Setup_Line();
 	//Setup_Triangle();
 
-	m_pLight = new cLight;
-	m_pLight->Setup();
+	//m_pLight = new cLight;
+	//m_pLight->Setup();
 	
 	//m_pCubePC = new cCubePC;
 	//m_pCubePC->Setup();
@@ -89,7 +89,7 @@ void cMainGame::Setup()
 
 	}
 	
-	//Set_Light();
+	Set_Light();
 	//g_pD3DDvice->SetRenderState(D3DRS_LIGHTING, false);//¶óÀÌÆ® ²ô±â
 
 	
@@ -107,8 +107,8 @@ void cMainGame::Update()
 	if (m_pCamera)
 		m_pCamera->Update();
 
-	if (m_pLight)
-		m_pLight->Update();
+	//if (m_pLight)
+	//	m_pLight->Update();
 	
 }
 
@@ -127,8 +127,8 @@ void cMainGame::Render()
 	/*if (m_pCubePC)
 		m_pCubePC->Render();*/
 
-	if (m_pLight)
-		m_pLight->Render();
+	//if (m_pLight)
+	//	m_pLight->Render();
 	
 	if (m_pCubeMan)
 		m_pCubeMan->Render();

@@ -16,6 +16,9 @@
     <Filter Include="CubeMan">
       <UniqueIdentifier>{09d1ec4b-9b0f-42b6-9d23-022d1d4efd78}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ObjLoader">
+      <UniqueIdentifier>{799cebb6-3617-47e2-9665-2bbe94f707c2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -87,6 +90,21 @@
     <ClInclude Include="cPath.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="cObjLoader.h">
+      <Filter>ObjLoader</Filter>
+    </ClInclude>
+    <ClInclude Include="cMtlTex.h">
+      <Filter>ObjLoader</Filter>
+    </ClInclude>
+    <ClInclude Include="cObject.h">
+      <Filter>ObjLoader</Filter>
+    </ClInclude>
+    <ClInclude Include="cObjectManager.h">
+      <Filter>ObjLoader</Filter>
+    </ClInclude>
+    <ClInclude Include="cGroup.h">
+      <Filter>ObjLoader</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -148,6 +166,21 @@
     </ClCompile>
     <ClCompile Include="cPath.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="cObjLoader.cpp">
+      <Filter>ObjLoader</Filter>
+    </ClCompile>
+    <ClCompile Include="cObjectManager.cpp">
+      <Filter>ObjLoader</Filter>
+    </ClCompile>
+    <ClCompile Include="cObject.cpp">
+      <Filter>ObjLoader</Filter>
+    </ClCompile>
+    <ClCompile Include="cMtlTex.cpp">
+      <Filter>ObjLoader</Filter>
+    </ClCompile>
+    <ClCompile Include="cGroup.cpp">
+      <Filter>ObjLoader</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
