@@ -10,3 +10,7 @@ cGroup::cGroup()
 cGroup::~cGroup()
 {
 }
+
+void cGroup::Render()
+{
+}
