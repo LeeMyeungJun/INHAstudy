@@ -8,6 +8,7 @@ public:
 	cCharacter();
 	//~cCharacter();
 	int				m_iIndex;
+	int				m_iEndIndex;
 	cPath*			m_pPath;
 	cHex*			m_pHex;
 

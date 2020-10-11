@@ -52,6 +52,7 @@ public:
 
 public:
 	cPath();
+
 	~cPath();
 };
 
