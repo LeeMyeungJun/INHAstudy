@@ -19,6 +19,6 @@ public:
 	virtual void Update();
 	virtual void Render();
 	virtual D3DXVECTOR3& GetPosition();
-	virtual D3DXVECTOR3& GetDirection();
+
 };
 
