@@ -22,7 +22,7 @@ void cObjLoader::Load(vector<cGroup*>& vecGroup, char* szFolder, char* szFile)
 
 	string sFullPath(szFolder);
 	sFullPath += (string("/") + string(szFile));
-
+	//obj/box.obj
 	FILE* fp;
 	fopen_s(&fp, sFullPath.c_str(), "r");
 
@@ -117,7 +117,7 @@ void cObjLoader::LoadMtlLib(char* szFolder, char* szFile)
 {
 	string sFullPath(szFolder);
 	sFullPath += (string("/") + string(szFile));
-
+	//obj/./box.mtl
 	FILE *fp;
 	fopen_s(&fp, sFullPath.c_str(), "r");
 	string sMtlName;
