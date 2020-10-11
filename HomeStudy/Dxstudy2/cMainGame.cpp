@@ -48,11 +48,13 @@ void cMainGame::Setup()
 	//Setup_Line();
 	//Setup_Triangle();
 
-	m_pLight = new cLight;
-	m_pLight->Setup();
-	
 	//m_pCubePC = new cCubePC;
 	//m_pCubePC->Setup();
+
+
+
+	//m_pLight = new cLight;
+	//m_pLight->Setup();
 
 	m_pCubeMan = new cCubeMan;
 	m_pCubeMan->Setup();
@@ -103,7 +105,7 @@ void cMainGame::Setup()
 
 	}
 	
-	//Set_Light();
+	Set_Light();
 	//g_pD3DDvice->SetRenderState(D3DRS_LIGHTING, false);//¶óÀÌÆ® ²ô±â
 
 	
@@ -159,8 +161,6 @@ void cMainGame::wndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	if (m_pCamera)
 		m_pCamera->WndProc(hWnd, message, wParam, lParam);
 
-	//if (m_pLight)
-	//	m_pLight->WndProc(hWnd, message, wParam, lParam);
 }
 
 void cMainGame::Setup_Line()
@@ -256,14 +256,14 @@ void cMainGame::Draw_Texture()
 void cMainGame::Setup_Obj()
 {
 	cObjLoader l;
-	l.Load(m_vecGroup, "obj", "box.obj");
+	l.Load(m_vecGroup, "obj", "Map.obj");
 	
 }
 
 void cMainGame::Obj_Render()
 {
 	D3DXMATRIXA16 matWorld, matS, matR;
-	D3DXMatrixScaling(&matS, 0.1f, 0.1f, 0.1f);
+	D3DXMatrixScaling(&matS, 0.01f, 0.01f, 0.01f);
 	D3DXMatrixRotationX(&matR, -D3DX_PI / 2.0F);
 	
 	matWorld = matS* matR;
