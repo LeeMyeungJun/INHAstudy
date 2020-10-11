@@ -51,6 +51,9 @@ public:\
 //<< :
 
 #include "cDeviceManager.h"
+
+
+
 struct ST_PC_VERTEX //point & colorÀÇ¹Ì
 {
 	D3DXVECTOR3		p; //xyz°ªÀ» °¡Áú¼öÀÕ½¿
@@ -82,9 +85,11 @@ struct ST_PN_VERTEX
 };
 
 
+#define SafeAddRef(p) {if(p) p->AddRef();}
+
 #define Synthesize(varType , varName, funName) \
 	protected: varType varName; \
-	public: inline varType Get##funName(void) const{ return varName;}\
+	public: inline varType Get##funName(void) const{ return varName;} \
 	public: inline void Set##funName(varType var) {varName = var;}
 
 #define Synthesize_pass_by_Ref(varType , varName, funName) \
@@ -93,4 +98,9 @@ struct ST_PN_VERTEX
 	public: inline void Set##funName(varType& var) {varName = var;}
 
 
+
+#include "cObjectManager.h"
+#include "cObject.h"
+#include "cMtlTex.h"
+#include "cGroup.h"
 

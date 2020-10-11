@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "cGroup.h"
+
 
 
 cGroup::cGroup()
