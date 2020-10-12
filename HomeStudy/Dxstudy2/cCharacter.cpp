@@ -42,15 +42,26 @@ void cCharacter::Render()
 {
 }
 
-bool cCharacter::CollisionCheck()
+bool cCharacter::CollisionCheck(D3DXVECTOR3 temp)
 {
 	
 	vector<ST_PNT_VERTEX> vecTemp = m_vecGroup[0]->GetVertex();
 	D3DXVECTOR3 vecRayPos = m_vPosition;
 	vecRayPos.y = 100;
-	for (int i = 0; i < vecTemp.size(); i += 2)
+	for (int i = 0; i < vecTemp.size(); i += 3)
 	{
-		D3DXIntersectTri(&vecTemp[i].p, &vecTemp[i + 1].p, &vecTemp[i + 2].p, &vecRayPos, &D3DXVECTOR3(0, -1, 0), 0, 0,0);
+		float pDist;
+		if(D3DXIntersectTri(&vecTemp[i].p, &vecTemp[i + 1].p, &vecTemp[i + 2].p, &vecRayPos, &D3DXVECTOR3(0, -1, 0), 0, 0, &pDist))
+		{
+			m_vPosition.y = (100.9f - pDist);
+			return false;
+		}
+		else
+		{
+			m_vPosition.y = 0.9f;
+		}
+			
+		
 	}
 	return false;
 }
@@ -82,7 +93,7 @@ void cCharacter::PlayerMove()
 		temp -= (m_vDirection * 0.1f);
 	}
 
-	if (!CollisionCheck())
+	if (!CollisionCheck(temp))
 	{
 		m_vPosition = temp;
 	}

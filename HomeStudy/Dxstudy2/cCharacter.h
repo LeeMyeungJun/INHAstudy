@@ -26,7 +26,7 @@ public:
 
 
 public:
-	bool CollisionCheck();
+	bool CollisionCheck(D3DXVECTOR3 temp);
 	void PlayerMove();
 
 	D3DXVECTOR3& GetPosition();
