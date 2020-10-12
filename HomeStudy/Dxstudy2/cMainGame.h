@@ -5,7 +5,6 @@ class cCubePC;
 class cCamera;
 class cGrid;
 class cLight;
-class cGroup;
 
 class cMainGame
 {
@@ -29,12 +28,6 @@ private:
 	//::texture
 	LPDIRECT3DTEXTURE9		m_pTexture;
 	vector<ST_PT_VERTEX>	m_vecVertex;
-	//<<:
-
-	//>>:
-	vector<cGroup*>			m_vecGroup;
-
-	
 public:
 	void Setup();
 	void Update();
@@ -49,9 +42,7 @@ public:
 	void Draw_Triangle();
 
 	void Set_Light();
-	void Draw_Texture();
 
-	void Setup_Obj();
-	void Obj_Render();
+	void Draw_Texture();
 };
 

@@ -6,8 +6,6 @@
 #include "cGrid.h"
 #include "cCubeMan.h"
 #include "cLight.h"
-#include "cObjLoader.h"
-#include "cGroup.h"
 
 //D3DXMatrixRotationX()
 //D3Dxvec3TransformNormal 사용  등등 이름비슷하니까 찾아쓰도록
@@ -31,15 +29,6 @@ cMainGame::~cMainGame()
 	SafeDelete(m_pGrid);
 	SafeDelete(m_pCubeMan);
 	SafeRelease(m_pTexture);
-
-
-	for each(auto p in m_vecGroup)
-	{
-		SafeRelease(p);
-	}
-	m_vecGroup.clear();
-	g_pObjectManager->Destroy();
-	
 	g_pDeveceManager->Destroy();
 }
 
@@ -48,13 +37,11 @@ void cMainGame::Setup()
 	//Setup_Line();
 	//Setup_Triangle();
 
+	m_pLight = new cLight;
+	m_pLight->Setup();
+	
 	//m_pCubePC = new cCubePC;
 	//m_pCubePC->Setup();
-
-
-
-	//m_pLight = new cLight;
-	//m_pLight->Setup();
 
 	m_pCubeMan = new cCubeMan;
 	m_pCubeMan->Setup();
@@ -64,9 +51,6 @@ void cMainGame::Setup()
 
 	m_pGrid = new cGrid;
 	m_pGrid->Setup();
-
-	Setup_Obj();
-
 
 	
 	
@@ -105,7 +89,7 @@ void cMainGame::Setup()
 
 	}
 	
-	Set_Light();
+	//Set_Light();
 	//g_pD3DDvice->SetRenderState(D3DRS_LIGHTING, false);//라이트 끄기
 
 	
@@ -142,15 +126,12 @@ void cMainGame::Render()
 
 	/*if (m_pCubePC)
 		m_pCubePC->Render();*/
-	Obj_Render();
-	
+
 	if (m_pLight)
 		m_pLight->Render();
 	
 	if (m_pCubeMan)
 		m_pCubeMan->Render();
-
-	
 
 	g_pD3DDvice->EndScene();
 	g_pD3DDvice->Present(NULL, NULL, NULL, NULL);
@@ -161,6 +142,8 @@ void cMainGame::wndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	if (m_pCamera)
 		m_pCamera->WndProc(hWnd, message, wParam, lParam);
 
+	//if (m_pLight)
+	//	m_pLight->WndProc(hWnd, message, wParam, lParam);
 }
 
 void cMainGame::Setup_Line()
@@ -251,27 +234,4 @@ void cMainGame::Draw_Texture()
 	g_pD3DDvice->SetFVF(ST_PT_VERTEX::FVF);
 	g_pD3DDvice->DrawPrimitiveUP(D3DPT_TRIANGLELIST, m_vecVertex.size() / 3, &m_vecVertex[0], sizeof(ST_PT_VERTEX));
 	g_pD3DDvice->SetTexture(0, NULL); //월드에 텍스쳐빼기
-}
-
-void cMainGame::Setup_Obj()
-{
-	cObjLoader l;
-	l.Load(m_vecGroup, "obj", "Map.obj");
-	
-}
-
-void cMainGame::Obj_Render()
-{
-	D3DXMATRIXA16 matWorld, matS, matR;
-	D3DXMatrixScaling(&matS, 0.01f, 0.01f, 0.01f);
-	D3DXMatrixRotationX(&matR, -D3DX_PI / 2.0F);
-	
-	matWorld = matS* matR;
-	g_pD3DDvice->SetTransform(D3DTS_WORLD, &matWorld);
-
-	for each(auto p in m_vecGroup)
-	{
-		p->Render();
-	}
-	//D3DXIntersectTri(v1, v2, v3, rayPos, rayDir, u, v, f);
 }

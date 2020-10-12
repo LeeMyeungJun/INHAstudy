@@ -16,8 +16,8 @@
     <Filter Include="CubeMan">
       <UniqueIdentifier>{09d1ec4b-9b0f-42b6-9d23-022d1d4efd78}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ObjLoader">
-      <UniqueIdentifier>{57d16099-adb5-437e-ae18-fad551b54fd4}</UniqueIdentifier>
+    <Filter Include="Path">
+      <UniqueIdentifier>{ea58c78e-f2aa-4738-8d42-f161f1c5e10b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -88,25 +88,10 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="cPath.h">
-      <Filter>Header Files</Filter>
+      <Filter>Path</Filter>
     </ClInclude>
-    <ClInclude Include="cObject.h">
-      <Filter>ObjLoader</Filter>
-    </ClInclude>
-    <ClInclude Include="cObjectManager.h">
-      <Filter>ObjLoader</Filter>
-    </ClInclude>
-    <ClInclude Include="cObjLoader.h">
-      <Filter>ObjLoader</Filter>
-    </ClInclude>
-    <ClInclude Include="cMtlTex.h">
-      <Filter>ObjLoader</Filter>
-    </ClInclude>
-    <ClInclude Include="cTextureManager.h">
-      <Filter>ObjLoader</Filter>
-    </ClInclude>
-    <ClInclude Include="cGroup.h">
-      <Filter>ObjLoader</Filter>
+    <ClInclude Include="cHex.h">
+      <Filter>Path</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -168,25 +153,10 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="cPath.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Path</Filter>
     </ClCompile>
-    <ClCompile Include="cGroup.cpp">
-      <Filter>ObjLoader</Filter>
-    </ClCompile>
-    <ClCompile Include="cMtlTex.cpp">
-      <Filter>ObjLoader</Filter>
-    </ClCompile>
-    <ClCompile Include="cObject.cpp">
-      <Filter>ObjLoader</Filter>
-    </ClCompile>
-    <ClCompile Include="cObjectManager.cpp">
-      <Filter>ObjLoader</Filter>
-    </ClCompile>
-    <ClCompile Include="cTextureManager.cpp">
-      <Filter>ObjLoader</Filter>
-    </ClCompile>
-    <ClCompile Include="cObjLoader.cpp">
-      <Filter>ObjLoader</Filter>
+    <ClCompile Include="cHex.cpp">
+      <Filter>Path</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -204,6 +174,5 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="ClassDiagram.cd" />
-    <None Include="ClassDiagram2.cd" />
   </ItemGroup>
 </Project>
