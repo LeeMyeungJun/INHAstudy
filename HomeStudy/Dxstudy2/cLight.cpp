@@ -79,6 +79,7 @@ void cLight::Set_DirectionLight()
 	stLight[1].Ambient = D3DXCOLOR(0.8f, 0, 0, 1.0f);
 	stLight[1].Diffuse = D3DXCOLOR(0.8f, 0, 0, 1.0f);
 	stLight[1].Specular = D3DXCOLOR(0.8f, 0, 0, 1.0f);
+
 	D3DXVECTOR3 vDir(0, -1.0f, 0);
 	D3DXVec3Normalize(&vDir, &vDir);
 	stLight[1].Direction = vDir;

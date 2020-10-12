@@ -1,4 +1,6 @@
 
+#define SafeAddRef(p) {if(p) p->AddRef();}
+
 #define SafeRelease(p) {if(p) p->Release() ; p = NULL;} //애는 컴과 연결을 끊는거다 .
 
 #define SafeDelete(p){if(p) delete p; p = NULL;} //delete 매크로
