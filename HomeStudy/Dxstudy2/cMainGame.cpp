@@ -256,14 +256,13 @@ void cMainGame::Draw_Texture()
 void cMainGame::Setup_Obj()
 {
 	cObjLoader l;
-	l.Load(m_vecGroup, "obj", "Map.obj");
-	
+	l.Load(m_vecGroup, "obj", "map_surface.obj");	
 }
 
 void cMainGame::Obj_Render()
 {
 	D3DXMATRIXA16 matWorld, matS, matR;
-	D3DXMatrixScaling(&matS, 0.01f, 0.01f, 0.01f);
+	D3DXMatrixScaling(&matS, 0.03f, 0.03f, 0.03f);
 	D3DXMatrixRotationX(&matR, -D3DX_PI / 2.0F);
 	
 	matWorld = matS* matR;

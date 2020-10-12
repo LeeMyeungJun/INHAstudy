@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "cCharacter.h"
+#include "cObjLoader.h"
 
 
 cCharacter::cCharacter()
@@ -17,28 +18,14 @@ cCharacter::~cCharacter()
 
 void cCharacter::Setup()
 {
+	cObjLoader l;
+	l.Load(m_vecGroup, "obj", "map_surface.obj");
+
 }
 
 void cCharacter::Update()
 {
-	if (GetKeyState('A') & 0X8000)
-	{
-		m_fRotY -= 0.1f;
-	}
-
-	if (GetKeyState('D') & 0X8000)
-	{
-		m_fRotY += 0.1f;
-	}
-
-	if (GetKeyState('W') & 0X8000)
-	{
-		m_vPosition += (m_vDirection * 0.1f);
-	}
-	if (GetKeyState('S') & 0X8000)
-	{
-		m_vPosition -= (m_vDirection * 0.1f);
-	}
+	PlayerMove();
 
 	RECT rc;
 	GetClientRect(g_hWnd, &rc);
@@ -53,6 +40,54 @@ void cCharacter::Update()
 
 void cCharacter::Render()
 {
+}
+
+bool cCharacter::CollisionCheck()
+{
+	
+	vector<ST_PNT_VERTEX> vecTemp = m_vecGroup[0]->GetVertex();
+	D3DXVECTOR3 vecRayPos = m_vPosition;
+	vecRayPos.y = 100;
+	for (int i = 0; i < vecTemp.size(); i += 2)
+	{
+		D3DXIntersectTri(&vecTemp[i].p, &vecTemp[i + 1].p, &vecTemp[i + 2].p, &vecRayPos, &D3DXVECTOR3(0, -1, 0), 0, 0,0);
+	}
+	return false;
+}
+
+void cCharacter::PlayerMove()
+{
+	//RotY Set
+	{
+		if (GetKeyState('A') & 0X8000)
+		{
+			m_fRotY -= 0.1f;
+		}
+
+		if (GetKeyState('D') & 0X8000)
+		{
+			m_fRotY += 0.1f;
+		}
+	}
+
+	D3DXVECTOR3 temp = m_vPosition;
+
+
+	if (GetKeyState('W') & 0X8000)
+	{
+		temp += (m_vDirection * 0.1f);
+	}
+	if (GetKeyState('S') & 0X8000)
+	{
+		temp -= (m_vDirection * 0.1f);
+	}
+
+	if (!CollisionCheck())
+	{
+		m_vPosition = temp;
+	}
+
+
 }
 
 D3DXVECTOR3& cCharacter::GetPosition()

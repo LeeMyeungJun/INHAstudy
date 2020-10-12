@@ -34,6 +34,7 @@ private:
 	//>>:
 	vector<cGroup*>			m_vecGroup;
 
+
 	
 public:
 	void Setup();
