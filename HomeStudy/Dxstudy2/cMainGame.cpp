@@ -51,8 +51,8 @@ void cMainGame::Setup()
 	//Setup_Line();
 	//Setup_Triangle();
 
-	m_pLight = new cLight;
-	m_pLight->Setup();
+	//m_pLight = new cLight;
+	//m_pLight->Setup();
 	
 	//m_pCubePC = new cCubePC;
 	//m_pCubePC->Setup();
@@ -106,7 +106,7 @@ void cMainGame::Setup()
 
 	}
 	
-	//Set_Light();
+	Set_Light();
 	//g_pD3DDvice->SetRenderState(D3DRS_LIGHTING, false);//라이트 끄기
 
 	
