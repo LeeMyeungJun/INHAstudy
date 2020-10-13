@@ -27,9 +27,9 @@ public:
 
 	void AddSFX(string path, string musicName);
 	void AddBGM(string path);
-	void PlaySFX(string soundName);
+	void PlaySFX(string MusicName);
 	void PlayBGM();
-	void Stop();
+	void Stop(string MusicName);
 
 	void Destroy();
 
