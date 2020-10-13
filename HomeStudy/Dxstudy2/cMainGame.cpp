@@ -260,7 +260,7 @@ void cMainGame::Setup_Obj()
 {
 	cObjLoader l;
 	l.Load(m_vecGroup, "obj", "map.obj");
-
+	l.LoadAse(m_vecGroup, "ASE", "woman_01_all.ASE");
 	Load_Surface();
 	
 }
@@ -290,3 +290,5 @@ void cMainGame::Load_Surface()
 	matWorld = matS* matR;
 	m_pMap = new cObjMap("obj", "map_surface.obj", &matWorld);
 }
+
+

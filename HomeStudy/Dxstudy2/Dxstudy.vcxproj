@@ -150,6 +150,7 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="cAseLoader.h" />
     <ClInclude Include="cBody.h" />
     <ClInclude Include="cCamera.h" />
     <ClInclude Include="cCharacter.h" />
@@ -182,6 +183,7 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="cAseLoader.cpp" />
     <ClCompile Include="cBody.cpp" />
     <ClCompile Include="cCamera.cpp" />
     <ClCompile Include="cCharacter.cpp" />
