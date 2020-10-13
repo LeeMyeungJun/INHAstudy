@@ -8,19 +8,17 @@
 #include "cLight.h"
 #include "cObjLoader.h"
 #include "cGroup.h"
-#include "cObjMap.h"
 
 //D3DXMatrixRotationX()
 //D3Dxvec3TransformNormal 사용  등등 이름비슷하니까 찾아쓰도록
 
 cMainGame::cMainGame()
 	:m_pCubePC(NULL)
-	, m_pCamera(NULL)
-	, m_pGrid(NULL)
-	, m_pCubeMan(NULL)
-	, m_pTexture(NULL)
-	, m_pLight(NULL)
-	, m_pMap(NULL)
+	,m_pCamera(NULL)
+	,m_pGrid(NULL)
+	,m_pCubeMan(NULL)
+	,m_pTexture(NULL)
+	,m_pLight(NULL)
 {
 	
 }
@@ -32,7 +30,6 @@ cMainGame::~cMainGame()
 	SafeDelete(m_pCamera);
 	SafeDelete(m_pGrid);
 	SafeDelete(m_pCubeMan);
-	SafeDelete(m_pMap);
 	SafeRelease(m_pTexture);
 
 
@@ -51,11 +48,13 @@ void cMainGame::Setup()
 	//Setup_Line();
 	//Setup_Triangle();
 
-	//m_pLight = new cLight;
-	//m_pLight->Setup();
-	
 	//m_pCubePC = new cCubePC;
 	//m_pCubePC->Setup();
+
+
+
+	//m_pLight = new cLight;
+	//m_pLight->Setup();
 
 	m_pCubeMan = new cCubeMan;
 	m_pCubeMan->Setup();
@@ -67,7 +66,7 @@ void cMainGame::Setup()
 	m_pGrid->Setup();
 
 	Setup_Obj();
-	
+
 
 	
 	
@@ -119,7 +118,7 @@ void cMainGame::Update()
 	//	m_pCubePC->Update();
 
 	if (m_pCubeMan)
-		m_pCubeMan->Update(m_pMap);
+		m_pCubeMan->Update();
 	
 	if (m_pCamera)
 		m_pCamera->Update();
@@ -162,8 +161,6 @@ void cMainGame::wndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	if (m_pCamera)
 		m_pCamera->WndProc(hWnd, message, wParam, lParam);
 
-	//if (m_pLight)
-	//	m_pLight->WndProc(hWnd, message, wParam, lParam);
 }
 
 void cMainGame::Setup_Line()
@@ -259,9 +256,7 @@ void cMainGame::Draw_Texture()
 void cMainGame::Setup_Obj()
 {
 	cObjLoader l;
-	l.Load(m_vecGroup, "obj", "map.obj");
-
-	Load_Surface();
+	l.Load(m_vecGroup, "obj", "Map.obj");
 	
 }
 
@@ -279,14 +274,4 @@ void cMainGame::Obj_Render()
 		p->Render();
 	}
 	//D3DXIntersectTri(v1, v2, v3, rayPos, rayDir, u, v, f);
-}
-
-void cMainGame::Load_Surface()
-{
-	D3DXMATRIXA16 matWorld, matS, matR;
-	D3DXMatrixScaling(&matS, 0.01f, 0.01f, 0.01f);
-	D3DXMatrixRotationX(&matR, -D3DX_PI / 2.0F);
-
-	matWorld = matS* matR;
-	m_pMap = new cObjMap("obj", "map_surface.obj", &matWorld);
 }
