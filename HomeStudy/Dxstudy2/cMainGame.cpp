@@ -8,17 +8,19 @@
 #include "cLight.h"
 #include "cObjLoader.h"
 #include "cGroup.h"
+#include "cObjMap.h"
 
 //D3DXMatrixRotationX()
 //D3Dxvec3TransformNormal 사용  등등 이름비슷하니까 찾아쓰도록
 
 cMainGame::cMainGame()
 	:m_pCubePC(NULL)
-	,m_pCamera(NULL)
-	,m_pGrid(NULL)
-	,m_pCubeMan(NULL)
-	,m_pTexture(NULL)
-	,m_pLight(NULL)
+	, m_pCamera(NULL)
+	, m_pGrid(NULL)
+	, m_pCubeMan(NULL)
+	, m_pTexture(NULL)
+	, m_pLight(NULL)
+	, m_pMap(NULL)
 {
 	
 }
@@ -30,6 +32,7 @@ cMainGame::~cMainGame()
 	SafeDelete(m_pCamera);
 	SafeDelete(m_pGrid);
 	SafeDelete(m_pCubeMan);
+	SafeDelete(m_pMap);
 	SafeRelease(m_pTexture);
 
 
@@ -64,7 +67,7 @@ void cMainGame::Setup()
 	m_pGrid->Setup();
 
 	Setup_Obj();
-
+	
 
 	
 	
@@ -116,7 +119,7 @@ void cMainGame::Update()
 	//	m_pCubePC->Update();
 
 	if (m_pCubeMan)
-		m_pCubeMan->Update();
+		m_pCubeMan->Update(m_pMap);
 	
 	if (m_pCamera)
 		m_pCamera->Update();
@@ -256,14 +259,16 @@ void cMainGame::Draw_Texture()
 void cMainGame::Setup_Obj()
 {
 	cObjLoader l;
-	l.Load(m_vecGroup, "obj", "box.obj");
+	l.Load(m_vecGroup, "obj", "map.obj");
+
+	Load_Surface();
 	
 }
 
 void cMainGame::Obj_Render()
 {
 	D3DXMATRIXA16 matWorld, matS, matR;
-	D3DXMatrixScaling(&matS, 0.1f, 0.1f, 0.1f);
+	D3DXMatrixScaling(&matS, 0.01f, 0.01f, 0.01f);
 	D3DXMatrixRotationX(&matR, -D3DX_PI / 2.0F);
 	
 	matWorld = matS* matR;
@@ -274,4 +279,14 @@ void cMainGame::Obj_Render()
 		p->Render();
 	}
 	//D3DXIntersectTri(v1, v2, v3, rayPos, rayDir, u, v, f);
+}
+
+void cMainGame::Load_Surface()
+{
+	D3DXMATRIXA16 matWorld, matS, matR;
+	D3DXMatrixScaling(&matS, 0.01f, 0.01f, 0.01f);
+	D3DXMatrixRotationX(&matR, -D3DX_PI / 2.0F);
+
+	matWorld = matS* matR;
+	m_pMap = new cObjMap("obj", "map_surface.obj", &matWorld);
 }
