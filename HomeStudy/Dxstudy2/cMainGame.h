@@ -1,5 +1,6 @@
 #pragma once
 #include "stdafx.h"
+class cFrame;
 class cCubeMan;
 class cCubePC;
 class cCamera;
@@ -25,6 +26,10 @@ private:
 	cCubeMan*		m_pCubeMan;
 	cLight*			m_pLight;
 	iMap*			m_pMap;
+
+	//:>>AseLoader
+	cFrame*			m_pRootFrame;
+	//<:
 
 	//::texture
 	LPDIRECT3DTEXTURE9		m_pTexture;

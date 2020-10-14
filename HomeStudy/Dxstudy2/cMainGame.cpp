@@ -10,6 +10,10 @@
 #include "cGroup.h"
 #include "cObjMap.h"
 
+
+#include "cAseLoader.h"
+#include "cFrame.h"
+
 //D3DXMatrixRotationX()
 //D3Dxvec3TransformNormal 사용  등등 이름비슷하니까 찾아쓰도록
 
@@ -21,6 +25,7 @@ cMainGame::cMainGame()
 	, m_pTexture(NULL)
 	, m_pLight(NULL)
 	, m_pMap(NULL)
+	, m_pRootFrame(NULL)
 {
 	
 }
@@ -41,8 +46,12 @@ cMainGame::~cMainGame()
 		SafeRelease(p);
 	}
 	m_vecGroup.clear();
+
+	//>>AseLoader:
+	m_pRootFrame->Destroy();
+	//<<:
 	g_pObjectManager->Destroy();
-	
+
 	g_pDeveceManager->Destroy();
 }
 
@@ -66,6 +75,11 @@ void cMainGame::Setup()
 	m_pGrid = new cGrid;
 	m_pGrid->Setup();
 
+	//>>:AseLoader
+	cAseLoader l;
+	m_pRootFrame = l.Load("woman/woman_01_all.ASE");
+	//<<:
+	
 	Setup_Obj();
 	
 
@@ -143,14 +157,20 @@ void cMainGame::Render()
 
 	/*if (m_pCubePC)
 		m_pCubePC->Render();*/
-	Obj_Render();
+	//Obj_Render();
 	
 	if (m_pLight)
 		m_pLight->Render();
-	
-	if (m_pCubeMan)
-		m_pCubeMan->Render();
 
+	//일단 지우고 테스트합시다 .
+	//if (m_pCubeMan)
+	//	m_pCubeMan->Render();
+
+	//AseLoader
+	{
+		if (m_pRootFrame)
+			m_pRootFrame->Render();
+	}
 	
 
 	g_pD3DDvice->EndScene();
