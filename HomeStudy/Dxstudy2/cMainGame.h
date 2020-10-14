@@ -26,6 +26,7 @@ private:
 	cCubeMan*		m_pCubeMan;
 	cLight*			m_pLight;
 	iMap*			m_pMap;
+	
 
 	//:>>AseLoader
 	cFrame*			m_pRootFrame;
@@ -60,5 +61,6 @@ public:
 	void Obj_Render();
 
 	void Load_Surface();
+
 };
 
