@@ -34,6 +34,21 @@ private: //내부적으로 사용할함수들을 정리해보자.
 	void ProcessMESH_TFACELIST(OUT vector<ST_PNT_VERTEX>& vecVertex, IN vector<D3DXVECTOR2>& vecVT);
 	void ProcessMESH_NOMRALS(OUT vector<ST_PNT_VERTEX>& vecVertex);
 	void ProcessNODE_TM(OUT cFrame* pFrame);
-	void ProcessScene();
+
+	//>>: Animaition
+
+	void ProcessScene();	
 	void Set_SceneFrame(OUT cFrame* pRoot);
+	void ProcessTM_ANIMATION(OUT cFrame* pFrame);
+	void ProcessCONTROL_POS_TRACK(OUT cFrame* pFrame);
+	void ProcessCONTROL_ROT_TRACK(OUT cFrame* pFrame);
+
+
+	
+	DWORD		m_dwFirstFrame;
+	DWORD		m_dwLastFrame;
+	DWORD		m_dwFrameSpeed;
+	DWORD		m_dwTicksPerFrame;
+
+	//<<:
 };

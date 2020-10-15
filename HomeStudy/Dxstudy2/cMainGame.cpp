@@ -138,8 +138,13 @@ void cMainGame::Update()
 	if (m_pCamera)
 		m_pCamera->Update();
 
+	if (m_pRootFrame)
+		m_pRootFrame->Update(m_pRootFrame->GetKeyFrame(),NULL);//처음엔 널을 넣어주면 되겠지?
+	
 	if (m_pLight)
 		m_pLight->Update();
+
+	
 	
 }
 

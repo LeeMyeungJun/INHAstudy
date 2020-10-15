@@ -87,6 +87,33 @@ struct ST_PN_VERTEX
 	D3DXVECTOR3 n;
 	enum { FVF = D3DFVF_XYZ | D3DFVF_NORMAL};
 };
+//>>:AnimationStruct
+struct ST_POS_SAMPLE
+{
+	int			n;
+	D3DXVECTOR3	v;
+	ST_POS_SAMPLE()//구조체에도  초기화작업을 해줄수있다.
+		: n(0)
+		, v(0,0,0)
+	{}
+};
+
+struct ST_ROT_SAMPLE
+{
+	int				n;
+	D3DXQUATERNION	q;
+	ST_ROT_SAMPLE()//구조체에도  초기화작업을 해줄수있다.
+		: n(0)
+	{
+		D3DXQuaternionIdentity(&q); //x y z값은 0 w는 1로 
+		
+	}
+};
+
+//<<:
+
+
+
 
 #define SafeAddRef(p) {if(p) p->AddRef();}
 
