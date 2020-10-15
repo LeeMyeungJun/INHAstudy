@@ -5,6 +5,13 @@
 
 #pragma once
 
+#ifdef UNICODE
+#pragma comment(linker, "/entry:wWinMainCRTStartup /subsystem:console")
+#else
+#pragma comment(linker, "/entry:WinMainCRTStartup /subsystem:console")
+
+
+#endif #define WIN32_LEAN_AND_MEAN
 #include "targetver.h"
 
 #define WIN32_LEAN_AND_MEAN             // Exclude rarely-used stuff from Windows headers
@@ -23,6 +30,7 @@
 #include <set>
 #include <list>
 #include <assert.h> //경고에 관련된 헤더파일 예외처리해주려고 넣음.
+
  
 using namespace std;
 

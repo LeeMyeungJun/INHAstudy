@@ -4,6 +4,8 @@
 
 cFrame::cFrame()
 	: m_pMtlTex(nullptr)
+	, m_pVB(NULL) //이거랑
+	, m_nNumTri(0) //이거랑
 {
 	D3DXMatrixIdentity(&m_matLocalTM);
 	D3DXMatrixIdentity(&m_matWorldTM);
@@ -13,6 +15,7 @@ cFrame::cFrame()
 cFrame::~cFrame()
 {
 	SafeRelease(m_pMtlTex);
+	SafeRelease(m_pVB); //이거 
 }
 
 void cFrame::Update(int nKeyFrame, D3DXMATRIXA16* pmatParent)
@@ -36,16 +39,30 @@ void cFrame::Update(int nKeyFrame, D3DXMATRIXA16* pmatParent)
 
 void cFrame::Render()
 {
+
+	
 	if (m_pMtlTex)
 	{
+		RenderFPS();
 		g_pD3DDvice->SetTransform(D3DTS_WORLD, &m_matWorldTM);
 		g_pD3DDvice->SetTexture(0, m_pMtlTex->GetTexture());
 		g_pD3DDvice->SetMaterial(&m_pMtlTex->GetMaterial());
 
 		g_pD3DDvice->SetFVF(ST_PNT_VERTEX::FVF);
+		//그려주기함수를 바꿔준다했잖아 이부분을 안쓸거야
+		/* 이부분
 		g_pD3DDvice->DrawPrimitiveUP(D3DPT_TRIANGLELIST,
 		                              m_vecVertex.size() / 3,
 		                              &m_vecVertex[0], sizeof(ST_PNT_VERTEX));
+
+		                              */
+
+		g_pD3DDvice->SetStreamSource(0,
+			m_pVB,
+			0,
+			sizeof(ST_PNT_VERTEX));
+
+		g_pD3DDvice->DrawPrimitive(D3DPT_TRIANGLELIST, 0,m_nNumTri );// List로불를거고 , 스타트인덱스값 내가정할수있지만 왠만하면 0으로부터 시작할거야 , 삼각형 갯수 
 	}
 	for each (auto c in m_vecChild)
 		c->Render();
@@ -189,4 +206,55 @@ int cFrame::GetKeyFrame()
 	int last = m_dwLastFrame * m_dwTicksPerFrame;
 
 	return GetTickCount() % (last - first) + first; //first가 0부터 시작이아니잖아 
+}
+
+void cFrame::RenderFPS()
+{
+	static DWORD frameCount = 0;            //프레임 카운트수
+	static float timeElapsed = 0.0f;            //흐른 시간
+	static DWORD lastTime = GetTickCount();   //마지막 시간(temp변수)
+
+	DWORD curTime = GetTickCount();      //현재 시간
+	float timeDelta = (curTime - lastTime)*0.001f;        //timeDelta(1번생성후 흐른 시간) 1초단위로 바꿔준다.
+
+	timeElapsed += timeDelta;
+
+	frameCount++;
+
+	if (timeElapsed >= 1.0f)         //흐른시간이 1초이상이면 내가 하고싶은것 처리
+	{
+		float fps = (float)frameCount / timeElapsed;
+		cout <<"버텍스 초당 버퍼:" <<fps << endl;
+
+		frameCount = 0;
+		timeElapsed = 0.0f;
+	}
+
+
+	lastTime = curTime;
+}
+
+void cFrame::BuildVB(vector<ST_PNT_VERTEX>& vecVertex)
+{
+	m_nNumTri = vecVertex.size() / 3;
+	//버텍스를 순서대로 락하고 넣어주는거 까지 여기서할거야
+	g_pD3DDvice->CreateVertexBuffer(
+		vecVertex.size() * sizeof(ST_PNT_VERTEX),
+		0,
+		ST_PNT_VERTEX::FVF,
+		D3DPOOL_MANAGED,
+		&m_pVB,
+		NULL);
+
+	//이제 메모리를 잠가보자
+
+	ST_PNT_VERTEX* pV = NULL;
+	m_pVB->Lock(0, 0, (LPVOID*)&pV, 0); //락을걸고
+	//데이터를 옮겨줘
+	//memecpy가 위험한게 연속적인 데이터라는 증거가 있어야해
+	memcpy(pV, &vecVertex[0], vecVertex.size() * sizeof(ST_PNT_VERTEX));
+	m_pVB->Unlock();
+
+	//이제됬으 그려주는부분만해주면되 
+	
 }

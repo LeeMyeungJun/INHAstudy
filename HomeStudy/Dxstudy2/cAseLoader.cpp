@@ -341,10 +341,12 @@ void cAseLoader::ProcessMESH(OUT cFrame* pFrame)
 		D3DXVec3TransformCoord(&vecVertex[i].p, &vecVertex[i].p, &matInvWorld);
 
 		D3DXVec3TransformNormal(&vecVertex[i].n, &vecVertex[i].n, &matInvWorld);
-		pFrame->SetVertex(vecVertex);
+		
 	}
+	//pFrame->SetVertex(vecVertex); //이것두넣고 cFrame Render할때 두개다 랜더해봐 그러고 속도를 체크해봐 FPS 를 체크해바
+	pFrame->BuildVB(vecVertex);//버텍스버퍼로 만들기 
 }
-
+//초당 몇번의 프레임.
 void cAseLoader::ProcessMESH_VERTEX_LIST(vector<D3DXVECTOR3>& vecV)
 {
 	int nLevel = 0;

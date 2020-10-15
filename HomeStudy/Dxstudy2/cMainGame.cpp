@@ -121,7 +121,7 @@ void cMainGame::Setup()
 	}
 	
 	Set_Light();
-	//g_pD3DDvice->SetRenderState(D3DRS_LIGHTING, false);//라이트 끄기
+	g_pD3DDvice->SetRenderState(D3DRS_LIGHTING, false);//라이트 끄기
 
 	
 
@@ -141,8 +141,8 @@ void cMainGame::Update()
 	if (m_pRootFrame)
 		m_pRootFrame->Update(m_pRootFrame->GetKeyFrame(),NULL);//처음엔 널을 넣어주면 되겠지?
 	
-	if (m_pLight)
-		m_pLight->Update();
+	//if (m_pLight)
+	//	m_pLight->Update();
 
 	
 	
@@ -164,8 +164,8 @@ void cMainGame::Render()
 		m_pCubePC->Render();*/
 	//Obj_Render();
 	
-	if (m_pLight)
-		m_pLight->Render();
+	//if (m_pLight)
+	//	m_pLight->Render();
 
 	//일단 지우고 테스트합시다 .
 	//if (m_pCubeMan)
