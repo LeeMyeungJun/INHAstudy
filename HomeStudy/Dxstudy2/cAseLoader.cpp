@@ -46,7 +46,7 @@ cFrame* cAseLoader::Load(char* szFullPath)
 		}
 	} //<<:while()
 	fclose(m_fp);
-
+	//다넣고 여기다가 속성버퍼 적용 
 	for each (auto p in m_vecMtlTex)
 	{
 		SafeRelease(p);

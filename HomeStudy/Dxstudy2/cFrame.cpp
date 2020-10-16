@@ -276,7 +276,6 @@ void cFrame::BuildVB(vector<ST_PNT_VERTEX>& vecVertex)
 	for (int i = 0; i < vecVertex.size(); i++)
 		vecWordIndex.push_back(i);
 
-
 	g_pD3DDvice->CreateIndexBuffer(vecWordIndex.size() * sizeof(WORD), 0, D3DFMT_INDEX16, D3DPOOL_MANAGED, &m_pIB,NULL);
 	
 	m_pIB->Lock(0,0, (LPVOID*)& pI,0);

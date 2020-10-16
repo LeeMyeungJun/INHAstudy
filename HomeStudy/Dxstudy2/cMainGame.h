@@ -64,6 +64,8 @@ public:
 	void Load_Surface();
 
 	//>>:
+
+
 private:
 	LPD3DXMESH		m_pMeshTeapot;
 	LPD3DXMESH		m_pMeshSphere;
