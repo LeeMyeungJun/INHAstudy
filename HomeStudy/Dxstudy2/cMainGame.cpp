@@ -86,7 +86,7 @@ void cMainGame::Setup()
 
 	//>>:AseLoader
 	cAseLoader l;
-	//m_pRootFrame = l.Load("woman/woman_01_all.ASE");
+	m_pRootFrame = l.Load("woman/woman_01_all.ASE");
 	
 	//<<:
 	
@@ -178,8 +178,8 @@ void cMainGame::Render()
 	//	m_pLight->Render();
 
 	//일단 지우고 테스트합시다 .
-	//if (m_pCubeMan)
-	//	m_pCubeMan->Render();
+	if (m_pCubeMan)
+		m_pCubeMan->Render();
 
 	//AseLoader
 	{

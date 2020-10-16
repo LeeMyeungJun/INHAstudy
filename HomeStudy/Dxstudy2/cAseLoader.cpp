@@ -347,7 +347,7 @@ void cAseLoader::ProcessMESH(OUT cFrame* pFrame)
 		D3DXVec3TransformNormal(&vecVertex[i].n, &vecVertex[i].n, &matInvWorld);
 		
 	}
-	//pFrame->SetVertex(vecVertex); //이것두넣고 cFrame Render할때 두개다 랜더해봐 그러고 속도를 체크해봐 FPS 를 체크해바
+	pFrame->SetVertex(vecVertex); //이것두넣고 cFrame Render할때 두개다 랜더해봐 그러고 속도를 체크해봐 FPS 를 체크해바
 	pFrame->BuildVB(vecVertex);//버텍스버퍼로 만들기
 
 
@@ -702,83 +702,83 @@ void cAseLoader::ProcessCONTROL_ROT_TRACK(cFrame* pFrame)
 
 LPD3DXMESH cAseLoader::LoadMesh(vector<cMtlTex*>& vecMtlTex, char* szFullPath)
 {
-	cFrame* pRoot = nullptr;
-	
+	//cFrame* pRoot = nullptr;
+	//
 
-	fopen_s(&m_fp, szFullPath, "r");
+	//fopen_s(&m_fp, szFullPath, "r");
 
-	while (char* szToken = GetToken())
-	{
-		if (IsEqual(szToken, ID_SCENE))
-		{
-			ProcessScene();
-		}
-		else if (IsEqual(szToken, ID_MATERIAL_LIST))
-		{
-			ProcessMATERIAL_LIST();
-		}
-		else if (IsEqual(szToken, ID_GEOMETRY))
-		{
-			cFrame* pFrame = ProcessGEOBJECT();
-			if (pRoot == nullptr)
-			{
-				pRoot = pFrame;
-				Set_SceneFrame(pRoot);
-			}
-		}
-	} //<<:while()
-	fclose(m_fp);
+	//while (char* szToken = GetToken())
+	//{
+	//	if (IsEqual(szToken, ID_SCENE))
+	//	{
+	//		ProcessScene();
+	//	}
+	//	else if (IsEqual(szToken, ID_MATERIAL_LIST))
+	//	{
+	//		ProcessMATERIAL_LIST();
+	//	}
+	//	else if (IsEqual(szToken, ID_GEOMETRY))
+	//	{
+	//		cFrame* pFrame = ProcessGEOBJECT();
+	//		if (pRoot == nullptr)
+	//		{
+	//			pRoot = pFrame;
+	//			Set_SceneFrame(pRoot);
+	//		}
+	//	}
+	//} //<<:while()
+	//fclose(m_fp);
 
-	for each (auto p in m_vecMtlTex)
-	{
-		SafeRelease(p);
-	}
+	//for each (auto p in m_vecMtlTex)
+	//{
+	//	SafeRelease(p);
+	//}
 
-	pRoot->CalcOriginLocalTM(nullptr);
+	//pRoot->CalcOriginLocalTM(nullptr);
 
-	
+	//
 
-	vecMtlTex.resize(m_vecMtlTex.size());
-	for each(auto it in m_vecMtlTex)
-	{
-		vecMtlTex[it->GetAttrID()] = it;
-	}
-	LPD3DXMESH pMesh = NULL;
-	D3DXCreateMeshFVF(vecAttrBuf.size(), vecVertex.size(), D3DXMESH_MANAGED, ST_PNT_VERTEX::FVF, g_pD3DDvice, &pMesh);
-
-
-	//버텍스버퍼 생성
-	ST_PNT_VERTEX* pV = NULL;
-	pMesh->LockVertexBuffer(0, (LPVOID*)&pV);
-	memcpy(pV, &vecVertex[0], vecVertex.size() * sizeof(ST_PNT_VERTEX));
-
-	pMesh->UnlockVertexBuffer();
+	//vecMtlTex.resize(m_vecMtlTex.size());
+	//for each(auto it in m_vecMtlTex)
+	//{
+	//	vecMtlTex[it->GetAttrID()] = it;
+	//}
+	//LPD3DXMESH pMesh = NULL;
+	//D3DXCreateMeshFVF(vecAttrBuf.size(), vecVertex.size(), D3DXMESH_MANAGED, ST_PNT_VERTEX::FVF, g_pD3DDvice, &pMesh);
 
 
-	//인덱스버퍼 생성
-	WORD* pI = NULL;
-	pMesh->LockIndexBuffer(0, (LPVOID*)& pI);
-	for (int i = 0; i < vecVertex.size(); i++)
-	{
-		pI[i] = i;
+	////버텍스버퍼 생성
+	//ST_PNT_VERTEX* pV = NULL;
+	//pMesh->LockVertexBuffer(0, (LPVOID*)&pV);
+	//memcpy(pV, &vecVertex[0], vecVertex.size() * sizeof(ST_PNT_VERTEX));
 
-	}
-	pMesh->UnlockIndexBuffer();
+	//pMesh->UnlockVertexBuffer();
 
 
-	//속성버퍼 생성
-	DWORD* pA = NULL;
-	pMesh->LockAttributeBuffer(0, &pA);
-	memcpy(pA, &vecAttrBuf[0], vecAttrBuf.size() * sizeof(DWORD));
-	pMesh->UnlockAttributeBuffer();
-	//여기까지만해도 매쉬그리는데 문제가없어 하지만 최적화를 해줘야겠지? 그부분이 밑에
-	vector<DWORD> vecAdj(vecVertex.size());
-	pMesh->GenerateAdjacency(0.0f, &vecAdj[0]); //0.0000000000001 정도의 오차범위를 하겠다 첫번쨰인자설명
-	pMesh->OptimizeInplace(D3DXMESHOPT_ATTRSORT | D3DXMESHOPT_COMPACT | D3DXMESHOPT_VERTEXCACHE, &vecAdj[0], 0, 0, 0); //D3DXMESHOPT_ATTRSORT 최적화를 시작 D3DXMESHOPT_COMPACT쓸데없는걸 지우기 
+	////인덱스버퍼 생성
+	//WORD* pI = NULL;
+	//pMesh->LockIndexBuffer(0, (LPVOID*)& pI);
+	//for (int i = 0; i < vecVertex.size(); i++)
+	//{
+	//	pI[i] = i;
 
-	m_mapMtlTex.clear();
+	//}
+	//pMesh->UnlockIndexBuffer();
 
-	return pMesh;
+
+	////속성버퍼 생성
+	//DWORD* pA = NULL;
+	//pMesh->LockAttributeBuffer(0, &pA);
+	//memcpy(pA, &vecAttrBuf[0], vecAttrBuf.size() * sizeof(DWORD));
+	//pMesh->UnlockAttributeBuffer();
+	////여기까지만해도 매쉬그리는데 문제가없어 하지만 최적화를 해줘야겠지? 그부분이 밑에
+	//vector<DWORD> vecAdj(vecVertex.size());
+	//pMesh->GenerateAdjacency(0.0f, &vecAdj[0]); //0.0000000000001 정도의 오차범위를 하겠다 첫번쨰인자설명
+	//pMesh->OptimizeInplace(D3DXMESHOPT_ATTRSORT | D3DXMESHOPT_COMPACT | D3DXMESHOPT_VERTEXCACHE, &vecAdj[0], 0, 0, 0); //D3DXMESHOPT_ATTRSORT 최적화를 시작 D3DXMESHOPT_COMPACT쓸데없는걸 지우기 
+
+	//m_mapMtlTex.clear();
+
+	return 0;
 }
 
 

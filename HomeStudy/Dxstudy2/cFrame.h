@@ -44,6 +44,7 @@ public:
 private:
 	int		m_nNumTri;
 	LPDIRECT3DVERTEXBUFFER9		m_pVB; //버텍스버퍼구
+	LPDIRECT3DINDEXBUFFER9		m_pIB; //인덱스버퍼
 public:
 	void BuildVB(vector<ST_PNT_VERTEX>& vecVertex); //그거 버텍스버퍼 넣어줄함수
 	//<<:

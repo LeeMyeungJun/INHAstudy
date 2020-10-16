@@ -49,20 +49,29 @@ void cFrame::Render()
 		g_pD3DDvice->SetMaterial(&m_pMtlTex->GetMaterial());
 
 		g_pD3DDvice->SetFVF(ST_PNT_VERTEX::FVF);
-		//그려주기함수를 바꿔준다했잖아 이부분을 안쓸거야
+		//그려주기함수를 정점으로하는 그리기.
 		/* 이부분
 		g_pD3DDvice->DrawPrimitiveUP(D3DPT_TRIANGLELIST,
 		                              m_vecVertex.size() / 3,
 		                              &m_vecVertex[0], sizeof(ST_PNT_VERTEX));
+		                                */
 
-		                          */
-
+		                        
+		/*버텍스 버퍼로 그리기 
 		g_pD3DDvice->SetStreamSource(0,
 			m_pVB,
 			0,
 			sizeof(ST_PNT_VERTEX));
 
-		g_pD3DDvice->DrawPrimitive(D3DPT_TRIANGLELIST, 0,m_nNumTri );// List로불를거고 , 스타트인덱스값 내가정할수있지만 왠만하면 0으로부터 시작할거야 , 삼각형 갯수 
+		g_pD3DDvice->DrawPrimitive(D3DPT_TRIANGLELIST, 0,m_nNumTri );// List로불를거고 , 스타트인덱스값 내가정할수있지만 왠만하면 0으로부터 시작할거야 , 삼각형 갯수
+		*/
+
+		/*인덱스 버퍼로 그리기*/
+		g_pD3DDvice->SetStreamSource(0, m_pVB, 0, sizeof(ST_PNT_VERTEX));
+		g_pD3DDvice->SetIndices(m_pIB);
+		g_pD3DDvice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST,0,0, m_vecVertex.size(),0, m_vecVertex.size()/3);
+	
+		
 	}
 	for each (auto c in m_vecChild)
 		c->Render();
@@ -259,11 +268,20 @@ void cFrame::BuildVB(vector<ST_PNT_VERTEX>& vecVertex)
 	//이제됬으 그려주는부분만해주면되
 
 
-	/*
-	 *
-	 *
-	 * 인덱스버퍼 하는곳.
-	 */
+	
+	/*인덱스버퍼*/
+	
+	WORD* pI = NULL;
+	vector<WORD> vecWordIndex;
+	for (int i = 0; i < vecVertex.size(); i++)
+		vecWordIndex.push_back(i);
+
+
+	g_pD3DDvice->CreateIndexBuffer(vecWordIndex.size() * sizeof(WORD), 0, D3DFMT_INDEX16, D3DPOOL_MANAGED, &m_pIB,NULL);
+	
+	m_pIB->Lock(0,0, (LPVOID*)& pI,0);
+	memcpy(pI, &vecWordIndex[0], vecWordIndex.size() * sizeof(WORD));
+	m_pIB->Unlock();
 
 
 
