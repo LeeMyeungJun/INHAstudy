@@ -26,6 +26,9 @@ cMainGame::cMainGame()
 	, m_pLight(NULL)
 	, m_pMap(NULL)
 	, m_pRootFrame(NULL)
+	, m_pMeshTeapot(NULL)
+	, m_pMeshSphere(NULL)
+	, m_pObjMesh(NULL)
 {
 	
 }
@@ -39,6 +42,12 @@ cMainGame::~cMainGame()
 	SafeDelete(m_pCubeMan);
 	SafeDelete(m_pMap);
 	SafeRelease(m_pTexture);
+	SafeRelease(m_pMeshTeapot);
+	SafeRelease(m_pMeshSphere);
+	SafeRelease(m_pObjMesh);
+
+	for each(auto p in m_vecObjMtltex)
+		SafeRelease(p);
 
 
 	for each(auto p in m_vecGroup)
@@ -77,7 +86,8 @@ void cMainGame::Setup()
 
 	//>>:AseLoader
 	cAseLoader l;
-	m_pRootFrame = l.Load("woman/woman_01_all.ASE");
+	//m_pRootFrame = l.Load("woman/woman_01_all.ASE");
+	
 	//<<:
 	
 	Setup_Obj();
@@ -121,8 +131,8 @@ void cMainGame::Setup()
 	}
 	
 	Set_Light();
-	g_pD3DDvice->SetRenderState(D3DRS_LIGHTING, false);//라이트 끄기
 
+	Setup_MeshObejct();
 	
 
 }
@@ -157,8 +167,8 @@ void cMainGame::Render()
 
 	//Draw_Texture();
 
-	if (m_pGrid)
-		m_pGrid->Render();
+	//if (m_pGrid)
+	//	m_pGrid->Render();
 
 	/*if (m_pCubePC)
 		m_pCubePC->Render();*/
@@ -176,6 +186,9 @@ void cMainGame::Render()
 		if (m_pRootFrame)
 			m_pRootFrame->Render();
 	}
+
+	//MeshRender()
+	Mesh_Render();
 	
 
 	g_pD3DDvice->EndScene();
@@ -267,6 +280,7 @@ void cMainGame::Set_Light()
 	stLight.Direction = vDir;
 	g_pD3DDvice->SetLight(0, &stLight);
 	g_pD3DDvice->LightEnable(0, true);
+	//g_pD3DDvice->SetRenderState(D3DRS_LIGHTING, false);
 }
 
 void cMainGame::Draw_Texture()
@@ -314,4 +328,80 @@ void cMainGame::Load_Surface()
 
 	matWorld = matS* matR;
 	m_pMap = new cObjMap("obj", "map_surface.obj", &matWorld);
+}
+
+void cMainGame::Setup_MeshObejct()
+{
+	D3DXCreateTeapot(g_pD3DDvice, &m_pMeshTeapot, NULL);
+	D3DXCreateSphere(g_pD3DDvice, 0.5f, 10, 10, &m_pMeshSphere, NULL);
+
+	ZeroMemory(&m_stMtlTeapot, sizeof(D3DMATERIAL9));
+	m_stMtlTeapot.Ambient = D3DXCOLOR(0.0f, 0.7f, 0.7f, 1.0f);
+	m_stMtlTeapot.Diffuse = D3DXCOLOR(0.0f, 0.7f, 0.7f, 1.0f);
+	m_stMtlTeapot.Specular = D3DXCOLOR(0.0f, 0.7f, 0.7f, 1.0f);
+
+	ZeroMemory(&m_stMtlSphere, sizeof(D3DMATERIAL9));
+	m_stMtlSphere.Ambient = D3DXCOLOR(0.7f, 0.7f, 0.0f, 1.0f);
+	m_stMtlSphere.Diffuse = D3DXCOLOR(0.7f, 0.7f, 0.0f, 1.0f);
+	m_stMtlSphere.Specular = D3DXCOLOR(0.7f, 0.7f, 0.0f, 1.0f);
+
+
+	//Mesh Loader사용
+	cObjLoader l;
+	m_pObjMesh = l.LoadMesh(m_vecObjMtltex, "obj", "map.obj");
+
+	
+}
+
+void cMainGame::Mesh_Render()
+{
+	g_pD3DDvice->SetTexture(0, NULL);
+	
+	D3DXMATRIXA16 matWorld, matS, matR;
+
+	{
+		D3DXMatrixIdentity(&matS);
+		D3DXMatrixIdentity(&matR);
+		matWorld = matS* matR;
+		D3DXMatrixTranslation(&matWorld, 0, 0, 10);
+
+		g_pD3DDvice->SetTransform(D3DTS_WORLD, &matWorld);
+		g_pD3DDvice->SetMaterial(&m_stMtlTeapot);
+		m_pMeshTeapot->DrawSubset(0); //지금은 속성이 하나뿐이니까 0해주면대 여러개면 값을 넣어주면되고
+		
+	}
+
+	{
+		D3DXMatrixIdentity(&matS);
+		D3DXMatrixIdentity(&matR);
+		matWorld = matS* matR;
+//		D3DXMatrixTranslation(&matWorld, 0, 0, 10);
+
+		g_pD3DDvice->SetTransform(D3DTS_WORLD, &matWorld);
+		g_pD3DDvice->SetMaterial(&m_stMtlSphere);
+		m_pMeshSphere->DrawSubset(0); //지금은 속성이 하나뿐이니까 0해주면대 여러개면 값을 넣어주면되고
+
+	}
+
+	{
+		D3DXMatrixIdentity(&matWorld);
+
+		D3DXMatrixIdentity(&matS);
+		D3DXMatrixIdentity(&matR);
+		matWorld = matS* matR;
+		D3DXMatrixScaling(&matS, 0.01f, 0.01f, 0.01f);
+		D3DXMatrixRotationX(&matR, -D3DX_PI / 2.0F);
+		matWorld = matS * matR;
+
+		g_pD3DDvice->SetTransform(D3DTS_WORLD, &matWorld);
+
+		for(size_t i = 0; i < m_vecObjMtltex.size();i++)
+		{
+			g_pD3DDvice->SetMaterial(&m_vecObjMtltex[i]->GetMaterial());
+			g_pD3DDvice->SetTexture(0,m_vecObjMtltex[i]->GetTexture());
+			m_pObjMesh->DrawSubset(i);
+
+		}
+
+	}
 }

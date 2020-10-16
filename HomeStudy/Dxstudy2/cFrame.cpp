@@ -236,6 +236,8 @@ void cFrame::RenderFPS()
 
 void cFrame::BuildVB(vector<ST_PNT_VERTEX>& vecVertex)
 {
+
+	/* 버텍스버퍼*/
 	m_nNumTri = vecVertex.size() / 3;
 	//버텍스를 순서대로 락하고 넣어주는거 까지 여기서할거야
 	g_pD3DDvice->CreateVertexBuffer(
@@ -254,7 +256,17 @@ void cFrame::BuildVB(vector<ST_PNT_VERTEX>& vecVertex)
 	//memecpy가 위험한게 연속적인 데이터라는 증거가 있어야해
 	memcpy(pV, &vecVertex[0], vecVertex.size() * sizeof(ST_PNT_VERTEX));
 	m_pVB->Unlock();
+	//이제됬으 그려주는부분만해주면되
 
-	//이제됬으 그려주는부분만해주면되 
+
+	/*
+	 *
+	 *
+	 * 인덱스버퍼 하는곳.
+	 */
+
+
+
+	
 	
 }

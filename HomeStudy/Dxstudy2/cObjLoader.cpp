@@ -121,7 +121,7 @@ void cObjLoader::LoadMtlLib(char* szFolder, char* szFile)
 	FILE *fp;
 	fopen_s(&fp, sFullPath.c_str(), "r");
 	string sMtlName;
-
+	int nCnt = 0;
 	while (true)
 	{
 		if (feof(fp)) break;
@@ -141,6 +141,10 @@ void cObjLoader::LoadMtlLib(char* szFolder, char* szFile)
 			if(m_mapMtlTex.find(sMtlName) == m_mapMtlTex.end())
 			{
 				m_mapMtlTex[sMtlName] = new cMtlTex;
+				//Mesh 여기 추가
+				m_mapMtlTex[sMtlName]->SetAttrID(nCnt++);
+				//m_mapMtlTex[sMtlName]->SetAttrID(m_mapMtlTex.size()-1);
+
 			}
 		}
 		else if(szTemp[0] =='K')
@@ -265,4 +269,145 @@ void cObjLoader::LoadSurface(vector<D3DXVECTOR3>& vecSurface, char* szFolder, ch
 		}
 	}
 	
+}
+
+LPD3DXMESH cObjLoader::LoadMesh(vector<cMtlTex*>& vecMtlTex, char* szFolder, char* szFile)
+{
+	vector<DWORD>		vecAttrBuf;//속성에대한 벡터
+	vector<D3DXVECTOR3> vecV;
+	vector<D3DXVECTOR2> vecVT;
+	vector<D3DXVECTOR3> vecVN;
+	vector<ST_PNT_VERTEX> vecVertex;
+
+	string sFullPath(szFolder);
+	sFullPath += (string("/") + string(szFile));
+
+	FILE* fp;
+	fopen_s(&fp, sFullPath.c_str(), "r");
+
+	string sMtlName;
+	while (true)
+	{
+		if (feof(fp))break;
+
+		char szTemp[1024];
+		fgets(szTemp, 1024, fp);
+
+		if (szTemp[0] == '#') //주석이자나
+		{
+			continue;
+		}
+		else if (szTemp[0] == 'm')
+		{
+			char szMtlFile[1024];
+			sscanf_s(szTemp, "%*s %s", szMtlFile, 1024); //*붙은이유  *붙은 앞에껀 버리고 뒤에꺼만
+														 //mtllib ./box.mtl        ./box.mtl  이것만 가지고있겟다는거임
+			LoadMtlLib(szFolder, szMtlFile);
+		}
+		else if (szTemp[0] == 'g')
+		{
+			//if (!vecVertex.empty())//버텍스정보가 0이아니면  생성하고 
+			//{
+			//	cGroup* pGroup = new cGroup;
+			//	pGroup->SetVertex(vecVertex);
+			//	pGroup->SetmtlTex(m_mapMtlTex[sMtlName]);
+			//	vecGroup.push_back(pGroup);
+			//	vecVertex.clear();
+			//}
+		}
+		else if (szTemp[0] == 'v')
+		{
+			if (szTemp[1] == ' ')//버텍스정보잖아
+			{
+				float x, y, z;
+				sscanf_s(szTemp, "%*s %f %f %f", &x, &y, &z);
+				vecV.push_back(D3DXVECTOR3(x, y, z));
+			}
+			else if (szTemp[1] == 't')
+			{
+				float u, v;
+				sscanf_s(szTemp, "%*s %f %f %*f", &u, &v);
+				vecVT.push_back(D3DXVECTOR2(u, v));
+			}
+			else if (szTemp[1] == 'n')
+			{
+				float x, y, z;
+				sscanf_s(szTemp, "%*s %f %f %f", &x, &y, &z);
+				vecVN.push_back(D3DXVECTOR3(x, y, z));
+			}
+		}
+		else if (szTemp[0] == 'u')
+		{
+			char szMtlName[1024];
+			sscanf_s(szTemp, "%*s %s", szMtlName, 1024);
+			sMtlName = string(szMtlName);
+		}
+		else if (szTemp[0] == 'f') //텍스쳐 노말 이런애들 불러오는애들이잖아  여기서하면된다구 
+		{
+			int nIndex[3][3];
+			sscanf_s(szTemp, "%*s %d/%d/%d %d/%d/%d %d/%d/%d",
+				&nIndex[0][0], &nIndex[0][1], &nIndex[0][2],
+				&nIndex[1][0], &nIndex[1][1], &nIndex[1][2],
+				&nIndex[2][0], &nIndex[2][1], &nIndex[2][2]
+			);
+
+			for (int i = 0; i < 3; i++)
+			{
+				ST_PNT_VERTEX v;
+				v.p = vecV[nIndex[i][0] - 1];
+				v.t = vecVT[nIndex[i][1] - 1];
+				v.n = vecVN[nIndex[i][2] - 1];
+				vecVertex.push_back(v);
+			}//<<:for
+			//
+			//cMtlTex.h 추가하고 밑에 푸쉬백 Synthesize(int, m_nAttrID, AttrID);
+			vecAttrBuf.push_back(m_mapMtlTex[sMtlName]->GetAttrID()); //아이디값을얻어와서 mtl을 넣어주는거야  LoadMtl 좀 수정하구옵시다 .
+		}// : if
+
+	}// <<: while
+
+	fclose(fp);
+
+	//=========================================================
+	vecMtlTex.resize(m_mapMtlTex.size());
+	for each(auto it in m_mapMtlTex)
+	{
+		vecMtlTex[it.second->GetAttrID()] = it.second;
+	}
+	LPD3DXMESH pMesh = NULL;
+	D3DXCreateMeshFVF(vecAttrBuf.size(), vecVertex.size(), D3DXMESH_MANAGED, ST_PNT_VERTEX::FVF, g_pD3DDvice, &pMesh);
+
+
+	//버텍스버퍼 생성
+	ST_PNT_VERTEX* pV = NULL;
+	pMesh->LockVertexBuffer(0, (LPVOID*)&pV);
+	memcpy(pV, &vecVertex[0], vecVertex.size() * sizeof(ST_PNT_VERTEX));
+
+	pMesh->UnlockVertexBuffer();
+
+
+	 //인덱스버퍼 생성
+	WORD* pI = NULL;
+	pMesh->LockIndexBuffer(0, (LPVOID*)& pI);
+	for(int i = 0 ; i < vecVertex.size(); i++)
+	{
+		pI[i] = i;
+		
+	}
+	pMesh->UnlockIndexBuffer();
+	
+
+	//속성버퍼 생성
+	DWORD* pA = NULL;
+	pMesh->LockAttributeBuffer(0, &pA);
+	memcpy(pA, &vecAttrBuf[0], vecAttrBuf.size() * sizeof(DWORD));
+	pMesh->UnlockAttributeBuffer();
+	//여기까지만해도 매쉬그리는데 문제가없어 하지만 최적화를 해줘야겠지? 그부분이 밑에
+	vector<DWORD> vecAdj(vecVertex.size());
+	pMesh->GenerateAdjacency(0.0f, &vecAdj[0]); //0.0000000000001 정도의 오차범위를 하겠다 첫번쨰인자설명
+	pMesh->OptimizeInplace(D3DXMESHOPT_ATTRSORT | D3DXMESHOPT_COMPACT | D3DXMESHOPT_VERTEXCACHE, &vecAdj[0], 0, 0, 0); //D3DXMESHOPT_ATTRSORT 최적화를 시작 D3DXMESHOPT_COMPACT쓸데없는걸 지우기 
+
+	m_mapMtlTex.clear();
+
+	return pMesh;
 }

@@ -47,6 +47,6 @@ private:
 public:
 	void BuildVB(vector<ST_PNT_VERTEX>& vecVertex); //그거 버텍스버퍼 넣어줄함수
 	//<<:
-	void BuildIB(vector<ST_PNT_VERTEX>& vecVertex);
+
 	
 };

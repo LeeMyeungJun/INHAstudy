@@ -1,5 +1,7 @@
 #pragma once
 #include "stdafx.h"
+
+#include "cMtlTex.h"
 class cFrame;
 class cCubeMan;
 class cCubePC;
@@ -60,5 +62,25 @@ public:
 	void Obj_Render();
 
 	void Load_Surface();
+
+	//>>:
+private:
+	LPD3DXMESH		m_pMeshTeapot;
+	LPD3DXMESH		m_pMeshSphere;
+	D3DMATERIAL9	m_stMtlTeapot;
+	D3DMATERIAL9	m_stMtlSphere;
+
+	//OBJLoader통해서그리기
+	LPD3DXMESH	m_pObjMesh;
+	vector<cMtlTex*>	m_vecObjMtltex;
+
+	//AseLoader통해서 그리기
+	LPD3DXMESH	m_pAseObjMesh;
+	vector<cMtlTex*>	m_vecAseObjMtltex;
+	
+public:
+	void Setup_MeshObejct();
+	void Mesh_Render();
+	
 };
 

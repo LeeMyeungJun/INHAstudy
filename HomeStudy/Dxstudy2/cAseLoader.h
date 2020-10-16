@@ -43,6 +43,9 @@ private: //내부적으로 사용할함수들을 정리해보자.
 	void ProcessCONTROL_POS_TRACK(OUT cFrame* pFrame);
 	void ProcessCONTROL_ROT_TRACK(OUT cFrame* pFrame);
 
+	////>>:Mesh
+	//LPD3DXMESH	LoadMesh(OUT vector<cMtlTex*>& vecMtlTex, IN char* szFullPath);
+
 
 	
 	DWORD		m_dwFirstFrame;
