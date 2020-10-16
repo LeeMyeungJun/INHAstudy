@@ -55,7 +55,7 @@ void cFrame::Render()
 		                              m_vecVertex.size() / 3,
 		                              &m_vecVertex[0], sizeof(ST_PNT_VERTEX));
 
-		                              */
+		                          */
 
 		g_pD3DDvice->SetStreamSource(0,
 			m_pVB,
