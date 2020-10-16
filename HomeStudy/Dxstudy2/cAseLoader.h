@@ -12,6 +12,7 @@ private:
 	char m_szToken[1024];
 	vector<cMtlTex*> m_vecMtlTex;
 	map<string, cFrame*> m_mapFrame;
+	int MtlIndex;
 
 public:
 	cFrame* Load(IN char* szFullPath);
@@ -44,7 +45,7 @@ private: //내부적으로 사용할함수들을 정리해보자.
 	void ProcessCONTROL_ROT_TRACK(OUT cFrame* pFrame);
 
 	////>>:Mesh
-	//LPD3DXMESH	LoadMesh(OUT vector<cMtlTex*>& vecMtlTex, IN char* szFullPath);
+	LPD3DXMESH	LoadMesh(OUT vector<cMtlTex*>& vecMtlTex, IN char* szFullPath);
 
 
 	
@@ -54,4 +55,6 @@ private: //내부적으로 사용할함수들을 정리해보자.
 	DWORD		m_dwTicksPerFrame;
 
 	//<<:
+
+	vector<DWORD>		vecAttrBuf;//속성에대한 벡터
 };

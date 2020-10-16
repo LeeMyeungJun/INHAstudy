@@ -10,6 +10,7 @@
 
 cAseLoader::cAseLoader()
 	: m_fp(nullptr)
+	, MtlIndex(0)
 {
 }
 
@@ -153,11 +154,11 @@ void cAseLoader::ProcessMATERIAL_LIST()
 		}
 		else if (IsEqual(szToken, ID_MATERIAL))
 		{
-			int nIndex = GetInteger();
-			m_vecMtlTex[nIndex] = new cMtlTex;
-			ProcessMATERIAL(m_vecMtlTex[nIndex]);
+			MtlIndex = GetInteger();
+			m_vecMtlTex[MtlIndex] = new cMtlTex;
+			ProcessMATERIAL(m_vecMtlTex[MtlIndex]);
 			////여기추가
-			//m_vecMtlTex[nIndex]->SetAttrID(nCnt++);
+			m_vecMtlTex[MtlIndex]->SetAttrID(nCnt++);
 		}
 	}
 	while (nLevel > 0);
@@ -347,7 +348,10 @@ void cAseLoader::ProcessMESH(OUT cFrame* pFrame)
 		
 	}
 	//pFrame->SetVertex(vecVertex); //이것두넣고 cFrame Render할때 두개다 랜더해봐 그러고 속도를 체크해봐 FPS 를 체크해바
-	pFrame->BuildVB(vecVertex);//버텍스버퍼로 만들기 
+	pFrame->BuildVB(vecVertex);//버텍스버퍼로 만들기
+
+
+	
 }
 //초당 몇번의 프레임.
 void cAseLoader::ProcessMESH_VERTEX_LIST(vector<D3DXVECTOR3>& vecV)
@@ -376,6 +380,7 @@ void cAseLoader::ProcessMESH_VERTEX_LIST(vector<D3DXVECTOR3>& vecV)
 void cAseLoader::ProcessMESH_FACE_LIST(vector<ST_PNT_VERTEX>& vecVertex, vector<D3DXVECTOR3>& vecV)
 {
 	int nLevel = 0;
+	bool bFlag = false;
 	do
 	{
 		char* szToken = GetToken();
@@ -393,6 +398,7 @@ void cAseLoader::ProcessMESH_FACE_LIST(vector<ST_PNT_VERTEX>& vecVertex, vector<
 		}
 		else if (IsEqual(szToken, ID_MESH_FACE))
 		{
+			bFlag = true;
 			int nFaceIndex = GetInteger();
 			GetToken();
 			vecVertex[nFaceIndex * 3 + 0].p = vecV[GetInteger()];
@@ -403,6 +409,9 @@ void cAseLoader::ProcessMESH_FACE_LIST(vector<ST_PNT_VERTEX>& vecVertex, vector<
 		}
 	}
 	while (nLevel > 0);
+
+	if(bFlag)
+		vecAttrBuf.push_back(m_vecMtlTex[MtlIndex]->GetAttrID());
 }
 
 void cAseLoader::ProcessMESH_TVERTLIST(vector<D3DXVECTOR2>& vecVT)
@@ -690,99 +699,87 @@ void cAseLoader::ProcessCONTROL_ROT_TRACK(cFrame* pFrame)
 
 	//640 3200 중간사이에있는것들은 정해져있는 값들갓다가 고정을한거고 
 }
-//
-//LPD3DXMESH cAseLoader::LoadMesh(vector<cMtlTex*>& vecMtlTex, char* szFullPath)
-//{
-//	cFrame* pRoot = nullptr;
-//	vector<DWORD>		vecAttrBuf;//속성에대한 벡터
-//
-//	fopen_s(&m_fp, szFullPath, "r");
-//
-//	while (char* szToken = GetToken())
-//	{
-//		if (IsEqual(szToken, ID_SCENE))
-//		{
-//			ProcessScene();
-//		}
-//		else if (IsEqual(szToken, ID_MATERIAL_LIST))
-//		{
-//			ProcessMATERIAL_LIST();
-//		}
-//		else if (IsEqual(szToken, ID_GEOMETRY))
-//		{
-//			cFrame* pFrame = ProcessGEOBJECT();
-//			if (pRoot == nullptr)
-//			{
-//				pRoot = pFrame;
-//				Set_SceneFrame(pRoot);
-//			}
-//		}
-//	} //<<:while()
-//	fclose(m_fp);
-//
-//
-//	vecMtlTex.resize(m_vecMtlTex.size());
-//	for each(auto it in m_vecMtlTex)
-//	{
-//		vecMtlTex[it.second->GetAttrID()] = it.second;
-//	}
-//	LPD3DXMESH pMesh = NULL;
-//	D3DXCreateMeshFVF(vecAttrBuf.size(), vecVertex.size(), D3DXMESH_MANAGED, ST_PNT_VERTEX::FVF, g_pD3DDvice, &pMesh);
-//
-//
-//	//버텍스버퍼 생성
-//	ST_PNT_VERTEX* pV = NULL;
-//	pMesh->LockVertexBuffer(0, (LPVOID*)&pV);
-//	memcpy(pV, &vecVertex[0], vecVertex.size() * sizeof(ST_PNT_VERTEX));
-//
-//	pMesh->UnlockVertexBuffer();
-//
-//
-//	//인덱스버퍼 생성
-//	WORD* pI = NULL;
-//	pMesh->LockIndexBuffer(0, (LPVOID*)& pI);
-//	for (int i = 0; i < vecVertex.size(); i++)
-//	{
-//		pI[i] = i;
-//
-//	}
-//	pMesh->UnlockIndexBuffer();
-//
-//
-//	//속성버퍼 생성
-//	DWORD* pA = NULL;
-//	pMesh->LockAttributeBuffer(0, &pA);
-//	memcpy(pA, &vecAttrBuf[0], vecAttrBuf.size() * sizeof(DWORD));
-//	pMesh->UnlockAttributeBuffer();
-//	//여기까지만해도 매쉬그리는데 문제가없어 하지만 최적화를 해줘야겠지? 그부분이 밑에
-//	vector<DWORD> vecAdj(vecVertex.size());
-//	pMesh->GenerateAdjacency(0.0f, &vecAdj[0]); //0.0000000000001 정도의 오차범위를 하겠다 첫번쨰인자설명
-//	pMesh->OptimizeInplace(D3DXMESHOPT_ATTRSORT | D3DXMESHOPT_COMPACT | D3DXMESHOPT_VERTEXCACHE, &vecAdj[0], 0, 0, 0); //D3DXMESHOPT_ATTRSORT 최적화를 시작 D3DXMESHOPT_COMPACT쓸데없는걸 지우기 
-//
-//	m_mapMtlTex.clear();
-//
-//	return pMesh;
-//	
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//	
-//	for each (auto p in m_vecMtlTex)
-//	{
-//		SafeRelease(p);
-//	}
-//
-//	pRoot->CalcOriginLocalTM(nullptr);
-//
-//	return ;
-//}
+
+LPD3DXMESH cAseLoader::LoadMesh(vector<cMtlTex*>& vecMtlTex, char* szFullPath)
+{
+	cFrame* pRoot = nullptr;
+	
+
+	fopen_s(&m_fp, szFullPath, "r");
+
+	while (char* szToken = GetToken())
+	{
+		if (IsEqual(szToken, ID_SCENE))
+		{
+			ProcessScene();
+		}
+		else if (IsEqual(szToken, ID_MATERIAL_LIST))
+		{
+			ProcessMATERIAL_LIST();
+		}
+		else if (IsEqual(szToken, ID_GEOMETRY))
+		{
+			cFrame* pFrame = ProcessGEOBJECT();
+			if (pRoot == nullptr)
+			{
+				pRoot = pFrame;
+				Set_SceneFrame(pRoot);
+			}
+		}
+	} //<<:while()
+	fclose(m_fp);
+
+	for each (auto p in m_vecMtlTex)
+	{
+		SafeRelease(p);
+	}
+
+	pRoot->CalcOriginLocalTM(nullptr);
+
+	
+
+	vecMtlTex.resize(m_vecMtlTex.size());
+	for each(auto it in m_vecMtlTex)
+	{
+		vecMtlTex[it->GetAttrID()] = it;
+	}
+	LPD3DXMESH pMesh = NULL;
+	D3DXCreateMeshFVF(vecAttrBuf.size(), vecVertex.size(), D3DXMESH_MANAGED, ST_PNT_VERTEX::FVF, g_pD3DDvice, &pMesh);
+
+
+	//버텍스버퍼 생성
+	ST_PNT_VERTEX* pV = NULL;
+	pMesh->LockVertexBuffer(0, (LPVOID*)&pV);
+	memcpy(pV, &vecVertex[0], vecVertex.size() * sizeof(ST_PNT_VERTEX));
+
+	pMesh->UnlockVertexBuffer();
+
+
+	//인덱스버퍼 생성
+	WORD* pI = NULL;
+	pMesh->LockIndexBuffer(0, (LPVOID*)& pI);
+	for (int i = 0; i < vecVertex.size(); i++)
+	{
+		pI[i] = i;
+
+	}
+	pMesh->UnlockIndexBuffer();
+
+
+	//속성버퍼 생성
+	DWORD* pA = NULL;
+	pMesh->LockAttributeBuffer(0, &pA);
+	memcpy(pA, &vecAttrBuf[0], vecAttrBuf.size() * sizeof(DWORD));
+	pMesh->UnlockAttributeBuffer();
+	//여기까지만해도 매쉬그리는데 문제가없어 하지만 최적화를 해줘야겠지? 그부분이 밑에
+	vector<DWORD> vecAdj(vecVertex.size());
+	pMesh->GenerateAdjacency(0.0f, &vecAdj[0]); //0.0000000000001 정도의 오차범위를 하겠다 첫번쨰인자설명
+	pMesh->OptimizeInplace(D3DXMESHOPT_ATTRSORT | D3DXMESHOPT_COMPACT | D3DXMESHOPT_VERTEXCACHE, &vecAdj[0], 0, 0, 0); //D3DXMESHOPT_ATTRSORT 최적화를 시작 D3DXMESHOPT_COMPACT쓸데없는걸 지우기 
+
+	m_mapMtlTex.clear();
+
+	return pMesh;
+}
 
 
 /*
