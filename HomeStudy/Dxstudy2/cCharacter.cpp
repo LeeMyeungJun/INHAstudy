@@ -42,8 +42,6 @@ void cCharacter::Update(iMap* pMap)
 		vPosition = m_vPosition -(m_vDirection * 0.1f);
 	}
 
-	RECT rc;
-	GetClientRect(g_hWnd, &rc);
 	D3DXMATRIXA16 matR, matT;
 	D3DXMatrixRotationY(&matR, m_fRotY);
 

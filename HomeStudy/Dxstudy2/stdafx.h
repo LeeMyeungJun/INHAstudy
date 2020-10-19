@@ -114,7 +114,6 @@ struct ST_ROT_SAMPLE
 		: n(0)
 	{
 		D3DXQuaternionIdentity(&q); //x y z값은 0 w는 1로 
-		
 	}
 };
 

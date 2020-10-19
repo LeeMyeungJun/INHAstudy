@@ -182,12 +182,12 @@ void cMainGame::Render()
 		m_pCubeMan->Render();
 
 	//AseLoader
-	{
+	/*{
 		if (m_pRootFrame)
 			m_pRootFrame->Render();
 	}
-
-	//MeshRender()
+*/
+	//MeshRender
 	Mesh_Render();
 	
 

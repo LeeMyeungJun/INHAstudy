@@ -16,7 +16,7 @@ void cLeftArm::Setup()
 	cCubeNode::Setup();
 	D3DXMATRIXA16 matS, matT, mat;
 	D3DXMatrixScaling(&matS, 0.2f, 0.6f, 0.2f);
-	D3DXMatrixTranslation(&matT, -0.3f, -0.3f, 0.0f);
+	D3DXMatrixTranslation(&matT, 0, -0.3f, 0.0f); // 팔 회전할 기준점
 	mat = matS * matT;
 
 	{
@@ -73,7 +73,7 @@ void cLeftArm::Setup()
 	{
 		D3DXVec3TransformCoord(&m_vecVertex[i].p, &m_vecVertex[i].p, &mat);
 	}
-	//이게 기준점 
+	//이게 팔위치
 	m_vLocalPos.y = 0.3f;
-
+	m_vLocalPos.x = -0.3f;
 }
