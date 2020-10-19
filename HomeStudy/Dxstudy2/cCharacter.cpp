@@ -46,7 +46,7 @@ bool cCharacter::CollisionCheck(D3DXVECTOR3 temp)
 {
 	
 	vector<ST_PNT_VERTEX> vecTemp = m_vecGroup[0]->GetVertex();
-	D3DXVECTOR3 vecRayPos = m_vPosition;
+	D3DXVECTOR3 vecRayPos = temp;
 	vecRayPos.y = 100;
 	for (int i = 0; i < vecTemp.size(); i += 3)
 	{
@@ -92,6 +92,7 @@ void cCharacter::PlayerMove()
 	{
 		temp -= (m_vDirection * 0.1f);
 	}
+	//미래의 위치로 이동을시킨다 .
 
 	if (!CollisionCheck(temp))
 	{
