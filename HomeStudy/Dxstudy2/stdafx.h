@@ -51,11 +51,12 @@ public:\
 //<< :
 
 
-
+#include "iMap.h"
 #include "cDeviceManager.h"
 #include "cObject.h"
 #include "cObjectManager.h"
 #include "cTextureManager.h"
+
 
 struct ST_PC_VERTEX //point & colorÀÇ¹Ì
 {

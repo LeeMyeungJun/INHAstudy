@@ -24,7 +24,7 @@ private:
 	cGrid*			m_pGrid;
 	cCubeMan*		m_pCubeMan;
 	cLight*			m_pLight;
-
+	iMap*			m_pMap;
 
 	//::texture
 	LPDIRECT3DTEXTURE9		m_pTexture;
@@ -54,5 +54,7 @@ public:
 
 	void Setup_Obj();
 	void Obj_Render();
+
+	void Load_Surface();
 };
 

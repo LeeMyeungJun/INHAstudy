@@ -195,3 +195,74 @@ void cObjLoader::LoadMtlLib(char* szFolder, char* szFile)
 	}// <<:while
 	fclose(fp);
 }// << :LoadMtlLib()
+void cObjLoader::LoadSurface(vector<D3DXVECTOR3>& vecSurface, char* szFolder, char* szFile, D3DXMATRIXA16* pmat)
+{
+	vector<D3DXVECTOR3> vecV;// 버텍스 정보만 가지고있으면댄다 .
+	string sFullPath(szFolder);
+	sFullPath += (string("/") + string(szFile));
+
+
+	FILE* fp;
+	fopen_s(&fp, sFullPath.c_str(), "r");
+
+	string sMtlName;
+	
+	while (true)
+	{
+		if (feof(fp))break;
+
+		char szTemp[1024];
+		fgets(szTemp, 1024, fp);
+
+		if (szTemp[0] == '#') //주석이자나
+		{
+			continue;
+		}
+		else if (szTemp[0] == 'm')
+		{
+		
+		}
+		else if (szTemp[0] == 'g')
+		{
+			
+		}
+		else if (szTemp[0] == 'v')
+		{
+			if (szTemp[1] == ' ')//버텍스정보잖아
+			{
+				float x, y, z;
+				sscanf_s(szTemp, "%*s %f %f %f", &x, &y, &z);
+				vecV.push_back(D3DXVECTOR3(x, y, z));
+			}
+		}
+		else if (szTemp[0] == 'u')
+		{
+			
+		}
+		else if (szTemp[0] == 'f')
+		{
+			int nIndex[3];
+			sscanf_s(szTemp, "%*s %d/%*d/%*d %d/%*d/%*d %d/%*d/%*d",
+				&nIndex[0], &nIndex[1], &nIndex[2]
+
+			);
+
+			for (int i = 0; i < 3; i++)
+			{
+				vecSurface.push_back(vecV[nIndex[i] - 1]);
+			}//<<:for
+		}// : if
+
+	}// <<: while
+
+	fclose(fp);
+
+	if(pmat)// 여기에들어왔다는건 스케일링이 생겼다든지 이동이생겻다든지
+	{
+		for(size_t i = 0 ; i < vecSurface.size(); i++)
+		{
+			D3DXVec3TransformCoord(&vecSurface[i], &vecSurface[i], pmat);
+		}
+	}
+	
+}

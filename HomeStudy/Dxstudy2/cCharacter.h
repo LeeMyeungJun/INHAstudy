@@ -1,12 +1,8 @@
 #pragma once
-#include "cGroup.h"
 class cPath;
 
 class cCharacter
 {//회전값 이동방향 위치 월드매트릭스값
-private:
-	vector<cGroup*>			m_vecGroup;
-
 public:
 	cCharacter();
 	//~cCharacter();
@@ -18,18 +14,13 @@ protected:
 	D3DXVECTOR3		m_vPosition;
 	D3DXMATRIXA16	m_matWorld;
 
+	iMap*			m_pMap;
 public:
 	virtual ~cCharacter(void);
 	virtual void Setup();
-	virtual void Update();
+	virtual void Update(iMap* pMap);
 	virtual void Render();
-
-
-public:
-	bool CollisionCheck(D3DXVECTOR3 temp);
-	void PlayerMove();
-
-	D3DXVECTOR3& GetPosition();
-	D3DXVECTOR3& GetDirection();
+	virtual D3DXVECTOR3& GetPosition();
+	virtual D3DXVECTOR3& GetDirection();
 };
 
