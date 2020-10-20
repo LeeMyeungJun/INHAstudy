@@ -30,6 +30,7 @@ cMainGame::cMainGame()
 	//, m_pMeshSphere(NULL)
 	, m_pObjMesh(NULL)
 	, m_ptMousepick({0,0})
+	, test(true)
 {
 	for(int i = 0 ; i < 10 ; i++)
 	{
@@ -234,10 +235,22 @@ void cMainGame::wndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		m_ptMousepick.y = HIWORD(lParam);
 
 		MousePicking(m_ptMousepick,message);
-
-
 	}
 	break;
+	case WM_KEYDOWN:
+	{
+		switch (wParam)
+		{
+		case VK_SPACE:
+		{
+			if(test)
+				BezierSetup();
+			test = false;
+		}
+			break;
+		}
+	}
+		break;
 	}
 }
 
@@ -438,6 +451,7 @@ void cMainGame::MousePicking(POINT ptCursor, UINT message)
 		for (size_t i = 0; i < m_gridVertex.size(); i += 3)
 		{
 			float u, v, f;
+			ST_PN_VERTEX pt;
 			if (D3DXIntersectTri(&m_gridVertex[i + 0].p,
 				&m_gridVertex[i + 1].p,
 				&m_gridVertex[i + 2].p,
@@ -452,6 +466,8 @@ void cMainGame::MousePicking(POINT ptCursor, UINT message)
 					{
 						m_gridVertex[i + j].c = D3DCOLOR_XRGB(100, 0, 0);
 					}
+					pt.p.x = (m_gridVertex[i + 1].p.x + m_gridVertex[i + 2].p.x) / 2;
+					pt.p.z = (m_gridVertex[i + 0].p.z + m_gridVertex[i + 1].p.z) / 2;
 				}
 				else
 				{
@@ -459,8 +475,12 @@ void cMainGame::MousePicking(POINT ptCursor, UINT message)
 					{
 						m_gridVertex[i - 3 + j].c = D3DCOLOR_XRGB(100, 0, 0);
 					}
+					pt.p.x = (m_gridVertex[i - 3  + 1].p.x + m_gridVertex[i - 3 + 2].p.x) / 2;
+					pt.p.z = (m_gridVertex[i - 3  + 0].p.z + m_gridVertex[i - 3 + 1].p.z) / 2;
 
 				}
+
+				m_vecMoveVertex.push_back(pt);
 				m_pGrid->setGridVertex(m_gridVertex);
 				return;
 
@@ -503,6 +523,43 @@ bool cMainGame::raySpherelntersectionTest(Ray* ray , BoundingSphere shpere)
 		
 	
 	return false;
+}
+
+void cMainGame::BezierSetup()
+{
+	ST_PN_VERTEX v;
+	//>> :hexagon Setup
+	//for (int i = 0; i < m_ptMove.size(); i++)// 0 1 2 3 4 5 0 
+	//{
+	//	v.p.x = m_ptMove[i].x;
+	//	m_vecMoveVertex.push_back(v);
+	//}
+
+	v.p = m_vecMoveVertex[0].p;
+	m_vecMoveVertex.push_back(v);
+	//<< : 
+
+
+	//>>:m_vBezier
+	float div = 16;
+	float t = 1 / div;
+
+	for (int i = 0; i < m_vecMoveVertex.size() - 1; i += 2)
+	{
+		for (int j = 0; j < div; j++)
+		{
+			v.p = pow(1 - (t*j), 2) * m_vecMoveVertex[i].p + 2 * (t*j)*(1 - (t*j))*m_vecMoveVertex[i + 1].p + pow((t*j), 2)*m_vecMoveVertex[i + 2].p;
+			m_vecBezierVertex.push_back(v);
+		}
+	}
+
+	v.p = m_vecBezierVertex[0].p;
+	m_vecBezierVertex.push_back(v);
+
+
+	m_pCubeMan->cCharacter::SetupMove(m_vecBezierVertex.size() , m_vecBezierVertex);
+
+	//m_iSize = m_vecBezierVertex.size();
 }
 
 

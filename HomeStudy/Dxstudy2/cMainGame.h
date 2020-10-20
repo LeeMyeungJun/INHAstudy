@@ -68,10 +68,15 @@ public:
 	POINT					m_ptMousepick;
 	vector<ST_PC_VERTEX>	m_gridVertex;
 
+
+
+	vector<ST_PN_VERTEX> m_vecMoveVertex;
+	vector<ST_PN_VERTEX> m_vecBezierVertex;
+
 	void MousePicking(POINT ptCursor,UINT message);
 	bool raySpherelntersectionTest(Ray* ray, BoundingSphere shpere);
-	bool raGridlntersectionTest(Ray* ray, vector<ST_PN_VERTEX> Grid);
-
+	void BezierSetup();
+	bool test;
 	
 
 private:

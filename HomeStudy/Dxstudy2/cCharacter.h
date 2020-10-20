@@ -10,7 +10,7 @@ public:
 	int				m_iIndex;
 	int				m_iEndIndex;
 	cPath*			m_pPath;
-	cHex*			m_pHex;
+	//cHex*			m_pHex;
 
 
 
@@ -29,5 +29,7 @@ public:
 	virtual void Render();
 	virtual D3DXVECTOR3& GetPosition();
 	virtual D3DXVECTOR3& GetDirection();
+public:
+	void SetupMove(int size, vector<ST_PN_VERTEX> m_vecBezierVertex);
 };
 

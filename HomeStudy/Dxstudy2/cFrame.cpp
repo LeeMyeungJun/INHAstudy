@@ -23,8 +23,10 @@ void cFrame::Update(int nKeyFrame, D3DXMATRIXA16* pmatParent)
 //>>:Animation
 	
 	D3DXMATRIXA16 matR, matT;
+	
 	CalcLocalR(nKeyFrame, matR);
 	CalcLocalT(nKeyFrame, matT);
+
 	m_matLocalTM = matR *matT;
 	
 //>>: Animation
@@ -106,6 +108,7 @@ void cFrame::CalcOriginLocalTM(D3DXMATRIXA16* pmatParent)
 void cFrame::CalcLocalT(int nKeyFrame, D3DXMATRIXA16& matT)
 {
 	D3DXMatrixIdentity(&matT);
+
 	if(m_vecPosTrack.empty())
 	{
 		matT._41 = m_matLocalTM._41;//4행에있는것들이 위치값이잖아?

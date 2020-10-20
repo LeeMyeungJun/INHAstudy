@@ -18,8 +18,8 @@ cHex::~cHex()
 
 void cHex::Render()
 {
-	Draw_Hexagon();
-	Draw_Bezier();
+	//Draw_Hexagon();
+	//Draw_Bezier();
 }
 
 void cHex::Setup()
