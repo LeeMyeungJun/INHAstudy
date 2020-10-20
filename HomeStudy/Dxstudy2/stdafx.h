@@ -61,13 +61,9 @@ public:\
 
 #include "iMap.h"
 #include "cDeviceManager.h"
-<<<<<<< HEAD
 #include "cObject.h"
 #include "cObjectManager.h"
 #include "cTextureManager.h"
-=======
-
->>>>>>> 41302b6992cdd6e25a5b860ae2afd9f7e1656f1b
 
 
 struct ST_PC_VERTEX //point & color¿«πÃ
@@ -139,20 +135,17 @@ struct BoundingSphere
 };
 
 
-<<<<<<< HEAD
 struct ST_Rect
 {
 	
 };
 //<<:
 
-=======
->>>>>>> 41302b6992cdd6e25a5b860ae2afd9f7e1656f1b
 #define SafeAddRef(p) {if(p) p->AddRef();}
 
 #define Synthesize(varType , varName, funName) \
 	protected: varType varName; \
-	public: inline varType Get##funName(void) const{ return varName;} \
+	public: inline varType Get##funName(void) const{ return varName;}\
 	public: inline void Set##funName(varType var) {varName = var;}
 
 #define Synthesize_Pass_by_Ref(varType, varName, funName) \
@@ -171,16 +164,4 @@ struct ST_Rect
 	 varName = var;\
 	}\
 }
-<<<<<<< HEAD
-=======
-
-
-
-
-
-#include "cObjectManager.h"
-#include "cObject.h"
-#include "cMtlTex.h"
-#include "cGroup.h"
->>>>>>> 41302b6992cdd6e25a5b860ae2afd9f7e1656f1b
 

@@ -173,20 +173,14 @@
     <ClInclude Include="cObject.h" />
     <ClInclude Include="cObjectManager.h" />
     <ClInclude Include="cObjLoader.h" />
-<<<<<<< HEAD
     <ClInclude Include="cObjMap.h" />
-=======
->>>>>>> 41302b6992cdd6e25a5b860ae2afd9f7e1656f1b
     <ClInclude Include="cPath.h" />
     <ClInclude Include="cPyramid.h" />
     <ClInclude Include="cRightArm.h" />
     <ClInclude Include="cRightLeg.h" />
     <ClInclude Include="cTextureManager.h" />
     <ClInclude Include="Dxstudy.h" />
-<<<<<<< HEAD
     <ClInclude Include="iMap.h" />
-=======
->>>>>>> 41302b6992cdd6e25a5b860ae2afd9f7e1656f1b
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
@@ -214,20 +208,14 @@
     <ClCompile Include="cObject.cpp" />
     <ClCompile Include="cObjectManager.cpp" />
     <ClCompile Include="cObjLoader.cpp" />
-<<<<<<< HEAD
     <ClCompile Include="cObjMap.cpp" />
-=======
->>>>>>> 41302b6992cdd6e25a5b860ae2afd9f7e1656f1b
     <ClCompile Include="cPath.cpp" />
     <ClCompile Include="cPyramid.cpp" />
     <ClCompile Include="cRightArm.cpp" />
     <ClCompile Include="cRightLeg.cpp" />
     <ClCompile Include="cTextureManager.cpp" />
     <ClCompile Include="Dxstudy.cpp" />
-<<<<<<< HEAD
     <ClCompile Include="iMap.cpp" />
-=======
->>>>>>> 41302b6992cdd6e25a5b860ae2afd9f7e1656f1b
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

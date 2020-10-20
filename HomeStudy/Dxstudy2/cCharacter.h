@@ -28,6 +28,6 @@ public:
 	virtual void Update(iMap* pMap);
 	virtual void Render();
 	virtual D3DXVECTOR3& GetPosition();
-
+	virtual D3DXVECTOR3& GetDirection();
 };
 

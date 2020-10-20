@@ -142,10 +142,6 @@ void cMainGame::Setup()
 	}
 	
 	Set_Light();
-<<<<<<< HEAD
-=======
-	//g_pD3DDvice->SetRenderState(D3DRS_LIGHTING, false);//라이트 끄기
->>>>>>> 41302b6992cdd6e25a5b860ae2afd9f7e1656f1b
 
 	Setup_MeshObejct();
 	
@@ -163,7 +159,6 @@ void cMainGame::Update()
 	if (m_pCamera)
 		m_pCamera->Update();
 
-<<<<<<< HEAD
 	if (m_pRootFrame)
 		m_pRootFrame->Update(m_pRootFrame->GetKeyFrame(),NULL);//처음엔 널을 넣어주면 되겠지?
 	
@@ -171,10 +166,6 @@ void cMainGame::Update()
 	//	m_pLight->Update();
 
 	
-=======
-	//if (m_pLight)
-	//	m_pLight->Update();
->>>>>>> 41302b6992cdd6e25a5b860ae2afd9f7e1656f1b
 	
 }
 
@@ -192,13 +183,7 @@ void cMainGame::Render()
 
 	/*if (m_pCubePC)
 		m_pCubePC->Render();*/
-<<<<<<< HEAD
 	//Obj_Render();
-=======
-
-	//if (m_pLight)
-	//	m_pLight->Render();
->>>>>>> 41302b6992cdd6e25a5b860ae2afd9f7e1656f1b
 	
 	//if (m_pLight)
 	//	m_pLight->Render();
