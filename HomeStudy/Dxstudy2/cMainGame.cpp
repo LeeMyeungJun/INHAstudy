@@ -142,9 +142,9 @@ void cMainGame::Update()
 	//if (m_pCubePC)
 	//	m_pCubePC->Update();
 
-	if (m_pCubeMan)
+	/*if (m_pCubeMan)
 		m_pCubeMan->Update(m_pMap);
-	
+	*/
 	if (m_pCamera)
 		m_pCamera->Update();
 
@@ -167,8 +167,8 @@ void cMainGame::Render()
 
 	//Draw_Texture();
 
-	//if (m_pGrid)
-	//	m_pGrid->Render();
+	if (m_pGrid)
+		m_pGrid->Render();
 
 	/*if (m_pCubePC)
 		m_pCubePC->Render();*/
@@ -178,17 +178,17 @@ void cMainGame::Render()
 	//	m_pLight->Render();
 
 	//일단 지우고 테스트합시다 .
-	if (m_pCubeMan)
-		m_pCubeMan->Render();
+	//if (m_pCubeMan)
+	//	m_pCubeMan->Render();
 
 	//AseLoader
-	/*{
+	{
 		if (m_pRootFrame)
 			m_pRootFrame->Render();
 	}
-*/
+
 	//MeshRender
-	Mesh_Render();
+	//Mesh_Render();
 	
 
 	g_pD3DDvice->EndScene();
