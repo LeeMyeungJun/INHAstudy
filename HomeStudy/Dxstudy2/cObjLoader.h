@@ -9,6 +9,7 @@ public:
 	~cObjLoader();
 private:
 	map<string, cMtlTex*> m_mapMtlTex;
+<<<<<<< HEAD
 
 public:
 	void Load(OUT vector<cGroup*> &vecGroup, IN char* szFolder, IN char* szFile);
@@ -18,5 +19,10 @@ public:
 
 	//>>:Mesh
 	LPD3DXMESH	LoadMesh(OUT vector<cMtlTex*>& vecMtlTex, IN char* szFolder, IN char* szFile);
+=======
+public:
+	void Load(OUT vector<cGroup*> &vecGroup, IN char* szFolder, IN char* szFile);
+	void LoadMtlLib(char* szFolder, char* szFile);
+>>>>>>> 41302b6992cdd6e25a5b860ae2afd9f7e1656f1b
 };
 

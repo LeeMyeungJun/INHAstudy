@@ -17,6 +17,7 @@
       <UniqueIdentifier>{09d1ec4b-9b0f-42b6-9d23-022d1d4efd78}</UniqueIdentifier>
     </Filter>
     <Filter Include="ObjLoader">
+<<<<<<< HEAD
       <UniqueIdentifier>{57d16099-adb5-437e-ae18-fad551b54fd4}</UniqueIdentifier>
     </Filter>
     <Filter Include="Map">
@@ -24,6 +25,9 @@
     </Filter>
     <Filter Include="ASELoader">
       <UniqueIdentifier>{cd9d3e8c-fc9d-44ea-b27d-58b969b0ee25}</UniqueIdentifier>
+=======
+      <UniqueIdentifier>{799cebb6-3617-47e2-9665-2bbe94f707c2}</UniqueIdentifier>
+>>>>>>> 41302b6992cdd6e25a5b860ae2afd9f7e1656f1b
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -96,18 +100,22 @@
     <ClInclude Include="cPath.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+<<<<<<< HEAD
     <ClInclude Include="cObject.h">
       <Filter>ObjLoader</Filter>
     </ClInclude>
     <ClInclude Include="cObjectManager.h">
       <Filter>ObjLoader</Filter>
     </ClInclude>
+=======
+>>>>>>> 41302b6992cdd6e25a5b860ae2afd9f7e1656f1b
     <ClInclude Include="cObjLoader.h">
       <Filter>ObjLoader</Filter>
     </ClInclude>
     <ClInclude Include="cMtlTex.h">
       <Filter>ObjLoader</Filter>
     </ClInclude>
+<<<<<<< HEAD
     <ClInclude Include="cTextureManager.h">
       <Filter>ObjLoader</Filter>
     </ClInclude>
@@ -131,6 +139,16 @@
     </ClInclude>
     <ClInclude Include="cHex.h">
       <Filter>ASELoader</Filter>
+=======
+    <ClInclude Include="cObject.h">
+      <Filter>ObjLoader</Filter>
+    </ClInclude>
+    <ClInclude Include="cObjectManager.h">
+      <Filter>ObjLoader</Filter>
+    </ClInclude>
+    <ClInclude Include="cGroup.h">
+      <Filter>ObjLoader</Filter>
+>>>>>>> 41302b6992cdd6e25a5b860ae2afd9f7e1656f1b
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -194,15 +212,23 @@
     <ClCompile Include="cPath.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+<<<<<<< HEAD
     <ClCompile Include="cGroup.cpp">
       <Filter>ObjLoader</Filter>
     </ClCompile>
     <ClCompile Include="cMtlTex.cpp">
+=======
+    <ClCompile Include="cObjLoader.cpp">
+      <Filter>ObjLoader</Filter>
+    </ClCompile>
+    <ClCompile Include="cObjectManager.cpp">
+>>>>>>> 41302b6992cdd6e25a5b860ae2afd9f7e1656f1b
       <Filter>ObjLoader</Filter>
     </ClCompile>
     <ClCompile Include="cObject.cpp">
       <Filter>ObjLoader</Filter>
     </ClCompile>
+<<<<<<< HEAD
     <ClCompile Include="cObjectManager.cpp">
       <Filter>ObjLoader</Filter>
     </ClCompile>
@@ -227,6 +253,14 @@
     <ClCompile Include="cHex.cpp">
       <Filter>ASELoader</Filter>
     </ClCompile>
+=======
+    <ClCompile Include="cMtlTex.cpp">
+      <Filter>ObjLoader</Filter>
+    </ClCompile>
+    <ClCompile Include="cGroup.cpp">
+      <Filter>ObjLoader</Filter>
+    </ClCompile>
+>>>>>>> 41302b6992cdd6e25a5b860ae2afd9f7e1656f1b
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Dxstudy.rc">

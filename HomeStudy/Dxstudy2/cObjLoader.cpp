@@ -1,8 +1,11 @@
 #include "stdafx.h"
 #include "cObjLoader.h"
+<<<<<<< HEAD
 #include "cMtlTex.h"
 #include "cGroup.h"
 
+=======
+>>>>>>> 41302b6992cdd6e25a5b860ae2afd9f7e1656f1b
 
 cObjLoader::cObjLoader()
 {
@@ -12,6 +15,7 @@ cObjLoader::cObjLoader()
 cObjLoader::~cObjLoader()
 {
 }
+<<<<<<< HEAD
 
 void cObjLoader::Load(vector<cGroup*>& vecGroup, char* szFolder, char* szFile)
 {
@@ -411,3 +415,5 @@ LPD3DXMESH cObjLoader::LoadMesh(vector<cMtlTex*>& vecMtlTex, char* szFolder, cha
 
 	return pMesh;
 }
+=======
+>>>>>>> 41302b6992cdd6e25a5b860ae2afd9f7e1656f1b
