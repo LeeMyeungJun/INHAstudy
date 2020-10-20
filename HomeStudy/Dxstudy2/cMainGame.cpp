@@ -167,8 +167,8 @@ void cMainGame::Render()
 
 	//Draw_Texture();
 
-	if (m_pGrid)
-		m_pGrid->Render();
+	//if (m_pGrid)
+	//	m_pGrid->Render();
 
 	/*if (m_pCubePC)
 		m_pCubePC->Render();*/
@@ -182,13 +182,13 @@ void cMainGame::Render()
 		m_pCubeMan->Render();
 
 	//AseLoader
-	{
+	/*{
 		if (m_pRootFrame)
 			m_pRootFrame->Render();
 	}
-
+*/
 	//MeshRender
-	//Mesh_Render();
+	Mesh_Render();
 	
 
 	g_pD3DDvice->EndScene();
