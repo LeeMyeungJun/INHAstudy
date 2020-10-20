@@ -233,7 +233,7 @@ void cFrame::RenderFPS()
 	if (timeElapsed >= 1.0f)         //흐른시간이 1초이상이면 내가 하고싶은것 처리
 	{
 		float fps = (float)frameCount / timeElapsed;
-		cout <<"버텍스 초당 버퍼:" <<fps << endl;
+		//cout <<"버텍스 초당 버퍼:" <<fps << endl;
 
 		frameCount = 0;
 		timeElapsed = 0.0f;

@@ -19,6 +19,7 @@ public:
 private:
 	vector<ST_PC_VERTEX> m_vecLineVertex;
 	vector<ST_PC_VERTEX> m_vecTriangleVertex;
+	
 
 	//위에껀안씀
 
@@ -64,13 +65,21 @@ public:
 	void Load_Surface();
 
 	//>>:
+	POINT					m_ptMousepick;
+	vector<ST_PC_VERTEX>	m_gridVertex;
 
+	void MousePicking(POINT ptCursor,UINT message);
+	bool raySpherelntersectionTest(Ray* ray, BoundingSphere shpere);
+	bool raGridlntersectionTest(Ray* ray, vector<ST_PN_VERTEX> Grid);
+
+	
 
 private:
 	LPD3DXMESH		m_pMeshTeapot;
-	LPD3DXMESH		m_pMeshSphere;
+	LPD3DXMESH		m_pMeshSphere[10]; //그리기용
+	BoundingSphere	m_stBoundShpere[10]; //판정용
 	D3DMATERIAL9	m_stMtlTeapot;
-	D3DMATERIAL9	m_stMtlSphere;
+	D3DMATERIAL9	m_stMtlSphere[10]; //색칠용 
 
 	//OBJLoader통해서그리기
 	LPD3DXMESH	m_pObjMesh;
@@ -83,6 +92,8 @@ private:
 public:
 	void Setup_MeshObejct();
 	void Mesh_Render();
+
+	
 	
 };
 

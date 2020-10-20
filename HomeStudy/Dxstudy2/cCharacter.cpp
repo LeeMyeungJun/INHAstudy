@@ -5,7 +5,7 @@
 cCharacter::cCharacter()
 	:m_fRotY(0.0f)
 	,m_vDirection(0,0,1)
-	,m_vPosition(0,0.9f,0)
+	,m_vPosition(0,0,0)
 {
 	D3DXMatrixIdentity(&m_matWorld);
 }
@@ -50,14 +50,14 @@ void cCharacter::Update(iMap* pMap)
 	D3DXVec3TransformNormal(&m_vDirection, &m_vDirection, &matR);
 
 	//>>:¿©±â
-	if(pMap)
+	/*if(pMap)
 	{
 		if(pMap->GetHeight(vPosition.x,vPosition.y,vPosition.z))
 		{
 			m_vPosition = vPosition;
 		}
-	}
-
+	}*/
+	m_vPosition = vPosition;
 	//<<:
 
 	

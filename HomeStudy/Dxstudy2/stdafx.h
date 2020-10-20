@@ -117,10 +117,29 @@ struct ST_ROT_SAMPLE
 	}
 };
 
+//>>: MousePicking
+
+struct Ray
+{
+	D3DXVECTOR3 _origin;
+	D3DXVECTOR3 _direction;
+};
+
+struct BoundingSphere
+{
+	D3DXVECTOR3 center;
+	float radius;
+	bool bLight;
+	BoundingSphere():bLight (false) , radius(0), center(D3DXVECTOR3(0,0,0))
+	{};
+};
+
+
+struct ST_Rect
+{
+	
+};
 //<<:
-
-
-
 
 #define SafeAddRef(p) {if(p) p->AddRef();}
 
