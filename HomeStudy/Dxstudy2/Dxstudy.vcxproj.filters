@@ -129,6 +129,9 @@
     <ClInclude Include="cAseLoader.h">
       <Filter>ASELoader</Filter>
     </ClInclude>
+    <ClInclude Include="cHex.h">
+      <Filter>ASELoader</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -219,6 +222,9 @@
       <Filter>ASELoader</Filter>
     </ClCompile>
     <ClCompile Include="cAseLoader.cpp">
+      <Filter>ASELoader</Filter>
+    </ClCompile>
+    <ClCompile Include="cHex.cpp">
       <Filter>ASELoader</Filter>
     </ClCompile>
   </ItemGroup>

@@ -15,7 +15,7 @@ private:
 	vector<cPyramid*>		m_vecPyramid;
 
 public:
-	void Setup(int nNumHalfTile = 5, float fInterval = 1.0f);
+	void Setup(int nNumHalfTile = 10, float fInterval = 1.0f);
 	void Render();
 	void Render_Line();
 
