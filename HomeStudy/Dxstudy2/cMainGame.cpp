@@ -142,9 +142,9 @@ void cMainGame::Update()
 	//if (m_pCubePC)
 	//	m_pCubePC->Update();
 
-	/*if (m_pCubeMan)
+	if (m_pCubeMan)
 		m_pCubeMan->Update(m_pMap);
-	*/
+	
 	if (m_pCamera)
 		m_pCamera->Update();
 
@@ -178,8 +178,8 @@ void cMainGame::Render()
 	//	m_pLight->Render();
 
 	//일단 지우고 테스트합시다 .
-	//if (m_pCubeMan)
-	//	m_pCubeMan->Render();
+	if (m_pCubeMan)
+		m_pCubeMan->Render();
 
 	//AseLoader
 	{
