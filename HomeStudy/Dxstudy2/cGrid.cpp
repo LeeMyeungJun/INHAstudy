@@ -72,7 +72,7 @@ void cGrid::Setup(int nNumHalfTile, float fInterval)
 
 void cGrid::Render()
 {
-	g_pD3DDvice->SetRenderState(D3DRS_LIGHTING, true);
+	g_pD3DDvice->SetRenderState(D3DRS_LIGHTING, false);
 	g_pD3DDvice->SetTexture(NULL, 0); //¿·±Ò √ﬂ∞°
 	D3DXMATRIXA16 matI;
 	D3DXMatrixIdentity(&matI);

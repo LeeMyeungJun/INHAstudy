@@ -175,6 +175,7 @@
     <ClInclude Include="cObjMap.h" />
     <ClInclude Include="cPath.h" />
     <ClInclude Include="cPyramid.h" />
+    <ClInclude Include="cRay.h" />
     <ClInclude Include="cRightArm.h" />
     <ClInclude Include="cRightLeg.h" />
     <ClInclude Include="cTextureManager.h" />
@@ -209,6 +210,7 @@
     <ClCompile Include="cObjMap.cpp" />
     <ClCompile Include="cPath.cpp" />
     <ClCompile Include="cPyramid.cpp" />
+    <ClCompile Include="cRay.cpp" />
     <ClCompile Include="cRightArm.cpp" />
     <ClCompile Include="cRightLeg.cpp" />
     <ClCompile Include="cTextureManager.cpp" />

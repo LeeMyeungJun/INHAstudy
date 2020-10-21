@@ -25,6 +25,9 @@
     <Filter Include="ASELoader">
       <UniqueIdentifier>{cd9d3e8c-fc9d-44ea-b27d-58b969b0ee25}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Picking">
+      <UniqueIdentifier>{410fab60-599e-4f5b-8f84-1f9f48474329}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -129,6 +132,9 @@
     <ClInclude Include="cAseLoader.h">
       <Filter>ASELoader</Filter>
     </ClInclude>
+    <ClInclude Include="cRay.h">
+      <Filter>Picking</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -220,6 +226,9 @@
     </ClCompile>
     <ClCompile Include="cAseLoader.cpp">
       <Filter>ASELoader</Filter>
+    </ClCompile>
+    <ClCompile Include="cRay.cpp">
+      <Filter>Picking</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

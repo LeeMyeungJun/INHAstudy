@@ -13,6 +13,7 @@
 
 #include "cAseLoader.h"
 #include "cFrame.h"
+#include "cRay.h"
 
 //D3DXMatrixRotationX()
 //D3Dxvec3TransformNormal 사용  등등 이름비슷하니까 찾아쓰도록
@@ -91,7 +92,7 @@ void cMainGame::Setup()
 	//<<:
 	
 	Setup_Obj();
-	
+	Setup_PickingObj();
 
 	
 	
@@ -170,6 +171,8 @@ void cMainGame::Render()
 	if (m_pGrid)
 		m_pGrid->Render();
 
+	PickingObj_render();
+
 	/*if (m_pCubePC)
 		m_pCubePC->Render();*/
 	//Obj_Render();
@@ -182,10 +185,10 @@ void cMainGame::Render()
 	//	m_pCubeMan->Render();
 
 	//AseLoader
-	{
+	/*{
 		if (m_pRootFrame)
 			m_pRootFrame->Render();
-	}
+	}*/
 
 	//MeshRender
 	//Mesh_Render();
@@ -202,6 +205,34 @@ void cMainGame::wndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 	//if (m_pLight)
 	//	m_pLight->WndProc(hWnd, message, wParam, lParam);
+
+	switch (message)
+	{
+	case WM_LBUTTONDOWN :
+		{
+		cRay r = cRay::RayAtWorldSpace(LOWORD(lParam), HIWORD(lParam));
+		for (int i = 0; i < m_vecSphere.size(); i ++)
+		{
+			m_vecSphere[i].isPicked = r.IsPicked(&m_vecSphere[i]);//그라인에있는거 다선택취급한다는게 문제
+			
+		}
+		}
+		break;
+	case WM_RBUTTONDOWN:
+		{
+		cRay r = cRay::RayAtWorldSpace(LOWORD(lParam), HIWORD(lParam));
+			for(int i = 0 ; i < m_vecPlaneVertex.size() ; i += 3)
+			{
+				D3DXVECTOR3 v(0, 0, 0);
+				if (r.IntersectTri(m_vecPlaneVertex[i + 0].p, m_vecPlaneVertex[i + 1].p, m_vecPlaneVertex[i + 2].p, v))
+				{
+					m_vPickedPosition = v;
+				}
+			}
+			
+		}
+		break;
+	}
 }
 
 void cMainGame::Setup_Line()
@@ -356,7 +387,7 @@ void cMainGame::Setup_MeshObejct()
 void cMainGame::Mesh_Render()
 {
 	g_pD3DDvice->SetTexture(0, NULL);
-	
+
 	D3DXMATRIXA16 matWorld, matS, matR;
 
 	{
@@ -404,4 +435,79 @@ void cMainGame::Mesh_Render()
 		}
 
 	}
+}
+
+void cMainGame::Setup_PickingObj()
+{
+	for(int i = 0 ; i <= 10 ; i++)
+	{
+		ST_SPHERE s;
+		s.fRadius = 0.5f;
+		s.vCenter = D3DXVECTOR3(0, 0, -10 + 2 * i);
+
+		m_vecSphere.push_back(s);
+	}
+	ZeroMemory(&m_stMtlNone, sizeof(D3DMATERIAL9));
+	m_stMtlNone.Ambient = D3DXCOLOR(0.7f, 0.7f, 0.0f, 1.0f);
+	m_stMtlNone.Diffuse = D3DXCOLOR(0.7f, 0.7f, 0.0f, 1.0f);
+	m_stMtlNone.Specular = D3DXCOLOR(0.7f, 0.7f, 0.0f, 1.0f);
+
+	//선택된애는
+	ZeroMemory(&m_stMtlPicked, sizeof(D3DMATERIAL9));
+	m_stMtlPicked.Ambient = D3DXCOLOR(0.7f, 0.0f, 0.0f, 1.0f);
+	m_stMtlPicked.Diffuse = D3DXCOLOR(0.7f, 0.0f, 0.0f, 1.0f);
+	m_stMtlPicked.Specular = D3DXCOLOR(0.7f, 0.0f, 0.0f, 1.0f);
+
+	//바닥
+	ZeroMemory(&m_stMtlPlane, sizeof(D3DMATERIAL9));
+	m_stMtlPlane.Ambient = D3DXCOLOR(0.7f, 0.7f, 0.7f, 1.0f);
+	m_stMtlPlane.Diffuse = D3DXCOLOR(0.7f, 0.7f, 0.7f, 1.0f);
+	m_stMtlPlane.Specular = D3DXCOLOR(0.7f, 0.7f, 0.7f, 1.0f);
+
+	ST_PN_VERTEX v;
+	v.n = D3DXVECTOR3(0, 1, 0);
+	v.p = D3DXVECTOR3(-10, 0, -10); m_vecPlaneVertex.push_back(v);
+	v.p = D3DXVECTOR3(-10, 0, 10); m_vecPlaneVertex.push_back(v);
+	v.p = D3DXVECTOR3( 10, 0, 10); m_vecPlaneVertex.push_back(v);
+
+
+	v.p = D3DXVECTOR3(-10, 0, -10); m_vecPlaneVertex.push_back(v);
+	v.p = D3DXVECTOR3(10, 0, 10); m_vecPlaneVertex.push_back(v);
+	v.p = D3DXVECTOR3(10, 0, -10); m_vecPlaneVertex.push_back(v);
+
+	
+
+	
+}
+
+void cMainGame::PickingObj_render()
+{
+	D3DXMATRIXA16 matWorld;
+	g_pD3DDvice->SetRenderState(D3DRS_LIGHTING, true);
+	//먼저 바닥먼저깔아줘야겟지
+	g_pD3DDvice->SetFVF(ST_PN_VERTEX::FVF);
+	g_pD3DDvice->SetMaterial(&m_stMtlPlane);
+	D3DXMatrixIdentity(&matWorld);
+
+	g_pD3DDvice->SetTransform(D3DTS_WORLD, &matWorld);
+	g_pD3DDvice->SetTexture(0, 0);
+	g_pD3DDvice->DrawPrimitiveUP(D3DPT_TRIANGLELIST, 2, &m_vecPlaneVertex[0], sizeof(ST_PN_VERTEX));
+
+	for(int i = 0 ; i < m_vecSphere.size(); i++)
+	{
+		D3DXMatrixIdentity(&matWorld);
+		matWorld._41 = m_vecSphere[i].vCenter.x;
+		matWorld._42 = m_vecSphere[i].vCenter.y;
+		matWorld._43 = m_vecSphere[i].vCenter.z;
+		g_pD3DDvice->SetTransform(D3DTS_WORLD, &matWorld);
+		g_pD3DDvice->SetMaterial(m_vecSphere[i].isPicked ? &m_stMtlPicked : &m_stMtlNone);
+		m_pMeshSphere->DrawSubset(0);
+	}
+
+	g_pD3DDvice->SetMaterial(&m_stMtlNone); //선택된위치 표시용
+	D3DXMatrixTranslation(&matWorld, m_vPickedPosition.x, m_vPickedPosition.y, m_vPickedPosition.z);
+
+	g_pD3DDvice->SetTransform(D3DTS_WORLD, &matWorld);
+	m_pMeshSphere->DrawSubset(0);
+	
 }

@@ -79,10 +79,22 @@ private:
 	//AseLoader통해서 그리기
 	LPD3DXMESH	m_pAseObjMesh;
 	vector<cMtlTex*>	m_vecAseObjMtltex;
+
+	//Picking
+	vector<ST_SPHERE>	m_vecSphere;
+	D3DMATERIAL9		m_stMtlNone;
+	D3DMATERIAL9		m_stMtlPicked;
+	D3DMATERIAL9		m_stMtlPlane;
+	vector<ST_PN_VERTEX>	m_vecPlaneVertex;
+	D3DXVECTOR3			m_vPickedPosition;
 	
 public:
 	void Setup_MeshObejct();
 	void Mesh_Render();
+
+	//Picking
+	void Setup_PickingObj();
+	void PickingObj_render();
 	
 };
 
