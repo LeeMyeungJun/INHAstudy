@@ -9,10 +9,10 @@
 #include "cObjLoader.h"
 #include "cGroup.h"
 #include "cObjMap.h"
-
-
 #include "cAseLoader.h"
 #include "cFrame.h"
+#include "cRawLoader.h"
+
 
 //D3DXMatrixRotationX()
 //D3Dxvec3TransformNormal 사용  등등 이름비슷하니까 찾아쓰도록
@@ -45,6 +45,7 @@ cMainGame::~cMainGame()
 	SafeRelease(m_pMeshTeapot);
 	SafeRelease(m_pMeshSphere);
 	SafeRelease(m_pObjMesh);
+	SafeRelease(m_pRawTexture);
 
 	for each(auto p in m_vecObjMtltex)
 		SafeRelease(p);
@@ -96,6 +97,7 @@ void cMainGame::Setup()
 	
 	
 	// >> : for texture
+	D3DXCreateTextureFromFile(g_pD3DDvice, L"raw/terrain.jpg", &m_pRawTexture);
 	D3DXCreateTextureFromFile(g_pD3DDvice, L"수지.png",&m_pTexture);
 	{
 		//좌하단먼저 그릴거야 
@@ -133,7 +135,7 @@ void cMainGame::Setup()
 	Set_Light();
 
 	Setup_MeshObejct();
-	
+	Load_Raw();
 
 }
 
@@ -142,14 +144,14 @@ void cMainGame::Update()
 	//if (m_pCubePC)
 	//	m_pCubePC->Update();
 
-	/*if (m_pCubeMan)
+	if (m_pCubeMan)
 		m_pCubeMan->Update(m_pMap);
-	*/
+	
 	if (m_pCamera)
 		m_pCamera->Update();
 
-	if (m_pRootFrame)
-		m_pRootFrame->Update(m_pRootFrame->GetKeyFrame(),NULL);//처음엔 널을 넣어주면 되겠지?
+	//if (m_pRootFrame)
+	//	m_pRootFrame->Update(m_pRootFrame->GetKeyFrame(),NULL);//처음엔 널을 넣어주면 되겠지?
 	
 	//if (m_pLight)
 	//	m_pLight->Update();
@@ -170,25 +172,26 @@ void cMainGame::Render()
 	if (m_pGrid)
 		m_pGrid->Render();
 
-	/*if (m_pCubePC)
-		m_pCubePC->Render();*/
+	//if (m_pCubePC)
+	//	m_pCubePC->Render();
 	//Obj_Render();
 	
 	//if (m_pLight)
 	//	m_pLight->Render();
 
 	//일단 지우고 테스트합시다 .
-	//if (m_pCubeMan)
-	//	m_pCubeMan->Render();
+	if (m_pCubeMan)
+		m_pCubeMan->Render();
 
 	//AseLoader
-	{
-		if (m_pRootFrame)
-			m_pRootFrame->Render();
-	}
+	//{
+	//	if (m_pRootFrame)
+	//		m_pRootFrame->Render();
+	//}
 
 	//MeshRender
 	//Mesh_Render();
+	Render_Raw();
 	
 
 	g_pD3DDvice->EndScene();
@@ -404,4 +407,28 @@ void cMainGame::Mesh_Render()
 		}
 
 	}
+}
+
+void cMainGame::Load_Raw()
+{
+	cRawLoader r;
+	r.RawLoader("raw/HeightMap.raw","raw/terrain.jpg" , m_vecRawVertex);
+}
+
+void cMainGame::Render_Raw()
+{
+	D3DXMATRIXA16 matWorld;
+	D3DXMatrixIdentity(&matWorld);
+	g_pD3DDvice->SetRenderState(D3DRS_LIGHTING, false);
+	
+	g_pD3DDvice->SetTransform(D3DTS_WORLD, &matWorld);
+	g_pD3DDvice->SetFVF(ST_PNT_VERTEX::FVF);
+	g_pD3DDvice->SetTexture(0, m_pRawTexture);
+	
+	g_pD3DDvice->DrawPrimitiveUP(D3DPT_TRIANGLELIST,
+		m_vecRawVertex.size() / 3,
+		&m_vecRawVertex[0],
+		sizeof(ST_PNT_VERTEX));//1번쨰 는 타입 선인지 , 점인지  1번째타입 사용법은 따로공부
+
+	g_pD3DDvice->SetTexture(0, NULL);
 }

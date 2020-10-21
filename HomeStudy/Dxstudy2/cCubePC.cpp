@@ -155,6 +155,7 @@ void cCubePC::Update()
 
 void cCubePC::Render()
 {
+	g_pD3DDvice->SetRenderState(D3DRS_LIGHTING, true);
 	g_pD3DDvice->SetRenderState(D3DRS_CULLMODE, false);
 	g_pD3DDvice->SetTransform(D3DTS_WORLD, &m_matWorld);
 	g_pD3DDvice->SetFVF(ST_PC_VERTEX::FVF);

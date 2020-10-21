@@ -83,6 +83,14 @@ private:
 public:
 	void Setup_MeshObejct();
 	void Mesh_Render();
+
+
+private:
+	vector<ST_PNT_VERTEX> m_vecRawVertex;
+	LPDIRECT3DTEXTURE9		m_pRawTexture;
+public:
+	void Load_Raw();
+	void Render_Raw();
 	
 };
 
