@@ -14,40 +14,73 @@ cRawLoader::~cRawLoader()
 
 void cRawLoader::RawLoader(char* FileName, char* Texture, vector<ST_PNT_VERTEX>& rawVector)
 {
-	int width = 257;
-	int height = 257;
+	//int width = 257;
+	//int height = 257;
+	//fopen_s(&m_fp, FileName, "rb");
+	//vector<ST_PNT_VERTEX> temp;
+	//if (m_fp == NULL)
+	//	return;
+	//int a = 0;
+	//int RawSize = 1;
+	//int rowcnt = 0, colcnt = 0;
+
+	//do
+	//{
+	//	a = fgetc(m_fp);
+	//	if (a == EOF)
+	//		break;
+	//	ST_PNT_VERTEX v;
+	//	v.n = D3DXVECTOR3(0, 1, 0);
+	//	v.p = D3DXVECTOR3(rowcnt*RawSize, (float)a/10 , colcnt*RawSize);
+	//	
+	//	v.t.x = (float)rowcnt/256;
+	//	v.t.y = (float)colcnt/256;
+	////u v
+
+	//	temp.push_back(v);
+
+	//	rowcnt++;
+	//	if (rowcnt == width-1)
+	//	{
+	//		colcnt++;
+	//		rowcnt = 0;
+	//	}
+	//} while (true);
+
+	//fclose(m_fp);
+
+
 	fopen_s(&m_fp, FileName, "rb");
 	vector<ST_PNT_VERTEX> temp;
+	int a = 0;
 	if (m_fp == NULL)
 		return;
-	int a = 0;
-	int RawSize = 1;
-	int rowcnt = 0, colcnt = 0;
 
-	do
+	while (true)
 	{
 		a = fgetc(m_fp);
 		if (a == EOF)
 			break;
 		ST_PNT_VERTEX v;
 		v.n = D3DXVECTOR3(0, 1, 0);
-		v.p = D3DXVECTOR3(rowcnt*RawSize, (float)a/10 , colcnt*RawSize);
-		
-		v.t.x = (float)rowcnt/256;
-		v.t.y = (float)colcnt/256;
-	//u v
-
+		v.p = D3DXVECTOR3(0, (float)a/10, 0);
 		temp.push_back(v);
-
-		rowcnt++;
-		if (rowcnt == width-1)
+	}
+	int width = 257;
+	int height = width;
+	float range = 1.5f;
+	for (int i = 0; i < height; i++)
+	{
+		for (int j = 0; j < width; j++)
 		{
-			colcnt++;
-			rowcnt = 0;
-		}
-	} while (true);
+			temp[i * height + j].p.x = (float)j*range;
+			temp[i * height + j].p.z = (float)i*range;
 
-	fclose(m_fp);
+			temp[i * height + j].t.x = (float)j/(width-1);
+			temp[i * height + j].t.y = (float)i/(height-1);
+		}
+	}
+
 
 
 
@@ -73,11 +106,12 @@ void cRawLoader::CreateIndex(vector<ST_PNT_VERTEX> temp, vector<ST_PNT_VERTEX>& 
 			a[5] = j*((width)) + i + 1 + width;
 			
 			rawVector.push_back(temp[a[0]]);
-			rawVector.push_back(temp[a[1]]);
 			rawVector.push_back(temp[a[2]]);
+			rawVector.push_back(temp[a[1]]);
+
 			rawVector.push_back(temp[a[3]]);
-			rawVector.push_back(temp[a[4]]);
 			rawVector.push_back(temp[a[5]]);
+			rawVector.push_back(temp[a[4]]);
 
 		}
 	}

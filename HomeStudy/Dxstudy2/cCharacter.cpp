@@ -61,7 +61,7 @@ void cCharacter::Update(iMap* pMap)
 	//<<:
 
 	
-	D3DXMatrixTranslation(&matT, m_vPosition.x, m_vPosition.y+0.9f, m_vPosition.z);
+	D3DXMatrixTranslation(&matT, m_vPosition.x, m_vPosition.y+8.5f, m_vPosition.z);
 	m_matWorld = matR * matT;
 }
 

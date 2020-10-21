@@ -420,7 +420,7 @@ void cMainGame::Render_Raw()
 	D3DXMATRIXA16 matWorld;
 	D3DXMatrixIdentity(&matWorld);
 	g_pD3DDvice->SetRenderState(D3DRS_LIGHTING, false);
-	
+	//g_pD3DDvice->SetRenderState(D3DRS_CULLMODE, false);
 	g_pD3DDvice->SetTransform(D3DTS_WORLD, &matWorld);
 	g_pD3DDvice->SetFVF(ST_PNT_VERTEX::FVF);
 	g_pD3DDvice->SetTexture(0, m_pRawTexture);
