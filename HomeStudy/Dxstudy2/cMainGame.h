@@ -88,9 +88,12 @@ public:
 private:
 	vector<ST_PNT_VERTEX> m_vecRawVertex;
 	LPDIRECT3DTEXTURE9		m_pRawTexture;
+	D3DXVECTOR3		m_vPosition;
 public:
 	void Load_Raw();
 	void Render_Raw();
+	void Height_Raw_Position();
+	
 	
 };
 

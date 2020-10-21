@@ -5,7 +5,7 @@
 cCharacter::cCharacter()
 	:m_fRotY(0.0f)
 	,m_vDirection(0,0,1)
-	,m_vPosition(0,0.9f,0)
+	,m_vPosition(0,0,0)
 {
 	D3DXMatrixIdentity(&m_matWorld);
 }
@@ -61,7 +61,7 @@ void cCharacter::Update(iMap* pMap)
 	//<<:
 
 	
-	D3DXMatrixTranslation(&matT, m_vPosition.x, m_vPosition.y+8.5f, m_vPosition.z);
+	D3DXMatrixTranslation(&matT, m_vPosition.x, m_vPosition.y+0.9f, m_vPosition.z);
 	m_matWorld = matR * matT;
 }
 

@@ -36,9 +36,7 @@ void cRawLoader::RawLoader(char* FileName, char* Texture, vector<ST_PNT_VERTEX>&
 	//	v.t.x = (float)rowcnt/256;
 	//	v.t.y = (float)colcnt/256;
 	////u v
-
 	//	temp.push_back(v);
-
 	//	rowcnt++;
 	//	if (rowcnt == width-1)
 	//	{
@@ -46,7 +44,6 @@ void cRawLoader::RawLoader(char* FileName, char* Texture, vector<ST_PNT_VERTEX>&
 	//		rowcnt = 0;
 	//	}
 	//} while (true);
-
 	//fclose(m_fp);
 
 
@@ -68,7 +65,7 @@ void cRawLoader::RawLoader(char* FileName, char* Texture, vector<ST_PNT_VERTEX>&
 	}
 	int width = 257;
 	int height = width;
-	float range = 1.5f;
+	float range = 1.0f;
 	for (int i = 0; i < height; i++)
 	{
 		for (int j = 0; j < width; j++)
@@ -81,8 +78,9 @@ void cRawLoader::RawLoader(char* FileName, char* Texture, vector<ST_PNT_VERTEX>&
 		}
 	}
 
-
-
+	//1차원 배열로 2차원배열을 표현을할때 사용하는식인데 . 0번쨰부터 끝 256* 256 까지 다표현을할수있어 .
+	//256까지다했어 . 그러면 다음줄은 ? 257 부터 표현을하니까 i값이 1일떄 height 는 257이니까 j = 0 257 
+	//514 
 
 	CreateIndex(temp, rawVector);
 	
@@ -91,7 +89,7 @@ void cRawLoader::RawLoader(char* FileName, char* Texture, vector<ST_PNT_VERTEX>&
 
 void cRawLoader::CreateIndex(vector<ST_PNT_VERTEX> temp, vector<ST_PNT_VERTEX>& rawVector)
 {
-	int width  = 257;
+	int width  = 5;
 	int height = width;
 	int a[6];
 	for(int j = 0 ; j < height -1 ; j++)
@@ -105,6 +103,7 @@ void cRawLoader::CreateIndex(vector<ST_PNT_VERTEX> temp, vector<ST_PNT_VERTEX>& 
 			a[4] = j*((width)) + i + 1;
 			a[5] = j*((width)) + i + 1 + width;
 			
+			continue;
 			rawVector.push_back(temp[a[0]]);
 			rawVector.push_back(temp[a[2]]);
 			rawVector.push_back(temp[a[1]]);

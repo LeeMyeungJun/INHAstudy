@@ -79,6 +79,8 @@ void cMainGame::Setup()
 	m_pCubeMan = new cCubeMan;
 	m_pCubeMan->Setup();
 	
+
+
 	m_pCamera = new cCamera;
 	m_pCamera->Setup(&m_pCubeMan->GetPosition());
 
@@ -136,6 +138,8 @@ void cMainGame::Setup()
 
 	Setup_MeshObejct();
 	Load_Raw();
+	m_vPosition = m_pCubeMan->GetPosition();
+
 
 }
 
@@ -431,4 +435,12 @@ void cMainGame::Render_Raw()
 		sizeof(ST_PNT_VERTEX));//1번쨰 는 타입 선인지 , 점인지  1번째타입 사용법은 따로공부
 
 	g_pD3DDvice->SetTexture(0, NULL);
+}
+
+void cMainGame::Height_Raw_Position()
+{
+	D3DXVECTOR3 Position = m_vPosition;
+
+	m_vPosition = m_vecRawVertex[0].p;
+
 }
