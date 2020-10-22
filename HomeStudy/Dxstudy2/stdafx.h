@@ -23,7 +23,8 @@
 #include <set>
 #include <list>
 #include <assert.h> //경고에 관련된 헤더파일 예외처리해주려고 넣음.
- 
+#include <complex.h>
+
 using namespace std;
 
 // TODO: reference additional headers your program requires here
@@ -59,5 +60,4 @@ struct ST_PC_VERTEX //point & color의미
 
 #include "cDeviceManager.h"
 #include "Player.h"
-
 

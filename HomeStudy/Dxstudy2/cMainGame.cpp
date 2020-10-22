@@ -5,6 +5,7 @@
 #include "cCamera.h"
 #include "cGrid.h"
 #include "Player.h"
+#include "xFileLoader.h"
 
 
 //D3DXMatrixRotationX()
@@ -14,6 +15,7 @@ cMainGame::cMainGame()
 	:m_pCamera(NULL)
 	,m_pGrid(NULL)
 	,m_pPlayer(NULL)
+	, m_pXFile(NULL)
 {
 	
 }
@@ -24,6 +26,7 @@ cMainGame::~cMainGame()
 	SafeDelete(m_pPlayer);
 	SafeDelete(m_pCamera);
 	SafeDelete(m_pGrid);
+	SafeDelete(m_pXFile);
 	g_pDeveceManager->Destroy();
 }
 
@@ -35,7 +38,8 @@ void cMainGame::Setup()
 	//m_pCubePC = new cCubePC;
 	//m_pCubePC->Setup();
 
-
+	setLight();
+	
 	m_pPlayer = new Player;
 	m_pPlayer->Setup();
 
@@ -44,8 +48,11 @@ void cMainGame::Setup()
 
 	m_pGrid = new cGrid;
 	m_pGrid->Setup();
-	
 
+	m_pXFile = new xFileLoader;
+	m_pXFile->Setup_Xfile("xFile/bigship1.x");
+	//Setup_Xfile();
+	
 	g_pD3DDvice->SetRenderState(D3DRS_LIGHTING, false);//라이트 끄기
 
 	
@@ -77,6 +84,9 @@ void cMainGame::Render()
 	if (m_pPlayer)
 		m_pPlayer->Render();
 
+
+	m_pXFile->Render_Xfile();
+	
 	g_pD3DDvice->EndScene();
 	g_pD3DDvice->Present(NULL, NULL, NULL, NULL);
 }
@@ -148,3 +158,23 @@ void cMainGame::Draw_Triangle()
 		&m_vecTriangleVertex[0],
 		sizeof(ST_PC_VERTEX));//1번쨰 는 타입 선인지 , 점인지  1번째타입 사용법은 따로공부
 }
+
+void cMainGame::setLight()
+{
+	D3DLIGHT9   stLight;
+	ZeroMemory(&stLight, sizeof(D3DLIGHT9));
+	stLight.Type = D3DLIGHT_DIRECTIONAL;
+	stLight.Ambient = D3DXCOLOR(0.8f, 0.8f, 0.8f, 1.0f);
+	stLight.Diffuse = D3DXCOLOR(0.8f, 0.8f, 0.8f, 1.0f);
+	stLight.Specular = D3DXCOLOR(0.8f, 0.8f, 0.8f, 1.0f);
+
+	D3DXVECTOR3 vDir = D3DXVECTOR3(0.0f, -1.0f, 0.0f);
+	D3DXVec3Normalize(&vDir, &vDir);
+	stLight.Direction = vDir;
+	g_pD3DDvice->SetLight(0, &stLight);
+	g_pD3DDvice->LightEnable(0, true);
+
+}
+
+
+

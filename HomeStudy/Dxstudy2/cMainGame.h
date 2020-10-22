@@ -3,6 +3,7 @@
 class cCubePC;
 class cCamera;
 class cGrid;
+class xFileLoader;
 
 class cMainGame
 {
@@ -19,6 +20,7 @@ private:
 	//cCubePC*		m_pCubePC;
 	cCamera*		m_pCamera;
 	cGrid*			m_pGrid;
+	xFileLoader*	m_pXFile;
 
 public:
 	void Setup();
@@ -32,5 +34,8 @@ public:
 
 	void Setup_Triangle();
 	void Draw_Triangle();
+
+	void setLight();
+
 };
 
