@@ -135,6 +135,9 @@
     <ClInclude Include="cRay.h">
       <Filter>Picking</Filter>
     </ClInclude>
+    <ClInclude Include="cHeightMap.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -229,6 +232,9 @@
     </ClCompile>
     <ClCompile Include="cRay.cpp">
       <Filter>Picking</Filter>
+    </ClCompile>
+    <ClCompile Include="cHeightMap.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

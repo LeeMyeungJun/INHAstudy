@@ -95,6 +95,8 @@ public:
 	//Picking
 	void Setup_PickingObj();
 	void PickingObj_render();
-	
+
+	//mapHeight
+	void Setup_HeightMap();
 };
 

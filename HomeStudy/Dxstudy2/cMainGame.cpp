@@ -9,11 +9,10 @@
 #include "cObjLoader.h"
 #include "cGroup.h"
 #include "cObjMap.h"
-
-
 #include "cAseLoader.h"
 #include "cFrame.h"
 #include "cRay.h"
+#include "cHeightMap.h"
 
 //D3DXMatrixRotationX()
 //D3Dxvec3TransformNormal 사용  등등 이름비슷하니까 찾아쓰도록
@@ -91,11 +90,11 @@ void cMainGame::Setup()
 	
 	//<<:
 	
-	Setup_Obj();
+	//Setup_Obj();
 	Setup_PickingObj();
 
 	
-	
+	Setup_HeightMap();
 	// >> : for texture
 	D3DXCreateTextureFromFile(g_pD3DDvice, L"수지.png",&m_pTexture);
 	{
@@ -143,9 +142,9 @@ void cMainGame::Update()
 	//if (m_pCubePC)
 	//	m_pCubePC->Update();
 
-	/*if (m_pCubeMan)
+	if (m_pCubeMan)
 		m_pCubeMan->Update(m_pMap);
-	*/
+	
 	if (m_pCamera)
 		m_pCamera->Update();
 
@@ -180,9 +179,12 @@ void cMainGame::Render()
 	//if (m_pLight)
 	//	m_pLight->Render();
 
+	if (m_pMap)
+		m_pMap->Render();
+	
 	//일단 지우고 테스트합시다 .
-	//if (m_pCubeMan)
-	//	m_pCubeMan->Render();
+	if (m_pCubeMan)
+		m_pCubeMan->Render();
 
 	//AseLoader
 	/*{
@@ -358,7 +360,7 @@ void cMainGame::Load_Surface()
 	D3DXMatrixRotationX(&matR, -D3DX_PI / 2.0F);
 
 	matWorld = matS* matR;
-	m_pMap = new cObjMap("obj", "map_surface.obj", &matWorld);
+	//m_pMap = new cObjMap("obj", "map_surface.obj", &matWorld);
 }
 
 void cMainGame::Setup_MeshObejct()
@@ -509,5 +511,13 @@ void cMainGame::PickingObj_render()
 
 	g_pD3DDvice->SetTransform(D3DTS_WORLD, &matWorld);
 	m_pMeshSphere->DrawSubset(0);
+	
+}
+
+void cMainGame::Setup_HeightMap()
+{
+	cHeightMap* pMap = new cHeightMap;
+	pMap->Setup("height/", "HeightMap.raw", "terrain.jpg");
+	m_pMap = pMap;
 	
 }
