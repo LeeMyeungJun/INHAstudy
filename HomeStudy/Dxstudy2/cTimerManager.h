@@ -1,6 +1,5 @@
 #pragma once
 
-#define g_pTimeManager cTimerManager::GetInstance();
 
 class cTimerManager
 {
@@ -9,7 +8,7 @@ class cTimerManager
 //	~cTimerManager();
 
 private:
-	Singletone(cTimerManager);
+	Singleton(cTimerManager);
 
 private:
 	DWORD		m_dwLastUpdateTime;
@@ -21,3 +20,4 @@ public:
 	float GetLastUpdateTime();
 };
 
+#define g_pTimeManager cTimerManager::GetInstance()

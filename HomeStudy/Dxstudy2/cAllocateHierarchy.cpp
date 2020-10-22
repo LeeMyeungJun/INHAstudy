@@ -2,6 +2,7 @@
 #include "cAllocateHierarchy.h"
 
 
+
 cAllocateHierarchy::cAllocateHierarchy()
 {
 }
@@ -60,7 +61,7 @@ STDMETHODIMP cAllocateHierarchy::CreateMeshContainer(THIS_
 		pMeshData->pMesh->GetOptions(),
 		pMeshData->pMesh->GetFVF(),
 		g_pD3DDvice,
-		pBoneMesh->pOrigMesh);
+		&pBoneMesh->pOrigMesh);
 
 	DWORD dwNumBones = pSkinInfo->GetNumBones();
 	pBoneMesh->ppBoneMatrixPtrs = new D3DXMATRIX*[dwNumBones];
@@ -81,7 +82,22 @@ STDMETHODIMP cAllocateHierarchy::DestroyFrame(THIS_ LPD3DXFRAME pFrameToFree)
 {
 	ST_BONE* pBone = (ST_BONE*)pFrameToFree;
 
+	SafeDeleteArray(pBone->Name);
+	SafeDelete(pFrameToFree);
+	return S_OK;
 }
 STDMETHODIMP cAllocateHierarchy::DestroyMeshContainer(THIS_ LPD3DXMESHCONTAINER pMeshContainerToFree)
 {
+	ST_BONE_MESH* pBoneMesh = (ST_BONE_MESH*)pMeshContainerToFree;
+
+	SafeRelease(pBoneMesh->pSkinInfo);
+	SafeRelease(pBoneMesh->MeshData.pMesh);
+	SafeRelease(pBoneMesh->pOrigMesh);
+
+	SafeDeleteArray(pBoneMesh->pCurrentBoneMatrices);
+	SafeDeleteArray(pBoneMesh->ppBoneMatrixPtrs);
+	SafeDeleteArray(pBoneMesh->pBoneOffsetMatrices);
+
+	SafeDelete(pBoneMesh);
+	return S_OK;
 }

@@ -1,9 +1,11 @@
 #pragma once
 #include "stdafx.h"
+class Player;
 class cCubePC;
 class cCamera;
 class cGrid;
 class xFileLoader;
+class cSkinnedMesh;
 
 class cMainGame
 {
@@ -21,6 +23,7 @@ private:
 	cCamera*		m_pCamera;
 	cGrid*			m_pGrid;
 	xFileLoader*	m_pXFile;
+	cSkinnedMesh*	m_pSkinnedMesh;
 
 public:
 	void Setup();
@@ -36,6 +39,9 @@ public:
 	void Draw_Triangle();
 
 	void setLight();
+
+	//
+	void SkinnedMesh_Render();
 
 };
 

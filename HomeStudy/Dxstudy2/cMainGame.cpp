@@ -6,7 +6,7 @@
 #include "cGrid.h"
 #include "Player.h"
 #include "xFileLoader.h"
-
+#include "cSkinnedMesh.h"
 
 //D3DXMatrixRotationX()
 //D3Dxvec3TransformNormal 사용  등등 이름비슷하니까 찾아쓰도록
@@ -16,6 +16,7 @@ cMainGame::cMainGame()
 	,m_pGrid(NULL)
 	,m_pPlayer(NULL)
 	, m_pXFile(NULL)
+	, m_pSkinnedMesh(NULL)
 {
 	
 }
@@ -27,6 +28,7 @@ cMainGame::~cMainGame()
 	SafeDelete(m_pCamera);
 	SafeDelete(m_pGrid);
 	SafeDelete(m_pXFile);
+	SafeDelete(m_pSkinnedMesh);
 	g_pDeveceManager->Destroy();
 }
 
@@ -51,11 +53,11 @@ void cMainGame::Setup()
 
 	m_pXFile = new xFileLoader;
 	m_pXFile->Setup_Xfile("xFile/zealot.x");
-	//Setup_Xfile();
-	
-	g_pD3DDvice->SetRenderState(D3DRS_LIGHTING, false);//라이트 끄기
 
+	m_pSkinnedMesh = new cSkinnedMesh;
+	m_pSkinnedMesh->Setup("xFile","zealot.x");
 	
+
 
 }
 
@@ -74,7 +76,7 @@ void cMainGame::Update()
 void cMainGame::Render()
 {
 	if (g_pD3DDvice)
-		g_pD3DDvice->Clear(0, 0, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, D3DCOLOR_XRGB(45, 45, 48), 1.0f, 0);
+		g_pD3DDvice->Clear(0, 0, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, D3DCOLOR_XRGB(30, 75, 48), 1.0f, 0);
 
 	g_pD3DDvice->BeginScene();
 
@@ -84,8 +86,8 @@ void cMainGame::Render()
 	/*if (m_pPlayer)
 		m_pPlayer->Render();*/
 
-
-	m_pXFile->Render_Xfile();
+	SkinnedMesh_Render();
+	//m_pXFile->Render_Xfile();
 	
 	g_pD3DDvice->EndScene();
 	g_pD3DDvice->Present(NULL, NULL, NULL, NULL);
@@ -172,6 +174,16 @@ void cMainGame::setLight()
 	g_pD3DDvice->SetLight(0, &stLight);
 	g_pD3DDvice->LightEnable(0, true);
 
+}
+
+void cMainGame::SkinnedMesh_Render()
+{
+	D3DXMATRIXA16 matWorld;
+	D3DXMatrixIdentity(&matWorld);
+	g_pD3DDvice->SetTransform(D3DTS_WORLD, &matWorld);
+	if (m_pSkinnedMesh)
+		m_pSkinnedMesh->Render(NULL);
+	
 }
 
 

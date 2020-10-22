@@ -90,6 +90,9 @@ void cGrid::Render()
 {
 	D3DXMATRIXA16 matI;
 	D3DXMatrixIdentity(&matI);
+
+	g_pD3DDvice->SetTexture(0, NULL);
+	g_pD3DDvice->SetRenderState(D3DRS_LIGHTING, false);
 	g_pD3DDvice->SetTransform(D3DTS_WORLD, &matI);
 	g_pD3DDvice->SetFVF(ST_PC_VERTEX::FVF);
 	g_pD3DDvice->DrawPrimitiveUP(D3DPT_LINELIST,
@@ -100,5 +103,6 @@ void cGrid::Render()
 	for each(auto p in m_vecPyramid)
 		p->Render();
 
+	g_pD3DDvice->SetRenderState(D3DRS_LIGHTING, true);
 	
 }

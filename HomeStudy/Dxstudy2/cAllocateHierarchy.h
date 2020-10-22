@@ -8,7 +8,7 @@ struct ST_BONE_MESH : public D3DXMESHCONTAINER
 {
 	vector<D3DMATERIAL9>		vecMtl;
 	vector<LPDIRECT3DTEXTURE9>	vecTexture;
-	LPD3DXMESH*					pOrigMesh;
+	LPD3DXMESH					pOrigMesh;
 	D3DXMATRIX**				ppBoneMatrixPtrs;
 	D3DXMATRIX*					pBoneOffsetMatrices;
 	D3DXMATRIX*					pCurrentBoneMatrices;
