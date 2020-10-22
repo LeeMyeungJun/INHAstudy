@@ -34,7 +34,20 @@ void cSkinnedMesh::Setup(char* szFolder, char* szFile)
 							&m_pAnimController);
 
 	SetupBoneMatrixPtrs(m_pRoot);
-	
+
+	vector<ID3DXAnimationSet*> vecAni;
+	ID3DXAnimationSet* a;
+	UINT numAS = m_pAnimController->GetNumAnimationSets();
+	for (UINT i = 0; i <numAS; i++)
+	{
+		m_pAnimController->GetAnimationSet(i, &a);
+		vecAni.push_back(a);
+	}
+	vecAni[0]; //공격하는모션
+	vecAni[4]; //가만히 서있는모션 
+	m_pAnimController->SetTrackAnimationSet(0, vecAni[4]);
+	m_pAnimController->SetTrackSpeed(0, 10);
+	//애니메이션을 제어하기위해 컨트롤러를 둔다 .
 }
 
 void cSkinnedMesh::Update()
@@ -45,6 +58,10 @@ void cSkinnedMesh::Update()
 	//640이니 3600인가 그랫지 애도 시간이 증가하면서 알아서 짤라서 알아서해줘
 		Update(m_pRoot, NULL);
 	UpdateSkinnedMesh(m_pRoot);
+
+	
+
+
 }
 
 void cSkinnedMesh::Update(LPD3DXFRAME pFrame, LPD3DXFRAME pParent)

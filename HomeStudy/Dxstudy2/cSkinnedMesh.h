@@ -8,6 +8,7 @@ protected:
 	LPD3DXFRAME		m_pRoot;
 	LPD3DXANIMATIONCONTROLLER	m_pAnimController; //局聪皋捞记 包府且模备
 
+	
 public:
 	void Setup(char* szFolder, char* szFile);
 	void Update();
