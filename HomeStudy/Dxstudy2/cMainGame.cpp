@@ -68,6 +68,10 @@ void cMainGame::Update()
 		m_pPlayer->Update();
 	}
 
+	g_pTimeManager->Update();
+	if (m_pSkinnedMesh)
+		m_pSkinnedMesh->Update();
+
 	if (m_pCamera)
 		m_pCamera->Update();
 	

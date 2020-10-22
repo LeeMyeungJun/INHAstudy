@@ -54,7 +54,8 @@ void cSkinnedMesh::Update(LPD3DXFRAME pFrame, LPD3DXFRAME pParent)
 
 	ST_BONE* pBone = (ST_BONE*)pFrame;
 
-	pBone->CombinedTransformationMatrix = pBone->CombinedTransformationMatrix;
+	pBone->CombinedTransformationMatrix = pBone->TransformationMatrix;
+	//이게 회전과 움직임? 
 	
 	if(pParent)
 	{
@@ -163,5 +164,8 @@ void cSkinnedMesh::UpdateSkinnedMesh(LPD3DXFRAME pFrame)
 
 	if (pFrame->pFrameSibling)
 		UpdateSkinnedMesh(pFrame->pFrameSibling);
+
+
+	
 	
 }
