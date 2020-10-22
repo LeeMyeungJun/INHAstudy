@@ -29,16 +29,16 @@ void cHeightMap::Setup(char* szFolder, char* szRaw, char* szTex, DWORD dwBytesPe
 	fseek(fp, 0, SEEK_END);
 	int nFileSize = ftell(fp);
 	int nNumVertex = nFileSize / dwBytesPerPixel;
-
+	//256
 	int nRow = (int)(sqrt((float)nNumVertex) + 0.0001f);//오차가 발생할수있기떄문에 0.0001f를 더해준다. float들어가면은 정확히 안들어갈수있어서그래
-	int nCol = nRow; //정방향이니깐 같을거고
+	int nCol = nRow; //정방향이니깐 같을거고 // 257
 	int nTileN = nRow - 1;
-	m_nTileN = nTileN; //타일갯수
+	m_nTileN = nTileN; //타일갯수 256
 
 	fseek(fp, 0, SEEK_SET);//처음으로 돌려준다 .
 
-	vector<ST_PNT_VERTEX> vecVertex(nNumVertex);
-	m_vecVertex.resize(nNumVertex);
+	vector<ST_PNT_VERTEX> vecVertex(nNumVertex); //몇개를만들지 미리 해주는거고
+	m_vecVertex.resize(nNumVertex);//공간을 만들어주네 
 
 	vector<DWORD> vecIndex;
 	vecIndex.reserve(nTileN * nTileN * 2 * 3); //resize해도되고 reserve해줘도됨
