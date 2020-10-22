@@ -81,8 +81,8 @@ void cMainGame::Render()
 	if (m_pGrid)
 		m_pGrid->Render();
 
-	if (m_pPlayer)
-		m_pPlayer->Render();
+	/*if (m_pPlayer)
+		m_pPlayer->Render();*/
 
 
 	m_pXFile->Render_Xfile();
@@ -131,7 +131,6 @@ void cMainGame::Draw_Line()
 	D3DXMatrixIdentity(&matWorld); //항등행렬로 초기화
 	g_pD3DDvice->SetTransform(D3DTS_WORLD, &matWorld);
 	g_pD3DDvice->SetFVF(ST_PC_VERTEX::FVF);
-	//g_pD3DDvice->DrawPrimitive()//지금안쓸거야 정희한 포멧을 쓸거니까.
 	g_pD3DDvice->DrawPrimitiveUP(D3DPT_LINELIST,
 		m_vecLineVertex.size() / 2,
 		&m_vecLineVertex[0],
@@ -152,7 +151,6 @@ void cMainGame::Draw_Triangle()
 	
 	g_pD3DDvice->SetTransform(D3DTS_WORLD, &matWorld);
 	g_pD3DDvice->SetFVF(ST_PC_VERTEX::FVF);
-	//g_pD3DDvice->DrawPrimitive()//지금안쓸거야 정희한 포멧을 쓸거니까.
 	g_pD3DDvice->DrawPrimitiveUP(D3DPT_TRIANGLELIST,
 		m_vecTriangleVertex.size() / 3,
 		&m_vecTriangleVertex[0],

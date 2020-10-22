@@ -54,6 +54,12 @@
     <ClInclude Include="xFileLoader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="cTimerManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="cAllocateHierarchy.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -84,6 +90,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="xFileLoader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="cTimerManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="cAllocateHierarchy.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

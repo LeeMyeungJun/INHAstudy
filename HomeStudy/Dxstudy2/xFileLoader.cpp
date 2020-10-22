@@ -66,8 +66,8 @@ void xFileLoader::Render_Xfile()
 	D3DXMATRIXA16 matWorld ,matS,matR,matT;
 	D3DXMatrixIdentity(&matWorld);
 	D3DXMatrixRotationY(&matR, 0); 
-	D3DXMatrixTranslation(&matT, 0.0f, 4.8f, 0.0f);
-	D3DXMatrixScaling(&matS, 1.0f, 1.0f, 1.0f);
+	D3DXMatrixTranslation(&matT, 0.0f, 0.0f, 0.0f);
+	D3DXMatrixScaling(&matS, 3.0f, 3.0f, 3.0f);
 	
 	matWorld = matS * matR *matT;
 	
@@ -80,6 +80,6 @@ void xFileLoader::Render_Xfile()
 		Mesh->DrawSubset(i);
 	}
 
-	g_pD3DDvice->SetRenderState(D3DRS_LIGHTING, false);
+	//g_pD3DDvice->SetRenderState(D3DRS_LIGHTING, false);
 }
 

@@ -9,7 +9,7 @@ class cDeviceManager
 //	~cDeviceManager();
 
 	//2단계
-	Singletone(cDeviceManager);
+	Singleton(cDeviceManager);
 	//3단계 메인게임꺼 가져온다 .
 private:
 	LPDIRECT3D9		m_pD3D;//얘 정보를 설정해야 인터페이스 
