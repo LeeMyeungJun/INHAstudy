@@ -50,7 +50,7 @@ void cMainGame::Setup()
 	m_pGrid->Setup();
 
 	m_pXFile = new xFileLoader;
-	m_pXFile->Setup_Xfile("xFile/bigship1.x");
+	m_pXFile->Setup_Xfile("xFile/zealot.x");
 	//Setup_Xfile();
 	
 	g_pD3DDvice->SetRenderState(D3DRS_LIGHTING, false);//라이트 끄기

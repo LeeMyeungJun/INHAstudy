@@ -48,12 +48,11 @@ void xFileLoader::Setup_Xfile(char* FileName)
 					g_pD3DDvice,
 					mtrls[i].pTextureFilename,
 					&tex); //내가바꾼거 A
-
+				//x파일에 
 				Textures.push_back(tex); //*붙이기
 			}
 			else
 			{
-
 				Textures.push_back(0);// ?
 			}
 
@@ -67,8 +66,8 @@ void xFileLoader::Render_Xfile()
 	D3DXMATRIXA16 matWorld ,matS,matR,matT;
 	D3DXMatrixIdentity(&matWorld);
 	D3DXMatrixRotationY(&matR, 0); 
-	D3DXMatrixTranslation(&matT, 0.0f, 5.3f, 0.0f);
-	D3DXMatrixScaling(&matS, 0.3f, 0.3f, 0.3f);
+	D3DXMatrixTranslation(&matT, 0.0f, 4.8f, 0.0f);
+	D3DXMatrixScaling(&matS, 1.0f, 1.0f, 1.0f);
 	
 	matWorld = matS * matR *matT;
 	
