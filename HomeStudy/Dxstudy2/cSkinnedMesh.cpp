@@ -35,7 +35,7 @@ void cSkinnedMesh::Setup(char* szFolder, char* szFile)
 
 	SetupBoneMatrixPtrs(m_pRoot);
 
-	vector<ID3DXAnimationSet*> vecAni;
+	
 	ID3DXAnimationSet* a;
 	UINT numAS = m_pAnimController->GetNumAnimationSets();
 	for (UINT i = 0; i <numAS; i++)
@@ -43,10 +43,7 @@ void cSkinnedMesh::Setup(char* szFolder, char* szFile)
 		m_pAnimController->GetAnimationSet(i, &a);
 		vecAni.push_back(a);
 	}
-	vecAni[0]; //공격하는모션
-	vecAni[4]; //가만히 서있는모션 
-	m_pAnimController->SetTrackAnimationSet(0, vecAni[4]);
-	m_pAnimController->SetTrackSpeed(0, 10);
+	//m_pAnimController->SetTrackSpeed(0, 10);
 	//애니메이션을 제어하기위해 컨트롤러를 둔다 .
 }
 
@@ -183,6 +180,32 @@ void cSkinnedMesh::UpdateSkinnedMesh(LPD3DXFRAME pFrame)
 		UpdateSkinnedMesh(pFrame->pFrameSibling);
 
 
+
 	
-	
+}
+
+void cSkinnedMesh::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
+{
+	switch (message)
+	{
+	case WM_KEYDOWN:
+		{
+			switch (wParam)
+			{
+			case VK_UP:
+			{
+				m_pAnimController->SetTrackAnimationSet(0, vecAni[3]);
+			}
+				break;
+			case VK_SPACE :
+			{
+				m_pAnimController->SetTrackAnimationSet(0, vecAni[1]);
+			}
+				break;
+			default:
+				break;
+			}
+		}
+		break;
+	}
 }

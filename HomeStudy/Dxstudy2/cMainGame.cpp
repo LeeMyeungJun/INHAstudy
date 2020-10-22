@@ -65,7 +65,7 @@ void cMainGame::Update()
 {
 	if (m_pPlayer)
 	{
-		m_pPlayer->Update();
+	//	m_pPlayer->Update();
 	}
 
 	g_pTimeManager->Update();
@@ -101,6 +101,9 @@ void cMainGame::wndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	if (m_pCamera)
 		m_pCamera->WndProc(hWnd, message, wParam, lParam);
+
+	if(m_pSkinnedMesh)
+		m_pSkinnedMesh->WndProc(hWnd, message, wParam, lParam);
 }
 
 void cMainGame::Setup_Line()
