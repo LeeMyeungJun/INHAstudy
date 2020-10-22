@@ -89,7 +89,7 @@ void cRawLoader::RawLoader(char* FileName, char* Texture, vector<ST_PNT_VERTEX>&
 
 void cRawLoader::CreateIndex(vector<ST_PNT_VERTEX> temp, vector<ST_PNT_VERTEX>& rawVector)
 {
-	int width  = 5;
+	int width  = 257;
 	int height = width;
 	int a[6];
 	for(int j = 0 ; j < height -1 ; j++)
@@ -103,7 +103,7 @@ void cRawLoader::CreateIndex(vector<ST_PNT_VERTEX> temp, vector<ST_PNT_VERTEX>& 
 			a[4] = j*((width)) + i + 1;
 			a[5] = j*((width)) + i + 1 + width;
 			
-			continue;
+		
 			rawVector.push_back(temp[a[0]]);
 			rawVector.push_back(temp[a[2]]);
 			rawVector.push_back(temp[a[1]]);
