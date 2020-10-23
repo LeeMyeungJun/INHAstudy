@@ -17,6 +17,9 @@ cFrustum::~cFrustum()
 
 void cFrustum::Setup()
 {
+
+	Setup_Mesh();
+	
 	m_vecVertex.resize(8); //8°³ÀÇ Á¤Á¡
 	//
 	//¹öÅØ½º¿¡´ëÇÑ Á¤º¸
@@ -30,6 +33,13 @@ void cFrustum::Setup()
 	m_vecVertex[6].x = 0.5f;    m_vecVertex[6].y = 0.5f;    m_vecVertex[6].z = 0.5f;
 	m_vecVertex[7].x = 0.5f;    m_vecVertex[7].y = -0.5f;   m_vecVertex[7].z = 0.5f;
 
+}
+
+void cFrustum::Update()
+{
+	RECT rc;
+	GetClientRect(g_hWnd, &rc);
+
 
 	D3DXMATRIXA16 view, proj;
 	D3DXMatrixIdentity(&view);
@@ -39,71 +49,87 @@ void cFrustum::Setup()
 	g_pD3DDvice->GetTransform(D3DTS_PROJECTION, &proj);
 
 	m_vecFrustum.resize(m_vecVertex.size());
-	for(int i = 0 ; i < m_vecVertex.size() ; i++)
+	
+	for (int i = 0; i < m_vecVertex.size(); i++)
 	{
 		D3DXVec3Unproject(&m_vecFrustum[i], &m_vecVertex[i], NULL, &proj, &view, NULL);
 	}
 
 
-	m_plnae.resize(6);
-	
 	D3DXPlaneFromPoints(&m_plnae[0], &m_vecFrustum[0], &m_vecFrustum[1], &m_vecFrustum[2]); //¾Õ¸é
-	D3DXPlaneFromPoints(&m_plnae[1], &m_vecFrustum[4], &m_vecFrustum[5], &m_vecFrustum[1]); // ¿ÞÂÊ¸é
+	D3DXPlaneFromPoints(&m_plnae[1], &m_vecFrustum[3], &m_vecFrustum[2], &m_vecFrustum[6]); //¿ì
 	D3DXPlaneFromPoints(&m_plnae[2], &m_vecFrustum[7], &m_vecFrustum[6], &m_vecFrustum[5]); // µÞ¸é
-	D3DXPlaneFromPoints(&m_plnae[3], &m_vecFrustum[7], &m_vecFrustum[6], &m_vecFrustum[2]); //¿ì
-	D3DXPlaneFromPoints(&m_plnae[4], &m_vecFrustum[0], &m_vecFrustum[3], &m_vecFrustum[7]); //À­¸é
-	D3DXPlaneFromPoints(&m_plnae[5], &m_vecFrustum[1], &m_vecFrustum[5], &m_vecFrustum[6]); //¾Æ·§¸é
-
-
+	D3DXPlaneFromPoints(&m_plnae[3], &m_vecFrustum[4], &m_vecFrustum[5], &m_vecFrustum[1]); //¿Þ
+	D3DXPlaneFromPoints(&m_plnae[4], &m_vecFrustum[1], &m_vecFrustum[5], &m_vecFrustum[6]); //À­¸é
+	D3DXPlaneFromPoints(&m_plnae[5], &m_vecFrustum[4], &m_vecFrustum[0], &m_vecFrustum[3]); //¾Æ·§¸é
 
 
 
 }
 
-void cFrustum::Update()
+bool cFrustum::InternalCheck(D3DXVECTOR3 vecPoint)
 {
-	RECT rc;
-	GetClientRect(g_hWnd, &rc);
-	D3DXMATRIXA16 view, proj;
-	D3DXMatrixIdentity(&view);
-	D3DXMatrixIdentity(&proj);
+	//vecPoint 
+	for(int i = 0 ; i < 6 ; i++)
+	{
+		FLOAT D = D3DXPlaneDotCoord(&m_plnae[i], &vecPoint);
 
-	g_pD3DDvice->GetTransform(D3DTS_VIEW, &view);
-	g_pD3DDvice->GetTransform(D3DTS_PROJECTION, &proj);
+		if (D > 0)
+			return false;
+	}
 
-	//D3DXPlaneFromPoints()
-	//D3DXPlaneDotCoord()
-
+	return true;
 }
 
-bool cFrustum::InternalCheck(D3DXVECTOR3* vecPoint)
+void cFrustum::Setup_Mesh()
 {
-	return false;
+	D3DXCreateSphere(g_pD3DDvice, 0.5f, 10, 10, &m_meshSpear, NULL);
+	
+	int size = 1;
+	for (int z = -size; z < size; ++z)
+	{
+		for (int y = size; y > -size; --y)
+		{
+			for (int x = size; x > -size; --x)
+			{
+			ST_SPHERE s;
+			s.fRadius = 0.5f;
+			s.vCenter = D3DXVECTOR3(z, y, x);
+
+			m_vecSphere.push_back(s);
+			}
+		}
+	}
+
+	ZeroMemory(&m_stMtlNone, sizeof(D3DMATERIAL9));
+	m_stMtlNone.Ambient = D3DXCOLOR(0.7f, 0.7f, 0.0f, 1.0f);
+	m_stMtlNone.Diffuse = D3DXCOLOR(0.7f, 0.7f, 0.0f, 1.0f);
+	m_stMtlNone.Specular = D3DXCOLOR(0.7f, 0.7f, 0.0f, 1.0f);
+
 }
 
 void cFrustum::Render()
 {
-	g_pD3DDvice->SetRenderState(D3DRS_LIGHTING, TRUE);
-	g_pD3DDvice->SetTexture(0, NULL);
-	D3DXMATRIXA16   matWorld, matT;
-	{
-		g_pD3DDvice->SetMaterial(&m_stMtlSphere);
+	D3DXMATRIXA16 matWorld;
+	g_pD3DDvice->SetRenderState(D3DRS_LIGHTING, true);
 
-		for (int z = -12; z < 12; ++z)
+
+	D3DXMatrixIdentity(&matWorld);
+	g_pD3DDvice->SetTexture(0, 0);
+
+	for (int i = 0; i < m_vecSphere.size(); i++)
+	{
+		if(InternalCheck(m_vecSphere[i].vCenter))
 		{
-			for (int y = 12; y > -12; --y)
-			{
-				for (int x = 12; x > -12; --x)
-				{
-					D3DXMatrixIdentity(&matWorld);
-					D3DXMatrixTranslation(&matT, x, y, z);
-					matWorld = matWorld * matT;
-					g_pD3DDvice->SetTransform(D3DTS_WORLD, &matWorld);
-					m_vecMeshSphere[+x]_->DrawSubset(0);
-					
-				}
-			}
+			D3DXMatrixIdentity(&matWorld);
+			matWorld._41 = m_vecSphere[i].vCenter.x;
+			matWorld._42 = m_vecSphere[i].vCenter.y;
+			matWorld._43 = m_vecSphere[i].vCenter.z;
+			g_pD3DDvice->SetTransform(D3DTS_WORLD, &matWorld);
+			g_pD3DDvice->SetMaterial(&m_stMtlNone);
+			m_meshSpear->DrawSubset(0);
 		}
+
 	}
 
 }
