@@ -87,8 +87,11 @@ void cMainGame::Render()
 	if (m_pGrid)
 		m_pGrid->Render();
 
-	/*if (m_pPlayer)
-		m_pPlayer->Render();*/
+	if (m_pPlayer)
+		m_pPlayer->Render();
+
+	if (m_pCamera)
+		m_pCamera->Render();
 
 	SkinnedMesh_Render();
 	//m_pXFile->Render_Xfile();

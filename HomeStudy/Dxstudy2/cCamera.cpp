@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "cCamera.h"
+#include "cFrustum.h"
 
 
 cCamera::cCamera()
@@ -10,6 +11,7 @@ cCamera::cCamera()
 	,m_fCameraDistance(5.0f)
 	,m_isLButtonDown(false)
 	,m_vCamRotAngle(0,0,0)
+	, m_pFrustum(NULL)
 {
 	m_ptPrevMouse.x = 0;
 	m_ptPrevMouse.y = 0;
@@ -19,17 +21,22 @@ cCamera::cCamera()
 
 cCamera::~cCamera()
 {
+	SafeDelete(m_pFrustum);
 }
 
 void cCamera::Setup(D3DXVECTOR3* pvTarget)
 {
+	m_pFrustum = new cFrustum;
+	m_pFrustum->Setup();
+	
 	m_pvTarget = pvTarget;
 	RECT rc;
 	GetClientRect(g_hWnd, &rc);
 	D3DXMATRIXA16 matProj;
-	D3DXMatrixPerspectiveFovLH(&matProj, D3DX_PI / 4.0f, rc.right / (float)rc.bottom, 1.0f, 1000.0f); // ? 이위치가 맞는지 
+	D3DXMatrixPerspectiveFovLH(&matProj, D3DX_PI / 4.0f, rc.right / (float)rc.bottom, 1.0f, 1000.0f); 
 
 	g_pD3DDvice->SetTransform(D3DTS_PROJECTION, &matProj);
+	
 }
 
 void cCamera::Update()
@@ -46,9 +53,6 @@ void cCamera::Update()
 	m_vEye = D3DXVECTOR3(0, m_fCameraDistance, -m_fCameraDistance);
 	D3DXVec3TransformCoord(&m_vEye, &m_vEye, &matR);
 
-
-	
-	
 	if(m_pvTarget)
 	{
 		m_vLookAt = *m_pvTarget;
@@ -59,6 +63,15 @@ void cCamera::Update()
 	D3DXMatrixLookAtLH(&matView, &m_vEye, &m_vLookAt, &m_vUp);
 
 	g_pD3DDvice->SetTransform(D3DTS_VIEW, &matView);
+	
+	if(m_pFrustum)
+		m_pFrustum->Update();
+}
+
+void cCamera::Render()
+{
+	if (m_pFrustum)
+		m_pFrustum->Render();
 }
 
 void cCamera::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
