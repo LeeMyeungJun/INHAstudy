@@ -41,15 +41,27 @@ void cSkinnedMesh::Setup(char* szFolder, char* szFile)
 							&m_pAnimController);
 
 	SetupBoneMatrixPtrs(m_pRoot);
+<<<<<<< HEAD
 	LPD3DXANIMATIONSET a = NULL;
 	
 	for(int i = 0 ; i < m_pAnimController->GetNumAnimationSets(); i++)
+=======
+
+	
+	ID3DXAnimationSet* a;
+	UINT numAS = m_pAnimController->GetNumAnimationSets();
+	for (UINT i = 0; i <numAS; i++)
+>>>>>>> ecd8c9bf5224e477a86746dddecd738cb25871da
 	{
 		m_pAnimController->GetAnimationSet(i, &a);
 		string name = a->GetName();
 	}
 	//m_pAnimController->SetTrackSpeed(0, 10);
+<<<<<<< HEAD
 
+=======
+	//애니메이션을 제어하기위해 컨트롤러를 둔다 .
+>>>>>>> ecd8c9bf5224e477a86746dddecd738cb25871da
 }
 
 void cSkinnedMesh::Update()
@@ -230,8 +242,34 @@ void cSkinnedMesh::UpdateSkinnedMesh(LPD3DXFRAME pFrame)
 		UpdateSkinnedMesh(pFrame->pFrameSibling);
 
 
+
 	
-	
+}
+
+void cSkinnedMesh::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
+{
+	switch (message)
+	{
+	case WM_KEYDOWN:
+		{
+			switch (wParam)
+			{
+			case VK_UP:
+			{
+				m_pAnimController->SetTrackAnimationSet(0, vecAni[3]);
+			}
+				break;
+			case VK_SPACE :
+			{
+				m_pAnimController->SetTrackAnimationSet(0, vecAni[1]);
+			}
+				break;
+			default:
+				break;
+			}
+		}
+		break;
+	}
 }
 
 void cSkinnedMesh::SetAnimationIndex(int nIndex)
