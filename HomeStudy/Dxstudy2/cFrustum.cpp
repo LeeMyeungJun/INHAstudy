@@ -23,15 +23,28 @@ void cFrustum::Setup()
 	m_vecVertex.resize(8); //8개의 정점
 	//
 	//버텍스에대한 정보
-	m_vecVertex[0].x = -0.5f;   m_vecVertex[0].y = -0.5f;   m_vecVertex[0].z = -0.5f;
-	m_vecVertex[1].x = -0.5f;   m_vecVertex[1].y = 0.5f;    m_vecVertex[1].z = -0.5f;
-	m_vecVertex[2].x = 0.5f;    m_vecVertex[2].y = 0.5f;    m_vecVertex[2].z = -0.5f;
-	m_vecVertex[3].x = 0.5f;    m_vecVertex[3].y = -0.5f;   m_vecVertex[3].z = -0.5f;
+	//m_vecVertex[0].x = -1.0f;   m_vecVertex[0].y =  -1.0f;   m_vecVertex[0].z =  -1.0f;
+	//m_vecVertex[1].x = -1.0f;   m_vecVertex[1].y =   1.0f;    m_vecVertex[1].z = -1.0f;
+	//m_vecVertex[2].x =  1.0f;    m_vecVertex[2].y =  1.0f;    m_vecVertex[2].z = -1.0f;
+	//m_vecVertex[3].x =  1.0f;    m_vecVertex[3].y = -1.0f;   m_vecVertex[3].z =  -1.0f;
 
-	m_vecVertex[4].x = -0.5f;   m_vecVertex[4].y = -0.5f;   m_vecVertex[4].z = 0.5f;
-	m_vecVertex[5].x = -0.5f;   m_vecVertex[5].y = 0.5f;    m_vecVertex[5].z = 0.5f;
-	m_vecVertex[6].x = 0.5f;    m_vecVertex[6].y = 0.5f;    m_vecVertex[6].z = 0.5f;
-	m_vecVertex[7].x = 0.5f;    m_vecVertex[7].y = -0.5f;   m_vecVertex[7].z = 0.5f;
+	//m_vecVertex[4].x = -1.0f;   m_vecVertex[4].y = -1.0f;   m_vecVertex[4].z =  1.0f;
+	//m_vecVertex[5].x = -1.0f;   m_vecVertex[5].y =  1.0f;    m_vecVertex[5].z = 1.0f;
+	//m_vecVertex[6].x =  1.0f;    m_vecVertex[6].y = 1.0f;    m_vecVertex[6].z = 1.0f;
+	//m_vecVertex[7].x =  1.0f;    m_vecVertex[7].y =-1.0f;   m_vecVertex[7].z =  1.0f;
+
+
+	//이렇게하면되는데 2.0하면 90도로보여서 우리눈에는안보임  1.0 1.0 이 45도임
+	//m_vecVertex[0].x = -2.0f;    m_vecVertex[0].y = -2.0f;   m_vecVertex[0].z = - 1.0f;
+	//m_vecVertex[1].x = -2.0f;    m_vecVertex[1].y =  2.0f;    m_vecVertex[1].z = -1.0f;
+	//m_vecVertex[2].x =  2.0f;    m_vecVertex[2].y =  2.0f;    m_vecVertex[2].z = -1.0f;
+	//m_vecVertex[3].x =  2.0f;    m_vecVertex[3].y = -2.0f;   m_vecVertex[3].z = - 1.0f;
+
+	//m_vecVertex[4].x = -2.0f;    m_vecVertex[4].y = -2.0f;   m_vecVertex[4].z =  1.0f;
+	//m_vecVertex[5].x = -2.0f;    m_vecVertex[5].y =  2.0f;    m_vecVertex[5].z = 1.0f;
+	//m_vecVertex[6].x =  2.0f;    m_vecVertex[6].y = 2.0f;    m_vecVertex[6].z =  1.0f;
+	//m_vecVertex[7].x =  2.0f;    m_vecVertex[7].y = -2.0f;   m_vecVertex[7].z =  1.0f;
+
 
 }
 
@@ -50,6 +63,11 @@ void cFrustum::Update()
 
 	m_vecFrustum.resize(m_vecVertex.size());
 	
+
+	//우리는 1 -1 이게 곱하게되면은 로컬좌표에있는 버텍스잖아 근데우리가 로컬좌표에있는값은 뷰포트에 넘어가게되면은 월드 다음에 처리된거라서 
+	//뷰포트를 다시넣게되면은 그값이 로컬로 왔을때 역행렬로 곱해줬을떄 
+
+	//버텍스에 뷰포트 1000 막 해서 하는거지  니어는 0이고 파는 1이잖아 버텍스 8개로 정육면체 그릴수있으니까 
 	for (int i = 0; i < m_vecVertex.size(); i++)
 	{
 		D3DXVec3Unproject(&m_vecFrustum[i], &m_vecVertex[i], NULL, &proj, &view, NULL);
@@ -73,7 +91,7 @@ bool cFrustum::InternalCheck(D3DXVECTOR3 vecPoint)
 	for(int i = 0 ; i < 6 ; i++)
 	{
 		FLOAT D = D3DXPlaneDotCoord(&m_plnae[i], &vecPoint);
-
+		//뒷면에서 판별식이 양수가된다
 		if (D > 0)
 			return false;
 	}
@@ -85,7 +103,7 @@ void cFrustum::Setup_Mesh()
 {
 	D3DXCreateSphere(g_pD3DDvice, 0.5f, 10, 10, &m_meshSpear, NULL);
 	
-	int size = 1;
+	int size = 5;
 	for (int z = -size; z < size; ++z)
 	{
 		for (int y = size; y > -size; --y)
