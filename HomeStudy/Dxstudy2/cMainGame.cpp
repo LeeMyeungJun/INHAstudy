@@ -51,8 +51,8 @@ void cMainGame::Setup()
 	m_pGrid = new cGrid;
 	m_pGrid->Setup();
 
-	m_pXFile = new xFileLoader;
-	m_pXFile->Setup_Xfile("xFile/zealot.x");
+	/*m_pXFile = new xFileLoader;
+	m_pXFile->Setup_Xfile("xFile/zealot.x");*/
 
 	m_pSkinnedMesh = new cSkinnedMesh;
 	m_pSkinnedMesh->Setup("xFile","zealot.x");
@@ -101,6 +101,20 @@ void cMainGame::wndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	if (m_pCamera)
 		m_pCamera->WndProc(hWnd, message, wParam, lParam);
+
+	if (m_pSkinnedMesh)
+		m_pSkinnedMesh->WndProc(hWnd, message, wParam, lParam);
+	
+	//switch (message)
+	//{
+	//case WM_RBUTTONDOWN:
+	//	{
+	//	static int n = 0;
+	//	//m_pSkinnedMesh->SetAnimationIndex(++n);
+	//	m_pSkinnedMesh->SetAnimation(++n);
+	//	}
+	//	
+	//}
 }
 
 void cMainGame::Setup_Line()

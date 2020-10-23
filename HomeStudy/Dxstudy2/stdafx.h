@@ -37,6 +37,8 @@ using namespace std;
 extern HWND g_hWnd;
 
 
+
+
 #define SafeRelease(p)      { if(p) p->Release();   p = NULL; }
 #define SafeDelete(p) { if(p) delete p; p = NULL; }
 #define SafeDeleteArray(p) {if(p) delete[] p ; p=NULL;}
