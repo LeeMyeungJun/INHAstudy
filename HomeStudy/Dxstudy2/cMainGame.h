@@ -70,13 +70,9 @@ public:
 
 
 
-	vector<ST_PN_VERTEX> m_vecMoveVertex;
-	vector<ST_PN_VERTEX> m_vecBezierVertex;
-
 	void MousePicking(POINT ptCursor,UINT message);
 	bool raySpherelntersectionTest(Ray* ray, BoundingSphere shpere);
-	void BezierSetup();
-	bool test;
+
 	
 
 private:
@@ -93,11 +89,21 @@ private:
 	//AseLoader통해서 그리기
 	LPD3DXMESH	m_pAseObjMesh;
 	vector<cMtlTex*>	m_vecAseObjMtltex;
-	
+private:
+	DWORD m_dwElapsedTime;
+	int m_nFPS;
+	int m_nFPSCount;
 public:
+	void FPS_Check();
+
 	void Setup_MeshObejct();
 	void Mesh_Render();
 
+	void LeftClick(Ray ray);
+	void RightClick(Ray ray);
+
+
+	int Color_Count;
 	
 	
 };

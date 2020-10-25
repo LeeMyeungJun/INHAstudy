@@ -38,7 +38,7 @@ void cCharacter::Setup()
 
 void cCharacter::Update(iMap* pMap)
 {
-	/*if (GetKeyState('A') & 0X8000)
+	if (GetKeyState('A') & 0X8000)
 	{
 		m_fRotY -= 0.1f;
 	}
@@ -56,36 +56,19 @@ void cCharacter::Update(iMap* pMap)
 	}
 	if (GetKeyState('S') & 0X8000)
 	{
-		m_vPosition -= (m_vDirection * 0.1f);
-	}*/
+		vPosition = m_vPosition - (m_vDirection * 0.1f);
+	}
 
 	RECT rc;
 	GetClientRect(g_hWnd, &rc);
 	D3DXMATRIXA16 matR,matT;
 	D3DXMatrixRotationY(&matR, m_fRotY);
-	if (m_pPath == NULL)
-		return;
-	m_pPath[m_iIndex].Update(&matR);
+	
 
 	m_vDirection = D3DXVECTOR3(0, 0, 1);
 	D3DXVec3TransformNormal(&m_vDirection, &m_vDirection, &matR);
-	//m_vPosition = vPosition;
+	m_vPosition = vPosition;
 
-	
-	
-
-	if (fabs(m_vPosition.x - m_pPath[m_iIndex].get_m_v_node().x) < 0.1f
-		&& fabs(m_vPosition.z - m_pPath[m_iIndex].get_m_v_node().z) < 0.1f)
-	{
-		if (m_iIndex == m_iEndIndex-1)
-		{
-			m_iIndex = 0;
-		}
-		else
-		{
-			m_iIndex++;
-		}
-	}
 	
 	D3DXMatrixTranslation(&matT, m_vPosition.x, m_vPosition.y, m_vPosition.z);
 
