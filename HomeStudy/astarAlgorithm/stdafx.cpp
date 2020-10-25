@@ -7,4 +7,3 @@
 // TODO: reference any additional headers you need in STDAFX.H
 // and not in this file
 
-char boardState[19][19];

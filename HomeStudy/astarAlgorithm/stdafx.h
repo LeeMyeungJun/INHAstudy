@@ -20,7 +20,6 @@
 
 //class
 #include "Astar.h"
-#include "Player.h"
 
 
 #define OMOKLINE 19

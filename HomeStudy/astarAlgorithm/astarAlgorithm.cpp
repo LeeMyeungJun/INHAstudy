@@ -10,7 +10,7 @@
 HINSTANCE hInst;                                // current instance
 WCHAR szTitle[MAX_LOADSTRING];                  // The title bar text
 WCHAR szWindowClass[MAX_LOADSTRING];            // the main window class name
-extern char boardState[19][19];
+
 
 
 
@@ -135,7 +135,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	case WM_CREATE:
 		{
 			astar = Astar::GetInstance();
-			memset(boardState, 'a', sizeof(boardState));
 			SetTimer(hWnd, 1, 1000 / 30, NULL);
 		}
 		break;
@@ -168,13 +167,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         break;
 	case WM_RBUTTONDOWN:
 		{
-		astar->ObstacleCreate(lParam);
+
 		}
 		InvalidateRgn(hWnd, NULL, TRUE);
 		break;
 	case WM_LBUTTONDOWN:
 	{
-		astar->StartEndPointCreate(lParam);
+
 	}
 	InvalidateRgn(hWnd, NULL, TRUE);
 	break;
@@ -184,7 +183,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		{
 		case 1:
 		{
-			astar->Update(message, wParam, lParam);
+			astar->Update(hWnd,message, wParam, lParam);
 			InvalidateRgn(hWnd, NULL, TRUE);
 		}
 		break;
