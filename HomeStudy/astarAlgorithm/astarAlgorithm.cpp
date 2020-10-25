@@ -101,7 +101,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
    hInst = hInstance; // Store instance handle in our global variable
 
    HWND hWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
-      400, 0, 800, 900, nullptr, nullptr, hInstance, nullptr);
+      200, 0, 1200, 1000, nullptr, nullptr, hInstance, nullptr);
 
    if (!hWnd)
    {
@@ -130,6 +130,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	//Astar *astar = new Astar;
 	static Astar *astar = nullptr;
 
+	if (astar)
+		astar->WndProc(hWnd, message, wParam, lParam);
     switch (message)
     {
 	case WM_CREATE:
@@ -157,11 +159,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         break;
     case WM_PAINT:
         {
+			RECT rc;
+			GetClientRect(hWnd, &rc);
             PAINTSTRUCT ps;
             hdc = BeginPaint(hWnd, &ps);
             // TODO: Add any drawing code that uses hdc here...
 			SetBkMode(hdc, TRANSPARENT);
-			astar->Render(hWnd,hdc);
+			astar->Render(hWnd, hdc);
+
             EndPaint(hWnd, &ps);
         }
         break;

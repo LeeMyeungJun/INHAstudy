@@ -22,9 +22,4 @@
 #include "Astar.h"
 
 
-#define OMOKLINE 19
-#define BLOCKSIZE 40
-#define SUBWIDTH 30
-
-
 // TODO: reference additional headers your program requires here

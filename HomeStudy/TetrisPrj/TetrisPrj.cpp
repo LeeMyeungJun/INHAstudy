@@ -171,6 +171,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     case WM_PAINT:
         {
 
+		RECT rc;
+		GetClientRect(hWnd, &rc);
             PAINTSTRUCT ps;
 			HDC hdc = BeginPaint(hWnd, &ps);
 
@@ -183,6 +185,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			Gamecenter->Render(hWnd, back);
 
 			BitBlt(hdc, 0, 0, ps.rcPaint.right, ps.rcPaint.bottom, back, 0, 0, SRCCOPY);
+			
 			DeleteDC(back);
 			DeleteObject(backHBIT);
 
