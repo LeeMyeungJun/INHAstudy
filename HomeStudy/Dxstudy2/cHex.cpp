@@ -71,7 +71,6 @@ void cHex::Setup()
 
 	//<<:
 
-	//v.p = pow(1 - (t*j), 2) * m_vecVertex[i].p + 2 * (1 - (t*j)) * (t*j) * m_vecVertex[i + 1].p + pow((t*j), 2) * m_vecVertex[i + 2].p;
 
 }
 
