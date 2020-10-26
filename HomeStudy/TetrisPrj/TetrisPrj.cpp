@@ -171,8 +171,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     case WM_PAINT:
         {
 
-		RECT rc;
-		GetClientRect(hWnd, &rc);
+			RECT rc;
+			GetClientRect(hWnd, &rc);
             PAINTSTRUCT ps;
 			HDC hdc = BeginPaint(hWnd, &ps);
 

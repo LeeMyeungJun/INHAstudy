@@ -101,7 +101,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
    hInst = hInstance; // Store instance handle in our global variable
 
    HWND hWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
-      200, 0, 1200, 1000, nullptr, nullptr, hInstance, nullptr);
+      200, 0, 1200, 800, nullptr, nullptr, hInstance, nullptr);
 
    if (!hWnd)
    {
@@ -127,7 +127,6 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	HDC hdc;
-	//Astar *astar = new Astar;
 	static Astar *astar = nullptr;
 
 	if (astar)
@@ -163,25 +162,27 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			GetClientRect(hWnd, &rc);
             PAINTSTRUCT ps;
             hdc = BeginPaint(hWnd, &ps);
-            // TODO: Add any drawing code that uses hdc here...
-			SetBkMode(hdc, TRANSPARENT);
-			astar->Render(hWnd, hdc);
+
+
+			HDC back;
+			back = CreateCompatibleDC(hdc);
+			HBITMAP backHBIT = CreateCompatibleBitmap(hdc, rc.right, rc.bottom);
+			SelectObject(back, backHBIT);
+
+
+			SetBkMode(back, TRANSPARENT);
+			astar->Render(hWnd, back);
+
+			BitBlt(hdc, 0, 0, rc.right, rc.bottom, back, 0, 0, SRCCOPY);
+
+			DeleteDC(back);
+			DeleteObject(backHBIT);
+
 
             EndPaint(hWnd, &ps);
+
         }
         break;
-	case WM_RBUTTONDOWN:
-		{
-
-		}
-		InvalidateRgn(hWnd, NULL, TRUE);
-		break;
-	case WM_LBUTTONDOWN:
-	{
-
-	}
-	InvalidateRgn(hWnd, NULL, TRUE);
-	break;
 	case WM_TIMER:
 	{
 		switch (wParam)
@@ -189,7 +190,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		case 1:
 		{
 			astar->Update(hWnd,message, wParam, lParam);
-			InvalidateRgn(hWnd, NULL, TRUE);
+			InvalidateRgn(hWnd, NULL, false);
 		}
 		break;
 		}
