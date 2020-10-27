@@ -156,6 +156,7 @@
   <ItemGroup>
     <ClInclude Include="cAllocateHierarchy.h" />
     <ClInclude Include="cCamera.h" />
+    <ClInclude Include="cCharacter.h" />
     <ClInclude Include="cCubePC.h" />
     <ClInclude Include="cDeviceManager.h" />
     <ClInclude Include="cGrid.h" />
@@ -169,6 +170,7 @@
     <ClInclude Include="cZeloat.h" />
     <ClInclude Include="Dxstudy.h" />
     <ClInclude Include="Frustum.h" />
+    <ClInclude Include="iMap.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />
@@ -178,6 +180,7 @@
   <ItemGroup>
     <ClCompile Include="cAllocateHierarchy.cpp" />
     <ClCompile Include="cCamera.cpp" />
+    <ClCompile Include="cCharacter.cpp" />
     <ClCompile Include="cCubePC.cpp" />
     <ClCompile Include="cDeviceManager.cpp" />
     <ClCompile Include="cGrid.cpp" />
@@ -191,6 +194,7 @@
     <ClCompile Include="cZeloat.cpp" />
     <ClCompile Include="Dxstudy.cpp" />
     <ClCompile Include="Frustum.cpp" />
+    <ClCompile Include="iMap.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

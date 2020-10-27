@@ -1,6 +1,7 @@
 #pragma once
 #include "cCharacter.h"
 
+class iMap;
 class cSkinnedMesh;
 class cOBB;
 

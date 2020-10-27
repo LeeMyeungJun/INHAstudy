@@ -84,6 +84,12 @@
     <ClInclude Include="cSkinnedMeshManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="cCharacter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="iMap.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -138,6 +144,12 @@
       <Filter>OBB</Filter>
     </ClCompile>
     <ClCompile Include="cSkinnedMeshManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="cCharacter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="iMap.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
