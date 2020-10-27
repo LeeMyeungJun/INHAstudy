@@ -36,12 +36,10 @@
 using namespace std;
 extern HWND g_hWnd;
 
-
-
-
 #define SafeRelease(p)      { if(p) p->Release();   p = NULL; }
 #define SafeDelete(p) { if(p) delete p; p = NULL; }
 #define SafeDeleteArray(p) {if(p) delete[] p ; p=NULL;}
+
 #define  Singleton(class_name) \
    private : \
       class_name(void); \
@@ -150,10 +148,20 @@ enum MY_TOKEN_TYPE { TOKEN_STRING = 0, TOKEN_NUMBER };
       varName = var; \
    } \
    }
+//
+//#include "cMainGame.h"
+//#include "cDeviceManager.h"
+//#include "cTextureManager.h"
+//#include "iMap.h"
+//
+//#include "cObject.h"
+//#include "cObjectManager.h"
+//#include "cTimerManager.h"
 
+#include "iMap.h"
 #include "cMainGame.h"
 #include "cDeviceManager.h"
+#include "cObject.h"
+#include "cObjectManager.h"
 #include "cTextureManager.h"
 #include "cTimerManager.h"
-#include "iMap.h"
-#include "cObject.h"

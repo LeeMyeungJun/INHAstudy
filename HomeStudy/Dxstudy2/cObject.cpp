@@ -1,6 +1,4 @@
 #include "stdafx.h"
-#include "cObject.h"
-
 
 cObject::cObject()
 	:m_ulRefCount(1) //자기자신들어왔으므로 1이다.

@@ -32,31 +32,35 @@ void cCharacter::Update(iMap* pMap)
 	}
 	
 	D3DXVECTOR3 vPosition = m_vPosition;
-	
-	if (GetKeyState('W') & 0X8000)
-	{
-		vPosition  = m_vPosition + (m_vDirection * 0.1f);
-	}
-	if (GetKeyState('S') & 0X8000)
-	{
-		vPosition = m_vPosition -(m_vDirection * 0.1f);
-	}
+
 
 	D3DXMATRIXA16 matR, matT;
 	D3DXMatrixRotationY(&matR, m_fRotY);
+	m_vDirection = D3DXVECTOR3(0, 0, -1);
 
-
-	m_vDirection = D3DXVECTOR3(0, 0, 1);
 	D3DXVec3TransformNormal(&m_vDirection, &m_vDirection, &matR);
 
-	//>>:여기
-	if(pMap)
+
+
+	if (GetKeyState('W') & 0X8000)
 	{
-		if(pMap->GetHeight(vPosition.x,vPosition.y,vPosition.z))
-		{
-			m_vPosition = vPosition;
-		}
+		vPosition = m_vPosition + (m_vDirection * 0.1f);
 	}
+	if (GetKeyState('S') & 0X8000)
+	{
+		vPosition = m_vPosition - (m_vDirection * 0.1f);
+	}
+
+	m_vPosition = vPosition;
+	
+	//>>:여기
+	//if(pMap)
+	//{
+	//	if(pMap->GetHeight(vPosition.x,vPosition.y,vPosition.z))
+	//	{
+	//		m_vPosition = vPosition;
+	//	}
+	//}
 
 	//<<:
 

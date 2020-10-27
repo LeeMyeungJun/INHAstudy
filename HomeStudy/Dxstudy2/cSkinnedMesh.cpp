@@ -328,6 +328,8 @@ cSkinnedMesh::cSkinnedMesh(char* szFolder, char* szFilename)
 	D3DXMatrixIdentity(&m_matWorldTM);
 	cSkinnedMesh* pSkinnedMesh = g_pSkinnedMeshManager->GetSkinnedMesh(szFolder, szFilename);
 
+	m_pRoot = pSkinnedMesh->m_pRoot; //스킨드매쉬에서 root값을 설정해줘야는데 셋팅을 안해줬어
+	
 	m_vMin = pSkinnedMesh->m_vMin;
 	m_vMax = pSkinnedMesh->m_vMax;
 

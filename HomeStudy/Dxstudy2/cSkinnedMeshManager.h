@@ -2,9 +2,6 @@
 
 class cSkinnedMesh;
 
-#define g_pSkinnedMeshManager	cSkinnedMeshManager::GetInstance()
-
-
 class cSkinnedMeshManager
 {
 private:
@@ -16,3 +13,4 @@ public:
 	void Destroy();
 };
 
+#define g_pSkinnedMeshManager	cSkinnedMeshManager::GetInstance()

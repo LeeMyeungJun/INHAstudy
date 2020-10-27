@@ -64,7 +64,7 @@ STDMETHODIMP cAllocateHierarchy::CreateMeshContainer(THIS_
 		LPVOID pv = NULL;
 		pMeshData->pMesh->LockVertexBuffer(0, &pv);
 
-		D3DXComputeBoundingBox((D3DXVECTOR3*)&pv, pMeshData->pMesh->GetNumVertices(), D3DXGetFVFVertexSize(pMeshData->pMesh->GetFVF()), &vMin, &vMax);
+		D3DXComputeBoundingBox((D3DXVECTOR3*)pv, pMeshData->pMesh->GetNumVertices(), D3DXGetFVFVertexSize(pMeshData->pMesh->GetFVF()), &vMin, &vMax);
 
 		D3DXVec3Minimize(&m_vMin, &m_vMin, &vMin);//누가제일 작냐얘기하는거야 제일작은애로갔다가 셋팅을해주는거야
 		D3DXVec3Maximize(&m_vMax, &m_vMax, &vMax);
