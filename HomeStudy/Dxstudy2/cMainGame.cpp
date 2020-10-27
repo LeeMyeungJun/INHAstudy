@@ -8,6 +8,8 @@
 #include "xFileLoader.h"
 #include "cSkinnedMesh.h"
 #include "Frustum.h"
+#include "cZeloat.h"
+#include "cOBB.h"
 
 //D3DXMatrixRotationX()
 //D3Dxvec3TransformNormal 사용  등등 이름비슷하니까 찾아쓰도록
@@ -19,6 +21,8 @@ cMainGame::cMainGame()
 	, m_pXFile(NULL)
 	, m_pSkinnedMesh(NULL)
 	, m_pFrustum(NULL)
+	, m_pHoldZealot(NULL)
+	, m_pMoveZealot(NULL)
 {
 	
 }
@@ -32,6 +36,8 @@ cMainGame::~cMainGame()
 	SafeDelete(m_pXFile);
 	SafeDelete(m_pSkinnedMesh);
 	SafeDelete(m_pFrustum);
+	SafeDelete(m_pHoldZealot);
+	SafeDelete(m_pMoveZealot);
 	g_pDeveceManager->Destroy();
 }
 
@@ -45,16 +51,18 @@ void cMainGame::Setup()
 
 	setLight();
 	
-	m_pPlayer = new Player;
-	m_pPlayer->Setup();
+	//m_pPlayer = new Player;
+	//m_pPlayer->Setup();
 
 	m_pCamera = new cCamera; //0,0,0
-	m_pCamera->Setup(&m_pPlayer->GetPosition());
+	m_pCamera->Setup(NULL);
 
 	m_pGrid = new cGrid;
 	m_pGrid->Setup();
 
-	Setup_Frustum();
+	Setup_OBB();
+
+	/*Setup_Frustum();*/
 	
 	/*m_pXFile = new xFileLoader;
 	m_pXFile->Setup_Xfile("xFile/zealot.x");*/
@@ -73,16 +81,22 @@ void cMainGame::Update()
 	//	m_pPlayer->Update();
 	//}
 
-	//g_pTimeManager->Update();
+	g_pTimeManager->Update();
 	//if (m_pSkinnedMesh)
 	//	m_pSkinnedMesh->Update();
 
 
-	if (m_pFrustum)
-		m_pFrustum->Update();
-	
+	//if (m_pFrustum)
+	//	m_pFrustum->Update();
+	//
 	if (m_pCamera)
 		m_pCamera->Update();
+
+	if (m_pHoldZealot)
+		m_pHoldZealot->Update(m_pMap);
+
+	if (m_pMoveZealot)
+		m_pMoveZealot->Update(m_pMap);
 	
 }
 
@@ -96,7 +110,9 @@ void cMainGame::Render()
 	if (m_pGrid)
 		m_pGrid->Render();
 
-	Frustum_Render();
+	OBB_Render();
+
+	//Frustum_Render();
 
 	/*if (m_pPlayer)
 		m_pPlayer->Render();*/
@@ -271,6 +287,30 @@ void cMainGame::Frustum_Render()
 			m_pSphere->DrawSubset(0);
 		}
 	}
+}
+
+void cMainGame::Setup_OBB()
+{
+	m_pHoldZealot = new cZeloat;
+	m_pHoldZealot->Setup();
+
+	m_pMoveZealot = new cZeloat;
+	m_pMoveZealot->Setup();
+
+	cCharacter* pCharacter = new cCharacter;
+	m_pMoveZealot->SetCharacterController(pCharacter);
+	SafeRelease(pCharacter); //? 
+}
+
+void cMainGame::OBB_Render()
+{
+	D3DCOLOR c = cOBB::IsCollision(m_pHoldZealot->GetOBB(), m_pMoveZealot->GetOBB()) ? D3DCOLOR_XRGB(255, 0, 0) : D3DCOLOR_XRGB(255, 255, 255);//충돌하면 빨강
+
+	if (m_pHoldZealot)
+		m_pHoldZealot->Render(c);
+	
+	if (m_pMoveZealot)
+		m_pMoveZealot->Render(c);
 }
 
 

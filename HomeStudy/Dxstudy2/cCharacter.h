@@ -22,5 +22,10 @@ public:
 	virtual void Render();
 	virtual D3DXVECTOR3& GetPosition();
 	virtual D3DXVECTOR3& GetDirection();
+	
+	virtual D3DXMATRIXA16* GetTransform()
+	{
+		return &m_matWorld;
+	}
 };
 

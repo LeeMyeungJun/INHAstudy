@@ -7,6 +7,7 @@ class cGrid;
 class xFileLoader;
 class cSkinnedMesh;
 class Frustum;
+class cZeloat;
 
 class cMainGame
 {
@@ -56,6 +57,17 @@ public:
 	//>>:
 	void Setup_Frustum();
 	void Frustum_Render();
+	//<<:
+
+
+	// >>:
+private:
+	cZeloat* m_pHoldZealot;
+	cZeloat* m_pMoveZealot;
+public:
+	void Setup_OBB();
+	void OBB_Render();
+	
 	//<<:
 
 };

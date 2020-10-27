@@ -155,3 +155,5 @@ enum MY_TOKEN_TYPE { TOKEN_STRING = 0, TOKEN_NUMBER };
 #include "cDeviceManager.h"
 #include "cTextureManager.h"
 #include "cTimerManager.h"
+#include "iMap.h"
+#include "cObject.h"
