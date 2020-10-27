@@ -6,6 +6,7 @@ class cCamera;
 class cGrid;
 class xFileLoader;
 class cSkinnedMesh;
+class Frustum;
 
 class cMainGame
 {
@@ -25,6 +26,15 @@ private:
 	xFileLoader*	m_pXFile;
 	cSkinnedMesh*	m_pSkinnedMesh;
 
+
+
+
+	//>>:
+	LPD3DXMESH			m_pSphere;
+	D3DMATERIAL9		m_stCullingMtl;
+	vector<ST_SPHERE*>	m_vecCullingSphere;
+	Frustum*			m_pFrustum;
+	//<<:
 public:
 	void Setup();
 	void Update();
@@ -42,6 +52,11 @@ public:
 
 	//
 	void SkinnedMesh_Render();
+
+	//>>:
+	void Setup_Frustum();
+	void Frustum_Render();
+	//<<:
 
 };
 

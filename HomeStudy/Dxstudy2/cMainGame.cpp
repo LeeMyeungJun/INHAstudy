@@ -7,6 +7,7 @@
 #include "Player.h"
 #include "xFileLoader.h"
 #include "cSkinnedMesh.h"
+#include "Frustum.h"
 
 //D3DXMatrixRotationX()
 //D3Dxvec3TransformNormal 사용  등등 이름비슷하니까 찾아쓰도록
@@ -17,6 +18,7 @@ cMainGame::cMainGame()
 	,m_pPlayer(NULL)
 	, m_pXFile(NULL)
 	, m_pSkinnedMesh(NULL)
+	, m_pFrustum(NULL)
 {
 	
 }
@@ -29,6 +31,7 @@ cMainGame::~cMainGame()
 	SafeDelete(m_pGrid);
 	SafeDelete(m_pXFile);
 	SafeDelete(m_pSkinnedMesh);
+	SafeDelete(m_pFrustum);
 	g_pDeveceManager->Destroy();
 }
 
@@ -51,27 +54,33 @@ void cMainGame::Setup()
 	m_pGrid = new cGrid;
 	m_pGrid->Setup();
 
+	Setup_Frustum();
+	
 	/*m_pXFile = new xFileLoader;
 	m_pXFile->Setup_Xfile("xFile/zealot.x");*/
 
-	m_pSkinnedMesh = new cSkinnedMesh;
-	m_pSkinnedMesh->Setup("xFile","zealot.x");
-	
+	//m_pSkinnedMesh = new cSkinnedMesh;
+	//m_pSkinnedMesh->Setup("xFile","zealot.x");
+	//
 
 
 }
 
 void cMainGame::Update()
 {
-	if (m_pPlayer)
-	{
-		m_pPlayer->Update();
-	}
+	//if (m_pPlayer)
+	//{
+	//	m_pPlayer->Update();
+	//}
 
-	g_pTimeManager->Update();
-	if (m_pSkinnedMesh)
-		m_pSkinnedMesh->Update();
+	//g_pTimeManager->Update();
+	//if (m_pSkinnedMesh)
+	//	m_pSkinnedMesh->Update();
 
+
+	if (m_pFrustum)
+		m_pFrustum->Update();
+	
 	if (m_pCamera)
 		m_pCamera->Update();
 	
@@ -87,10 +96,12 @@ void cMainGame::Render()
 	if (m_pGrid)
 		m_pGrid->Render();
 
+	Frustum_Render();
+
 	/*if (m_pPlayer)
 		m_pPlayer->Render();*/
 
-	SkinnedMesh_Render();
+	//SkinnedMesh_Render();
 	//m_pXFile->Render_Xfile();
 	
 	g_pD3DDvice->EndScene();
@@ -105,16 +116,24 @@ void cMainGame::wndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	if (m_pSkinnedMesh)
 		m_pSkinnedMesh->WndProc(hWnd, message, wParam, lParam);
 	
-	//switch (message)
-	//{
-	//case WM_RBUTTONDOWN:
-	//	{
-	//	static int n = 0;
-	//	//m_pSkinnedMesh->SetAnimationIndex(++n);
-	//	m_pSkinnedMesh->SetAnimation(++n);
-	//	}
-	//	
-	//}
+	switch (message)
+	{
+	case WM_RBUTTONDOWN:
+		{
+			for each(ST_SPHERE* sphere in m_vecCullingSphere)
+			{
+				if(m_pFrustum->IsIn(sphere))
+				{
+					sphere->isPicked = true;
+				}
+				else
+				{
+					sphere->isPicked = false;
+				}
+			}
+		}
+		
+	}
 }
 
 void cMainGame::Setup_Line()
@@ -202,6 +221,56 @@ void cMainGame::SkinnedMesh_Render()
 	if (m_pSkinnedMesh)
 		m_pSkinnedMesh->Render(NULL);
 	
+}
+
+void cMainGame::Setup_Frustum()
+{
+	D3DXCreateSphere(g_pD3DDvice, 0.5f, 10, 10, &m_pSphere, NULL);
+
+	for(int i = -20 ; i <= 20 ; i ++)
+	{
+		for(int j = -20 ; j <= 20 ; j++)
+		{
+			for (int k = -20; k <= 20; k++)
+			{
+				ST_SPHERE* s = new ST_SPHERE;
+				s->fRadius = 0.5f;
+				s->vCenter = D3DXVECTOR3((float)i, (float)j, (float)k);
+				s->isPicked = true; //컬링할건지 안할건지 판단하는데 쓸거야 true로 일단 다그리는걸로 해놓자 .
+				m_vecCullingSphere.push_back(s);
+			}
+		}
+	}// <<:for last
+
+	ZeroMemory(&m_stCullingMtl, sizeof(D3DMATERIAL9));
+	m_stCullingMtl.Ambient = D3DXCOLOR(0.7f, 0.7f, 0.7f, 1.0f);
+	m_stCullingMtl.Diffuse = D3DXCOLOR(0.7f, 0.7f, 0.7f, 1.0f);
+	m_stCullingMtl.Specular = D3DXCOLOR(0.7f, 0.7f, 0.7f, 1.0f);
+
+	m_pFrustum = new Frustum;
+	m_pFrustum->Setup();
+	
+}
+
+void cMainGame::Frustum_Render()
+{
+	D3DXMATRIXA16 matWorld;
+	D3DXMatrixIdentity(&matWorld);
+	g_pD3DDvice->SetTransform(D3DTS_WORLD, &matWorld);
+	g_pD3DDvice->SetMaterial(&m_stCullingMtl);
+
+	
+	for each(ST_SPHERE* sphere in m_vecCullingSphere)
+	{
+		if(sphere->isPicked)
+		{
+			matWorld._41 = sphere->vCenter.x;
+			matWorld._42 = sphere->vCenter.y;
+			matWorld._43 = sphere->vCenter.z;
+			g_pD3DDvice->SetTransform(D3DTS_WORLD, &matWorld);
+			m_pSphere->DrawSubset(0);
+		}
+	}
 }
 
 

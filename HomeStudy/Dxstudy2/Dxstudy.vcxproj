@@ -165,6 +165,7 @@
     <ClInclude Include="cTextureManager.h" />
     <ClInclude Include="cTimerManager.h" />
     <ClInclude Include="Dxstudy.h" />
+    <ClInclude Include="Frustum.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />
@@ -183,6 +184,7 @@
     <ClCompile Include="cTextureManager.cpp" />
     <ClCompile Include="cTimerManager.cpp" />
     <ClCompile Include="Dxstudy.cpp" />
+    <ClCompile Include="Frustum.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
