@@ -1,5 +1,6 @@
 #pragma once
 #include "stdafx.h"
+class iMap;
 class Player;
 class cCubePC;
 class cCamera;
@@ -64,6 +65,7 @@ public:
 private:
 	cZeloat* m_pHoldZealot;
 	cZeloat* m_pMoveZealot;
+	iMap*	 m_pMap;
 public:
 	void Setup_OBB();
 	void OBB_Render();

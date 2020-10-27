@@ -23,6 +23,7 @@ cMainGame::cMainGame()
 	, m_pFrustum(NULL)
 	, m_pHoldZealot(NULL)
 	, m_pMoveZealot(NULL)
+	, m_pMap(NULL)
 {
 	
 }
@@ -38,6 +39,7 @@ cMainGame::~cMainGame()
 	SafeDelete(m_pFrustum);
 	SafeDelete(m_pHoldZealot);
 	SafeDelete(m_pMoveZealot);
+	SafeDelete(m_pMap);
 	g_pDeveceManager->Destroy();
 }
 

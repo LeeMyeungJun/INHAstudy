@@ -15,7 +15,7 @@ cSkinnedMeshManager::~cSkinnedMeshManager()
 cSkinnedMesh* cSkinnedMeshManager::GetSkinnedMesh(char* szFolder, char* szFileName)
 {
 	string sFullPath(szFolder);
-	sFullPath += string(szFileName);
+	sFullPath += string("/") +string(szFileName);
 	if (m_mapSkinnedMesh.find(sFullPath) == m_mapSkinnedMesh.end())
 	{
 		cSkinnedMesh* pSkinnedMesh = new cSkinnedMesh();
