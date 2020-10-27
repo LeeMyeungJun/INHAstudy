@@ -1,0 +1,620 @@
+#include "stdafx.h"
+#include "cMainGame.h"
+#include "cDeviceManager.h"
+
+cMainGame::cMainGame()
+{
+	m_fCameraDist = 10;
+	m_fBoxRotY = 0;
+	m_isLButtonDown = false;
+
+	m_ptPrevMouse.x = 0;
+	m_ptPrevMouse.y = 0;
+}
+
+cMainGame::~cMainGame()
+{
+	g_pDeviceManager->Destroy();
+}
+
+void cMainGame::Setup()
+{
+	m_vPosition = D3DXVECTOR3(0, 0, 0);
+	m_vBoxDirection = D3DXVECTOR3(0, 0, 1);
+	m_vCamRotAngle = D3DXVECTOR3(0, 0, 0);
+	
+	Setup_Line();
+	//Setup_Triangle();
+	Setup_Pyramid();
+	Setup_Box();
+	Setup_Grid();
+
+	g_pD3DDevice->SetRenderState(D3DRS_LIGHTING, false);	//조명 끄기
+}
+
+void cMainGame::Update()
+{
+	Update_Move();
+	Update_Rotation();
+}
+
+void cMainGame::Render()
+{
+	Update();
+	RECT rc;
+	GetClientRect(g_hWnd, &rc);
+
+	D3DXMATRIXA16 matRX;
+	D3DXMATRIXA16 matRY;
+	D3DXMATRIXA16 matR;
+	D3DXMatrixIdentity(&matRX);
+	D3DXMatrixIdentity(&matRY);
+	D3DXMatrixIdentity(&matR);
+
+	D3DXMatrixRotationX(&matRX, m_vCamRotAngle.x);
+	D3DXMatrixRotationY(&matRY, m_vCamRotAngle.y);
+	matR = matRX * matRY;
+
+	D3DXVec3TransformNormal(&vEye, &(D3DXVECTOR3(0, m_fCameraDist, -m_fCameraDist) + m_vPosition), &matR);
+	D3DXVECTOR3 vLookAt = m_vPosition;
+	D3DXVECTOR3 vUp = D3DXVECTOR3(0, 1, 0);
+
+	D3DXMATRIXA16 matView;
+	D3DXMatrixLookAtLH(&matView, &vEye, &vLookAt, &vUp);
+	g_pD3DDevice->SetTransform(D3DTS_VIEW, &matView);
+
+	D3DXMATRIXA16 matProj;
+	D3DXMatrixPerspectiveFovLH(&matProj, D3DX_PI / 4.0f, rc.right / (float)rc.bottom, 1.0f, 1000.0f);
+	g_pD3DDevice->SetTransform(D3DTS_PROJECTION, &matProj);
+
+	if(g_pD3DDevice)
+		g_pD3DDevice->Clear(0, 0, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, D3DCOLOR_XRGB(45, 45, 48), 1.0f, 0);
+	
+	g_pD3DDevice->BeginScene();
+
+	Draw_Grid();
+	Draw_Line();
+	Draw_Pyramid();
+	Draw_Box();
+	
+	g_pD3DDevice->EndScene();
+	g_pD3DDevice->Present(NULL, NULL, NULL, NULL);
+}
+
+void cMainGame::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
+{
+	switch (message)
+	{
+	case WM_LBUTTONDOWN:
+		m_ptPrevMouse.x = LOWORD(lParam);
+		m_ptPrevMouse.y = HIWORD(lParam);
+		m_isLButtonDown = true;
+		break;
+
+	case WM_LBUTTONUP:
+		m_isLButtonDown = false;
+		break;
+
+	case WM_MOUSEMOVE:
+		if (m_isLButtonDown)
+		{
+			POINT ptCurMouse;
+			ptCurMouse.x = LOWORD(lParam);
+			ptCurMouse.y = HIWORD(lParam);
+
+			float fDeltaX = (float)ptCurMouse.x - m_ptPrevMouse.x;
+			float fDeltaY = (float)ptCurMouse.y - m_ptPrevMouse.y;
+			m_vCamRotAngle.y += (fDeltaX / 100.0f);
+			m_vCamRotAngle.x += (fDeltaY / 100.0f);
+
+			if (m_vCamRotAngle.x < -D3DX_PI / 2.0f + 0.0001f)
+				m_vCamRotAngle.x = -D3DX_PI / 2.0f + 0.0001f;
+			if (m_vCamRotAngle.x > D3DX_PI / 2.0f - 0.0001f)
+				m_vCamRotAngle.x = D3DX_PI / 2.0f - 0.0001f;
+
+			m_ptPrevMouse = ptCurMouse;
+		}
+		break;
+	case WM_MOUSEWHEEL:
+	{
+		//카메라 축소 확대
+		m_fCameraDist -= GET_WHEEL_DELTA_WPARAM(wParam) / 20.0f;
+		if (m_fCameraDist < 0.00001f)
+			m_fCameraDist = 0.00001f;
+	}
+	break;
+	default:
+		break;
+	}
+}
+
+
+void cMainGame::Setup_Line()
+{
+	ST_PC_VERTEX v;
+	v.c = D3DCOLOR_XRGB(100, 240, 100);
+	v.p = D3DXVECTOR3(0, 50, 0);
+	m_vecLineVertex.push_back(v);
+	v.p = D3DXVECTOR3(0, -50, 0);
+	m_vecLineVertex.push_back(v);
+
+	v.c = D3DCOLOR_XRGB(240, 100, 100);
+	v.p = D3DXVECTOR3(50, 0, 0);
+	m_vecLineVertex.push_back(v);
+	v.p = D3DXVECTOR3(-50, 0, 0);
+	m_vecLineVertex.push_back(v);
+
+	v.c = D3DCOLOR_XRGB(100, 100, 240);
+	v.p = D3DXVECTOR3(0, 0, 50);
+	m_vecLineVertex.push_back(v);
+	v.p = D3DXVECTOR3(0, 0, -50);
+	m_vecLineVertex.push_back(v);
+}
+
+void cMainGame::Draw_Line()
+{
+	D3DXMATRIXA16 matWorld;
+	D3DXMatrixIdentity(&matWorld);
+	g_pD3DDevice->SetTransform(D3DTS_WORLD, &matWorld);
+	g_pD3DDevice->SetFVF(ST_PC_VERTEX::FVF);
+									// 나중에 찾기
+	g_pD3DDevice->DrawPrimitiveUP(D3DPT_LINELIST, m_vecLineVertex.size() / 2, &m_vecLineVertex[0],
+		sizeof(ST_PC_VERTEX));
+}
+
+void cMainGame::Setup_Triangle()
+{
+	srand((unsigned int)time(0));
+	ST_PC_VERTEX	v;
+	v.c = D3DCOLOR_XRGB(rand() % 256, rand() % 256, rand() % 256);
+	
+	v.p = D3DXVECTOR3(-1.0f, -1.0f, 0);
+	m_vecTriangleVertex.push_back(v);
+	
+	v.p = D3DXVECTOR3(-1.0f, 1.0f, 0);
+	m_vecTriangleVertex.push_back(v);
+	
+	v.p = D3DXVECTOR3(1.0f, 1.0f, 0);
+	m_vecTriangleVertex.push_back(v);
+}
+
+void cMainGame::Draw_Triangle()
+{
+	D3DXMATRIXA16 matWorld;
+	D3DXMatrixIdentity(&matWorld);
+
+	D3DXVECTOR3 vPosition = D3DXVECTOR3(0, 0, 5);
+	D3DXMatrixTranslation(&matWorld, vPosition.x, vPosition.y, vPosition.z);
+
+	g_pD3DDevice->SetTransform(D3DTS_WORLD, &matWorld);
+	g_pD3DDevice->SetFVF(ST_PC_VERTEX::FVF);
+	g_pD3DDevice->DrawPrimitiveUP(D3DPT_TRIANGLELIST, m_vecTriangleVertex.size() / 3, &m_vecTriangleVertex[0],
+		sizeof(ST_PC_VERTEX));
+}
+
+
+void cMainGame::Setup_Box()
+{
+	ST_PC_VERTEX	v;
+
+	m_vecBoxVertex.push_back(D3DXVECTOR3(-0.8f, -0.8f, -0.8f));
+	m_vecBoxVertex.push_back(D3DXVECTOR3(-0.8f, 0.8f, -0.8f));
+	m_vecBoxVertex.push_back(D3DXVECTOR3(0.8f, 0.8f, -0.8f));
+	m_vecBoxVertex.push_back(D3DXVECTOR3(0.8f, -0.8f, -0.8f));
+
+	m_vecBoxVertex.push_back(D3DXVECTOR3(-0.8f, -0.8f, 0.8f));
+	m_vecBoxVertex.push_back(D3DXVECTOR3(-0.8f, 0.8f, 0.8f));
+	m_vecBoxVertex.push_back(D3DXVECTOR3(0.8f, 0.8f, 0.8f));
+	m_vecBoxVertex.push_back(D3DXVECTOR3(0.8f, -0.8f, 0.8f));
+
+	
+	//front
+	v.c = D3DCOLOR_XRGB(0, 254, 155);
+	
+	v.p = m_vecBoxVertex[0];
+	m_vecBoxTrisVertex.push_back(v);
+	v.p = m_vecBoxVertex[1];
+	m_vecBoxTrisVertex.push_back(v);
+	v.p = m_vecBoxVertex[2];
+	m_vecBoxTrisVertex.push_back(v);
+
+	v.p = m_vecBoxVertex[0];
+	m_vecBoxTrisVertex.push_back(v);
+	v.p = m_vecBoxVertex[2];
+	m_vecBoxTrisVertex.push_back(v);
+	v.p = m_vecBoxVertex[3];
+	m_vecBoxTrisVertex.push_back(v);
+
+	//back
+	v.c = D3DCOLOR_XRGB(255, 80, 97);
+	
+	v.p = m_vecBoxVertex[4];
+	m_vecBoxTrisVertex.push_back(v);
+	v.p = m_vecBoxVertex[6];
+	m_vecBoxTrisVertex.push_back(v);
+	v.p = m_vecBoxVertex[5];
+	m_vecBoxTrisVertex.push_back(v);
+
+	v.p = m_vecBoxVertex[4];
+	m_vecBoxTrisVertex.push_back(v);
+	v.p = m_vecBoxVertex[7];
+	m_vecBoxTrisVertex.push_back(v);
+	v.p = m_vecBoxVertex[6];
+	m_vecBoxTrisVertex.push_back(v);
+
+	//left
+	v.c = D3DCOLOR_XRGB(2, 196, 53);
+
+	v.p = m_vecBoxVertex[4];
+	m_vecBoxTrisVertex.push_back(v);
+	v.p = m_vecBoxVertex[5];
+	m_vecBoxTrisVertex.push_back(v);
+	v.p = m_vecBoxVertex[1];
+	m_vecBoxTrisVertex.push_back(v);
+
+	v.p = m_vecBoxVertex[4];
+	m_vecBoxTrisVertex.push_back(v);
+	v.p = m_vecBoxVertex[1];
+	m_vecBoxTrisVertex.push_back(v);
+	v.p = m_vecBoxVertex[0];
+	m_vecBoxTrisVertex.push_back(v);
+
+	//right
+	v.c = D3DCOLOR_XRGB(148, 97, 253);
+	
+	v.p = m_vecBoxVertex[3];
+	m_vecBoxTrisVertex.push_back(v);
+	v.p = m_vecBoxVertex[2];
+	m_vecBoxTrisVertex.push_back(v);
+	v.p = m_vecBoxVertex[6];
+	m_vecBoxTrisVertex.push_back(v);
+
+	v.p = m_vecBoxVertex[3];
+	m_vecBoxTrisVertex.push_back(v);
+	v.p = m_vecBoxVertex[6];
+	m_vecBoxTrisVertex.push_back(v);
+	v.p = m_vecBoxVertex[7];
+	m_vecBoxTrisVertex.push_back(v);
+
+	//top
+	v.c = D3DCOLOR_XRGB(255, 219, 78);
+	
+	v.p = m_vecBoxVertex[1];
+	m_vecBoxTrisVertex.push_back(v);
+	v.p = m_vecBoxVertex[5];
+	m_vecBoxTrisVertex.push_back(v);
+	v.p = m_vecBoxVertex[6];
+	m_vecBoxTrisVertex.push_back(v);
+
+	v.p = m_vecBoxVertex[1];
+	m_vecBoxTrisVertex.push_back(v);
+	v.p = m_vecBoxVertex[6];
+	m_vecBoxTrisVertex.push_back(v);
+	v.p = m_vecBoxVertex[2];
+	m_vecBoxTrisVertex.push_back(v);
+
+	//buttom
+	v.c = D3DCOLOR_XRGB(45, 217, 254);
+	
+	v.p = m_vecBoxVertex[4];
+	m_vecBoxTrisVertex.push_back(v);
+	v.p = m_vecBoxVertex[0];
+	m_vecBoxTrisVertex.push_back(v);
+	v.p = m_vecBoxVertex[3];
+	m_vecBoxTrisVertex.push_back(v);
+
+	v.p = m_vecBoxVertex[4];
+	m_vecBoxTrisVertex.push_back(v);
+	v.p = m_vecBoxVertex[3];
+	m_vecBoxTrisVertex.push_back(v);
+	v.p = m_vecBoxVertex[7];
+	m_vecBoxTrisVertex.push_back(v);
+}
+
+void cMainGame::Draw_Box()
+{
+	D3DXMATRIXA16 matWorld;
+	D3DXMatrixIdentity(&matWorld);
+	D3DXMATRIXA16 matRot;
+	D3DXMatrixRotationY(&matRot, degToRad(m_fBoxRotY));
+
+	D3DXVECTOR3 vPosition = m_vPosition;
+	D3DXMatrixTranslation(&matWorld, vPosition.x, vPosition.y, vPosition.z);
+	matWorld = matRot * matWorld;
+	
+	g_pD3DDevice->SetTransform(D3DTS_WORLD, &matWorld);
+	g_pD3DDevice->SetFVF(ST_PC_VERTEX::FVF);
+	g_pD3DDevice->DrawPrimitiveUP(D3DPT_TRIANGLELIST, m_vecBoxTrisVertex.size() / 3, &m_vecBoxTrisVertex[0],
+		sizeof(ST_PC_VERTEX));
+
+	/*for (int i = 0; i < m_vecIndex.size(); i += 3)
+	{
+		cVector3 v1 = m_vecVertex[m_vecIndex[i + 0]];
+		cVector3 v2 = m_vecVertex[m_vecIndex[i + 1]];
+		cVector3 v3 = m_vecVertex[m_vecIndex[i + 2]];
+
+		v1 = cVector3::TransformCoord(v1, matWVP);
+		v2 = cVector3::TransformCoord(v2, matWVP);
+		v3 = cVector3::TransformCoord(v3, matWVP);
+
+		v1 = cVector3::TransformCoord(v1, m_matViewport);
+		v2 = cVector3::TransformCoord(v2, m_matViewport);
+		v3 = cVector3::TransformCoord(v3, m_matViewport);
+
+		cVector3 l1 = v2 - v1;
+		cVector3 l2 = v1 - v3;
+
+		if (cVector3::Cross(l2, l1).z > 0)
+		{
+			MoveToEx(m_MemDc, v1.x, v1.y, NULL);
+			LineTo(m_MemDc, v2.x, v2.y);
+			LineTo(m_MemDc, v3.x, v3.y);
+			LineTo(m_MemDc, v1.x, v1.y);
+		}
+	}*/
+}
+
+void cMainGame::Setup_Grid()
+{
+	ST_PC_VERTEX v;
+	v.c = D3DCOLOR_XRGB(100, 100, 100);
+	int nNumHalfTile = 20;
+	float fInterval = 1.0f;
+	float fMax = nNumHalfTile * fInterval;
+	float fMin = -nNumHalfTile * fInterval;
+
+	for (int i = 1; i <= nNumHalfTile; i++)
+	{
+		v.p = D3DXVECTOR3(fMin, 0, i*fInterval);
+		m_vecGridVertex.push_back(v);
+		v.p = D3DXVECTOR3(fMax, 0, i*fInterval);
+		m_vecGridVertex.push_back(v);
+
+		v.p = D3DXVECTOR3(fMin, 0, -i*fInterval);
+		m_vecGridVertex.push_back(v);
+		v.p = D3DXVECTOR3(fMax, 0, -i*fInterval);
+		m_vecGridVertex.push_back(v);
+
+		v.p = D3DXVECTOR3(i*fInterval, 0, fMin);
+		m_vecGridVertex.push_back(v);
+		v.p = D3DXVECTOR3(i*fInterval, 0, fMax);
+		m_vecGridVertex.push_back(v);
+
+		v.p = D3DXVECTOR3(-i*fInterval, 0, fMin);
+		m_vecGridVertex.push_back(v);
+		v.p = D3DXVECTOR3(-i*fInterval, 0, fMax);
+		m_vecGridVertex.push_back(v);
+	}
+	//가운데 선
+	v.p = D3DXVECTOR3(0, 0, fMin);
+	m_vecGridVertex.push_back(v);
+	v.p = D3DXVECTOR3(0, 0, fMax);
+	m_vecGridVertex.push_back(v);
+
+	v.p = D3DXVECTOR3(fMin, 0, 0);
+	m_vecGridVertex.push_back(v);
+	v.p = D3DXVECTOR3(fMax, 0, 0);
+	m_vecGridVertex.push_back(v);
+}
+
+void cMainGame::Draw_Grid()
+{
+	D3DXMATRIXA16 matWorld;
+	D3DXMatrixIdentity(&matWorld);
+	g_pD3DDevice->SetTransform(D3DTS_WORLD, &matWorld);
+	g_pD3DDevice->SetFVF(ST_PC_VERTEX::FVF);
+	
+	for(int i = 0; i < m_vecGridVertex.size() / 2; i += 2)
+	{
+		g_pD3DDevice->DrawPrimitiveUP(D3DPT_LINELIST, m_vecGridVertex.size() / 2, &m_vecGridVertex[0],
+			sizeof(ST_PC_VERTEX));
+	}
+}
+
+void cMainGame::Setup_Pyramid()
+{
+	ST_PC_VERTEX	v;
+	v.c = D3DCOLOR_XRGB(100, 240, 100);
+	
+	m_vecPyramidVertex.push_back(D3DXVECTOR3(-0.2f, 2.0f, -0.2f));
+	m_vecPyramidVertex.push_back(D3DXVECTOR3(-0.2f, 2.0f, 0.2f));
+	m_vecPyramidVertex.push_back(D3DXVECTOR3(0.2f, 2.0f, 0.2f));
+	m_vecPyramidVertex.push_back(D3DXVECTOR3(0.2f, 2.0f, -0.2f));
+	
+	m_vecPyramidVertex.push_back(D3DXVECTOR3(0, 0, 0));
+
+	//top
+	v.p = m_vecPyramidVertex[0];
+	m_vecPyramidTrisVertex.push_back(v);
+	v.p = m_vecPyramidVertex[1];
+	m_vecPyramidTrisVertex.push_back(v);
+	v.p = m_vecPyramidVertex[2];
+	m_vecPyramidTrisVertex.push_back(v);
+
+	v.p = m_vecPyramidVertex[0];
+	m_vecPyramidTrisVertex.push_back(v);
+	v.p = m_vecPyramidVertex[2];
+	m_vecPyramidTrisVertex.push_back(v);
+	v.p = m_vecPyramidVertex[3];
+	m_vecPyramidTrisVertex.push_back(v);
+	
+	//right
+	v.p = m_vecPyramidVertex[3];
+	m_vecPyramidTrisVertex.push_back(v);
+	v.p = m_vecPyramidVertex[2];
+	m_vecPyramidTrisVertex.push_back(v);
+	v.p = m_vecPyramidVertex[4];
+	m_vecPyramidTrisVertex.push_back(v);
+	
+	//left
+	v.p = m_vecPyramidVertex[1];
+	m_vecPyramidTrisVertex.push_back(v);
+	v.p = m_vecPyramidVertex[0];
+	m_vecPyramidTrisVertex.push_back(v);
+	v.p = m_vecPyramidVertex[4];
+	m_vecPyramidTrisVertex.push_back(v);
+	
+	//forward
+	v.p = m_vecPyramidVertex[2];
+	m_vecPyramidTrisVertex.push_back(v);
+	v.p = m_vecPyramidVertex[1];
+	m_vecPyramidTrisVertex.push_back(v);
+	v.p = m_vecPyramidVertex[4];
+	m_vecPyramidTrisVertex.push_back(v);
+	
+	//back
+	v.p = m_vecPyramidVertex[0];
+	m_vecPyramidTrisVertex.push_back(v);
+	v.p = m_vecPyramidVertex[3];
+	m_vecPyramidTrisVertex.push_back(v);
+	v.p = m_vecPyramidVertex[4];
+	m_vecPyramidTrisVertex.push_back(v);
+
+	v.c = D3DCOLOR_XRGB(240, 100, 100);
+
+	m_vecPyramidVertex.clear();
+	m_vecPyramidVertex.push_back(D3DXVECTOR3(2, -0.2f, -0.2f));
+	m_vecPyramidVertex.push_back(D3DXVECTOR3(2, -0.2f, 0.2f));
+	m_vecPyramidVertex.push_back(D3DXVECTOR3(2, 0.2f, 0.2f));
+	m_vecPyramidVertex.push_back(D3DXVECTOR3(2, 0.2f, -0.2f));
+
+	m_vecPyramidVertex.push_back(D3DXVECTOR3(0, 0, 0));
+
+	//top
+	v.p = m_vecPyramidVertex[0];
+	m_vecPyramidTrisVertex.push_back(v);
+	v.p = m_vecPyramidVertex[1];
+	m_vecPyramidTrisVertex.push_back(v);
+	v.p = m_vecPyramidVertex[2];
+	m_vecPyramidTrisVertex.push_back(v);
+
+	v.p = m_vecPyramidVertex[0];
+	m_vecPyramidTrisVertex.push_back(v);
+	v.p = m_vecPyramidVertex[2];
+	m_vecPyramidTrisVertex.push_back(v);
+	v.p = m_vecPyramidVertex[3];
+	m_vecPyramidTrisVertex.push_back(v);
+
+	//right
+	v.p = m_vecPyramidVertex[3];
+	m_vecPyramidTrisVertex.push_back(v);
+	v.p = m_vecPyramidVertex[2];
+	m_vecPyramidTrisVertex.push_back(v);
+	v.p = m_vecPyramidVertex[4];
+	m_vecPyramidTrisVertex.push_back(v);
+
+	//left
+	v.p = m_vecPyramidVertex[1];
+	m_vecPyramidTrisVertex.push_back(v);
+	v.p = m_vecPyramidVertex[0];
+	m_vecPyramidTrisVertex.push_back(v);
+	v.p = m_vecPyramidVertex[4];
+	m_vecPyramidTrisVertex.push_back(v);
+
+	//forward
+	v.p = m_vecPyramidVertex[2];
+	m_vecPyramidTrisVertex.push_back(v);
+	v.p = m_vecPyramidVertex[1];
+	m_vecPyramidTrisVertex.push_back(v);
+	v.p = m_vecPyramidVertex[4];
+	m_vecPyramidTrisVertex.push_back(v);
+
+	//back
+	v.p = m_vecPyramidVertex[0];
+	m_vecPyramidTrisVertex.push_back(v);
+	v.p = m_vecPyramidVertex[3];
+	m_vecPyramidTrisVertex.push_back(v);
+	v.p = m_vecPyramidVertex[4];
+	m_vecPyramidTrisVertex.push_back(v);
+
+	v.c = D3DCOLOR_XRGB(100, 100, 240);
+
+	m_vecPyramidVertex.clear();
+	m_vecPyramidVertex.push_back(D3DXVECTOR3(-0.2f, -0.2f, 2));
+	m_vecPyramidVertex.push_back(D3DXVECTOR3(0.2f, -0.2f, 2));
+	m_vecPyramidVertex.push_back(D3DXVECTOR3(0.2f, 0.2f, 2));
+	m_vecPyramidVertex.push_back(D3DXVECTOR3(-0.2f, 0.2f, 2));
+
+	m_vecPyramidVertex.push_back(D3DXVECTOR3(0, 0, 0));
+
+	//top
+	v.p = m_vecPyramidVertex[0];
+	m_vecPyramidTrisVertex.push_back(v);
+	v.p = m_vecPyramidVertex[1];
+	m_vecPyramidTrisVertex.push_back(v);
+	v.p = m_vecPyramidVertex[2];
+	m_vecPyramidTrisVertex.push_back(v);
+
+	v.p = m_vecPyramidVertex[0];
+	m_vecPyramidTrisVertex.push_back(v);
+	v.p = m_vecPyramidVertex[2];
+	m_vecPyramidTrisVertex.push_back(v);
+	v.p = m_vecPyramidVertex[3];
+	m_vecPyramidTrisVertex.push_back(v);
+
+	//right
+	v.p = m_vecPyramidVertex[3];
+	m_vecPyramidTrisVertex.push_back(v);
+	v.p = m_vecPyramidVertex[2];
+	m_vecPyramidTrisVertex.push_back(v);
+	v.p = m_vecPyramidVertex[4];
+	m_vecPyramidTrisVertex.push_back(v);
+
+	//left
+	v.p = m_vecPyramidVertex[1];
+	m_vecPyramidTrisVertex.push_back(v);
+	v.p = m_vecPyramidVertex[0];
+	m_vecPyramidTrisVertex.push_back(v);
+	v.p = m_vecPyramidVertex[4];
+	m_vecPyramidTrisVertex.push_back(v);
+
+	//forward
+	v.p = m_vecPyramidVertex[2];
+	m_vecPyramidTrisVertex.push_back(v);
+	v.p = m_vecPyramidVertex[1];
+	m_vecPyramidTrisVertex.push_back(v);
+	v.p = m_vecPyramidVertex[4];
+	m_vecPyramidTrisVertex.push_back(v);
+
+	//back
+	v.p = m_vecPyramidVertex[0];
+	m_vecPyramidTrisVertex.push_back(v);
+	v.p = m_vecPyramidVertex[3];
+	m_vecPyramidTrisVertex.push_back(v);
+	v.p = m_vecPyramidVertex[4];
+	m_vecPyramidTrisVertex.push_back(v);
+}
+
+void cMainGame::Draw_Pyramid()
+{
+	D3DXMATRIXA16 matWorld;
+	D3DXMatrixIdentity(&matWorld);
+
+	g_pD3DDevice->SetTransform(D3DTS_WORLD, &matWorld);
+	g_pD3DDevice->SetFVF(ST_PC_VERTEX::FVF);
+
+	g_pD3DDevice->DrawPrimitiveUP(D3DPT_TRIANGLELIST, m_vecPyramidTrisVertex.size() / 3, &m_vecPyramidTrisVertex[0],
+		sizeof(ST_PC_VERTEX));
+}
+
+
+void cMainGame::Update_Move()
+{
+	D3DXMATRIXA16 matRot, matTrans;
+	D3DXMatrixRotationY(&matRot, degToRad(m_fBoxRotY));
+	D3DXVECTOR3 vecRot;
+	D3DXVec3TransformNormal(&vecRot, &m_vBoxDirection, &matRot);
+	
+	if (GetKeyState('W') & 0x8000)
+		m_vPosition = m_vPosition + (vecRot * 0.1f);
+	else if (GetKeyState('S') & 0x8000)
+		m_vPosition = m_vPosition - (vecRot * 0.1f);
+}
+
+void cMainGame::Update_Rotation()
+{
+	if (GetKeyState('A') & 0x8000)
+		m_fBoxRotY -= 1;
+	else if (GetKeyState('D') & 0x8000)
+		m_fBoxRotY += 1;
+}

@@ -8,6 +8,10 @@
 #include "xFileLoader.h"
 #include "cSkinnedMesh.h"
 
+#include "cZeloat.h"
+#include "cOBB.h"
+
+
 //D3DXMatrixRotationX()
 //D3Dxvec3TransformNormal 사용  등등 이름비슷하니까 찾아쓰도록
 
@@ -17,6 +21,9 @@ cMainGame::cMainGame()
 	,m_pPlayer(NULL)
 	, m_pXFile(NULL)
 	, m_pSkinnedMesh(NULL)
+	, m_pHoldZealot(NULL)
+	, m_pMoveZealot(NULL)
+	, m_pMap(NULL)
 {
 	
 }
@@ -29,6 +36,10 @@ cMainGame::~cMainGame()
 	SafeDelete(m_pGrid);
 	SafeDelete(m_pXFile);
 	SafeDelete(m_pSkinnedMesh);
+
+	SafeDelete(m_pHoldZealot);
+	SafeDelete(m_pMoveZealot);
+	SafeDelete(m_pMap);
 	g_pDeveceManager->Destroy();
 }
 
@@ -42,38 +53,52 @@ void cMainGame::Setup()
 
 	setLight();
 	
-	m_pPlayer = new Player;
-	m_pPlayer->Setup();
+	//m_pPlayer = new Player;
+	//m_pPlayer->Setup();
 
 	m_pCamera = new cCamera; //0,0,0
-	m_pCamera->Setup(&m_pPlayer->GetPosition());
+	m_pCamera->Setup(NULL);
 
 	m_pGrid = new cGrid;
 	m_pGrid->Setup();
 
+	Setup_OBB();
+
+	/*Setup_Frustum();*/
+	
 	/*m_pXFile = new xFileLoader;
 	m_pXFile->Setup_Xfile("xFile/zealot.x");*/
 
-	m_pSkinnedMesh = new cSkinnedMesh;
-	m_pSkinnedMesh->Setup("xFile","zealot.x");
-	
+	//m_pSkinnedMesh = new cSkinnedMesh;
+	//m_pSkinnedMesh->Setup("xFile","zealot.x");
+	//
 
 
 }
 
 void cMainGame::Update()
 {
-	if (m_pPlayer)
-	{
-		m_pPlayer->Update();
-	}
+	//if (m_pPlayer)
+	//{
+	//	m_pPlayer->Update();
+	//}
 
 	g_pTimeManager->Update();
-	if (m_pSkinnedMesh)
-		m_pSkinnedMesh->Update();
+	//if (m_pSkinnedMesh)
+	//	m_pSkinnedMesh->Update();
 
+
+	//if (m_pFrustum)
+	//	m_pFrustum->Update();
+	//
 	if (m_pCamera)
 		m_pCamera->Update();
+
+	if (m_pHoldZealot)
+		m_pHoldZealot->Update(m_pMap);
+
+	if (m_pMoveZealot)
+		m_pMoveZealot->Update(m_pMap);
 	
 }
 
@@ -87,13 +112,14 @@ void cMainGame::Render()
 	if (m_pGrid)
 		m_pGrid->Render();
 
-	if (m_pPlayer)
-		m_pPlayer->Render();
+	OBB_Render();
 
-	if (m_pCamera)
-		m_pCamera->Render();
+	//Frustum_Render();
 
-	SkinnedMesh_Render();
+	/*if (m_pPlayer)
+		m_pPlayer->Render();*/
+
+	//SkinnedMesh_Render();
 	//m_pXFile->Render_Xfile();
 	
 	g_pD3DDvice->EndScene();
@@ -105,16 +131,24 @@ void cMainGame::wndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	if (m_pCamera)
 		m_pCamera->WndProc(hWnd, message, wParam, lParam);
 
-	if (m_pSkinnedMesh)
-		m_pSkinnedMesh->WndProc(hWnd, message, wParam, lParam);
-	
+	//if (m_pSkinnedMesh)
+	//	m_pSkinnedMesh->WndProc(hWnd, message, wParam, lParam);
+	//
 	//switch (message)
 	//{
 	//case WM_RBUTTONDOWN:
 	//	{
-	//	static int n = 0;
-	//	//m_pSkinnedMesh->SetAnimationIndex(++n);
-	//	m_pSkinnedMesh->SetAnimation(++n);
+	//		for each(ST_SPHERE* sphere in m_vecCullingSphere)
+	//		{
+	//			if(m_pFrustum->IsIn(sphere))
+	//			{
+	//				sphere->isPicked = true;
+	//			}
+	//			else
+	//			{
+	//				sphere->isPicked = false;
+	//			}
+	//		}
 	//	}
 	//	
 	//}
@@ -205,6 +239,80 @@ void cMainGame::SkinnedMesh_Render()
 	if (m_pSkinnedMesh)
 		m_pSkinnedMesh->Render(NULL);
 	
+}
+
+void cMainGame::Setup_Frustum()
+{
+	D3DXCreateSphere(g_pD3DDvice, 0.5f, 10, 10, &m_pSphere, NULL);
+
+	for(int i = -20 ; i <= 20 ; i ++)
+	{
+		for(int j = -20 ; j <= 20 ; j++)
+		{
+			for (int k = -20; k <= 20; k++)
+			{
+				ST_SPHERE* s = new ST_SPHERE;
+				s->fRadius = 0.5f;
+				s->vCenter = D3DXVECTOR3((float)i, (float)j, (float)k);
+				s->isPicked = true; //컬링할건지 안할건지 판단하는데 쓸거야 true로 일단 다그리는걸로 해놓자 .
+				m_vecCullingSphere.push_back(s);
+			}
+		}
+	}// <<:for last
+
+	ZeroMemory(&m_stCullingMtl, sizeof(D3DMATERIAL9));
+	m_stCullingMtl.Ambient = D3DXCOLOR(0.7f, 0.7f, 0.7f, 1.0f);
+	m_stCullingMtl.Diffuse = D3DXCOLOR(0.7f, 0.7f, 0.7f, 1.0f);
+	m_stCullingMtl.Specular = D3DXCOLOR(0.7f, 0.7f, 0.7f, 1.0f);
+
+	m_pFrustum = new Frustum;
+	m_pFrustum->Setup();
+	
+}
+
+void cMainGame::Frustum_Render()
+{
+	D3DXMATRIXA16 matWorld;
+	D3DXMatrixIdentity(&matWorld);
+	g_pD3DDvice->SetTransform(D3DTS_WORLD, &matWorld);
+	g_pD3DDvice->SetMaterial(&m_stCullingMtl);
+
+	
+	for each(ST_SPHERE* sphere in m_vecCullingSphere)
+	{
+		if(sphere->isPicked)
+		{
+			matWorld._41 = sphere->vCenter.x;
+			matWorld._42 = sphere->vCenter.y;
+			matWorld._43 = sphere->vCenter.z;
+			g_pD3DDvice->SetTransform(D3DTS_WORLD, &matWorld);
+			m_pSphere->DrawSubset(0);
+		}
+	}
+}
+
+void cMainGame::Setup_OBB()
+{
+	m_pHoldZealot = new cZeloat;
+	m_pHoldZealot->Setup();
+
+	m_pMoveZealot = new cZeloat;
+	m_pMoveZealot->Setup();
+
+	cCharacter* pCharacter = new cCharacter;
+	m_pMoveZealot->SetCharacterController(pCharacter);
+	SafeRelease(pCharacter); //? 
+}
+
+void cMainGame::OBB_Render()
+{
+	D3DCOLOR c = cOBB::IsCollision(m_pHoldZealot->GetOBB(), m_pMoveZealot->GetOBB()) ? D3DCOLOR_XRGB(255, 0, 0) : D3DCOLOR_XRGB(255, 255, 255);//충돌하면 빨강
+
+	if (m_pHoldZealot)
+		m_pHoldZealot->Render(c);
+	
+	if (m_pMoveZealot)
+		m_pMoveZealot->Render(c);
 }
 
 

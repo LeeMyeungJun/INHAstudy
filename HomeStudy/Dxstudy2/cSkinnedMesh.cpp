@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "cSkinnedMesh.h"
 #include "cAllocateHierarchy.h"
+#include "cSkinnedMeshManager.h"
 
 
 cSkinnedMesh::cSkinnedMesh()
@@ -309,4 +310,104 @@ void cSkinnedMesh::SetAnimation(int state)
 
 	SafeRelease(pPrevAnimSet);
 	SafeRelease(pNextAnimSet);//썼던 것들을 지워줘
+}
+
+cSkinnedMesh::cSkinnedMesh(char* szFolder, char* szFilename)
+	:m_pRoot(NULL)
+	, m_pAnimController(NULL)
+	, m_fBlendTime(0.3f)
+	, m_fPassedBlendTime(0.0f)
+	, m_isAnimBlend(false)
+	, m_enState(NONE)
+	, AnimCheck(0)
+	, passed(0)
+	, Anibool(false)
+	, m_vMin(0,0,0)
+	, m_vMax(0,0,0)
+{
+	D3DXMatrixIdentity(&m_matWorldTM);
+	cSkinnedMesh* pSkinnedMesh = g_pSkinnedMeshManager->GetSkinnedMesh(szFolder, szFilename);
+
+	m_pRoot = pSkinnedMesh->m_pRoot; //스킨드매쉬에서 root값을 설정해줘야는데 셋팅을 안해줬어
+	
+	m_vMin = pSkinnedMesh->m_vMin;
+	m_vMax = pSkinnedMesh->m_vMax;
+
+	//애는 있는걸로 가지고오려니까 클론이 필요하겠구나 ?
+
+	pSkinnedMesh->m_pAnimController->CloneAnimationController(
+		pSkinnedMesh->m_pAnimController->GetMaxNumAnimationOutputs(),
+		pSkinnedMesh->m_pAnimController->GetMaxNumAnimationSets(),
+		pSkinnedMesh->m_pAnimController->GetMaxNumTracks(),
+		pSkinnedMesh->m_pAnimController->GetMaxNumEvents(),
+		&m_pAnimController); //이생성자는 복사하는 의미가있어 
+
+	
+}
+
+void cSkinnedMesh::Load(char* szFolder, char* szFileName)
+{
+	cAllocateHierarchy ah;
+	ah.SetFolder(szFolder);
+
+	string sFullPath(szFolder);
+
+	sFullPath += (string("/") + string(szFileName));
+
+	D3DXLoadMeshHierarchyFromXA(sFullPath.c_str(), D3DXMESH_MANAGED, g_pD3DDvice, &ah, NULL, (LPD3DXFRAME*)&m_pRoot, &m_pAnimController);
+
+	m_vMax = ah.GetMax();
+	m_vMin = ah.GetMin();
+
+	if (m_pRoot)
+		SetupBoneMatrixPtrs(m_pRoot);
+	
+}
+
+void cSkinnedMesh::Destroy()
+{
+	cAllocateHierarchy ah;
+	D3DXFrameDestroy((LPD3DXFRAME)m_pRoot, &ah);
+}
+
+void cSkinnedMesh::UpdateAndRender()
+{
+	if (m_pAnimController)
+		m_pAnimController->AdvanceTime(g_pTimeManager->GetElapsedTime(), NULL);
+
+	if(m_pRoot)
+	{
+		Update((ST_BONE*)m_pRoot,& m_matWorldTM);
+		Render(m_pRoot);
+	}
+}
+
+void cSkinnedMesh::Update(ST_BONE* pCurrent, D3DXMATRIXA16* pmatParent)
+{
+	if (pCurrent == NULL)
+		pCurrent = (ST_BONE*)m_pRoot;
+
+	pCurrent->CombinedTransformationMatrix = pCurrent->TransformationMatrix;
+
+	if(pmatParent)
+	{
+		pCurrent->CombinedTransformationMatrix = pCurrent->CombinedTransformationMatrix * (*pmatParent);
+	}
+
+	if (pCurrent->pFrameSibling)
+		Update((ST_BONE*)pCurrent->pFrameSibling, pmatParent);
+
+	if (pCurrent->pFrameFirstChild)
+		Update((ST_BONE*)pCurrent->pFrameFirstChild, &(pCurrent->CombinedTransformationMatrix));
+	
+}
+
+void cSkinnedMesh::SetRandomTrackPosition()
+{
+	m_pAnimController->SetTrackPosition(0, (rand() % 100) / 10.0f); //임의로 갓다가 셋팅하는거라 의미없으
+}
+
+void cSkinnedMesh::SetTransform(D3DXMATRIXA16* pmat)
+{
+	m_matWorldTM = *pmat;
 }

@@ -1,11 +1,14 @@
 #pragma once
 #include "stdafx.h"
+class iMap;
 class Player;
 class cCubePC;
 class cCamera;
 class cGrid;
 class xFileLoader;
 class cSkinnedMesh;
+
+class cZeloat;
 
 class cMainGame
 {
@@ -25,6 +28,15 @@ private:
 	xFileLoader*	m_pXFile;
 	cSkinnedMesh*	m_pSkinnedMesh;
 
+
+
+
+	//>>:
+	LPD3DXMESH			m_pSphere;
+	D3DMATERIAL9		m_stCullingMtl;
+	vector<ST_SPHERE*>	m_vecCullingSphere;
+
+	//<<:
 public:
 	void Setup();
 	void Update();
@@ -42,6 +54,23 @@ public:
 
 	//
 	void SkinnedMesh_Render();
+
+	//>>:
+	void Setup_Frustum();
+	void Frustum_Render();
+	//<<:
+
+
+	// >>:
+private:
+	cZeloat* m_pHoldZealot;
+	cZeloat* m_pMoveZealot;
+	iMap*	 m_pMap;
+public:
+	void Setup_OBB();
+	void OBB_Render();
+	
+	//<<:
 
 };
 
