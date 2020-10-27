@@ -57,6 +57,26 @@ STDMETHODIMP cAllocateHierarchy::CreateMeshContainer(THIS_
 
 	pMeshData->pMesh->AddRef();
 	pBoneMesh->MeshData.pMesh = pMeshData->pMesh;
+
+	if(pMeshData&&pMeshData->pMesh)
+	{
+		D3DXVECTOR3		vMin(0, 0, 0), vMax(0, 0, 0);
+		LPVOID pv = NULL;
+		pMeshData->pMesh->LockVertexBuffer(0, &pv);
+
+		D3DXComputeBoundingBox((D3DXVECTOR3*)&pv, pMeshData->pMesh->GetNumVertices(), D3DXGetFVFVertexSize(pMeshData->pMesh->GetFVF()), &vMin, &vMax);
+
+		D3DXVec3Minimize(&m_vMin, &m_vMin, &vMin);//누가제일 작냐얘기하는거야 제일작은애로갔다가 셋팅을해주는거야
+		D3DXVec3Maximize(&m_vMax, &m_vMax, &vMax);
+		
+		pMeshData->pMesh->UnlockVertexBuffer();
+	}
+
+
+
+
+
+	//클론을만들기 직전에 바운딩 박스를 계산하는 코드를 추가해주려해.
 	pMeshData->pMesh->CloneMeshFVF(
 		pMeshData->pMesh->GetOptions(),
 		pMeshData->pMesh->GetFVF(),

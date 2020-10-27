@@ -16,6 +16,9 @@
     <Filter Include="Frustum">
       <UniqueIdentifier>{d82da9ee-4a41-4459-8c54-cf3befb42624}</UniqueIdentifier>
     </Filter>
+    <Filter Include="OBB">
+      <UniqueIdentifier>{c17089a2-273c-465c-88a0-f7d2bb3797d8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -72,6 +75,15 @@
     <ClInclude Include="Frustum.h">
       <Filter>Frustum</Filter>
     </ClInclude>
+    <ClInclude Include="cZeloat.h">
+      <Filter>OBB</Filter>
+    </ClInclude>
+    <ClInclude Include="cOBB.h">
+      <Filter>OBB</Filter>
+    </ClInclude>
+    <ClInclude Include="cSkinnedMeshManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -118,6 +130,15 @@
     </ClCompile>
     <ClCompile Include="Frustum.cpp">
       <Filter>Frustum</Filter>
+    </ClCompile>
+    <ClCompile Include="cOBB.cpp">
+      <Filter>OBB</Filter>
+    </ClCompile>
+    <ClCompile Include="cZeloat.cpp">
+      <Filter>OBB</Filter>
+    </ClCompile>
+    <ClCompile Include="cSkinnedMeshManager.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

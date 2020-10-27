@@ -160,10 +160,13 @@
     <ClInclude Include="cDeviceManager.h" />
     <ClInclude Include="cGrid.h" />
     <ClInclude Include="cMainGame.h" />
+    <ClInclude Include="cOBB.h" />
     <ClInclude Include="cPyramid.h" />
     <ClInclude Include="cSkinnedMesh.h" />
+    <ClInclude Include="cSkinnedMeshManager.h" />
     <ClInclude Include="cTextureManager.h" />
     <ClInclude Include="cTimerManager.h" />
+    <ClInclude Include="cZeloat.h" />
     <ClInclude Include="Dxstudy.h" />
     <ClInclude Include="Frustum.h" />
     <ClInclude Include="Player.h" />
@@ -179,10 +182,13 @@
     <ClCompile Include="cDeviceManager.cpp" />
     <ClCompile Include="cGrid.cpp" />
     <ClCompile Include="cMainGame.cpp" />
+    <ClCompile Include="cOBB.cpp" />
     <ClCompile Include="cPyramid.cpp" />
     <ClCompile Include="cSkinnedMesh.cpp" />
+    <ClCompile Include="cSkinnedMeshManager.cpp" />
     <ClCompile Include="cTextureManager.cpp" />
     <ClCompile Include="cTimerManager.cpp" />
+    <ClCompile Include="cZeloat.cpp" />
     <ClCompile Include="Dxstudy.cpp" />
     <ClCompile Include="Frustum.cpp" />
     <ClCompile Include="Player.cpp" />
