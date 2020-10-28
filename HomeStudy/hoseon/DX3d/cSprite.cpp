@@ -3,13 +3,9 @@
 
 
 cSprite::cSprite()
-	: m_sizeX(0)
-	, m_sizeY(0)
-	, m_fX(0)
-	, m_fY(0)
-	, m_bClickState(false)
 {
 	D3DXMatrixIdentity(&matTranslation);
+	D3DXMatrixIdentity(&m_matWorldTM);
 	Setup();
 }
 
@@ -42,8 +38,7 @@ void cSprite::Render()
 	D3DXMATRIXA16 matS, matR,mat;
 	//사진 위치  matTranslation;
 
-	mat = matTranslation;
-
+	mat = m_matWorldTM;
 
 	m_pSprite->SetTransform(&mat);
 

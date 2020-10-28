@@ -9,7 +9,7 @@ public:
 protected:
 
 
-	D3DXMATRIXA16		m_matWorldTM;
+	
 	vector<cSpriteNode*>	m_vecChild;
 	Synthesize(D3DXMATRIXA16*, m_pParentWorldTM, ParentWorldTM);
 

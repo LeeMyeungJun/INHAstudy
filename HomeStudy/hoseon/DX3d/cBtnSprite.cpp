@@ -24,9 +24,9 @@ cBtnSprite::cBtnSprite(char* path, char* FileName)
 		&m_pTextureUI
 	);
 
-	m_sizeX = m_stImageInfo.Width;
-	m_sizeY = m_stImageInfo.Height;
-	
+	m_veSize.x = m_stImageInfo.Width;
+	m_veSize.y = m_stImageInfo.Height;
+
 }
 
 cBtnSprite::~cBtnSprite()
@@ -36,6 +36,4 @@ cBtnSprite::~cBtnSprite()
 void cBtnSprite::Setup(D3DXVECTOR2 vecTranslation)
 {
 	D3DXMatrixTranslation(&matTranslation, vecTranslation.x, vecTranslation.y, 0);
-	m_fY = vecTranslation.y;
-	m_fX = vecTranslation.x;
 }
