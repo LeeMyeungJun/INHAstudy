@@ -7,6 +7,7 @@ cSprite::cSprite()
 	, m_sizeY(0)
 	, m_fX(0)
 	, m_fY(0)
+	, m_bClickState(false)
 {
 	D3DXMatrixIdentity(&matTranslation);
 	Setup();
@@ -26,6 +27,7 @@ void cSprite::Setup()
 
 void cSprite::Update()
 {
+
 }
 
 void cSprite::Render()
@@ -55,15 +57,3 @@ void cSprite::Render()
 	m_pSprite->End();
 }
 
-void cSprite::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
-{
-	switch (message)
-	{
-	case WM_LBUTTONDOWN:
-		break;
-	case WM_LBUTTONUP:
-		break;
-	case WM_MOUSEMOVE:
-		break;
-	}
-}

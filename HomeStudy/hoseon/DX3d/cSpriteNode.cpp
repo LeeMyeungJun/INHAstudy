@@ -30,13 +30,13 @@ void cSpriteNode::Setup()
 
 void cSpriteNode::Update()
 {
-	
 	m_matWorldTM = matTranslation;
+	
 	if (m_pParentWorldTM)
 	{
 		m_matWorldTM *= *m_pParentWorldTM;
 	}
-
+	
 	for each(auto p in m_vecChild)
 	{
 		p->Update();

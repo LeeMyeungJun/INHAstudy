@@ -178,6 +178,9 @@ void cMainGame::Update()
 		m_pHoldZealot->Update(m_pMap);
 	if (m_pMoveZealot)
 		m_pMoveZealot->Update(m_pMap);
+
+	if (m_pMenuBtn)
+		m_pMenuBtn->Update();
 }
 
 void cMainGame::Render()
@@ -227,8 +230,8 @@ void cMainGame::Render()
 
 void cMainGame::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
-	if (m_pCamera)
-		m_pCamera->WndProc(hWnd, message, wParam, lParam);
+	//if (m_pCamera)
+	//	m_pCamera->WndProc(hWnd, message, wParam, lParam);
 
 	if (m_pMenuBtn)
 		m_pMenuBtn->WndProc(hWnd, message, wParam, lParam);

@@ -13,12 +13,13 @@ protected:
 	float				m_sizeX, m_sizeY;
 	float				m_fX, m_fY;
 
+	bool				m_bClickState;
+	POINT				m_ptMouse;
+
 public:
 	virtual ~cSprite();
 	virtual void Setup();
 	virtual void Update();
 	virtual void Render();
-	void WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 
 };
-

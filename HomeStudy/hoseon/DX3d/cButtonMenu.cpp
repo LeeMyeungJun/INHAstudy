@@ -59,7 +59,6 @@ void cButtonMenu::Render()
 
 void cButtonMenu::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
-	if(m_pRoot)
-		m_pRoot->WndProc(hWnd, message, wParam, lParam);
+	
 		
 }
