@@ -49,6 +49,9 @@
     <Filter Include="OBB">
       <UniqueIdentifier>{3b5b39e8-18cf-4405-9d60-ae889eff24d3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="UI">
+      <UniqueIdentifier>{5b2862d9-52ed-4eb4-ab36-1a811fee3683}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -64,9 +67,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="DX3d.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="cMainGame.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="cDeviceManager.h">
@@ -198,15 +198,18 @@
     <ClInclude Include="cOBB.h">
       <Filter>OBB</Filter>
     </ClInclude>
+    <ClInclude Include="cMainGame.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="cFontManager.h">
+      <Filter>UI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="DX3d.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="cMainGame.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="cDeviceManager.cpp">
@@ -334,6 +337,12 @@
     </ClCompile>
     <ClCompile Include="cOBB.cpp">
       <Filter>OBB</Filter>
+    </ClCompile>
+    <ClCompile Include="cMainGame.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="cFontManager.cpp">
+      <Filter>UI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

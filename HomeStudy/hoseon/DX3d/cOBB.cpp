@@ -45,11 +45,11 @@ void cOBB::Update(D3DXMATRIXA16* pmatWorld)
 
 	D3DXVec3TransformCoord(&m_vCenterPos, &m_vOrigCenterPos, &m_matWorldTM);
 
-	//0¹ø¤Š 
-	for(int i = 0 ; i < m_vecOBBBOXVertex.size() ; i++)
-	{
-		
-	}
+
+	//for(int i = 0 ; i < m_vecOBBBOXVertex.size() ; i++)
+	//{
+	//	
+	//}
 }
 
 bool cOBB::IsCollision(cOBB* pOBB1, cOBB* pOBB2)

@@ -62,7 +62,6 @@ private:
 	vector<cGroup*> m_vecMapSurface;
 	vector<cGroup*> m_vecAseGroup;
 
-	LPD3DXFONT		m_pFont;
 
 public:
 	void Setup();
@@ -131,6 +130,15 @@ private:
 	cZealot*			m_pMoveZealot;
 	//
 
+	LPD3DXFONT			m_pFont;
+	ID3DXMesh*			m_p3DTEXT;
+
+	// >>: 나중에 우리가 모아서 만들어
+	LPD3DXSPRITE		m_pSprite;
+	D3DXIMAGE_INFO		m_stImageInfo;
+	LPDIRECT3DTEXTURE9	m_pTextureUI;
+	//<<:
+
 public:
 	void Setup_MeshObejct();
 	void Mesh_Render();
@@ -152,5 +160,17 @@ public:
 
 	void Setup_OBB();
 	void OBB_Render();
+
+
+	//>>:
+	void Create_Font();
+	void Text_Render();
+	//<<:
+
+	void Setup_UI();
+	void UI_Render();
+	
+	
+	
 };
 

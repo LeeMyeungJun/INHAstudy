@@ -21,10 +21,28 @@
 #include "cOBB.h"
 #include "cZealot.h"
 
-cMainGame::cMainGame():m_pCamera(NULL), m_pGrid(NULL), m_pCubeMan(NULL),
-m_pTexture(NULL), m_pLight(NULL), m_pHexagon(NULL), m_pMap(NULL), m_pRootFrame(NULL),
-m_pObjMesh(NULL), m_pRawLoader(NULL), m_pMtTexture(NULL), m_pXLoader(NULL), m_pSkinnedMesh(NULL),
-m_pFrustumCulling(NULL), m_pFrustum(NULL), m_pHoldZealot(NULL), m_pMoveZealot(NULL)
+cMainGame::cMainGame()
+	: m_pCamera(NULL)
+	, m_pGrid(NULL)
+	, m_pCubeMan(NULL)
+	, m_pTexture(NULL)
+	, m_pLight(NULL)
+	, m_pHexagon(NULL)
+	, m_pMap(NULL)
+	, m_pRootFrame(NULL)
+	, m_pObjMesh(NULL)
+	, m_pRawLoader(NULL)
+	, m_pMtTexture(NULL)
+	, m_pXLoader(NULL)
+	, m_pSkinnedMesh(NULL)
+	, m_pFrustumCulling(NULL)
+	, m_pFrustum(NULL)
+	, m_pHoldZealot(NULL)
+	, m_pMoveZealot(NULL)
+	, m_pFont(NULL)
+	, m_p3DTEXT(NULL)
+	, m_pSprite(NULL)
+	, m_pTextureUI(NULL)
 {
 	m_fCameraDist = 10;
 	m_fBoxRotY = 0;
@@ -36,29 +54,35 @@ m_pFrustumCulling(NULL), m_pFrustum(NULL), m_pHoldZealot(NULL), m_pMoveZealot(NU
 
 cMainGame::~cMainGame()
 {
+	SafeDelete(m_pMoveZealot);
+	SafeDelete(m_pHoldZealot);
 	SafeDelete(m_pCamera);
 	SafeDelete(m_pGrid);
 	SafeDelete(m_pCubeMan);
-	SafeRelease(m_pTexture);
-	SafeRelease(m_pMtTexture);
 	SafeDelete(m_pMap);
-
-	SafeRelease(m_pMeshSphere);
-	SafeRelease(m_pMeshTeapot);
-	SafeRelease(m_pObjMesh);
 	SafeDelete(m_pXLoader);
 	SafeDelete(m_pSkinnedMesh);
 	SafeDelete(m_pFrustumCulling);
 	SafeDelete(m_pFrustum);
-
-	SafeDelete(m_pMoveZealot);
-	SafeDelete(m_pHoldZealot);
+	
+	SafeRelease(m_pSprite);
+	SafeRelease(m_pTextureUI);
+	SafeRelease(m_pMeshSphere);
+	SafeRelease(m_pMeshTeapot);
+	SafeRelease(m_pObjMesh);
+	SafeRelease(m_p3DTEXT);
+	SafeRelease(m_pFont);
+	SafeRelease(m_pTexture);
+	SafeRelease(m_pMtTexture);
 
 	for each(auto p in m_vecObjMtlTex)
 		SafeRelease(p);
-	
-	g_pDeviceManager->Destroy();
+
 	m_pRootFrame->Destroy();
+	
+	g_pFontManager->Destroy();
+	g_pDeviceManager->Destroy(); //완전히꺼지낳아 
+
 }
 
 void cMainGame::Setup()
@@ -67,6 +91,8 @@ void cMainGame::Setup()
 	if (m_pGrid)
 		m_pGrid->Setup();
 
+	Create_Font();
+	Setup_UI();
 	/*m_pCubeMan = new cCubeMan;
 	if (m_pCubeMan)
 		m_pCubeMan->Setup();*/
@@ -152,6 +178,7 @@ void cMainGame::Render()
 	if (m_pGrid)
 		m_pGrid->Render();
 
+	Text_Render();
 	/*if (m_pCubeMan)
 		m_pCubeMan->Render();*/
 
@@ -176,8 +203,8 @@ void cMainGame::Render()
 	//Frustum_Render();
 
 	OBB_Render();
-	
-	m_pRootFrame->CountFPS();
+	//m_pRootFrame->CountFPS();
+	UI_Render(); //제일위에잇으라고 마지막에 그려줌
 	
 	g_pD3DDevice->EndScene();
 	g_pD3DDevice->Present(NULL, NULL, NULL, NULL);
@@ -1063,4 +1090,157 @@ void cMainGame::OBB_Render()
 		m_pHoldZealot->Render(c);
 	if (m_pMoveZealot)
 		m_pMoveZealot->Render(c);
+}
+
+void cMainGame::Create_Font()
+{
+	D3DXFONT_DESC fd;
+	ZeroMemory(&fd, sizeof(D3DXFONT_DESC));
+	fd.Height = 50;
+	fd.Width = 25;
+	fd.Weight = FW_MEDIUM; //이거는 F12눌르고 타입좀 확인해봐
+	fd.Italic = false;
+	fd.CharSet = DEFAULT_CHARSET;
+	fd.OutputPrecision = OUT_DEFAULT_PRECIS;
+	fd.PitchAndFamily = FF_DONTCARE;
+	//일단은 시스템에있는 폰트가지고 사용해볼게
+	//wcscpy_s(fd.FaceName, L"굴림체");
+	//이제 우리폰트로 해보자구
+	AddFontResourceA("font/umberto.ttf");
+	wcscpy_s(fd.FaceName, L"umberto");
+
+	D3DXCreateFontIndirect(g_pD3DDevice,&fd, &m_pFont);
+
+
+
+	//>>:3D
+	HDC hdc = CreateCompatibleDC(0);
+	LOGFONT lf;
+	ZeroMemory(&lf, sizeof(LOGFONT));
+	lf.lfHeight = 25;
+	lf.lfWidth = 12;
+	lf.lfWeight = 500;
+	lf.lfItalic = false;
+	lf.lfUnderline = false;
+	lf.lfStrikeOut = false;
+	lf.lfCharSet = DEFAULT_CHARSET;
+	wcscpy_s(lf.lfFaceName, L"umberto");
+
+	HFONT hFont;
+	HFONT hFontOld;
+	hFont = CreateFontIndirect(&lf);
+	hFontOld = (HFONT)SelectObject(hdc, hFont);
+	D3DXCreateText(g_pD3DDevice, hdc,
+		L"Direct3D",
+		0.001f,
+		0.01f,
+		&m_p3DTEXT,
+		0, 0);
+
+	SelectObject(hdc, hFontOld);
+	DeleteObject(hFont);
+	DeleteDC(hdc);
+
+	
+}
+
+void cMainGame::Text_Render()
+{
+	string sText("ABC 123 !@#$ 가나다라");
+	RECT rc;
+	SetRect(&rc, 100, 100, 301, 200);
+
+	// >> :font manager 추가후
+	LPD3DXFONT pFont = g_pFontManager->GetFont(cFontManager::E_DEFALUT);
+	//<<:
+
+	//> fontmanager 사용안할떄는 setup에서 해주고 여기서 이리씀
+	/*m_pFont->DrawTextA(NULL,
+		sText.c_str(),
+		sText.length(),
+		&rc,
+		DT_LEFT | DT_TOP | DT_NOCLIP,
+		D3DCOLOR_XRGB(255, 255, 0));*/
+
+
+	pFont->DrawTextA(NULL,
+		sText.c_str(),
+		sText.length(),
+		&rc,
+		DT_LEFT | DT_TOP | DT_NOCLIP,
+		D3DCOLOR_XRGB(255, 255, 0));
+
+
+	g_pD3DDevice->SetRenderState(D3DRS_LIGHTING, true);
+	//>3d 캐릭터위에 잇게하고 따라다니게하는거 
+	D3DXMATRIXA16 matWorld, matS, matR, matT;
+	D3DXMatrixIdentity(&matS);
+	D3DXMatrixIdentity(&matR);
+	D3DXMatrixIdentity(&matT);
+	D3DXMatrixScaling(&matS, 1.0f, 1.0f, 10.0f);
+	D3DXMatrixRotationX(&matR, -D3DX_PI / 4.0f);//45도지?
+	D3DXMatrixTranslation(&matT, -2.0f, 1.0f, 0.0f);
+	matWorld = matS * matR * matT;
+	
+	g_pD3DDevice->SetTransform(D3DTS_WORLD, &matWorld);
+	m_p3DTEXT->DrawSubset(0);
+	g_pD3DDevice->SetRenderState(D3DRS_LIGHTING, false);
+
+}
+
+void cMainGame::Setup_UI()
+{
+	D3DXCreateSprite(g_pD3DDevice, &m_pSprite);
+
+	//m_pTextureUI = g_pTextureManager->GetTexture("UI/수지.png"); //UI는 이런식으로하면 안된다고 보여줄려고한거야 이거로하면 짤림 이상하게나옴
+
+	D3DXCreateTextureFromFileExA(
+		g_pD3DDevice,
+		"UI/수지.png",
+		D3DX_DEFAULT_NONPOW2,
+		D3DX_DEFAULT_NONPOW2,
+		D3DX_DEFAULT,
+		0,
+		D3DFMT_UNKNOWN, //난모르니 너가알아서
+		D3DPOOL_MANAGED,
+		D3DX_FILTER_NONE,
+		D3DX_DEFAULT,
+		0,
+		&m_stImageInfo,
+		NULL,
+		&m_pTextureUI
+	);
+}
+
+void cMainGame::UI_Render()
+{
+	m_pSprite->Begin(D3DXSPRITE_ALPHABLEND | D3DXSPRITE_SORT_TEXTURE);
+	//이미지 출력
+	RECT rc;
+	SetRect(&rc, m_stImageInfo.Width /2 , m_stImageInfo.Height /2, m_stImageInfo.Width, m_stImageInfo.Height);
+	
+
+	//>>: UI도 회전같은걸 시킬수있어
+	D3DXMATRIXA16 matS, matR, matT, mat;
+	//사진 위치
+	D3DXMatrixTranslation(&matT, 100, 100, 0);
+
+	//회전
+	static float fAngle = 0.0f;
+	//fAngle += 0.1f;
+	D3DXMatrixRotationZ(&matR, fAngle);
+
+	mat = matR *matT;
+
+
+	m_pSprite->SetTransform(&mat);
+	
+		m_pSprite->Draw(m_pTextureUI,
+			&rc,
+			&D3DXVECTOR3(0, 0, 0),
+			&D3DXVECTOR3(0, 0, 0),
+			D3DCOLOR_ARGB(255, 255, 255, 255)); // A가 알파블랜딩값
+
+	
+	m_pSprite->End();
 }
