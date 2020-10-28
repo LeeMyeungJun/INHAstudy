@@ -165,3 +165,5 @@ enum MY_TOKEN_TYPE { TOKEN_STRING = 0, TOKEN_NUMBER };
 #include "cTextureManager.h"
 #include "cTimeManager.h"
 #include "cFontManager.h"
+
+#include "cSpriteNode.h"

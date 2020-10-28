@@ -2,6 +2,7 @@
 class cCubePC;class cCamera;class cGrid;class cCubeMan;class cLight;class cHexagon;
 class cObjLoader;class cGroup;class iMap;class cFrame;class cMtlTex;class cRawLoader;
 class cXLoader;class cSkinnedMesh;class cFrustumCulling;class cFrustum;class cZealot;
+class cButtonMenu;
 
 class cMainGame
 {
@@ -138,6 +139,11 @@ private:
 	D3DXIMAGE_INFO		m_stImageInfo;
 	LPDIRECT3DTEXTURE9	m_pTextureUI;
 	//<<:
+
+	//>: Ã¹µµÀü
+	cButtonMenu*		m_pMenuBtn;
+	//<:
+	
 
 public:
 	void Setup_MeshObejct();

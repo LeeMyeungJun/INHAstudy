@@ -9,6 +9,8 @@
 #include "cGroup.h"
 #include "cObjMap.h"
 
+
+
 #include "cAseLoader.h"
 #include "cFrame.h"
 #include "cRay.h"
@@ -20,6 +22,9 @@
 
 #include "cOBB.h"
 #include "cZealot.h"
+
+#include "cButtonMenu.h"
+
 
 cMainGame::cMainGame()
 	: m_pCamera(NULL)
@@ -43,6 +48,7 @@ cMainGame::cMainGame()
 	, m_p3DTEXT(NULL)
 	, m_pSprite(NULL)
 	, m_pTextureUI(NULL)
+	, m_pMenuBtn(NULL)
 {
 	m_fCameraDist = 10;
 	m_fBoxRotY = 0;
@@ -64,6 +70,7 @@ cMainGame::~cMainGame()
 	SafeDelete(m_pSkinnedMesh);
 	SafeDelete(m_pFrustumCulling);
 	SafeDelete(m_pFrustum);
+	SafeDelete(m_pMenuBtn);
 	
 	SafeRelease(m_pSprite);
 	SafeRelease(m_pTextureUI);
@@ -74,6 +81,8 @@ cMainGame::~cMainGame()
 	SafeRelease(m_pFont);
 	SafeRelease(m_pTexture);
 	SafeRelease(m_pMtTexture);
+
+
 
 	for each(auto p in m_vecObjMtlTex)
 		SafeRelease(p);
@@ -91,8 +100,8 @@ void cMainGame::Setup()
 	if (m_pGrid)
 		m_pGrid->Setup();
 
-	Create_Font();
-	Setup_UI();
+	//Create_Font();
+	//Setup_UI();
 	/*m_pCubeMan = new cCubeMan;
 	if (m_pCubeMan)
 		m_pCubeMan->Setup();*/
@@ -103,13 +112,13 @@ void cMainGame::Setup()
 		//m_pCamera->Setup(&(m_pCubeMan->GetPosition()));
 		m_pCamera->Setup(NULL);
 	}
-		
+	
 	/*m_pHexagon = new cHexagon;
 	if (m_pHexagon)
 		m_pHexagon->Setup();*/
 
 	//Setup_Obj();
-	Setup_MeshObejct();
+	//Setup_MeshObejct();
 	SetLight();
 
 	/*{
@@ -117,8 +126,8 @@ void cMainGame::Setup()
 		m_pRootFrame = l.Load("woman/woman_01_all.ASE");
 	}*/
 
-	Setup_PickingObj();
-	Setup_Raw();
+	//Setup_PickingObj();
+	//Setup_Raw();
 
 	m_pXLoader = new cXLoader;
 	if(m_pXLoader)
@@ -140,6 +149,9 @@ void cMainGame::Setup()
 	//Setup_Frustum();
 
 	Setup_OBB();
+
+	m_pMenuBtn = new cButtonMenu;
+	m_pMenuBtn->Setup();
 }
 
 void cMainGame::Update()
@@ -178,7 +190,8 @@ void cMainGame::Render()
 	if (m_pGrid)
 		m_pGrid->Render();
 
-	Text_Render();
+
+	//Text_Render();
 	/*if (m_pCubeMan)
 		m_pCubeMan->Render();*/
 
@@ -204,8 +217,10 @@ void cMainGame::Render()
 
 	OBB_Render();
 	//m_pRootFrame->CountFPS();
-	UI_Render(); //제일위에잇으라고 마지막에 그려줌
-	
+	//UI_Render(); //제일위에잇으라고 마지막에 그려줌
+
+	if (m_pMenuBtn)
+		m_pMenuBtn->Render();
 	g_pD3DDevice->EndScene();
 	g_pD3DDevice->Present(NULL, NULL, NULL, NULL);
 }
@@ -215,6 +230,9 @@ void cMainGame::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	if (m_pCamera)
 		m_pCamera->WndProc(hWnd, message, wParam, lParam);
 
+	if (m_pMenuBtn)
+		m_pMenuBtn->WndProc(hWnd, message, wParam, lParam);
+	
 	switch (message)
 	{
 	case WM_LBUTTONDOWN:
@@ -1217,7 +1235,7 @@ void cMainGame::UI_Render()
 	m_pSprite->Begin(D3DXSPRITE_ALPHABLEND | D3DXSPRITE_SORT_TEXTURE);
 	//이미지 출력
 	RECT rc;
-	SetRect(&rc, m_stImageInfo.Width /2 , m_stImageInfo.Height /2, m_stImageInfo.Width, m_stImageInfo.Height);
+	SetRect(&rc, 0, 0, m_stImageInfo.Width, m_stImageInfo.Height);
 	
 
 	//>>: UI도 회전같은걸 시킬수있어
@@ -1225,10 +1243,10 @@ void cMainGame::UI_Render()
 	//사진 위치
 	D3DXMatrixTranslation(&matT, 100, 100, 0);
 
-	//회전
-	static float fAngle = 0.0f;
-	//fAngle += 0.1f;
-	D3DXMatrixRotationZ(&matR, fAngle);
+	////회전
+	//static float fAngle = 0.0f;
+	////fAngle += 0.1f;
+	//D3DXMatrixRotationZ(&matR, fAngle);
 
 	mat = matR *matT;
 

@@ -52,6 +52,12 @@
     <Filter Include="UI">
       <UniqueIdentifier>{5b2862d9-52ed-4eb4-ab36-1a811fee3683}</UniqueIdentifier>
     </Filter>
+    <Filter Include="UI\Sprite">
+      <UniqueIdentifier>{a9b36e00-1305-41c6-9096-78e2e4dc5214}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="UI\Button">
+      <UniqueIdentifier>{ebeefc48-ff64-4d40-a070-3208ba5db849}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -204,6 +210,21 @@
     <ClInclude Include="cFontManager.h">
       <Filter>UI</Filter>
     </ClInclude>
+    <ClInclude Include="cSpriteNode.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="cSprite.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="cButtonMenu.h">
+      <Filter>UI\Button</Filter>
+    </ClInclude>
+    <ClInclude Include="cButton.h">
+      <Filter>UI\Button</Filter>
+    </ClInclude>
+    <ClInclude Include="cBtnSprite.h">
+      <Filter>UI\Sprite</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -343,6 +364,21 @@
     </ClCompile>
     <ClCompile Include="cFontManager.cpp">
       <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="cSpriteNode.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="cSprite.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="cButtonMenu.cpp">
+      <Filter>UI\Button</Filter>
+    </ClCompile>
+    <ClCompile Include="cButton.cpp">
+      <Filter>UI\Button</Filter>
+    </ClCompile>
+    <ClCompile Include="cBtnSprite.cpp">
+      <Filter>UI\Sprite</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
