@@ -25,7 +25,10 @@
 
 #include "cButtonMenu.h"
 
-
+DWORD	FtoDW(float f)
+{
+	return *((DWORD*)&f); //float를 DW로 바꿔주는 함수를 만든것뿐
+}
 cMainGame::cMainGame()
 	: m_pCamera(NULL)
 	, m_pGrid(NULL)
@@ -112,7 +115,7 @@ void cMainGame::Setup()
 		//m_pCamera->Setup(&(m_pCubeMan->GetPosition()));
 		m_pCamera->Setup(NULL);
 	}
-	
+	Setup_Particle();
 	/*m_pHexagon = new cHexagon;
 	if (m_pHexagon)
 		m_pHexagon->Setup();*/
@@ -174,11 +177,14 @@ void cMainGame::Update()
 	/*if (m_pFrustum)
 		m_pFrustum->Update();*/
 
-	if (m_pHoldZealot)
-		m_pHoldZealot->Update(m_pMap);
-	if (m_pMoveZealot)
-		m_pMoveZealot->Update(m_pMap);
+	//if (m_pHoldZealot)
+	//	m_pHoldZealot->Update(m_pMap);
+	//if (m_pMoveZealot)
+	//	m_pMoveZealot->Update(m_pMap);
 
+
+	Update_Particle();
+	
 	if (m_pMenuBtn)
 		m_pMenuBtn->Update();
 }
@@ -193,6 +199,7 @@ void cMainGame::Render()
 	if (m_pGrid)
 		m_pGrid->Render();
 
+	Render_Particle();
 
 	//Text_Render();
 	/*if (m_pCubeMan)
@@ -230,8 +237,8 @@ void cMainGame::Render()
 
 void cMainGame::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
-	//if (m_pCamera)
-	//	m_pCamera->WndProc(hWnd, message, wParam, lParam);
+	if (m_pCamera)
+		m_pCamera->WndProc(hWnd, message, wParam, lParam);
 
 	if (m_pMenuBtn)
 		m_pMenuBtn->WndProc(hWnd, message, wParam, lParam);
@@ -1264,4 +1271,116 @@ void cMainGame::UI_Render()
 
 	
 	m_pSprite->End();
+}
+
+void cMainGame::Setup_Particle()
+{
+	m_vecVertexParticle.resize(1000);//1000개쯤으로 잡아놀게
+	for(int i = 0 ; i < m_vecVertexParticle.size();i++)
+	{
+		float fRadius = rand() % 100 / 10.0f; //무슨의미지 
+		//간격을 고정시켜볼게
+		fRadius = 50.0f; //별자리모양처럼됨
+		m_vecVertexParticle[i].p = D3DXVECTOR3(0, 0, fRadius);
+		D3DXVECTOR3 vAngle = D3DXVECTOR3(
+			D3DXToRadian(rand() % 3600 / 10.0f)
+			, D3DXToRadian(rand() % 3600 / 10.0f)
+			, D3DXToRadian(rand() % 3600 / 10.0f));
+		//Angle값을 어떻게 바꾸냐에따라 일자로나가거나 
+
+		D3DXMATRIX matRx, matRy ,matRz, matWorld;
+		D3DXMatrixRotationX(&matRx, vAngle.x);
+		D3DXMatrixRotationY(&matRy, vAngle.y);
+		D3DXMatrixRotationZ(&matRz, vAngle.z);
+
+		matWorld = matRx * matRy * matRz;
+
+		D3DXVec3TransformCoord(
+			&m_vecVertexParticle[i].p,
+			&m_vecVertexParticle[i].p,
+			&matWorld);
+
+		m_vecVertexParticle[i].c = D3DCOLOR_ARGB(255, 180, 70, 20);
+
+	}
+}
+
+void cMainGame::Update_Particle()
+{
+	//일정시간에 사라지게만들거야 우리가 라이프타임을 만들든지해 이친구는 그냥 사라지지말고 반짝이는 친구로
+	static int nAlpha = 0;
+	static int nDelta = 4;
+	nAlpha += nDelta;
+	
+	if(nAlpha >255)
+	{
+		nAlpha = 255;
+		nDelta *= -1;
+	}
+
+	if (nAlpha <0)
+	{
+		nAlpha = 0;
+		nDelta *= -1;
+	}
+
+	for(int i = 0 ; i < m_vecVertexParticle.size(); i++)
+	{
+		if (i % 2)continue;
+		m_vecVertexParticle[i].c = D3DCOLOR_ARGB(nAlpha, 180, 70, 20);
+	}
+
+	
+}
+
+void cMainGame::Render_Particle()
+{
+	D3DXMATRIXA16 matWorld;
+	D3DXMatrixIdentity(&matWorld);
+	g_pD3DDevice->SetTransform(D3DTS_WORLD, &matWorld);
+
+	g_pD3DDevice->SetRenderState(D3DRS_LIGHTING, false);
+	g_pD3DDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, true);
+	g_pD3DDevice->SetRenderState(D3DRS_ZWRITEENABLE, false);
+
+	g_pD3DDevice->SetRenderState(D3DRS_POINTSCALEENABLE, true);
+	g_pD3DDevice->SetRenderState(D3DRS_POINTSIZE, FtoDW(5.0f));//점으로할껀데 확대할건지말건지에대해
+
+	g_pD3DDevice->SetRenderState(D3DRS_POINTSCALE_A, FtoDW(0.0f));
+	g_pD3DDevice->SetRenderState(D3DRS_POINTSCALE_B, FtoDW(0.0f));
+	g_pD3DDevice->SetRenderState(D3DRS_POINTSCALE_C, FtoDW(10.0f)); //나중에 1.0에서 10정도로 바꿔봐
+
+	g_pD3DDevice->SetRenderState(D3DRS_POINTSPRITEENABLE, true);//포인트도 텍스쳐입힐수있게끔 해주는친구
+
+	g_pD3DDevice->SetRenderState(D3DRS_POINTSIZE_MIN, FtoDW(0.0f));
+	g_pD3DDevice->SetRenderState(D3DRS_POINTSIZE_MAX, FtoDW(100.0f));
+
+	g_pD3DDevice->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_MODULATE); //MODULATE 조절하다
+	g_pD3DDevice->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
+	g_pD3DDevice->SetTextureStageState(0, D3DTSS_ALPHAARG2, D3DTA_DIFFUSE);
+
+	g_pD3DDevice->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_SELECTARG1);
+	g_pD3DDevice->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_DIFFUSE);
+
+	//여기까지만확인하고 따른걸 적용하든지말든지하자
+	g_pD3DDevice->SetRenderState(D3DRS_BLENDOP, D3DBLENDOP_ADD); //일단 색깔값을 더할거야
+	g_pD3DDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
+	g_pD3DDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ONE);
+	//여기까지가 셋팅이야
+
+	g_pD3DDevice->SetFVF(ST_PC_VERTEX::FVF); //fvf가멀까
+	g_pD3DDevice->SetTexture(0, g_pTextureManager->GetTexture("images/alpha_tex.tga"));
+	g_pD3DDevice->DrawPrimitiveUP(D3DPT_POINTLIST,
+		m_vecVertexParticle.size(),//점마다찍을거니까 안나눠 
+		&m_vecVertexParticle[0],
+		sizeof(ST_PC_VERTEX));
+
+	g_pD3DDevice->SetRenderState(D3DRS_LIGHTING, true);
+	g_pD3DDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, false);
+	g_pD3DDevice->SetRenderState(D3DRS_ZWRITEENABLE, true);
+
+	g_pD3DDevice->SetTexture(0, NULL);
+	g_pD3DDevice->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_SELECTARG1);
+	g_pD3DDevice->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
+
 }

@@ -140,9 +140,12 @@ private:
 	LPDIRECT3DTEXTURE9	m_pTextureUI;
 	//<<:
 
-	//>: 첫도전
+	//>: 버튼
 	cButtonMenu*		m_pMenuBtn;
 	//<:
+
+
+	vector<ST_PC_VERTEX>	m_vecVertexParticle;
 	
 
 public:
@@ -175,6 +178,15 @@ public:
 
 	void Setup_UI();
 	void UI_Render();
+
+
+	//>>:
+	void Setup_Particle();
+	void Update_Particle();
+	void Render_Particle();
+
+	
+	//<<:
 	
 	
 	

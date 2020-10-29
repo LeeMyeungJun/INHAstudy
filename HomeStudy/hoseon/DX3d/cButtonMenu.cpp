@@ -5,10 +5,6 @@
 
 
 cButtonMenu::cButtonMenu()
-	: m_ptMouseClick({0,0})
-	, m_ptMouseMove({0,0})
-	, m_ptPosition({0,0})
-	, m_isMouseButtonDown(false)
 {
 
 }
@@ -85,7 +81,6 @@ void cButtonMenu::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	case WM_LBUTTONDOWN:
 		m_ptMouseClick.x = LOWORD(lParam);
 		m_ptMouseClick.y = HIWORD(lParam);
-		if()
 		m_isMouseButtonDown = true;
 		break;
 	case WM_LBUTTONUP:
@@ -97,7 +92,7 @@ void cButtonMenu::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			m_ptMouseMove.x = LOWORD(lParam);
 			m_ptMouseMove.y = HIWORD(lParam);
 
-			m_ptPosition.x += m_ptMouseMove.x - m_ptMouseClick.x;
+			m_ptPosition.x += (m_ptMouseMove.x - m_ptMouseClick.x) *g_pTimeManager->GetElapsedTime();
 
 			cout << m_ptPosition.x<<endl;
 			D3DXMatrixTranslation(&m_matWorld, m_ptPosition.x, 0, 0);

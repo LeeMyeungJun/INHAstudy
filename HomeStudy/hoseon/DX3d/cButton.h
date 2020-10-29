@@ -14,7 +14,12 @@ public:
 	D3DXMATRIXA16		m_matWorld;
 
 
-	//선택된순간 잡은순간 이동할떄마다 차만큼 이동시켜주라구
+	vector<D3DXVECTOR2> m_SpriteSize;
+	vector<D3DXVECTOR2> m_SpritePosition;
+	POINT				m_ptMouseClick;
+	POINT				m_ptMouseMove;
+	POINT				m_ptPosition;
+	bool				m_isMouseButtonDown;
 
 };
 

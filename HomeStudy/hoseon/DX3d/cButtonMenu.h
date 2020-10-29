@@ -12,14 +12,8 @@ class cButtonMenu :
 		EN_BODY = 0 ,EN_OK,EN_CANCEL,EN_EXIT
 	};
 private:
-	vector<D3DXVECTOR2> m_SpriteSize;
-	vector<D3DXVECTOR2> m_SpritePosition;
+	
 
-	POINT				m_ptMouseClick;
-	POINT				m_ptMouseMove;
-	POINT				m_ptPosition;
-
-	bool				m_isMouseButtonDown;
 
 public:
 	cButtonMenu();
