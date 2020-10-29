@@ -4,7 +4,7 @@
 
 cCamera::cCamera() :m_vEye(0, 0, -5), m_vLookAt(0, 0, 0), m_vUp(0, 1, 0),
 					m_pvTarget(NULL), m_fCameraDistance(5.0f),
-					m_isMouseButtonDown(false), m_vCamRotAngle(0, 0, 0)
+					m_isMouseButtonDown(false), m_vCamRotAngle(0, 0, 0) , m_pCheck(NULL)
 {
 }
 
@@ -13,8 +13,9 @@ cCamera::~cCamera()
 {
 }
 
-void cCamera::Setup(D3DXVECTOR3* pvTarget)
+void cCamera::Setup(D3DXVECTOR3* pvTarget ,bool* check)
 {
+	m_pCheck = check;
 	m_pvTarget = pvTarget;
 
 	RECT rc;
@@ -52,6 +53,13 @@ void cCamera::Update()
 
 void cCamera::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
+	if (!*m_pCheck)
+	{
+		m_isMouseButtonDown = false;
+		return;
+	}
+		
+	
 	switch (message)
 	{
 	case WM_LBUTTONDOWN:

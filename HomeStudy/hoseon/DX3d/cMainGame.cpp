@@ -52,6 +52,13 @@ cMainGame::cMainGame()
 	, m_pSprite(NULL)
 	, m_pTextureUI(NULL)
 	, m_pMenuBtn(NULL)
+	, m_pTex0(NULL)
+	, m_pTex1(NULL)
+	, m_pTex2(NULL)
+	, m_pTex3(NULL)
+	, m_nType(-1)
+	, m_isMouseClick(true)
+
 {
 	m_fCameraDist = 10;
 	m_fBoxRotY = 0;
@@ -113,9 +120,10 @@ void cMainGame::Setup()
 	if (m_pCamera)
 	{
 		//m_pCamera->Setup(&(m_pCubeMan->GetPosition()));
-		m_pCamera->Setup(NULL);
+		m_pCamera->Setup(NULL,&m_isMouseClick);
 	}
-	Setup_Particle();
+	//Setup_Particle();
+	Setup_MultiTexture();
 	/*m_pHexagon = new cHexagon;
 	if (m_pHexagon)
 		m_pHexagon->Setup();*/
@@ -132,9 +140,9 @@ void cMainGame::Setup()
 	//Setup_PickingObj();
 	//Setup_Raw();
 
-	m_pXLoader = new cXLoader;
-	if(m_pXLoader)
-		m_pXLoader->Setup();
+	//m_pXLoader = new cXLoader;
+	//if(m_pXLoader)
+	//	m_pXLoader->Setup();
 
 	//D3DXCreateTextureFromFile(g_pD3DDevice, L"HeightMapData/terrain.jpg", &m_pMtTexture);
 
@@ -151,10 +159,10 @@ void cMainGame::Setup()
 
 	//Setup_Frustum();
 
-	Setup_OBB();
+	//Setup_OBB();
 
 	m_pMenuBtn = new cButtonMenu;
-	m_pMenuBtn->Setup();
+	m_pMenuBtn->Setup(&m_isMouseClick);
 }
 
 void cMainGame::Update()
@@ -182,8 +190,8 @@ void cMainGame::Update()
 	//if (m_pMoveZealot)
 	//	m_pMoveZealot->Update(m_pMap);
 
-
-	Update_Particle();
+	Update_MultiTexture();
+	//Update_Particle();
 	
 	if (m_pMenuBtn)
 		m_pMenuBtn->Update();
@@ -198,12 +206,14 @@ void cMainGame::Render()
 
 	if (m_pGrid)
 		m_pGrid->Render();
-
-	Render_Particle();
+	
+	MultiTexture_Render();
+	
+	//Render_Particle();
 
 	//Text_Render();
-	/*if (m_pCubeMan)
-		m_pCubeMan->Render();*/
+	if (m_pCubeMan)
+		m_pCubeMan->Render();
 
 	/*if (m_pHexagon)
 		m_pHexagon->Render();*/
@@ -225,7 +235,7 @@ void cMainGame::Render()
 	//m_pFrustumCulling->Render_sphere();
 	//Frustum_Render();
 
-	OBB_Render();
+	//OBB_Render();
 	//m_pRootFrame->CountFPS();
 	//UI_Render(); //제일위에잇으라고 마지막에 그려줌
 
@@ -245,52 +255,10 @@ void cMainGame::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	
 	switch (message)
 	{
-	case WM_LBUTTONDOWN:
+	case WM_KEYDOWN:
 		{
-			//m_pSkinnedMesh->animState = ATTACK;
-			//m_pSkinnedMesh->SetAnimationIndexBlend(1);
+		m_pMenuBtn->BtnOnOff();
 		}
-		/*{
-			cRay r = cRay::RayAtWorldSpace(LOWORD(lParam), HIWORD(lParam));
-
-			for(int i = 0; i < m_vecSphere.size(); i++)
-			{
-				m_vecSphere[i].isPicked = r.IsPicked(&m_vecSphere[i]);
-			}
-		}*/
-		break;
-	case WM_RBUTTONDOWN:
-		{
-			//m_pFrustumCulling->FrustumCulling();
-			/*for each(ST_SPHERE* sphere in m_vecCullingSphere)
-			{
-				if(m_pFrustum->IsIn(sphere))
-				{
-					sphere->isPicked = true;
-				}
-				else
-				{
-					sphere->isPicked = false;
-				}
-			}*/
-		}
-		//{
-	//	static int n = 0;
-	//	//m_pSkinnedMesh->SetAnimationIndex(++n);
-	//	m_pSkinnedMesh->SetAnimationIndexBlend(++n);
-	//}
-		/*{
-			cRay r = cRay::RayAtWorldSpace(LOWORD(lParam), HIWORD(lParam));
-
-			for (int i = 0; i < m_vecPlaneVertex.size(); i += 3)
-			{
-				D3DXVECTOR3 v(0, 0, 0);
-				if(r.IntersectTri(m_vecPlaneVertex[i+0].p, m_vecPlaneVertex[i + 1].p,  m_vecPlaneVertex[i + 2].p, v))
-				{
-					m_vPickedPosition = v;
-				}
-			}
-		}*/
 		break;
 	}
 }
@@ -847,6 +815,258 @@ void cMainGame::Update_Rotation()
 		m_fBoxRotY += 1;
 }
 
+void cMainGame::Setup_MultiTexture()
+{
+	D3DXCreateTextureFromFile(g_pD3DDevice, L"Texture/stones.png",&m_pTex0);
+	D3DXCreateTextureFromFile(g_pD3DDevice, L"Texture/env0.png", &m_pTex1);
+	D3DXCreateTextureFromFile(g_pD3DDevice, L"Texture/env1.png", &m_pTex2);
+	D3DXCreateTextureFromFile(g_pD3DDevice, L"Texture/Albedo00.jpg", &m_pTex3);
+
+	ST_PT_VERTEX v;
+	v.p = D3DXVECTOR3(0, 0, 0); v.t = D3DXVECTOR2(0, 1); m_vecVertex_Multil.push_back(v);
+	v.p = D3DXVECTOR3(0, 2, 0); v.t = D3DXVECTOR2(0, 0); m_vecVertex_Multil.push_back(v);
+	v.p = D3DXVECTOR3(2, 0, 0); v.t = D3DXVECTOR2(1, 1); m_vecVertex_Multil.push_back(v);
+	
+	v.p = D3DXVECTOR3(2, 2, 0); v.t = D3DXVECTOR2(1, 0); m_vecVertex_Multil.push_back(v);
+	v.p = D3DXVECTOR3(2, 0, 0); v.t = D3DXVECTOR2(1, 1); m_vecVertex_Multil.push_back(v);
+	v.p = D3DXVECTOR3(0, 2, 0); v.t = D3DXVECTOR2(0, 0); m_vecVertex_Multil.push_back(v);
+
+
+}
+
+void cMainGame::Update_MultiTexture()
+{
+	if (::GetAsyncKeyState('1') & 0x8000) m_nType = 1;
+	if (::GetAsyncKeyState('2') & 0x8000) m_nType = 2;
+	if (::GetAsyncKeyState('3') & 0x8000) m_nType = 3;
+	if (::GetAsyncKeyState('4') & 0x8000) m_nType = 4;
+	if (::GetAsyncKeyState('5') & 0x8000) m_nType = 5;
+	if (::GetAsyncKeyState('6') & 0x8000) m_nType = 6;
+	if (::GetAsyncKeyState('7') & 0x8000) m_nType = 7;
+	if (::GetAsyncKeyState('8') & 0x8000) m_nType = 8;
+	if (::GetAsyncKeyState('9') & 0x8000) m_nType = 9;
+	if (::GetAsyncKeyState('0') & 0x8000) m_nType = 0;
+	if (::GetAsyncKeyState('R') & 0x8000) m_nType = -1;
+
+
+}
+
+void cMainGame::MultiTexture_Render()
+{
+	g_pD3DDevice->SetRenderState(D3DRS_LIGHTING, false);
+	for(int i = 0 ; i < 4 ; i++) //안넣어두되는데 셋팅에 의미로 그냥하는거뿐이야
+	{
+		g_pD3DDevice->SetSamplerState(i, D3DSAMP_ADDRESSU, D3DTADDRESS_WRAP);
+		g_pD3DDevice->SetSamplerState(i, D3DSAMP_ADDRESSV, D3DTADDRESS_WRAP);
+		g_pD3DDevice->SetSamplerState(i, D3DSAMP_ADDRESSW, D3DTADDRESS_WRAP);
+
+		g_pD3DDevice->SetSamplerState(i, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
+		g_pD3DDevice->SetSamplerState(i, D3DSAMP_MINFILTER, D3DTEXF_LINEAR);
+		g_pD3DDevice->SetSamplerState(i, D3DSAMP_MIPFILTER, D3DTEXF_LINEAR);
+		//위세줄은 선형보간하겠다는뜻인데 지금은 딱히뜻이없어서 애들은 삭제해도 상간업다
+	}
+
+	g_pD3DDevice->SetTextureStageState(1, D3DTSS_TEXCOORDINDEX, 0); //1번인덱스가 0번텍스쳐의 좌표사용
+	g_pD3DDevice->SetTextureStageState(2, D3DTSS_TEXCOORDINDEX, 0);
+	g_pD3DDevice->SetTextureStageState(3, D3DTSS_TEXCOORDINDEX, 0);
+
+	switch (m_nType)
+	{
+	case 1: MultiTexture_Render1(); break;
+	case 2: MultiTexture_Render2(); break;
+	case 3: MultiTexture_Render3(); break;
+	case 4: MultiTexture_Render4(); break;
+	case 5: MultiTexture_Render5(); break;
+	case 6: MultiTexture_Render6(); break;
+	case 7: MultiTexture_Render7(); break;
+	case 8: MultiTexture_Render8(); break;
+	case 9: MultiTexture_Render9(); break;
+	case 0: MultiTexture_Render0(); break;
+	default: MultiTexture_Render_default(); break;
+	
+		
+	}
+
+
+	
+
+	g_pD3DDevice->SetFVF(ST_PT_VERTEX::FVF);
+	g_pD3DDevice->DrawPrimitiveUP(D3DPT_TRIANGLELIST,
+		m_vecVertex_Multil.size() / 3,
+		&m_vecVertex_Multil[0],
+		sizeof(ST_PT_VERTEX));
+
+	g_pD3DDevice->SetTexture(0, NULL);
+	g_pD3DDevice->SetTexture(1, NULL);
+	g_pD3DDevice->SetTexture(2, NULL);
+
+	g_pD3DDevice->SetTextureStageState(1, D3DTSS_COLOROP, D3DTOP_DISABLE);
+	g_pD3DDevice->SetTextureStageState(2, D3DTSS_COLOROP, D3DTOP_DISABLE); //D3DTSS_COLOROP 텍스쳐 혼합처리 안하겠다D3DTOP_DISABLE
+	g_pD3DDevice->SetTextureStageState(1, D3DTSS_RESULTARG, D3DTA_CURRENT);
+	g_pD3DDevice->SetTextureStageState(2, D3DTSS_RESULTARG, D3DTA_CURRENT);
+
+
+	for (int i = 0; i < 4; ++i)
+	{
+		g_pD3DDevice->SetSamplerState(i, D3DSAMP_MAGFILTER, D3DTEXF_NONE);
+		g_pD3DDevice->SetSamplerState(i, D3DSAMP_MINFILTER, D3DTEXF_NONE);
+		g_pD3DDevice->SetSamplerState(i, D3DSAMP_MIPFILTER, D3DTEXF_NONE);
+	}
+
+
+
+}
+
+void cMainGame::MultiTexture_Render1()
+{
+	g_pD3DDevice->SetTexture(0, m_pTex0); //0번에다가 0번꺼를
+	g_pD3DDevice->SetTexture(1, m_pTex1); //1번에다가 1번꺼를
+
+	g_pD3DDevice->SetTextureStageState(1, D3DTSS_COLORARG1, D3DTA_CURRENT);
+	g_pD3DDevice->SetTextureStageState(1, D3DTSS_COLORARG1, D3DTA_TEXTURE);
+	g_pD3DDevice->SetTextureStageState(1, D3DTSS_COLOROP, D3DTOP_MODULATE);//곱하기를 한거야
+	
+	g_pD3DDevice->SetTextureStageState(2, D3DTSS_COLOROP, D3DTOP_DISABLE);//구지 명시를 하지안항도되는데 
+
+	
+
+
+}
+
+void cMainGame::MultiTexture_Render2()
+{
+	g_pD3DDevice->SetTexture(0, m_pTex0); //0번에다가 0번꺼를
+	g_pD3DDevice->SetTexture(1, m_pTex1); //1번에다가 1번꺼를
+
+	g_pD3DDevice->SetTextureStageState(1, D3DTSS_COLORARG1, D3DTA_CURRENT);
+	g_pD3DDevice->SetTextureStageState(1, D3DTSS_COLORARG1, D3DTA_TEXTURE);
+	g_pD3DDevice->SetTextureStageState(1, D3DTSS_COLOROP, D3DTOP_MODULATE2X);//곱하기를 한거야
+
+	g_pD3DDevice->SetTextureStageState(2, D3DTSS_COLOROP, D3DTOP_DISABLE);//구지 명시를 하지안항도되는데 
+}
+
+void cMainGame::MultiTexture_Render3()
+{
+	g_pD3DDevice->SetTexture(0, m_pTex0); //0번에다가 0번꺼를
+	g_pD3DDevice->SetTexture(1, m_pTex1); //1번에다가 1번꺼를
+
+	g_pD3DDevice->SetTextureStageState(1, D3DTSS_COLORARG1, D3DTA_CURRENT);
+	g_pD3DDevice->SetTextureStageState(1, D3DTSS_COLORARG1, D3DTA_TEXTURE);
+	g_pD3DDevice->SetTextureStageState(1, D3DTSS_COLOROP, D3DTOP_MODULATE4X);//곱하기를 한거야
+
+	g_pD3DDevice->SetTextureStageState(2, D3DTSS_COLOROP, D3DTOP_DISABLE);//구지 명시를 하지안항도되는데 
+}
+
+void cMainGame::MultiTexture_Render4()
+{
+	g_pD3DDevice->SetTexture(0, m_pTex0); //0번에다가 0번꺼를
+	g_pD3DDevice->SetTexture(1, m_pTex1); //1번에다가 1번꺼를
+
+	g_pD3DDevice->SetTextureStageState(1, D3DTSS_COLORARG1, D3DTA_CURRENT);
+	g_pD3DDevice->SetTextureStageState(1, D3DTSS_COLORARG1, D3DTA_TEXTURE);
+	g_pD3DDevice->SetTextureStageState(1, D3DTSS_COLOROP, D3DTOP_ADD);//더해주자
+
+	g_pD3DDevice->SetTextureStageState(2, D3DTSS_COLOROP, D3DTOP_DISABLE);//구지 명시를 하지안항도되는데 
+}
+
+void cMainGame::MultiTexture_Render5()
+{
+	g_pD3DDevice->SetTexture(0, m_pTex0); //0번에다가 0번꺼를
+	g_pD3DDevice->SetTexture(1, m_pTex1); //1번에다가 1번꺼를
+
+	g_pD3DDevice->SetTextureStageState(1, D3DTSS_COLORARG1, D3DTA_CURRENT);
+	g_pD3DDevice->SetTextureStageState(1, D3DTSS_COLORARG1, D3DTA_TEXTURE);
+	g_pD3DDevice->SetTextureStageState(1, D3DTSS_COLOROP, D3DTOP_SUBTRACT);//더해주자
+
+	g_pD3DDevice->SetTextureStageState(2, D3DTSS_COLOROP, D3DTOP_DISABLE);//구지 명시를 하지안항도되는데 
+}
+
+void cMainGame::MultiTexture_Render6()
+{
+	g_pD3DDevice->SetTexture(0, m_pTex0); //0번에다가 0번꺼를
+	g_pD3DDevice->SetTexture(1, m_pTex3); //1번에다가 1번꺼를
+
+	g_pD3DDevice->SetTextureStageState(1, D3DTSS_COLORARG1, D3DTA_CURRENT);
+	g_pD3DDevice->SetTextureStageState(1, D3DTSS_COLORARG1, D3DTA_TEXTURE);
+	g_pD3DDevice->SetTextureStageState(1, D3DTSS_COLOROP, D3DTOP_ADDSIGNED);//더해주자
+
+	g_pD3DDevice->SetTextureStageState(2, D3DTSS_COLOROP, D3DTOP_DISABLE);//구지 명시를 하지안항도되는데 
+}
+
+void cMainGame::MultiTexture_Render7()
+{
+	g_pD3DDevice->SetTexture(0, m_pTex0); //0번에다가 0번꺼를
+	g_pD3DDevice->SetTexture(1, m_pTex3); //1번에다가 1번꺼를
+
+	g_pD3DDevice->SetTextureStageState(1, D3DTSS_COLORARG1, D3DTA_CURRENT);
+	g_pD3DDevice->SetTextureStageState(1, D3DTSS_COLORARG1, D3DTA_TEXTURE);
+	g_pD3DDevice->SetTextureStageState(1, D3DTSS_COLOROP, D3DTOP_ADDSIGNED2X);//더해주자
+
+	g_pD3DDevice->SetTextureStageState(2, D3DTSS_COLOROP, D3DTOP_DISABLE);//구지 명시를 하지안항도되는데 
+}
+
+void cMainGame::MultiTexture_Render8()
+{
+	g_pD3DDevice->SetTexture(0, m_pTex0); //0번에다가 0번꺼를
+	g_pD3DDevice->SetTexture(1, m_pTex3); //1번에다가 1번꺼를
+
+	g_pD3DDevice->SetTextureStageState(1, D3DTSS_COLORARG1, D3DTA_CURRENT);
+	g_pD3DDevice->SetTextureStageState(1, D3DTSS_COLORARG1, D3DTA_TEXTURE);
+	g_pD3DDevice->SetTextureStageState(1, D3DTSS_COLOROP, D3DTOP_ADDSMOOTH);//더해주자
+
+	g_pD3DDevice->SetTextureStageState(2, D3DTSS_COLOROP, D3DTOP_DISABLE);//구지 명시를 하지안항도되는데 
+}
+
+void cMainGame::MultiTexture_Render9()//애는 이미지 3개로해보자
+{
+	g_pD3DDevice->SetTexture(0, m_pTex0); //0번에다가 0번꺼를
+	g_pD3DDevice->SetTexture(1, m_pTex2); //1번에다가 1번꺼를
+	g_pD3DDevice->SetTexture(2, m_pTex3); //1번에다가 1번꺼를
+
+
+	g_pD3DDevice->SetTextureStageState(1, D3DTSS_COLORARG1, D3DTA_TEXTURE);
+	g_pD3DDevice->SetTextureStageState(1, D3DTSS_COLOROP, D3DTOP_SELECTARG1);
+	g_pD3DDevice->SetTextureStageState(1, D3DTSS_RESULTARG, D3DTA_TEMP);
+
+	g_pD3DDevice->SetTextureStageState(2, D3DTSS_COLORARG0, D3DTA_CURRENT);
+	g_pD3DDevice->SetTextureStageState(2, D3DTSS_COLORARG1, D3DTA_TEMP);
+	g_pD3DDevice->SetTextureStageState(2, D3DTSS_COLORARG2, D3DTA_TEXTURE);
+	g_pD3DDevice->SetTextureStageState(2, D3DTSS_COLOROP, D3DTOP_MULTIPLYADD);
+
+
+
+	g_pD3DDevice->SetTextureStageState(3, D3DTSS_COLOROP, D3DTOP_DISABLE);//구지 명시를 하지안항도되는데 
+}
+
+void cMainGame::MultiTexture_Render0()
+{
+	g_pD3DDevice->SetTexture(0, m_pTex0); //0번에다가 0번꺼를
+	g_pD3DDevice->SetTexture(1, m_pTex2); //1번에다가 1번꺼를
+	g_pD3DDevice->SetTexture(2, m_pTex3); //1번에다가 1번꺼를
+
+
+	g_pD3DDevice->SetTextureStageState(1, D3DTSS_COLORARG1, D3DTA_TEXTURE);
+	g_pD3DDevice->SetTextureStageState(1, D3DTSS_COLOROP, D3DTOP_SELECTARG1);
+	g_pD3DDevice->SetTextureStageState(1, D3DTSS_RESULTARG, D3DTA_TEMP);
+
+	g_pD3DDevice->SetTextureStageState(2, D3DTSS_COLORARG0, D3DTA_CURRENT);
+	g_pD3DDevice->SetTextureStageState(2, D3DTSS_COLORARG1, D3DTA_TEMP);
+	g_pD3DDevice->SetTextureStageState(2, D3DTSS_COLORARG2, D3DTA_TEXTURE);
+	g_pD3DDevice->SetTextureStageState(2, D3DTSS_COLOROP, D3DTOP_LERP);
+
+
+
+	g_pD3DDevice->SetTextureStageState(3, D3DTSS_COLOROP, D3DTOP_DISABLE);//구지 명시를 하지안항도되는데 
+}
+
+//이미지 하나만출력하는 디폴트용
+void cMainGame::MultiTexture_Render_default()
+{
+	g_pD3DDevice->SetTexture(0, m_pTex0);
+	g_pD3DDevice->SetTextureStageState(1, D3DTSS_COLOROP, D3DTOP_DISABLE);//1번친구안쓸거임
+	g_pD3DDevice->SetTextureStageState(2, D3DTSS_COLOROP, D3DTOP_DISABLE);//2번친구안쓸거임
+}
+
 void cMainGame::Setup_MeshObejct()
 {
 	D3DXCreateTeapot(g_pD3DDevice, &m_pMeshTeapot, NULL);
@@ -1266,7 +1486,7 @@ void cMainGame::UI_Render()
 		m_pSprite->Draw(m_pTextureUI,
 			&rc,
 			&D3DXVECTOR3(0, 0, 0),
-			&D3DXVECTOR3(0, 0, 0),
+			&D3DXVECTOR3(50, 0, 0),
 			D3DCOLOR_ARGB(255, 255, 255, 255)); // A가 알파블랜딩값
 
 	

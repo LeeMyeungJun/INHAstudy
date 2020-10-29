@@ -3,8 +3,7 @@
 class cBtnSprite :
 	public cSpriteNode
 {
-public:
-	D3DXVECTOR2		m_veSize;
+
 public:
 	cBtnSprite(char* path, char* FileName);
 	~cBtnSprite();

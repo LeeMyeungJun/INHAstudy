@@ -225,6 +225,9 @@
     <ClInclude Include="cBtnSprite.h">
       <Filter>UI\Sprite</Filter>
     </ClInclude>
+    <ClInclude Include="cUITextureManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -380,6 +383,9 @@
     <ClCompile Include="cBtnSprite.cpp">
       <Filter>UI\Sprite</Filter>
     </ClCompile>
+    <ClCompile Include="cUITextureManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="DX3d.rc">
@@ -396,5 +402,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="ClassDiagram.cd" />
+    <None Include="ClassDiagram1.cd" />
+    <None Include="ClassDiagram2.cd" />
   </ItemGroup>
 </Project>

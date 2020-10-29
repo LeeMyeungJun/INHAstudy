@@ -193,6 +193,7 @@
     <ClInclude Include="cSpriteNode.h" />
     <ClInclude Include="cTextureManager.h" />
     <ClInclude Include="cTimeManager.h" />
+    <ClInclude Include="cUITextureManager.h" />
     <ClInclude Include="cXLoader.h" />
     <ClInclude Include="cZealot.h" />
     <ClInclude Include="DX3d.h" />
@@ -248,6 +249,7 @@
     <ClCompile Include="cSpriteNode.cpp" />
     <ClCompile Include="cTextureManager.cpp" />
     <ClCompile Include="cTimeManager.cpp" />
+    <ClCompile Include="cUITextureManager.cpp" />
     <ClCompile Include="cXLoader.cpp" />
     <ClCompile Include="cZealot.cpp" />
     <ClCompile Include="DX3d.cpp" />
@@ -268,6 +270,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="ClassDiagram.cd" />
+    <None Include="ClassDiagram1.cd" />
+    <None Include="ClassDiagram2.cd" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

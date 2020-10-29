@@ -146,16 +146,43 @@ private:
 
 
 	vector<ST_PC_VERTEX>	m_vecVertexParticle;
+
+	//>>:
+	int						m_nType;
+	LPDIRECT3DTEXTURE9		m_pTex0;
+	LPDIRECT3DTEXTURE9		m_pTex1;
+	LPDIRECT3DTEXTURE9		m_pTex2;
+	LPDIRECT3DTEXTURE9		m_pTex3;
+	vector<ST_PT_VERTEX>	m_vecVertex_Multil;
+	//<<:
+
+	bool					m_isMouseClick;
+public:
+	void Setup_MultiTexture();
+	void Update_MultiTexture();
+	void MultiTexture_Render();
+
+	void MultiTexture_Render1();
+	void MultiTexture_Render2();
+	void MultiTexture_Render3();
+	void MultiTexture_Render4();
+	void MultiTexture_Render5();
+	void MultiTexture_Render6();
+	void MultiTexture_Render7();
+	void MultiTexture_Render8();
+	void MultiTexture_Render9();
+	void MultiTexture_Render0();
+	void MultiTexture_Render_default();
 	
 
 public:
 	void Setup_MeshObejct();
 	void Mesh_Render();
 
-	//
+	//>>:
 	void Setup_PickingObj();
 	void PickingObj_Render();
-	//
+	//<<:
 
 	void Setup_Raw();
 	void Render_Raw();
@@ -184,8 +211,6 @@ public:
 	void Setup_Particle();
 	void Update_Particle();
 	void Render_Particle();
-
-	
 	//<<:
 	
 	
