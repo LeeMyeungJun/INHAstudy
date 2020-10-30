@@ -1,5 +1,6 @@
 #pragma once
 class cSpriteNode;
+class cBtnSprite;
 
 class cButton
 {
@@ -24,6 +25,7 @@ public:
 	D3DXMATRIXA16		m_matWorld;
 
 	vector<Sprite>		m_vecSprite;
+	vector<cBtnSprite*> m_vecBtn;
 
 	
 	D3DXVECTOR2			m_vPosition;

@@ -155,8 +155,14 @@ private:
 	LPDIRECT3DTEXTURE9		m_pTex3;
 	vector<ST_PT_VERTEX>	m_vecVertex_Multil;
 	//<<:
-
 	bool					m_isMouseClick;
+
+	LPD3DXEFFECT			m_pShader;
+	LPDIRECT3DTEXTURE9		m_pZealotTexture;
+	
+	bool				LoadAssets();
+	LPD3DXEFFECT		LoadShader(const char * filename);
+	LPDIRECT3DTEXTURE9	LoadTexture(const char * filename);
 public:
 	void Setup_MultiTexture();
 	void Update_MultiTexture();

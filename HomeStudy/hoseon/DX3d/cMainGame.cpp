@@ -58,6 +58,8 @@ cMainGame::cMainGame()
 	, m_pTex3(NULL)
 	, m_nType(-1)
 	, m_isMouseClick(true)
+	, m_pShader(NULL)
+	, m_pZealotTexture(NULL)
 
 {
 	m_fCameraDist = 10;
@@ -81,10 +83,11 @@ cMainGame::~cMainGame()
 	SafeDelete(m_pFrustumCulling);
 	SafeDelete(m_pFrustum);
 	SafeDelete(m_pMenuBtn);
-	
+
+	SafeRelease(m_pZealotTexture);
+	SafeRelease(m_pShader);
 	SafeRelease(m_pSprite);
 	SafeRelease(m_pTextureUI);
-	
 	//SafeRelease(m_pMeshSphere);
 	//SafeRelease(m_pMeshTeapot);
 	//SafeRelease(m_pObjMesh);
@@ -147,10 +150,11 @@ void cMainGame::Setup()
 
 	//D3DXCreateTextureFromFile(g_pD3DDevice, L"HeightMapData/terrain.jpg", &m_pMtTexture);
 
-	/*m_pSkinnedMesh = new cSkinnedMesh;
+	m_pSkinnedMesh = new cSkinnedMesh;
 	if (m_pSkinnedMesh)
-		m_pSkinnedMesh->Setup("Zealot", "zealot.X");*/
-
+		m_pSkinnedMesh->Setup("Zealot", "zealot.X");
+	LoadAssets();
+	
 	/*m_pFrustumCulling = new cFrustumCulling;
 	if (m_pFrustumCulling)
 	{
@@ -172,8 +176,8 @@ void cMainGame::Update()
 		m_pCubeMan->Update(m_pMap);*/
 
 	g_pTimeManager->Update();
-	/*if (m_pSkinnedMesh)
-		m_pSkinnedMesh->Update();*/
+	if (m_pSkinnedMesh)
+		m_pSkinnedMesh->Update();
 	
 	if (m_pCamera)
 		m_pCamera->Update();
@@ -191,7 +195,7 @@ void cMainGame::Update()
 	//if (m_pMoveZealot)
 	//	m_pMoveZealot->Update(m_pMap);
 
-	Update_MultiTexture();
+	//Update_MultiTexture();
 	//Update_Particle();
 	
 	if (m_pMenuBtn)
@@ -208,13 +212,13 @@ void cMainGame::Render()
 	if (m_pGrid)
 		m_pGrid->Render();
 	
-	MultiTexture_Render();
+	//MultiTexture_Render();
 	
 	//Render_Particle();
 
 	//Text_Render();
-	if (m_pCubeMan)
-		m_pCubeMan->Render();
+	//if (m_pCubeMan)
+	//	m_pCubeMan->Render();
 
 	/*if (m_pHexagon)
 		m_pHexagon->Render();*/
@@ -232,7 +236,7 @@ void cMainGame::Render()
 	//Render_Raw();
 	//m_pXLoader->Display(0.025f);
 
-	//SkinnedMesh_Render();
+	SkinnedMesh_Render();
 	//m_pFrustumCulling->Render_sphere();
 	//Frustum_Render();
 
@@ -253,9 +257,15 @@ void cMainGame::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 	if (m_pMenuBtn)
 		m_pMenuBtn->WndProc(hWnd, message, wParam, lParam);
-	
+
 	switch (message)
 	{
+	case WM_LBUTTONDOWN:
+		{
+		m_pSkinnedMesh->animState = ATTACK;
+		m_pSkinnedMesh->SetAnimationIndexBlend(1);
+		}
+		break;
 	case WM_KEYDOWN:
 		{
 		m_pMenuBtn->BtnOnOff();
@@ -816,6 +826,68 @@ void cMainGame::Update_Rotation()
 		m_fBoxRotY += 1;
 }
 
+bool cMainGame::LoadAssets()
+{
+	// 텍스처 로딩
+	m_pZealotTexture = LoadTexture("Shader/Zealot_Diffuse.bmp");
+	if (!m_pZealotTexture) return false;
+	// 쉐이더 로딩
+	m_pShader = LoadShader("Shader/Shader.fx");
+	if (!m_pShader) return false;
+
+	// 모델 로딩
+
+	return true;
+}
+
+LPD3DXEFFECT cMainGame::LoadShader(const char* filename)
+{
+	LPD3DXEFFECT ret = NULL;
+
+	LPD3DXBUFFER pError = NULL;
+	DWORD dwShaderFlags = 0;
+
+#if _DEBUG
+	dwShaderFlags |= D3DXSHADER_DEBUG;
+#endif
+
+	D3DXCreateEffectFromFileA(g_pD3DDevice, filename,
+		NULL, NULL, dwShaderFlags, NULL, &ret, &pError); //애가 주야
+
+														 // 쉐이더 로딩에 실패한 경우 output창에 쉐이더
+														 // 컴파일 에러를 출력한다.
+	if (!ret && pError)
+	{
+		int size = pError->GetBufferSize();
+		void *ack = pError->GetBufferPointer();
+
+		//에러발생시 나오는코드니까
+	/*	if (ack)
+		{
+			char* str = new char[size];
+			sprintf(str, (const char*)ack, size);
+			OutputDebugString(str);
+			delete[] str;
+		}*/
+	}
+
+	return ret;
+}
+
+LPDIRECT3DTEXTURE9 cMainGame::LoadTexture(const char* filename)
+{
+	LPDIRECT3DTEXTURE9 ret = NULL;
+	if (FAILED(D3DXCreateTextureFromFileA(g_pD3DDevice, filename, &ret)))
+	{
+		//OutputDebugString("텍스처 로딩 실패: ");
+		//OutputDebugString(filename);
+		//OutputDebugString("\n");
+		cout << "텍스처 로딩 실패" << endl;
+	}
+
+	return ret;
+}
+
 void cMainGame::Setup_MultiTexture()
 {
 	D3DXCreateTextureFromFile(g_pD3DDevice, L"Texture/stones.png",&m_pTex0);
@@ -1257,12 +1329,46 @@ void cMainGame::Render_Raw()
 
 void cMainGame::SkinnedMesh_Render()
 {
-	D3DXMATRIXA16 matWorld;
+	D3DXMATRIXA16 matWorld,matView,matProjection;
 	D3DXMatrixIdentity(&matWorld);
 	g_pD3DDevice->SetTransform(D3DTS_WORLD, &matWorld);
 
-	if (m_pSkinnedMesh)
-		m_pSkinnedMesh->Render(NULL);
+	if(m_pShader)
+	{
+		g_pD3DDevice->GetTransform(D3DTS_VIEW, &matView);
+		g_pD3DDevice->GetTransform(D3DTS_PROJECTION, &matProjection);
+		m_pShader->SetMatrix("gWorldMatrix", &matWorld);
+		m_pShader->SetMatrix("gViewMatrix", &matView);
+		m_pShader->SetMatrix("gProjectionMatrix", &matProjection);
+		D3DXCOLOR color(1, 0, 1, 1);
+		m_pShader->SetValue("gColor", &color, sizeof(D3DXVECTOR4));
+
+		//Texture
+		//m_pShader->SetTexture("DiffuseMap_Tex", m_pZealotTexture);
+
+		
+		UINT numpasses = 0; //우리는 0번밖에없어서 이리함
+		m_pShader->Begin(&numpasses, NULL);
+		{
+
+			for (UINT i = 0; i < numpasses; i++)
+			{
+				m_pShader->BeginPass(i);
+				if (m_pSkinnedMesh)
+					m_pSkinnedMesh->Render(NULL);
+				m_pShader->EndPass();
+			}
+		}
+
+		m_pShader->End();//그리기작업은 여기까지
+	}
+	else
+	{
+		if (m_pSkinnedMesh)
+			m_pSkinnedMesh->Render(NULL);
+	}
+	
+	
 }
 
 

@@ -34,21 +34,25 @@ void cButtonMenu::Setup(bool* bCheck)
 	sp.st_Position = D3DXVECTOR2(0, 0); sp.st_SpriteSize = g_pUITextureManager->GetTextureSize("UI/panel-info.png");
 	m_vecSprite.push_back(sp);
 	m_vSize = g_pUITextureManager->GetTextureSize("UI/panel-info.png");
+	m_vecBtn.push_back(m_cBody);
 
+	
 	vecTemp = D3DXVECTOR2(130, 330);
-	cBtnSprite* m_cOk = new cBtnSprite("UI", "btn-med-over.png", "UI", "btn-med-down");
+	cBtnSprite* m_cOk = new cBtnSprite("UI", "btn-med-over.png", "UI", "btn-med-down.png");
 	m_cOk->Setup(vecTemp);
 	m_pRoot->AddChild(m_cOk);
 	sp.st_Position = D3DXVECTOR2(130, 330); sp.st_SpriteSize = g_pUITextureManager->GetTextureSize("UI/btn-med-over.png");
 	m_vecSprite.push_back(sp);
+	m_vecBtn.push_back(m_cOk);
 
 	
 	vecTemp = D3DXVECTOR2(130, 400);
-	cBtnSprite* m_cCancel = new cBtnSprite("UI", "btn-med-over.png", "UI", "btn-med-down");
+	cBtnSprite* m_cCancel = new cBtnSprite("UI", "btn-med-over.png", "UI", "btn-med-down.png");
 	m_cCancel->Setup(vecTemp);
 	m_pRoot->AddChild(m_cCancel);
 	sp.st_Position = D3DXVECTOR2(130, 400); sp.st_SpriteSize = g_pUITextureManager->GetTextureSize("UI/btn-med-over.png");
 	m_vecSprite.push_back(sp);
+	m_vecBtn.push_back(m_cCancel);
 
 
 	vecTemp = D3DXVECTOR2(400, 80);
@@ -57,6 +61,7 @@ void cButtonMenu::Setup(bool* bCheck)
 	m_pRoot->AddChild(m_cExit);
 	sp.st_Position = D3DXVECTOR2(400, 80); sp.st_SpriteSize = g_pUITextureManager->GetTextureSize("UI/btn-main-menu.png");
 	m_vecSprite.push_back(sp);
+	m_vecBtn.push_back(m_cExit);
 
 
 }
@@ -142,10 +147,10 @@ void cButtonMenu::ClickEvent(EVENT ev)
 	switch (ev)
 	{
 	case EN_OK:
-		cout << "OK" << endl;
+		m_vecBtn[ev]->BtnOnOff();
 		break;
 	case EN_CANCEL:
-		cout << "CANCEL" << endl;
+		m_vecBtn[ev]->BtnOnOff();
 		break;
 	case EN_EXIT:
 		BtnOnOff();

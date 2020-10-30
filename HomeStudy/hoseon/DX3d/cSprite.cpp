@@ -66,3 +66,8 @@ void cSprite::Render()
 	m_pSprite->End();
 }
 
+void cSprite::BtnOnOff()
+{
+	m_btnCheck = !m_btnCheck;
+}
+
