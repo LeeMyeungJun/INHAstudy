@@ -114,7 +114,7 @@ void cMainGame::Setup()
 	if (m_pGrid)
 		m_pGrid->Setup();
 
-	//Create_Font();
+	Create_Font();
 	//Setup_UI();
 	/*m_pCubeMan = new cCubeMan;
 	if (m_pCubeMan)
