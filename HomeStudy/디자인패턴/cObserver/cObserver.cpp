@@ -9,14 +9,13 @@ int Observer::static_number_ = 0;
 
 int main()
 {
-
-	Subject *subject = new Subject;
+	Subject *subject = new Subject;//ÇÑ°´Ã¼°¡ 
 	Observer *observer1 = new Observer(*subject);
 	Observer *observer2 = new Observer(*subject);
 	Observer *observer3 = new Observer(*subject);
 	Observer *observer4;
 	Observer *observer5;
-
+	
 	subject->CreateMessage("Hello World! :D");
 	observer3->RemoveMeFromTheList();
 
@@ -39,7 +38,6 @@ int main()
 	delete observer1;
 	delete subject;
 
-	
     return 0;
 }
 
