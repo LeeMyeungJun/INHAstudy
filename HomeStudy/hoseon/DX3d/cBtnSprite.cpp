@@ -1,13 +1,25 @@
 #include "stdafx.h"
 #include "cBtnSprite.h"
 
-cBtnSprite::cBtnSprite(char* path, char* FileName)
+cBtnSprite::cBtnSprite(char* OffBtnPath, char* OffFileName, char* OnBtnPath, char* OnFileName)
 {
-	string sFullPath(path);
-	sFullPath += (string("/") + string(FileName));
+	string sFullPath(OffBtnPath);
+	sFullPath += (string("/") + string(OffFileName));
 
-	m_pTextureUI = g_pUITextureManager->GetTexture(sFullPath);
-	m_stImageInfo = g_pUITextureManager->GetTextureInfo(sFullPath);
+	m_pOffTextureUI = g_pUITextureManager->GetTexture(sFullPath);
+	m_InfoOffImage = g_pUITextureManager->GetTextureInfo(sFullPath);
+
+	if (OnBtnPath == NULL)
+		return;
+	sFullPath = OnBtnPath;
+	sFullPath += (string("/") + string(OnFileName));
+
+	m_pOnTextureUI = g_pUITextureManager->GetTexture(sFullPath);
+	m_InfoOnImage = g_pUITextureManager->GetTextureInfo(sFullPath);
+	
+
+
+	
 }
 
 cBtnSprite::~cBtnSprite()

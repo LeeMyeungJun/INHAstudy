@@ -5,7 +5,7 @@ class cBtnSprite :
 {
 
 public:
-	cBtnSprite(char* path, char* FileName);
+	cBtnSprite(char* OffBtnPath, char* OffFileName , char* OnBtnPath, char* OnFileName);
 	~cBtnSprite();
 
 	virtual void Setup(D3DXVECTOR2 vecTranslation);

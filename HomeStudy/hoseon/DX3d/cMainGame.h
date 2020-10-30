@@ -212,7 +212,10 @@ public:
 	void Update_Particle();
 	void Render_Particle();
 	//<<:
-	
+
+	//>>:
+	void SetBillboard();
+	//<<:
 	
 	
 };

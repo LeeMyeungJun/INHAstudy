@@ -84,9 +84,10 @@ cMainGame::~cMainGame()
 	
 	SafeRelease(m_pSprite);
 	SafeRelease(m_pTextureUI);
-	SafeRelease(m_pMeshSphere);
-	SafeRelease(m_pMeshTeapot);
-	SafeRelease(m_pObjMesh);
+	
+	//SafeRelease(m_pMeshSphere);
+	//SafeRelease(m_pMeshTeapot);
+	//SafeRelease(m_pObjMesh);
 	SafeRelease(m_p3DTEXT);
 	SafeRelease(m_pFont);
 	SafeRelease(m_pTexture);
@@ -97,7 +98,7 @@ cMainGame::~cMainGame()
 	for each(auto p in m_vecObjMtlTex)
 		SafeRelease(p);
 
-	m_pRootFrame->Destroy();
+	//m_pRootFrame->Destroy(); //생성안하고 
 	
 	g_pFontManager->Destroy();
 	g_pDeviceManager->Destroy(); //완전히꺼지낳아 
@@ -887,7 +888,7 @@ void cMainGame::MultiTexture_Render()
 		
 	}
 
-
+	SetBillboard();
 	
 
 	g_pD3DDevice->SetFVF(ST_PT_VERTEX::FVF);
@@ -1603,4 +1604,28 @@ void cMainGame::Render_Particle()
 	g_pD3DDevice->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_SELECTARG1);
 	g_pD3DDevice->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
 
+}
+
+void cMainGame::SetBillboard()
+{
+	D3DXMATRIXA16 matBillboard, matView;
+	D3DXMatrixIdentity(&matBillboard);
+	g_pD3DDevice->GetTransform(D3DTS_VIEW, &matView); //나만바라보게 첫번쨰 뷰메트릭스를 구하고
+	//나만본다는 이야기는모야 x축 y축 z축 다돌아갈거아냐 게임상에서 나만보게하면 우리는 y축에서만 바라봐도 충분해
+
+	//그y축에대한 성분을 뽑아내면
+	matBillboard._11 = matView._11;
+	matBillboard._13 = matView._13;
+	matBillboard._31 = matView._31;
+	matBillboard._33 = matView._33;
+
+	D3DXMATRIXA16 matT;
+	D3DXMatrixIdentity(&matT);
+	D3DXMatrixTranslation(&matT, 1, 0, 0);
+	matBillboard *= matT;
+	//역행렬을 가져다가 곱해주면되겟지?
+	D3DXMatrixInverse(&matBillboard, NULL, &matBillboard);
+	g_pD3DDevice->SetTransform(D3DTS_WORLD, &matBillboard);
+
+	
 }

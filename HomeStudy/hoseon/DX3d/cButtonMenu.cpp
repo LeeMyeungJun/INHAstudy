@@ -26,7 +26,7 @@ void cButtonMenu::Setup(bool* bCheck)
 	Sprite sp;
 	
 	D3DXVECTOR2 vecTemp(0,0);
-	cBtnSprite* m_cBody = new cBtnSprite("UI","panel-info.png");
+	cBtnSprite* m_cBody = new cBtnSprite("UI","panel-info.png",NULL,NULL);
 	m_cBody->Setup(vecTemp);
 	
 	m_cBody->SetParentWorldTM(&m_matWorld);
@@ -36,23 +36,23 @@ void cButtonMenu::Setup(bool* bCheck)
 	m_vSize = g_pUITextureManager->GetTextureSize("UI/panel-info.png");
 
 	vecTemp = D3DXVECTOR2(130, 330);
-	cBtnSprite* m_cOk = new cBtnSprite("UI", "btn-med-down.png");
+	cBtnSprite* m_cOk = new cBtnSprite("UI", "btn-med-over.png", "UI", "btn-med-down");
 	m_cOk->Setup(vecTemp);
 	m_pRoot->AddChild(m_cOk);
-	sp.st_Position = D3DXVECTOR2(130, 330); sp.st_SpriteSize = g_pUITextureManager->GetTextureSize("UI/btn-med-down.png");
+	sp.st_Position = D3DXVECTOR2(130, 330); sp.st_SpriteSize = g_pUITextureManager->GetTextureSize("UI/btn-med-over.png");
 	m_vecSprite.push_back(sp);
 
 	
 	vecTemp = D3DXVECTOR2(130, 400);
-	cBtnSprite* m_cCancel = new cBtnSprite("UI", "btn-med-down.png");
+	cBtnSprite* m_cCancel = new cBtnSprite("UI", "btn-med-over.png", "UI", "btn-med-down");
 	m_cCancel->Setup(vecTemp);
 	m_pRoot->AddChild(m_cCancel);
-	sp.st_Position = D3DXVECTOR2(130, 400); sp.st_SpriteSize = g_pUITextureManager->GetTextureSize("UI/btn-med-down.png");
+	sp.st_Position = D3DXVECTOR2(130, 400); sp.st_SpriteSize = g_pUITextureManager->GetTextureSize("UI/btn-med-over.png");
 	m_vecSprite.push_back(sp);
 
 
 	vecTemp = D3DXVECTOR2(400, 80);
-	cBtnSprite* m_cExit = new cBtnSprite("UI", "btn-main-menu.png");
+	cBtnSprite* m_cExit = new cBtnSprite("UI", "btn-main-menu.png",NULL,NULL);
 	m_cExit->Setup(vecTemp);
 	m_pRoot->AddChild(m_cExit);
 	sp.st_Position = D3DXVECTOR2(400, 80); sp.st_SpriteSize = g_pUITextureManager->GetTextureSize("UI/btn-main-menu.png");
