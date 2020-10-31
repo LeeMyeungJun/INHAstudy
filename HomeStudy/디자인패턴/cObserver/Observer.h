@@ -18,4 +18,3 @@ private:
 	int number_;
 };
 
-

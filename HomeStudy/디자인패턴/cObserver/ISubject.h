@@ -10,4 +10,3 @@ public:
 	virtual void Notify() = 0;
 };
 
-

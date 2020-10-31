@@ -9,6 +9,9 @@ public:
 	Subject();
 	virtual ~Subject();
 
+	/**
+	* The subscription management methods.
+	*/
 	void Attach(IObserver *observer) override;
 	void Detach(IObserver *observer) override;
 	void Notify() override;
@@ -21,5 +24,4 @@ private:
 	std::list<IObserver *> list_observer_;
 	std::string message_;
 };
-
 
