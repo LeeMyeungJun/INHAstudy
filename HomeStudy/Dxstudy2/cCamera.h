@@ -1,4 +1,5 @@
 #pragma once
+class cFrustum;
 class cCamera
 {
 public:
@@ -17,9 +18,16 @@ private:
 	float			m_fCameraDistance;
 	D3DXVECTOR3		m_vCamRotAngle;
 
+
+	cFrustum*		m_pFrustum;
+	
+
+	
+
 public:
 	void Setup(D3DXVECTOR3* pvTarget);
 	void Update();
+	void Render();
 	void WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 };
 

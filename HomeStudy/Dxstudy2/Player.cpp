@@ -81,7 +81,10 @@ void Player::Setup()
 void Player::Update()
 {
 	Input();
-	D3DXMATRIXA16 matR, matT, m_matWorld;
+	D3DXMATRIXA16 matS ,matR, matT, m_matWorld;
+
+
+	D3DXMatrixScaling(&matS, 0.5f, 0.5f, 0.5f);
 	
 	D3DXMatrixRotationY(&matR, m_fRotY);
 	m_vDirection = D3DXVECTOR3(0, 0, 1);
@@ -89,7 +92,7 @@ void Player::Update()
 	
 	D3DXMatrixTranslation(&matT, m_vPosition.x, m_vPosition.y, m_vPosition.z);
 
-	m_matWorld = matR * matT;
+	m_matWorld = matS *matR * matT;
 	
 
 	
