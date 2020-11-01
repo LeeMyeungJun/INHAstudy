@@ -164,7 +164,7 @@ void cMainGame::Setup()
 
 	//Setup_Frustum();
 
-	//Setup_OBB();
+	Setup_OBB();
 
 	m_pMenuBtn = new cButtonMenu;
 	m_pMenuBtn->Setup(&m_isMouseClick);
@@ -190,10 +190,10 @@ void cMainGame::Update()
 	/*if (m_pFrustum)
 		m_pFrustum->Update();*/
 
-	//if (m_pHoldZealot)
-	//	m_pHoldZealot->Update(m_pMap);
-	//if (m_pMoveZealot)
-	//	m_pMoveZealot->Update(m_pMap);
+	if (m_pHoldZealot)
+		m_pHoldZealot->Update(m_pMap);
+	if (m_pMoveZealot)
+		m_pMoveZealot->Update(m_pMap);
 
 	//Update_MultiTexture();
 	//Update_Particle();
@@ -240,7 +240,7 @@ void cMainGame::Render()
 	//m_pFrustumCulling->Render_sphere();
 	//Frustum_Render();
 
-	//OBB_Render();
+	OBB_Render();
 	//m_pRootFrame->CountFPS();
 	//UI_Render(); //제일위에잇으라고 마지막에 그려줌
 
