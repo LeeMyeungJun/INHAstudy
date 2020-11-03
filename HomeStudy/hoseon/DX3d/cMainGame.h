@@ -159,6 +159,9 @@ private:
 
 	LPD3DXEFFECT			m_pShader;
 	LPDIRECT3DTEXTURE9		m_pZealotTexture;
+	LPDIRECT3DTEXTURE9		m_pDiffuse;
+	LPDIRECT3DTEXTURE9		m_pSpecular;
+
 	
 	bool				LoadAssets();
 	LPD3DXEFFECT		LoadShader(const char * filename);

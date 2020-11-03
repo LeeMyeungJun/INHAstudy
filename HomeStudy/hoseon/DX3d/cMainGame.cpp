@@ -60,6 +60,8 @@ cMainGame::cMainGame()
 	, m_isMouseClick(true)
 	, m_pShader(NULL)
 	, m_pZealotTexture(NULL)
+	, m_pDiffuse(NULL)
+	, m_pSpecular(NULL)
 
 {
 	m_fCameraDist = 10;
@@ -198,8 +200,8 @@ void cMainGame::Update()
 	//Update_MultiTexture();
 	//Update_Particle();
 	
-	if (m_pMenuBtn)
-		m_pMenuBtn->Update();
+	/*if (m_pMenuBtn)
+		m_pMenuBtn->Update();*/
 }
 
 void cMainGame::Render()
@@ -244,8 +246,8 @@ void cMainGame::Render()
 	//m_pRootFrame->CountFPS();
 	//UI_Render(); //제일위에잇으라고 마지막에 그려줌
 
-	if (m_pMenuBtn)
-		m_pMenuBtn->Render();
+	//if (m_pMenuBtn)
+	//	m_pMenuBtn->Render();
 	g_pD3DDevice->EndScene();
 	g_pD3DDevice->Present(NULL, NULL, NULL, NULL);
 }
@@ -831,8 +833,18 @@ bool cMainGame::LoadAssets()
 	// 텍스처 로딩
 	m_pZealotTexture = LoadTexture("Shader/Zealot_Diffuse.bmp");
 	if (!m_pZealotTexture) return false;
+
+	m_pDiffuse = LoadTexture("Shader/Fieldstone.tga");
+	if (!m_pDiffuse) return false;
+
+	m_pSpecular = LoadTexture("Shader/Earth.jpg");
+	if (!m_pSpecular) return false;
+
+	
 	// 쉐이더 로딩
-	m_pShader = LoadShader("Shader/Shader.fx");
+	//m_pShader = LoadShader("Shader/Shader.fx");
+	m_pShader = LoadShader("Shader/SpecularMapping.fx");
+
 	if (!m_pShader) return false;
 
 	// 모델 로딩
@@ -1341,10 +1353,15 @@ void cMainGame::SkinnedMesh_Render()
 		m_pShader->SetMatrix("gViewMatrix", &matView);
 		m_pShader->SetMatrix("gProjectionMatrix", &matProjection);
 		D3DXCOLOR color(1, 0, 1, 1);
-		m_pShader->SetValue("gColor", &color, sizeof(D3DXVECTOR4));
+		D3DXVECTOR4 light(1.0f, 0.7f, 0.7f, 1.0f);
+		//m_pShader->SetValue("gColor", &color, sizeof(D3DXVECTOR4));
+		m_pShader->SetVector("gLightColor",&light);
+		m_pShader->SetTexture("DiffuseMap_Tex", m_pDiffuse);
+		m_pShader->SetTexture("SpecularMap_Tex", m_pSpecular);
 
+		
 		//Texture
-		//m_pShader->SetTexture("DiffuseMap_Tex", m_pZealotTexture);
+	//	m_pShader->SetTexture("DiffuseMap_Tex", m_pZealotTexture);
 
 		
 		UINT numpasses = 0; //우리는 0번밖에없어서 이리함
