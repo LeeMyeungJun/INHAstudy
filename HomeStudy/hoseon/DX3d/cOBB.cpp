@@ -28,8 +28,76 @@ void cOBB::Setup(cSkinnedMesh* pSkinnedMesh)
 	m_fAxisHalfLen[1] = m_fAxisLen[1] / 2.0f;
 	m_fAxisHalfLen[2] = m_fAxisLen[2] / 2.0f;
 	
-	m_vecOBBBOXVertex.resize(8);
+	m_vecOBBBOXvertex.resize(8);
+	m_vecOBBBOXvertex[0] = D3DXVECTOR3(vMin.x, vMin.y, vMin.z);
+	m_vecOBBBOXvertex[1] = D3DXVECTOR3(vMin.x, vMax.y, vMin.z);
+	m_vecOBBBOXvertex[2] = D3DXVECTOR3(vMax.x, vMax.y, vMin.z);
+	m_vecOBBBOXvertex[3] = D3DXVECTOR3(vMax.x, vMin.y, vMin.z);
+
+
+	m_vecOBBBOXvertex[4] = D3DXVECTOR3(vMin.x, vMin.y, vMax.z);
+	m_vecOBBBOXvertex[5] = D3DXVECTOR3(vMin.x, vMax.y, vMax.z);
+	m_vecOBBBOXvertex[6] = D3DXVECTOR3(vMax.x, vMax.y, vMax.z);
+	m_vecOBBBOXvertex[7] = D3DXVECTOR3(vMax.x, vMin.y, vMax.z);
+
+	ST_PC_VERTEX temp;
+	// 
+	temp.c = D3DCOLOR_XRGB(255, 0, 0);
+	temp.p = m_vecOBBBOXvertex[0]; m_vecOBBBOXindex.push_back(temp);
+	temp.p = m_vecOBBBOXvertex[1]; m_vecOBBBOXindex.push_back(temp);
+
+	temp.p = m_vecOBBBOXvertex[1]; m_vecOBBBOXindex.push_back(temp);
+	temp.p = m_vecOBBBOXvertex[2]; m_vecOBBBOXindex.push_back(temp);
+
+	temp.p = m_vecOBBBOXvertex[2]; m_vecOBBBOXindex.push_back(temp);
+	temp.p = m_vecOBBBOXvertex[3]; m_vecOBBBOXindex.push_back(temp);
+
+	temp.p = m_vecOBBBOXvertex[3]; m_vecOBBBOXindex.push_back(temp);
+	temp.p = m_vecOBBBOXvertex[0]; m_vecOBBBOXindex.push_back(temp);
 	
+	//µÚ
+	temp.p = m_vecOBBBOXvertex[4]; m_vecOBBBOXindex.push_back(temp);
+	temp.p = m_vecOBBBOXvertex[5]; m_vecOBBBOXindex.push_back(temp);
+
+	temp.p = m_vecOBBBOXvertex[5]; m_vecOBBBOXindex.push_back(temp);
+	temp.p = m_vecOBBBOXvertex[6]; m_vecOBBBOXindex.push_back(temp);
+
+	temp.p = m_vecOBBBOXvertex[6]; m_vecOBBBOXindex.push_back(temp);
+	temp.p = m_vecOBBBOXvertex[7]; m_vecOBBBOXindex.push_back(temp);
+
+	temp.p = m_vecOBBBOXvertex[7]; m_vecOBBBOXindex.push_back(temp);
+	temp.p = m_vecOBBBOXvertex[4]; m_vecOBBBOXindex.push_back(temp);
+
+	//¿Þ
+	temp.p = m_vecOBBBOXvertex[4]; m_vecOBBBOXindex.push_back(temp);
+	temp.p = m_vecOBBBOXvertex[5]; m_vecOBBBOXindex.push_back(temp);
+
+	temp.p = m_vecOBBBOXvertex[5]; m_vecOBBBOXindex.push_back(temp);
+	temp.p = m_vecOBBBOXvertex[1]; m_vecOBBBOXindex.push_back(temp);
+
+	temp.p = m_vecOBBBOXvertex[1]; m_vecOBBBOXindex.push_back(temp);
+	temp.p = m_vecOBBBOXvertex[0]; m_vecOBBBOXindex.push_back(temp);
+
+	temp.p = m_vecOBBBOXvertex[0]; m_vecOBBBOXindex.push_back(temp);
+	temp.p = m_vecOBBBOXvertex[4]; m_vecOBBBOXindex.push_back(temp);
+
+
+	//¿À
+	temp.p = m_vecOBBBOXvertex[2]; m_vecOBBBOXindex.push_back(temp);
+	temp.p = m_vecOBBBOXvertex[6]; m_vecOBBBOXindex.push_back(temp);
+
+	temp.p = m_vecOBBBOXvertex[6]; m_vecOBBBOXindex.push_back(temp);
+	temp.p = m_vecOBBBOXvertex[7]; m_vecOBBBOXindex.push_back(temp);
+
+	temp.p = m_vecOBBBOXvertex[7]; m_vecOBBBOXindex.push_back(temp);
+	temp.p = m_vecOBBBOXvertex[3]; m_vecOBBBOXindex.push_back(temp);
+
+	temp.p = m_vecOBBBOXvertex[3]; m_vecOBBBOXindex.push_back(temp);
+	temp.p = m_vecOBBBOXvertex[2]; m_vecOBBBOXindex.push_back(temp);
+
+
+
+
 	D3DXMatrixIdentity(&m_matWorldTM);
 }
 
@@ -46,10 +114,6 @@ void cOBB::Update(D3DXMATRIXA16* pmatWorld)
 	D3DXVec3TransformCoord(&m_vCenterPos, &m_vOrigCenterPos, &m_matWorldTM);
 
 
-	//for(int i = 0 ; i < m_vecOBBBOXVertex.size() ; i++)
-	//{
-	//	
-	//}
 }
 
 bool cOBB::IsCollision(cOBB* pOBB1, cOBB* pOBB2)
@@ -153,5 +217,8 @@ bool cOBB::IsCollision(cOBB* pOBB1, cOBB* pOBB2)
 
 void cOBB::OBBBOX_Render(D3DCOLOR c)
 {
-	
+	g_pD3DDevice->SetTransform(D3DTS_WORLD, &m_matWorldTM);
+	g_pD3DDevice->SetFVF(ST_PC_VERTEX::FVF);
+	g_pD3DDevice->DrawPrimitiveUP(D3DPT_LINELIST, m_vecOBBBOXindex.size() / 2, &m_vecOBBBOXindex[0],
+		sizeof(ST_PC_VERTEX));
 }
