@@ -62,6 +62,9 @@ cMainGame::cMainGame()
 	, m_pZealotTexture(NULL)
 	, m_pDiffuse(NULL)
 	, m_pSpecular(NULL)
+	, m_pDiffuseMap1(NULL)
+	, m_pDiffuseMap2(NULL)
+	, m_pAlphaMap(NULL)
 
 {
 	m_fCameraDist = 10;
@@ -86,8 +89,12 @@ cMainGame::~cMainGame()
 	SafeDelete(m_pFrustum);
 	SafeDelete(m_pMenuBtn);
 
+	SafeRelease(m_pDiffuseMap1);
+	SafeRelease(m_pDiffuseMap2);
+	SafeRelease(m_pAlphaMap);
+	
 	SafeRelease(m_pZealotTexture);
-	SafeRelease(m_pShader);
+	
 	SafeRelease(m_pSprite);
 	SafeRelease(m_pTextureUI);
 	//SafeRelease(m_pMeshSphere);
@@ -104,6 +111,11 @@ cMainGame::~cMainGame()
 		SafeRelease(p);
 
 	//m_pRootFrame->Destroy(); //생성안하고 
+
+
+
+	SafeRelease(m_pShader);
+
 	
 	g_pFontManager->Destroy();
 	g_pDeviceManager->Destroy(); //완전히꺼지낳아 
@@ -192,10 +204,10 @@ void cMainGame::Update()
 	/*if (m_pFrustum)
 		m_pFrustum->Update();*/
 
-	if (m_pHoldZealot)
+	/*if (m_pHoldZealot)
 		m_pHoldZealot->Update(m_pMap);
 	if (m_pMoveZealot)
-		m_pMoveZealot->Update(m_pMap);
+		m_pMoveZealot->Update(m_pMap);*/
 
 	//Update_MultiTexture();
 	//Update_Particle();
@@ -238,11 +250,12 @@ void cMainGame::Render()
 	//Render_Raw();
 	//m_pXLoader->Display(0.025f);
 
-	SkinnedMesh_Render();
+	//SkinnedMesh_Render();
+	ShaderMultiTexture_Render();
 	//m_pFrustumCulling->Render_sphere();
 	//Frustum_Render();
 
-	OBB_Render();
+	//OBB_Render();
 	//m_pRootFrame->CountFPS();
 	//UI_Render(); //제일위에잇으라고 마지막에 그려줌
 
@@ -840,10 +853,12 @@ bool cMainGame::LoadAssets()
 	m_pSpecular = LoadTexture("Shader/Earth.jpg");
 	if (!m_pSpecular) return false;
 
-	
+
+
 	// 쉐이더 로딩
 	//m_pShader = LoadShader("Shader/Shader.fx");
-	m_pShader = LoadShader("Shader/SpecularMapping.fx");
+	//m_pShader = LoadShader("Shader/SpecularMapping.fx");
+	m_pShader = LoadShader("Shader/Splatting.fx");
 
 	if (!m_pShader) return false;
 
@@ -906,6 +921,14 @@ void cMainGame::Setup_MultiTexture()
 	D3DXCreateTextureFromFile(g_pD3DDevice, L"Texture/env0.png", &m_pTex1);
 	D3DXCreateTextureFromFile(g_pD3DDevice, L"Texture/env1.png", &m_pTex2);
 	D3DXCreateTextureFromFile(g_pD3DDevice, L"Texture/Albedo00.jpg", &m_pTex3);
+
+
+	D3DXCreateTextureFromFile(g_pD3DDevice, L"images/Albedo00.jpg", &m_pDiffuseMap1);
+	D3DXCreateTextureFromFile(g_pD3DDevice, L"images/stones.png", &m_pDiffuseMap2);
+	D3DXCreateTextureFromFile(g_pD3DDevice, L"images/AlphaMap256.png", &m_pAlphaMap);
+
+
+	
 
 	ST_PT_VERTEX v;
 	v.p = D3DXVECTOR3(0, 0, 0); v.t = D3DXVECTOR2(0, 1); m_vecVertex_Multil.push_back(v);
@@ -1000,6 +1023,50 @@ void cMainGame::MultiTexture_Render()
 
 
 
+}
+
+void cMainGame::ShaderMultiTexture_Render()
+{
+	D3DXMATRIXA16 matWorld, matView, matProjection;
+	D3DXMatrixIdentity(&matWorld);
+	g_pD3DDevice->SetTransform(D3DTS_WORLD, &matWorld);
+
+	if (m_pShader)
+	{
+		g_pD3DDevice->GetTransform(D3DTS_VIEW, &matView);
+		g_pD3DDevice->GetTransform(D3DTS_PROJECTION, &matProjection);
+		m_pShader->SetMatrix("gWorldMatrix", &matWorld);
+		m_pShader->SetMatrix("gViewMatrix", &matView);
+		m_pShader->SetMatrix("gProjectionMatrix", &matProjection);
+		m_pShader->SetVector("gWorldCameraPosition", &D3DXVECTOR4(m_pCamera->GetPosition(),1.0f));
+		D3DXVECTOR4 light(0.7f, 0.7f, 0.7f, 1.0f);
+		m_pShader->SetVector("gLightColor", &light);
+
+
+		m_pShader->SetTexture("DiffuseMap_Tex1", m_pDiffuseMap1);
+		m_pShader->SetTexture("DiffuseMap_Tex2", m_pDiffuseMap2);
+		m_pShader->SetTexture("AlphaMap_Tex", m_pAlphaMap);
+
+	}
+	SetBillboard();
+
+	UINT numPasses = 0;
+	m_pShader->Begin(&numPasses, NULL);
+	{
+		m_pShader->BeginPass(0); //어짜피 하나밖에없으니까 0번 넣으면되
+		{
+			g_pD3DDevice->SetFVF(ST_PT_VERTEX::FVF);
+			g_pD3DDevice->DrawPrimitiveUP(D3DPT_TRIANGLELIST,
+				m_vecVertex_Multil.size() / 3,
+				&m_vecVertex_Multil[0],
+				sizeof(ST_PT_VERTEX));
+		}
+		m_pShader->EndPass();
+
+	}
+	m_pShader->End();
+	
+	
 }
 
 void cMainGame::MultiTexture_Render1()

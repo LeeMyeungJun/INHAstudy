@@ -171,6 +171,18 @@ public:
 	void Update_MultiTexture();
 	void MultiTexture_Render();
 
+
+	//>>: ShaderMulti
+	LPDIRECT3DTEXTURE9		m_pDiffuseMap1;
+	LPDIRECT3DTEXTURE9		m_pDiffuseMap2;
+	LPDIRECT3DTEXTURE9		m_pAlphaMap;
+
+	void ShaderMultiTexture_Render();
+	
+	//<<:ShaderMulti
+
+
+	
 	void MultiTexture_Render1();
 	void MultiTexture_Render2();
 	void MultiTexture_Render3();
