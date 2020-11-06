@@ -42,7 +42,7 @@ void cOBB::Setup(cSkinnedMesh* pSkinnedMesh)
 
 	ST_PC_VERTEX temp;
 	// 
-	temp.c = D3DCOLOR_XRGB(255, 0, 0);
+	temp.c = D3DCOLOR_XRGB(255, 255, 255);
 	temp.p = m_vecOBBBOXvertex[0]; m_vecOBBBOXindex.push_back(temp);
 	temp.p = m_vecOBBBOXvertex[1]; m_vecOBBBOXindex.push_back(temp);
 
@@ -112,7 +112,6 @@ void cOBB::Update(D3DXMATRIXA16* pmatWorld)
 	}
 
 	D3DXVec3TransformCoord(&m_vCenterPos, &m_vOrigCenterPos, &m_matWorldTM);
-
 
 }
 
@@ -217,8 +216,22 @@ bool cOBB::IsCollision(cOBB* pOBB1, cOBB* pOBB2)
 
 void cOBB::OBBBOX_Render(D3DCOLOR c)
 {
+	for (int i = 0; i < m_vecOBBBOXindex.size(); i++)
+	{
+		m_vecOBBBOXindex[i].c = D3DCOLOR_XRGB(255, 255, 255);
+	}
+	g_pD3DDevice->SetTexture(0, 0);
 	g_pD3DDevice->SetTransform(D3DTS_WORLD, &m_matWorldTM);
 	g_pD3DDevice->SetFVF(ST_PC_VERTEX::FVF);
 	g_pD3DDevice->DrawPrimitiveUP(D3DPT_LINELIST, m_vecOBBBOXindex.size() / 2, &m_vecOBBBOXindex[0],
 		sizeof(ST_PC_VERTEX));
+}
+
+void cOBB::Change_Color()
+{
+	for (int i = 0; i < m_vecOBBBOXindex.size(); i++)
+	{
+		m_vecOBBBOXindex[i].c = D3DCOLOR_XRGB(255, 0, 0);
+	}
+
 }

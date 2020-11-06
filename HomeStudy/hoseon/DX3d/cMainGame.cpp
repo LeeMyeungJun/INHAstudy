@@ -198,6 +198,13 @@ void cMainGame::Update()
 	//Update_MultiTexture();
 	//Update_Particle();
 	
+	if (cOBB::IsCollision(m_pHoldZealot->GetOBB(), m_pMoveZealot->GetOBB()))
+	{
+		m_pHoldZealot->GetOBB()->Change_Color();
+		m_pMoveZealot->GetOBB()->Change_Color();
+
+	}
+
 	if (m_pMenuBtn)
 		m_pMenuBtn->Update();
 }
@@ -268,7 +275,8 @@ void cMainGame::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		break;
 	case WM_KEYDOWN:
 		{
-		m_pMenuBtn->BtnOnOff();
+		if(GetAsyncKeyState('P') && 0x8000)
+			m_pMenuBtn->BtnOnOff();
 		}
 		break;
 	}

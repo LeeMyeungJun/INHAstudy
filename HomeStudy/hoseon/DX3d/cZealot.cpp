@@ -32,6 +32,7 @@ void cZealot::Update(iMap* pMap)
 
 	if (m_pOBB)
 		m_pOBB->Update(m_pCharacterController ? m_pCharacterController->GetTransform() : NULL);
+
 }
 
 void cZealot::Render(D3DCOLOR c)

@@ -65,9 +65,10 @@ STDMETHODIMP cAllocateHierarchy::CreateMeshContainer(THIS_ LPCSTR Name,
 
 		D3DXComputeBoundingBox((D3DXVECTOR3*)pv, pMeshData->pMesh->GetNumVertices(),
 			D3DXGetFVFVertexSize(pMeshData->pMesh->GetFVF()), &vMin, &vMax);
-
-		D3DXVec3Minimize(&m_vMin, &m_vMin, &m_vMin);
-		D3DXVec3Maximize(&m_vMax, &m_vMax, &m_vMax);
+		DWORD asd = pMeshData->pMesh->GetNumVertices();
+		DWORD size = D3DXGetFVFVertexSize(pMeshData->pMesh->GetFVF());
+		D3DXVec3Minimize(&m_vMin, &m_vMin, &vMin);
+		D3DXVec3Maximize(&m_vMax, &m_vMax, &vMax);
 	 	
 		pMeshData->pMesh->UnlockVertexBuffer();
 	 }
