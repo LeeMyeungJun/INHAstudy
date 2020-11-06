@@ -1,12 +1,12 @@
 #pragma once
 
 class Audio :
-	public Observer
+	public Observer, public Publisher
 {
 public:
 	Audio();
 	virtual~Audio();
-	virtual void Update(const int EventNumver)override;
+	virtual void Update(Observer* _subTract, const int eventNumver)override;
 
 };
 

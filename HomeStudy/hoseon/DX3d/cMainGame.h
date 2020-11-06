@@ -180,7 +180,9 @@ public:
 	void ShaderMultiTexture_Render();
 	
 	//<<:ShaderMulti
-
+	//>>:SetupFog
+	void Setup_Fog();
+	//<<:
 
 	
 	void MultiTexture_Render1();

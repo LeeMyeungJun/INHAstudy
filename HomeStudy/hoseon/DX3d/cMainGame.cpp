@@ -168,7 +168,7 @@ void cMainGame::Setup()
 	if (m_pSkinnedMesh)
 		m_pSkinnedMesh->Setup("Zealot", "zealot.X");
 	LoadAssets();
-	
+
 	/*m_pFrustumCulling = new cFrustumCulling;
 	if (m_pFrustumCulling)
 	{
@@ -223,9 +223,12 @@ void cMainGame::Render()
 	
 	g_pD3DDevice->BeginScene();
 
+//	Setup_Fog();
 	if (m_pGrid)
 		m_pGrid->Render();
 	
+	//g_pD3DDevice->SetRenderState(D3DRS_FOGENABLE, FALSE);
+	//g_pD3DDevice->SetRenderState(D3DRS_RANGEFOGENABLE, FALSE);
 	//MultiTexture_Render();
 	
 	//Render_Particle();
@@ -250,7 +253,7 @@ void cMainGame::Render()
 	//Render_Raw();
 	//m_pXLoader->Display(0.025f);
 
-	//SkinnedMesh_Render();
+	SkinnedMesh_Render();
 	ShaderMultiTexture_Render();
 	//m_pFrustumCulling->Render_sphere();
 	//Frustum_Render();
@@ -1067,6 +1070,21 @@ void cMainGame::ShaderMultiTexture_Render()
 	m_pShader->End();
 	
 	
+}
+
+void cMainGame::Setup_Fog()
+{
+	g_pD3DDevice->SetRenderState(D3DRS_FOGENABLE, true);
+	g_pD3DDevice->SetRenderState(D3DRS_FOGCOLOR, D3DXCOLOR(255, 255, 0, 10));
+	g_pD3DDevice->SetRenderState(D3DRS_FOGVERTEXMODE, D3DFOG_LINEAR);
+	g_pD3DDevice->SetRenderState(D3DRS_FOGSTART, FtoDW(0.5f)); //어디부터 흐려질지
+	g_pD3DDevice->SetRenderState(D3DRS_FOGEND, FtoDW(100.0f)); //어디까지 흐려질지 
+	g_pD3DDevice->SetRenderState(D3DRS_RANGEFOGENABLE, true);
+
+	//g_pD3DDevice->SetRenderState(D3DRS_FOGENABLE, true);
+	//g_pD3DDevice->SetRenderState(D3DRS_FOGCOLOR, D3DXCOLOR(255, 255, 0, 1));
+	//g_pD3DDevice->SetRenderState(D3DRS_FOGVERTEXMODE, D3DFOG_EXP);
+	//g_pD3DDevice->SetRenderState(D3DRS_FOGDENSITY, float(100.0f));
 }
 
 void cMainGame::MultiTexture_Render1()

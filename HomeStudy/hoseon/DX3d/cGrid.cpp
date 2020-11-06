@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "cGrid.h"
 #include "cPyramid.h"
+#include "cGroup.h"
 
 cGrid::cGrid()
 	:m_PlaneTexture(NULL)
@@ -93,6 +94,7 @@ void cGrid::Setup(int nNumHalfTile, float fInterval)
 			m_vecVertexPlane.push_back(v);
 			v.p = D3DXVECTOR3{ fMin + j * fInterval + fInterval, 0, fMax - i * fInterval - fInterval }; v.t = D3DXVECTOR2(1, 1);
 			m_vecVertexPlane.push_back(v);
+
 		}
 	}
 
@@ -113,29 +115,40 @@ void cGrid::Setup(int nNumHalfTile, float fInterval)
 	D3DXMatrixRotationX(&matR, -D3DX_PI / 2.0f);
 	pPyramid->Setup(D3DCOLOR_XRGB(100, 100, 240), matR);
 	m_vecPyramid.push_back(pPyramid);
+
+
 }
 
 void cGrid::Render()
 {
 	//Plane
-	g_pD3DDevice->SetRenderState(D3DRS_LIGHTING, true);
-	g_pD3DDevice->SetTexture(NULL, m_PlaneTexture);
-	g_pD3DDevice->SetMaterial(&m_stMt1);
-	g_pD3DDevice->SetFVF(ST_PNT_VERTEX::FVF);
-	g_pD3DDevice->DrawPrimitiveUP(D3DPT_TRIANGLELIST, m_vecVertexPlane.size() / 3, &m_vecVertexPlane[0],
-		sizeof(ST_PNT_VERTEX));
+	//g_pD3DDevice->SetRenderState(D3DRS_LIGHTING, true);
+	//g_pD3DDevice->SetTexture(NULL, m_PlaneTexture);
+	//g_pD3DDevice->SetMaterial(&m_stMt1);
+	//g_pD3DDevice->SetFVF(ST_PNT_VERTEX::FVF);
+	//g_pD3DDevice->DrawPrimitiveUP(D3DPT_TRIANGLELIST, m_vecVertexPlane.size() / 3, &m_vecVertexPlane[0],
+	//	sizeof(ST_PNT_VERTEX));
 
 
 	//Grid
-	g_pD3DDevice->SetRenderState(D3DRS_LIGHTING, false);
-	g_pD3DDevice->SetTexture(NULL, 0);
-	D3DXMATRIXA16 matI2;
-	D3DXMatrixIdentity(&matI2);
-	g_pD3DDevice->SetTransform(D3DTS_WORLD, &matI2);
-	g_pD3DDevice->SetFVF(ST_PC_VERTEX::FVF);
-	g_pD3DDevice->DrawPrimitiveUP(D3DPT_LINELIST, m_vecVertex.size() / 2, &m_vecVertex[0],
-		sizeof(ST_PC_VERTEX));
+	//g_pD3DDevice->SetRenderState(D3DRS_LIGHTING, false);
+	//g_pD3DDevice->SetTexture(NULL, 0);
+	//D3DXMATRIXA16 matI2;
+	//D3DXMatrixIdentity(&matI2);
+	//g_pD3DDevice->SetTransform(D3DTS_WORLD, &matI2);
+	//g_pD3DDevice->SetFVF(ST_PC_VERTEX::FVF);
+	//g_pD3DDevice->DrawPrimitiveUP(D3DPT_LINELIST, m_vecVertex.size() / 2, &m_vecVertex[0],
+	//	sizeof(ST_PC_VERTEX));
 
+	g_pD3DDevice->SetTexture(NULL, 0);
+	g_pD3DDevice->SetRenderState(D3DRS_LIGHTING, false);
 	for each(auto p in m_vecPyramid)
 		p->Render();
+
+
+
+	for each(auto p in m_vecGroup)
+	{
+		p->Render();
+	}
 }
