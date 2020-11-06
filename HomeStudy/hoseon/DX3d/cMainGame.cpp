@@ -60,6 +60,11 @@ cMainGame::cMainGame()
 	, m_isMouseClick(true)
 	, m_pShader(NULL)
 	, m_pZealotTexture(NULL)
+	, m_pDiffuse(NULL)
+	, m_pSpecular(NULL)
+	, m_pDiffuseMap1(NULL)
+	, m_pDiffuseMap2(NULL)
+	, m_pAlphaMap(NULL)
 
 {
 	m_fCameraDist = 10;
@@ -84,8 +89,12 @@ cMainGame::~cMainGame()
 	SafeDelete(m_pFrustum);
 	SafeDelete(m_pMenuBtn);
 
+	SafeRelease(m_pDiffuseMap1);
+	SafeRelease(m_pDiffuseMap2);
+	SafeRelease(m_pAlphaMap);
+	
 	SafeRelease(m_pZealotTexture);
-	SafeRelease(m_pShader);
+	
 	SafeRelease(m_pSprite);
 	SafeRelease(m_pTextureUI);
 	//SafeRelease(m_pMeshSphere);
@@ -102,6 +111,11 @@ cMainGame::~cMainGame()
 		SafeRelease(p);
 
 	//m_pRootFrame->Destroy(); //생성안하고 
+
+
+
+	SafeRelease(m_pShader);
+
 	
 	g_pFontManager->Destroy();
 	g_pDeviceManager->Destroy(); //완전히꺼지낳아 
@@ -154,7 +168,7 @@ void cMainGame::Setup()
 	if (m_pSkinnedMesh)
 		m_pSkinnedMesh->Setup("Zealot", "zealot.X");
 	LoadAssets();
-	
+
 	/*m_pFrustumCulling = new cFrustumCulling;
 	if (m_pFrustumCulling)
 	{
@@ -190,23 +204,16 @@ void cMainGame::Update()
 	/*if (m_pFrustum)
 		m_pFrustum->Update();*/
 
-	if (m_pHoldZealot)
+	/*if (m_pHoldZealot)
 		m_pHoldZealot->Update(m_pMap);
 	if (m_pMoveZealot)
-		m_pMoveZealot->Update(m_pMap);
+		m_pMoveZealot->Update(m_pMap);*/
 
 	//Update_MultiTexture();
 	//Update_Particle();
 	
-	if (cOBB::IsCollision(m_pHoldZealot->GetOBB(), m_pMoveZealot->GetOBB()))
-	{
-		m_pHoldZealot->GetOBB()->Change_Color();
-		m_pMoveZealot->GetOBB()->Change_Color();
-
-	}
-
-	if (m_pMenuBtn)
-		m_pMenuBtn->Update();
+	/*if (m_pMenuBtn)
+		m_pMenuBtn->Update();*/
 }
 
 void cMainGame::Render()
@@ -216,9 +223,12 @@ void cMainGame::Render()
 	
 	g_pD3DDevice->BeginScene();
 
+//	Setup_Fog();
 	if (m_pGrid)
 		m_pGrid->Render();
 	
+	//g_pD3DDevice->SetRenderState(D3DRS_FOGENABLE, FALSE);
+	//g_pD3DDevice->SetRenderState(D3DRS_RANGEFOGENABLE, FALSE);
 	//MultiTexture_Render();
 	
 	//Render_Particle();
@@ -244,15 +254,16 @@ void cMainGame::Render()
 	//m_pXLoader->Display(0.025f);
 
 	SkinnedMesh_Render();
+	ShaderMultiTexture_Render();
 	//m_pFrustumCulling->Render_sphere();
 	//Frustum_Render();
 
-	OBB_Render();
+	//OBB_Render();
 	//m_pRootFrame->CountFPS();
 	//UI_Render(); //제일위에잇으라고 마지막에 그려줌
 
-	if (m_pMenuBtn)
-		m_pMenuBtn->Render();
+	//if (m_pMenuBtn)
+	//	m_pMenuBtn->Render();
 	g_pD3DDevice->EndScene();
 	g_pD3DDevice->Present(NULL, NULL, NULL, NULL);
 }
@@ -275,8 +286,7 @@ void cMainGame::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		break;
 	case WM_KEYDOWN:
 		{
-		if(GetAsyncKeyState('P') && 0x8000)
-			m_pMenuBtn->BtnOnOff();
+		m_pMenuBtn->BtnOnOff();
 		}
 		break;
 	}
@@ -839,8 +849,20 @@ bool cMainGame::LoadAssets()
 	// 텍스처 로딩
 	m_pZealotTexture = LoadTexture("Shader/Zealot_Diffuse.bmp");
 	if (!m_pZealotTexture) return false;
+
+	m_pDiffuse = LoadTexture("Shader/Fieldstone.tga");
+	if (!m_pDiffuse) return false;
+
+	m_pSpecular = LoadTexture("Shader/Earth.jpg");
+	if (!m_pSpecular) return false;
+
+
+
 	// 쉐이더 로딩
-	m_pShader = LoadShader("Shader/Shader.fx");
+	//m_pShader = LoadShader("Shader/Shader.fx");
+	//m_pShader = LoadShader("Shader/SpecularMapping.fx");
+	m_pShader = LoadShader("Shader/Splatting.fx");
+
 	if (!m_pShader) return false;
 
 	// 모델 로딩
@@ -902,6 +924,14 @@ void cMainGame::Setup_MultiTexture()
 	D3DXCreateTextureFromFile(g_pD3DDevice, L"Texture/env0.png", &m_pTex1);
 	D3DXCreateTextureFromFile(g_pD3DDevice, L"Texture/env1.png", &m_pTex2);
 	D3DXCreateTextureFromFile(g_pD3DDevice, L"Texture/Albedo00.jpg", &m_pTex3);
+
+
+	D3DXCreateTextureFromFile(g_pD3DDevice, L"images/Albedo00.jpg", &m_pDiffuseMap1);
+	D3DXCreateTextureFromFile(g_pD3DDevice, L"images/stones.png", &m_pDiffuseMap2);
+	D3DXCreateTextureFromFile(g_pD3DDevice, L"images/AlphaMap256.png", &m_pAlphaMap);
+
+
+	
 
 	ST_PT_VERTEX v;
 	v.p = D3DXVECTOR3(0, 0, 0); v.t = D3DXVECTOR2(0, 1); m_vecVertex_Multil.push_back(v);
@@ -996,6 +1026,65 @@ void cMainGame::MultiTexture_Render()
 
 
 
+}
+
+void cMainGame::ShaderMultiTexture_Render()
+{
+	D3DXMATRIXA16 matWorld, matView, matProjection;
+	D3DXMatrixIdentity(&matWorld);
+	g_pD3DDevice->SetTransform(D3DTS_WORLD, &matWorld);
+
+	if (m_pShader)
+	{
+		g_pD3DDevice->GetTransform(D3DTS_VIEW, &matView);
+		g_pD3DDevice->GetTransform(D3DTS_PROJECTION, &matProjection);
+		m_pShader->SetMatrix("gWorldMatrix", &matWorld);
+		m_pShader->SetMatrix("gViewMatrix", &matView);
+		m_pShader->SetMatrix("gProjectionMatrix", &matProjection);
+		m_pShader->SetVector("gWorldCameraPosition", &D3DXVECTOR4(m_pCamera->GetPosition(),1.0f));
+		D3DXVECTOR4 light(0.7f, 0.7f, 0.7f, 1.0f);
+		m_pShader->SetVector("gLightColor", &light);
+
+
+		m_pShader->SetTexture("DiffuseMap_Tex1", m_pDiffuseMap1);
+		m_pShader->SetTexture("DiffuseMap_Tex2", m_pDiffuseMap2);
+		m_pShader->SetTexture("AlphaMap_Tex", m_pAlphaMap);
+
+	}
+	SetBillboard();
+
+	UINT numPasses = 0;
+	m_pShader->Begin(&numPasses, NULL);
+	{
+		m_pShader->BeginPass(0); //어짜피 하나밖에없으니까 0번 넣으면되
+		{
+			g_pD3DDevice->SetFVF(ST_PT_VERTEX::FVF);
+			g_pD3DDevice->DrawPrimitiveUP(D3DPT_TRIANGLELIST,
+				m_vecVertex_Multil.size() / 3,
+				&m_vecVertex_Multil[0],
+				sizeof(ST_PT_VERTEX));
+		}
+		m_pShader->EndPass();
+
+	}
+	m_pShader->End();
+	
+	
+}
+
+void cMainGame::Setup_Fog()
+{
+	g_pD3DDevice->SetRenderState(D3DRS_FOGENABLE, true);
+	g_pD3DDevice->SetRenderState(D3DRS_FOGCOLOR, D3DXCOLOR(255, 255, 0, 10));
+	g_pD3DDevice->SetRenderState(D3DRS_FOGVERTEXMODE, D3DFOG_LINEAR);
+	g_pD3DDevice->SetRenderState(D3DRS_FOGSTART, FtoDW(0.5f)); //어디부터 흐려질지
+	g_pD3DDevice->SetRenderState(D3DRS_FOGEND, FtoDW(100.0f)); //어디까지 흐려질지 
+	g_pD3DDevice->SetRenderState(D3DRS_RANGEFOGENABLE, true);
+
+	//g_pD3DDevice->SetRenderState(D3DRS_FOGENABLE, true);
+	//g_pD3DDevice->SetRenderState(D3DRS_FOGCOLOR, D3DXCOLOR(255, 255, 0, 1));
+	//g_pD3DDevice->SetRenderState(D3DRS_FOGVERTEXMODE, D3DFOG_EXP);
+	//g_pD3DDevice->SetRenderState(D3DRS_FOGDENSITY, float(100.0f));
 }
 
 void cMainGame::MultiTexture_Render1()
@@ -1349,10 +1438,15 @@ void cMainGame::SkinnedMesh_Render()
 		m_pShader->SetMatrix("gViewMatrix", &matView);
 		m_pShader->SetMatrix("gProjectionMatrix", &matProjection);
 		D3DXCOLOR color(1, 0, 1, 1);
-		m_pShader->SetValue("gColor", &color, sizeof(D3DXVECTOR4));
+		D3DXVECTOR4 light(1.0f, 0.7f, 0.7f, 1.0f);
+		//m_pShader->SetValue("gColor", &color, sizeof(D3DXVECTOR4));
+		m_pShader->SetVector("gLightColor",&light);
+		m_pShader->SetTexture("DiffuseMap_Tex", m_pDiffuse);
+		m_pShader->SetTexture("SpecularMap_Tex", m_pSpecular);
 
+		
 		//Texture
-		//m_pShader->SetTexture("DiffuseMap_Tex", m_pZealotTexture);
+	//	m_pShader->SetTexture("DiffuseMap_Tex", m_pZealotTexture);
 
 		
 		UINT numpasses = 0; //우리는 0번밖에없어서 이리함

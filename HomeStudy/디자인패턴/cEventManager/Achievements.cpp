@@ -11,9 +11,9 @@ Achievements::~Achievements()
 {
 }
 
-void Achievements::Update(const int EventNumver)
+void Achievements::Update(Observer* _subTract, const int eventNumver)
 {
-	switch (EventNumver)
+	switch (eventNumver)
 	{
 	case 0:
 		std::cout << "몬스터 100마리 사냥 성공"<<std::endl;

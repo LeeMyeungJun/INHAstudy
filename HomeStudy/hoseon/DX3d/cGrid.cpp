@@ -1,8 +1,10 @@
 #include "stdafx.h"
 #include "cGrid.h"
 #include "cPyramid.h"
+#include "cGroup.h"
 
 cGrid::cGrid()
+	:m_PlaneTexture(NULL)
 {
 }
 
@@ -24,7 +26,7 @@ void cGrid::Setup(int nNumHalfTile, float fInterval)
 	
 	float fMax = nNumHalfTile * fInterval;
 	float fMin = -fMax;
-	ST_PC_VERTEX	v;
+	ST_PNT_VERTEX	v;
 	ST_PC_VERTEX	vc;
 	ST_Tile			t;
 	//v.n = D3DXVECTOR3(0, 1, 0);
@@ -70,24 +72,29 @@ void cGrid::Setup(int nNumHalfTile, float fInterval)
 	vc.p = D3DXVECTOR3(0, 0, fMin); m_vecVertex.push_back(vc);
 	vc.p = D3DXVECTOR3(0, 0, fMax);	m_vecVertex.push_back(vc);
 
+	m_PlaneTexture = g_pTextureManager->GetTexture("images/Albedo00.jpg");
+	v.n = D3DXVECTOR3(0, 1, 0);
 	//Plane
 	for (int i = 0; i < nNumHalfTile * 2; ++i)
 	{
 		for (int j = 0; j < nNumHalfTile * 2; ++j)
 		{
-			v.p = D3DXVECTOR3{ fMin + j * fInterval, 0, fMax - i * fInterval };
+			v.p = D3DXVECTOR3{ fMin + j * fInterval, 0, fMax - i * fInterval }; v.t = D3DXVECTOR2(0, 0);
 			m_vecVertexPlane.push_back(v);
-			v.p = D3DXVECTOR3{ fMin + j * fInterval + fInterval, 0, fMax - i * fInterval };
+			v.p = D3DXVECTOR3{ fMin + j * fInterval + fInterval, 0, fMax - i * fInterval }; v.t = D3DXVECTOR2(1, 0);
 			m_vecVertexPlane.push_back(v);
-			v.p = D3DXVECTOR3{ fMin + j * fInterval, 0, fMax - i * fInterval - fInterval };
+			v.p = D3DXVECTOR3{ fMin + j * fInterval, 0, fMax - i * fInterval - fInterval }; v.t = D3DXVECTOR2(0, 1);
 			m_vecVertexPlane.push_back(v);
 
-			v.p = D3DXVECTOR3{ fMin + j * fInterval, 0, fMax - i * fInterval - fInterval };
+
+			
+			v.p = D3DXVECTOR3{ fMin + j * fInterval, 0, fMax - i * fInterval - fInterval };  v.t = D3DXVECTOR2(0, 1);
 			m_vecVertexPlane.push_back(v);
-			v.p = D3DXVECTOR3{ fMin + j * fInterval + fInterval, 0, fMax - i * fInterval };
+			v.p = D3DXVECTOR3{ fMin + j * fInterval + fInterval, 0, fMax - i * fInterval }; v.t = D3DXVECTOR2(1, 0);
 			m_vecVertexPlane.push_back(v);
-			v.p = D3DXVECTOR3{ fMin + j * fInterval + fInterval, 0, fMax - i * fInterval - fInterval };
+			v.p = D3DXVECTOR3{ fMin + j * fInterval + fInterval, 0, fMax - i * fInterval - fInterval }; v.t = D3DXVECTOR2(1, 1);
 			m_vecVertexPlane.push_back(v);
+
 		}
 	}
 
@@ -108,31 +115,40 @@ void cGrid::Setup(int nNumHalfTile, float fInterval)
 	D3DXMatrixRotationX(&matR, -D3DX_PI / 2.0f);
 	pPyramid->Setup(D3DCOLOR_XRGB(100, 100, 240), matR);
 	m_vecPyramid.push_back(pPyramid);
+
+
 }
 
 void cGrid::Render()
 {
 	//Plane
-	g_pD3DDevice->SetRenderState(D3DRS_LIGHTING, true);
-	g_pD3DDevice->SetTexture(NULL, 0);
-	D3DXMATRIXA16 matI;
-	D3DXMatrixIdentity(&matI);
-	g_pD3DDevice->SetTransform(D3DTS_WORLD, &matI);
-	g_pD3DDevice->SetMaterial(&m_stMt1);
-	g_pD3DDevice->SetFVF(ST_PC_VERTEX::FVF);
-	g_pD3DDevice->DrawPrimitiveUP(D3DPT_TRIANGLELIST, m_vecVertexPlane.size() / 3, &m_vecVertexPlane[0],
-		sizeof(ST_PC_VERTEX));
+	//g_pD3DDevice->SetRenderState(D3DRS_LIGHTING, true);
+	//g_pD3DDevice->SetTexture(NULL, m_PlaneTexture);
+	//g_pD3DDevice->SetMaterial(&m_stMt1);
+	//g_pD3DDevice->SetFVF(ST_PNT_VERTEX::FVF);
+	//g_pD3DDevice->DrawPrimitiveUP(D3DPT_TRIANGLELIST, m_vecVertexPlane.size() / 3, &m_vecVertexPlane[0],
+	//	sizeof(ST_PNT_VERTEX));
+
 
 	//Grid
-	g_pD3DDevice->SetRenderState(D3DRS_LIGHTING, false);
-	g_pD3DDevice->SetTexture(NULL, 0);
-	D3DXMATRIXA16 matI2;
-	D3DXMatrixIdentity(&matI2);
-	g_pD3DDevice->SetTransform(D3DTS_WORLD, &matI2);
-	g_pD3DDevice->SetFVF(ST_PC_VERTEX::FVF);
-	g_pD3DDevice->DrawPrimitiveUP(D3DPT_LINELIST, m_vecVertex.size() / 2, &m_vecVertex[0],
-		sizeof(ST_PC_VERTEX));
+	//g_pD3DDevice->SetRenderState(D3DRS_LIGHTING, false);
+	//g_pD3DDevice->SetTexture(NULL, 0);
+	//D3DXMATRIXA16 matI2;
+	//D3DXMatrixIdentity(&matI2);
+	//g_pD3DDevice->SetTransform(D3DTS_WORLD, &matI2);
+	//g_pD3DDevice->SetFVF(ST_PC_VERTEX::FVF);
+	//g_pD3DDevice->DrawPrimitiveUP(D3DPT_LINELIST, m_vecVertex.size() / 2, &m_vecVertex[0],
+	//	sizeof(ST_PC_VERTEX));
 
+	g_pD3DDevice->SetTexture(NULL, 0);
+	g_pD3DDevice->SetRenderState(D3DRS_LIGHTING, false);
 	for each(auto p in m_vecPyramid)
 		p->Render();
+
+
+
+	for each(auto p in m_vecGroup)
+	{
+		p->Render();
+	}
 }

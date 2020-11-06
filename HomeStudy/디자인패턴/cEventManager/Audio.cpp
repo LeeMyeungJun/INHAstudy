@@ -11,9 +11,9 @@ Audio::~Audio()
 {
 }
 
-void Audio::Update(const int EventNumver)
+void Audio::Update(Observer* _subTract, const int eventNumver)
 {
-	switch (EventNumver)
+	switch (eventNumver)
 	{
 	case 0:
 		std::cout << "오디오:(몬스터 100마리 사냥 성공)" << std::endl;
