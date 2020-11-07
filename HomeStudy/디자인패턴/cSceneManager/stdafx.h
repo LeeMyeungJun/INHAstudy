@@ -10,9 +10,22 @@
 #include <stdio.h>
 #include <tchar.h>
 #include <iostream>
-#include <windows.h>
+#include <map>
+#include <vector>
+
+
+
+#include "GameScene.h"
+#include "LobbyScene.h"
+
+#include "MenuScene.h"
+#include "Scene.h"
+
+
+#include "SceneManager.h"
 
 using namespace std;
+
 
 
 // TODO: reference additional headers your program requires here

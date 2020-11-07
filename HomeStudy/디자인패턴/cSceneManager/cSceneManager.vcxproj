@@ -19,9 +19,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{E2B35A66-DDB4-4FD7-A52C-561A11ED0B9B}</ProjectGuid>
+    <ProjectGuid>{BAEB96F7-F3B9-4FE8-81ED-7CED5413DB79}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>cState</RootNamespace>
+    <RootNamespace>cSceneManager</RootNamespace>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -141,21 +141,21 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="AttackState.h" />
-    <ClInclude Include="JumpState.h" />
-    <ClInclude Include="Player.h" />
-    <ClInclude Include="RunState.h" />
-    <ClInclude Include="State.h" />
+    <ClInclude Include="GameScene.h" />
+    <ClInclude Include="LobbyScene.h" />
+    <ClInclude Include="MenuScene.h" />
+    <ClInclude Include="Scene.h" />
+    <ClInclude Include="SceneManager.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="AttackState.cpp" />
-    <ClCompile Include="cState.cpp" />
-    <ClCompile Include="JumpState.cpp" />
-    <ClCompile Include="Player.cpp" />
-    <ClCompile Include="RunState.cpp" />
-    <ClCompile Include="State.cpp" />
+    <ClCompile Include="cSceneManager.cpp" />
+    <ClCompile Include="GameScene.cpp" />
+    <ClCompile Include="LobbyScene.cpp" />
+    <ClCompile Include="MenuScene.cpp" />
+    <ClCompile Include="Scene.cpp" />
+    <ClCompile Include="SceneManager.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
