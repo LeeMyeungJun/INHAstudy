@@ -30,6 +30,6 @@ public:
 	static bool IsCollision(cOBB* pOBB1, cOBB* pOBB2);
 
 	void OBBBOX_Render(D3DCOLOR c);
-	
+	void Change_Color();
 };
 
