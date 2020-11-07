@@ -3,6 +3,6 @@ class Observer
 {
 public:
 	virtual ~Observer(){};
-	virtual void Update(Observer* _subTract,const int eventNumver) = 0;
+	virtual void OnEvent(EEvent eEvent,void* _value) = 0;
 };
 

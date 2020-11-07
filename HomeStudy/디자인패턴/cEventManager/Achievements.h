@@ -1,12 +1,12 @@
 #pragma once
 
 class Achievements :
-	public Observer, public Publisher
+	public Observer
 {
 public:
 	Achievements();
 	virtual ~Achievements();
-	virtual void Update(Observer* _subTract, const int eventNumver)override;
+	virtual void OnEvent(EEvent eEvent, void* _value)override;
 
 };
 

@@ -2,9 +2,23 @@
 
 #define g_EventManager EventManager::GetInstance()
 
-
 class Observer;
-class Publisher;
+
+
+enum class EEvent
+{
+	E_DEFAULT,
+	E_ATTACK,
+	E_SLEEP,
+	E_NONE
+};
+
+struct ST_AttackEvent
+{
+	std::string name;
+	int age;
+	ST_AttackEvent():age(0){}
+};
 
 class EventManager
 {
@@ -12,22 +26,16 @@ private:
 	EventManager();
 	~EventManager();
 
-
 public:
-	void Attach(Publisher* publisher,Observer* observer);
-	void Detach(Observer* observer);
-	void Detach(Publisher* publisher);
-	void Notify();
-	void EventNumber(Observer* _subtract,size_t event_num);
+	void Attach(EEvent eEvent,Observer* observer);
+	bool Detach(EEvent eEvent, Observer* observer);
+	void Notify(void* value);
+	void EventCall(EEvent eEvent, void* value);
+	void ErrorSend();
 
 private:
-	std::map<Publisher*, std::vector<Observer*>> m_map_EventList;
-
-	
-	std::list<Observer *> m_list_observer_;
-	
-	size_t m_evnet_num_;
-	Observer* m_subtract;
+	std::map<EEvent, std::vector<Observer*>> m_mapEventMap;
+	EEvent m_eEvent;
 
 public:
 	static EventManager* GetInstance()

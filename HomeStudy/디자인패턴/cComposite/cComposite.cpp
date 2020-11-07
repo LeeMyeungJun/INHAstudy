@@ -23,6 +23,7 @@ int main()
 	Component *simple = new Leaf;
 	std::cout << "Client: I've got a simple component:\n";
 	ClientCode(simple);
+	
 	std::cout << "\n\n";
 
 	Component *tree = new Composite;

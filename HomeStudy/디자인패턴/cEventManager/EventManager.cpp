@@ -2,8 +2,7 @@
 
 
 EventManager::EventManager()
-		: m_evnet_num_(0)
-		, m_subtract(NULL)
+	:m_eEvent(EEvent::E_NONE)
 {
 }
 
@@ -11,59 +10,48 @@ EventManager::~EventManager()
 {
 }
 
-void EventManager::Attach(Publisher* publisher, Observer* observer)
+void EventManager::Attach(EEvent eEvent, Observer* observer)
 {
-	if(m_map_EventList.find(publisher) == m_map_EventList.end())
+	for(int i = 0 ; i < m_mapEventMap[eEvent].size(); i++)
 	{
-		std::vector<Observer*> vecTemp;
-		vecTemp.push_back(observer);
-		m_map_EventList[publisher] = vecTemp;
-
-		return;
+		if(m_mapEventMap[eEvent][i] == observer)
+			return;
 	}
-	m_map_EventList[publisher].push_back(observer);
+	
+	m_mapEventMap[eEvent].push_back(observer);
 }
 
-void EventManager::Detach(Observer* observer)
+bool EventManager::Detach(EEvent eEvent, Observer* observer)
 {
+	std::vector<Observer*>::iterator it = std::find(m_mapEventMap[eEvent].begin(), m_mapEventMap[eEvent].end(), observer);
 
-	for each(auto it in m_map_EventList)
+	if (it != m_mapEventMap[eEvent].end())
 	{
-
-		for(int i = 0 ; i <it.second.size(); i++)
-		{
-			if(it.second[i] == observer)
-			{
-				SafeDelete(observer);
-			}
-		}
-	
+		m_mapEventMap[eEvent].erase(it);
+		return true;
 	}
-
-	
-	m_list_observer_.remove(observer);
+	return false;
 }
 
-void EventManager::Detach(Publisher* publisher)
-{
-}
 
-void EventManager::Notify()
+void EventManager::Notify(void* value)
 {
-	std::list<Observer *>::iterator iterator = m_list_observer_.begin();
+	std::vector<Observer *>::iterator iterator = m_mapEventMap[m_eEvent].begin();
 
-	while (iterator != m_list_observer_.end())
+	while (iterator != m_mapEventMap[m_eEvent].end())
 	{
-		(*iterator)->Update(m_subtract,m_evnet_num_);
+		(*iterator)->OnEvent(m_eEvent, value);
 		++iterator;
 	}
 }
 
-void EventManager::EventNumber(Observer* _subtract, size_t event_num)
-{
-	m_subtract = _subtract;
-	m_evnet_num_ = event_num;
-	Notify();
-
+void EventManager::EventCall(EEvent eEvent, void* value)
+{	
+	m_eEvent = eEvent;
+	Notify(value);
 }
 
+void EventManager::ErrorSend()
+{
+	std::cout << "publisher또는 subscriber 가 없습니다." << std::endl;
+}
