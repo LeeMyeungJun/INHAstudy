@@ -146,7 +146,7 @@ void cMainGame::Setup()
 	if (m_pHexagon)
 		m_pHexagon->Setup();*/
 
-	//Setup_Obj();
+	Setup_Obj();
 	//Setup_MeshObejct();
 	SetLight();
 
@@ -224,8 +224,8 @@ void cMainGame::Render()
 	g_pD3DDevice->BeginScene();
 
 //	Setup_Fog();
-	if (m_pGrid)
-		m_pGrid->Render();
+	//if (m_pGrid)
+	//	m_pGrid->Render();
 	
 	//g_pD3DDevice->SetRenderState(D3DRS_FOGENABLE, FALSE);
 	//g_pD3DDevice->SetRenderState(D3DRS_RANGEFOGENABLE, FALSE);
@@ -240,7 +240,7 @@ void cMainGame::Render()
 	/*if (m_pHexagon)
 		m_pHexagon->Render();*/
 
-	//Obj_Render();
+	Obj_Render();
 	//Mesh_Render();
 	
 	/*//Ä³¸¯ÅÍ
@@ -253,8 +253,8 @@ void cMainGame::Render()
 	//Render_Raw();
 	//m_pXLoader->Display(0.025f);
 
-	SkinnedMesh_Render();
-	ShaderMultiTexture_Render();
+	/*SkinnedMesh_Render();
+	ShaderMultiTexture_Render();*/
 	//m_pFrustumCulling->Render_sphere();
 	//Frustum_Render();
 
@@ -272,7 +272,7 @@ void cMainGame::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	if (m_pCamera)
 		m_pCamera->WndProc(hWnd, message, wParam, lParam);
-
+/*
 	if (m_pMenuBtn)
 		m_pMenuBtn->WndProc(hWnd, message, wParam, lParam);
 
@@ -289,7 +289,7 @@ void cMainGame::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		m_pMenuBtn->BtnOnOff();
 		}
 		break;
-	}
+	}*/
 }
 
 void cMainGame::Setup_Obj()
