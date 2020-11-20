@@ -68,7 +68,7 @@ void cCubeNode::Update()
 	m_matWorldTM = m_matLocalTM;
 
 	if(m_pParentWorldTM)
-	{//몸통이아니라 팔이라면 
+	{
 		m_matWorldTM *= *m_pParentWorldTM;
 	}
 

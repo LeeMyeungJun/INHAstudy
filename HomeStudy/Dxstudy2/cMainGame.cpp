@@ -6,17 +6,29 @@
 #include "cGrid.h"
 #include "cCubeMan.h"
 #include "cLight.h"
+#include "cObjLoader.h"
+#include "cGroup.h"
+#include "cObjMap.h"
+#include "cAseLoader.h"
+#include "cFrame.h"
+#include "cRay.h"
+#include "cHeightMap.h"
 
 //D3DXMatrixRotationX()
 //D3Dxvec3TransformNormal 사용  등등 이름비슷하니까 찾아쓰도록
 
 cMainGame::cMainGame()
 	:m_pCubePC(NULL)
-	,m_pCamera(NULL)
-	,m_pGrid(NULL)
-	,m_pCubeMan(NULL)
-	,m_pTexture(NULL)
-	,m_pLight(NULL)
+	, m_pCamera(NULL)
+	, m_pGrid(NULL)
+	, m_pCubeMan(NULL)
+	, m_pTexture(NULL)
+	, m_pLight(NULL)
+	, m_pMap(NULL)
+	, m_pRootFrame(NULL)
+	, m_pMeshTeapot(NULL)
+	, m_pMeshSphere(NULL)
+	, m_pObjMesh(NULL)
 {
 	
 }
@@ -28,7 +40,27 @@ cMainGame::~cMainGame()
 	SafeDelete(m_pCamera);
 	SafeDelete(m_pGrid);
 	SafeDelete(m_pCubeMan);
+	SafeDelete(m_pMap);
 	SafeRelease(m_pTexture);
+	SafeRelease(m_pMeshTeapot);
+	SafeRelease(m_pMeshSphere);
+	SafeRelease(m_pObjMesh);
+
+	for each(auto p in m_vecObjMtltex)
+		SafeRelease(p);
+
+
+	for each(auto p in m_vecGroup)
+	{
+		SafeRelease(p);
+	}
+	m_vecGroup.clear();
+
+	//>>AseLoader:
+	m_pRootFrame->Destroy();
+	//<<:
+	g_pObjectManager->Destroy();
+
 	g_pDeveceManager->Destroy();
 }
 
@@ -37,8 +69,8 @@ void cMainGame::Setup()
 	//Setup_Line();
 	//Setup_Triangle();
 
-	m_pLight = new cLight;
-	m_pLight->Setup();
+	//m_pLight = new cLight;
+	//m_pLight->Setup();
 	
 	//m_pCubePC = new cCubePC;
 	//m_pCubePC->Setup();
@@ -52,8 +84,17 @@ void cMainGame::Setup()
 	m_pGrid = new cGrid;
 	m_pGrid->Setup();
 
+	//>>:AseLoader
+	cAseLoader l;
+	m_pRootFrame = l.Load("woman/woman_01_all.ASE");
 	
+	//<<:
 	
+	//Setup_Obj();
+	Setup_PickingObj();
+
+	
+	Setup_HeightMap();
 	// >> : for texture
 	D3DXCreateTextureFromFile(g_pD3DDvice, L"수지.png",&m_pTexture);
 	{
@@ -89,9 +130,9 @@ void cMainGame::Setup()
 
 	}
 	
-	//Set_Light();
-	//g_pD3DDvice->SetRenderState(D3DRS_LIGHTING, false);//라이트 끄기
+	Set_Light();
 
+	Setup_MeshObejct();
 	
 
 }
@@ -102,13 +143,18 @@ void cMainGame::Update()
 	//	m_pCubePC->Update();
 
 	if (m_pCubeMan)
-		m_pCubeMan->Update();
+		m_pCubeMan->Update(m_pMap);
 	
 	if (m_pCamera)
 		m_pCamera->Update();
 
-	if (m_pLight)
-		m_pLight->Update();
+	if (m_pRootFrame)
+		m_pRootFrame->Update(m_pRootFrame->GetKeyFrame(),NULL);//처음엔 널을 넣어주면 되겠지?
+	
+	//if (m_pLight)
+	//	m_pLight->Update();
+
+	
 	
 }
 
@@ -124,14 +170,31 @@ void cMainGame::Render()
 	if (m_pGrid)
 		m_pGrid->Render();
 
+	PickingObj_render();
+
 	/*if (m_pCubePC)
 		m_pCubePC->Render();*/
-
-	if (m_pLight)
-		m_pLight->Render();
+	//Obj_Render();
 	
+	//if (m_pLight)
+	//	m_pLight->Render();
+
+	if (m_pMap)
+		m_pMap->Render();
+	
+	//일단 지우고 테스트합시다 .
 	if (m_pCubeMan)
 		m_pCubeMan->Render();
+
+	//AseLoader
+	/*{
+		if (m_pRootFrame)
+			m_pRootFrame->Render();
+	}*/
+
+	//MeshRender
+	//Mesh_Render();
+	
 
 	g_pD3DDvice->EndScene();
 	g_pD3DDvice->Present(NULL, NULL, NULL, NULL);
@@ -144,6 +207,34 @@ void cMainGame::wndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 	//if (m_pLight)
 	//	m_pLight->WndProc(hWnd, message, wParam, lParam);
+
+	switch (message)
+	{
+	case WM_LBUTTONDOWN :
+		{
+		cRay r = cRay::RayAtWorldSpace(LOWORD(lParam), HIWORD(lParam));
+		for (int i = 0; i < m_vecSphere.size(); i ++)
+		{
+			m_vecSphere[i].isPicked = r.IsPicked(&m_vecSphere[i]);//그라인에있는거 다선택취급한다는게 문제
+			
+		}
+		}
+		break;
+	case WM_RBUTTONDOWN:
+		{
+		cRay r = cRay::RayAtWorldSpace(LOWORD(lParam), HIWORD(lParam));
+			for(int i = 0 ; i < m_vecPlaneVertex.size() ; i += 3)
+			{
+				D3DXVECTOR3 v(0, 0, 0);
+				if (r.IntersectTri(m_vecPlaneVertex[i + 0].p, m_vecPlaneVertex[i + 1].p, m_vecPlaneVertex[i + 2].p, v))
+				{
+					m_vPickedPosition = v;
+				}
+			}
+			
+		}
+		break;
+	}
 }
 
 void cMainGame::Setup_Line()
@@ -222,6 +313,7 @@ void cMainGame::Set_Light()
 	stLight.Direction = vDir;
 	g_pD3DDvice->SetLight(0, &stLight);
 	g_pD3DDvice->LightEnable(0, true);
+	//g_pD3DDvice->SetRenderState(D3DRS_LIGHTING, false);
 }
 
 void cMainGame::Draw_Texture()
@@ -234,4 +326,198 @@ void cMainGame::Draw_Texture()
 	g_pD3DDvice->SetFVF(ST_PT_VERTEX::FVF);
 	g_pD3DDvice->DrawPrimitiveUP(D3DPT_TRIANGLELIST, m_vecVertex.size() / 3, &m_vecVertex[0], sizeof(ST_PT_VERTEX));
 	g_pD3DDvice->SetTexture(0, NULL); //월드에 텍스쳐빼기
+}
+
+void cMainGame::Setup_Obj()
+{
+	cObjLoader l;
+	l.Load(m_vecGroup, "obj", "map.obj");
+
+	Load_Surface();
+	
+}
+
+void cMainGame::Obj_Render()
+{
+	D3DXMATRIXA16 matWorld, matS, matR;
+	D3DXMatrixScaling(&matS, 0.01f, 0.01f, 0.01f);
+	D3DXMatrixRotationX(&matR, -D3DX_PI / 2.0F);
+	
+	matWorld = matS* matR;
+	g_pD3DDvice->SetTransform(D3DTS_WORLD, &matWorld);
+
+	for each(auto p in m_vecGroup)
+	{
+		p->Render();
+	}
+	//D3DXIntersectTri(v1, v2, v3, rayPos, rayDir, u, v, f);
+}
+
+void cMainGame::Load_Surface()
+{
+	D3DXMATRIXA16 matWorld, matS, matR;
+	D3DXMatrixScaling(&matS, 0.01f, 0.01f, 0.01f);
+	D3DXMatrixRotationX(&matR, -D3DX_PI / 2.0F);
+
+	matWorld = matS* matR;
+	//m_pMap = new cObjMap("obj", "map_surface.obj", &matWorld);
+}
+
+void cMainGame::Setup_MeshObejct()
+{
+	D3DXCreateTeapot(g_pD3DDvice, &m_pMeshTeapot, NULL);
+	D3DXCreateSphere(g_pD3DDvice, 0.5f, 10, 10, &m_pMeshSphere, NULL);
+
+	ZeroMemory(&m_stMtlTeapot, sizeof(D3DMATERIAL9));
+	m_stMtlTeapot.Ambient = D3DXCOLOR(0.0f, 0.7f, 0.7f, 1.0f);
+	m_stMtlTeapot.Diffuse = D3DXCOLOR(0.0f, 0.7f, 0.7f, 1.0f);
+	m_stMtlTeapot.Specular = D3DXCOLOR(0.0f, 0.7f, 0.7f, 1.0f);
+
+	ZeroMemory(&m_stMtlSphere, sizeof(D3DMATERIAL9));
+	m_stMtlSphere.Ambient = D3DXCOLOR(0.7f, 0.7f, 0.0f, 1.0f);
+	m_stMtlSphere.Diffuse = D3DXCOLOR(0.7f, 0.7f, 0.0f, 1.0f);
+	m_stMtlSphere.Specular = D3DXCOLOR(0.7f, 0.7f, 0.0f, 1.0f);
+
+
+	//Mesh Loader사용
+	cObjLoader l;
+	m_pObjMesh = l.LoadMesh(m_vecObjMtltex, "obj", "map.obj");
+
+	
+}
+
+void cMainGame::Mesh_Render()
+{
+	g_pD3DDvice->SetTexture(0, NULL);
+
+	D3DXMATRIXA16 matWorld, matS, matR;
+
+	{
+		D3DXMatrixIdentity(&matS);
+		D3DXMatrixIdentity(&matR);
+		matWorld = matS* matR;
+		D3DXMatrixTranslation(&matWorld, 0, 0, 10);
+
+		g_pD3DDvice->SetTransform(D3DTS_WORLD, &matWorld);
+		g_pD3DDvice->SetMaterial(&m_stMtlTeapot);
+		m_pMeshTeapot->DrawSubset(0); //지금은 속성이 하나뿐이니까 0해주면대 여러개면 값을 넣어주면되고
+		
+	}
+
+	{
+		D3DXMatrixIdentity(&matS);
+		D3DXMatrixIdentity(&matR);
+		matWorld = matS* matR;
+//		D3DXMatrixTranslation(&matWorld, 0, 0, 10);
+
+		g_pD3DDvice->SetTransform(D3DTS_WORLD, &matWorld);
+		g_pD3DDvice->SetMaterial(&m_stMtlSphere);
+		m_pMeshSphere->DrawSubset(0); //지금은 속성이 하나뿐이니까 0해주면대 여러개면 값을 넣어주면되고
+
+	}
+
+	{
+		D3DXMatrixIdentity(&matWorld);
+
+		D3DXMatrixIdentity(&matS);
+		D3DXMatrixIdentity(&matR);
+		matWorld = matS* matR;
+		D3DXMatrixScaling(&matS, 0.01f, 0.01f, 0.01f);
+		D3DXMatrixRotationX(&matR, -D3DX_PI / 2.0F);
+		matWorld = matS * matR;
+
+		g_pD3DDvice->SetTransform(D3DTS_WORLD, &matWorld);
+
+		for(size_t i = 0; i < m_vecObjMtltex.size();i++)
+		{
+			g_pD3DDvice->SetMaterial(&m_vecObjMtltex[i]->GetMaterial());
+			g_pD3DDvice->SetTexture(0,m_vecObjMtltex[i]->GetTexture());
+			m_pObjMesh->DrawSubset(i);
+
+		}
+
+	}
+}
+
+void cMainGame::Setup_PickingObj()
+{
+	for(int i = 0 ; i <= 10 ; i++)
+	{
+		ST_SPHERE s;
+		s.fRadius = 0.5f;
+		s.vCenter = D3DXVECTOR3(0, 0, -10 + 2 * i);
+
+		m_vecSphere.push_back(s);
+	}
+	ZeroMemory(&m_stMtlNone, sizeof(D3DMATERIAL9));
+	m_stMtlNone.Ambient = D3DXCOLOR(0.7f, 0.7f, 0.0f, 1.0f);
+	m_stMtlNone.Diffuse = D3DXCOLOR(0.7f, 0.7f, 0.0f, 1.0f);
+	m_stMtlNone.Specular = D3DXCOLOR(0.7f, 0.7f, 0.0f, 1.0f);
+
+	//선택된애는
+	ZeroMemory(&m_stMtlPicked, sizeof(D3DMATERIAL9));
+	m_stMtlPicked.Ambient = D3DXCOLOR(0.7f, 0.0f, 0.0f, 1.0f);
+	m_stMtlPicked.Diffuse = D3DXCOLOR(0.7f, 0.0f, 0.0f, 1.0f);
+	m_stMtlPicked.Specular = D3DXCOLOR(0.7f, 0.0f, 0.0f, 1.0f);
+
+	//바닥
+	ZeroMemory(&m_stMtlPlane, sizeof(D3DMATERIAL9));
+	m_stMtlPlane.Ambient = D3DXCOLOR(0.7f, 0.7f, 0.7f, 1.0f);
+	m_stMtlPlane.Diffuse = D3DXCOLOR(0.7f, 0.7f, 0.7f, 1.0f);
+	m_stMtlPlane.Specular = D3DXCOLOR(0.7f, 0.7f, 0.7f, 1.0f);
+
+	ST_PN_VERTEX v;
+	v.n = D3DXVECTOR3(0, 1, 0);
+	v.p = D3DXVECTOR3(-10, 0, -10); m_vecPlaneVertex.push_back(v);
+	v.p = D3DXVECTOR3(-10, 0, 10); m_vecPlaneVertex.push_back(v);
+	v.p = D3DXVECTOR3( 10, 0, 10); m_vecPlaneVertex.push_back(v);
+
+
+	v.p = D3DXVECTOR3(-10, 0, -10); m_vecPlaneVertex.push_back(v);
+	v.p = D3DXVECTOR3(10, 0, 10); m_vecPlaneVertex.push_back(v);
+	v.p = D3DXVECTOR3(10, 0, -10); m_vecPlaneVertex.push_back(v);
+
+	
+
+	
+}
+
+void cMainGame::PickingObj_render()
+{
+	D3DXMATRIXA16 matWorld;
+	g_pD3DDvice->SetRenderState(D3DRS_LIGHTING, true);
+	//먼저 바닥먼저깔아줘야겟지
+	g_pD3DDvice->SetFVF(ST_PN_VERTEX::FVF);
+	g_pD3DDvice->SetMaterial(&m_stMtlPlane);
+	D3DXMatrixIdentity(&matWorld);
+
+	g_pD3DDvice->SetTransform(D3DTS_WORLD, &matWorld);
+	g_pD3DDvice->SetTexture(0, 0);
+	g_pD3DDvice->DrawPrimitiveUP(D3DPT_TRIANGLELIST, 2, &m_vecPlaneVertex[0], sizeof(ST_PN_VERTEX));
+
+	for(int i = 0 ; i < m_vecSphere.size(); i++)
+	{
+		D3DXMatrixIdentity(&matWorld);
+		matWorld._41 = m_vecSphere[i].vCenter.x;
+		matWorld._42 = m_vecSphere[i].vCenter.y;
+		matWorld._43 = m_vecSphere[i].vCenter.z;
+		g_pD3DDvice->SetTransform(D3DTS_WORLD, &matWorld);
+		g_pD3DDvice->SetMaterial(m_vecSphere[i].isPicked ? &m_stMtlPicked : &m_stMtlNone);
+		m_pMeshSphere->DrawSubset(0);
+	}
+
+	g_pD3DDvice->SetMaterial(&m_stMtlNone); //선택된위치 표시용
+	D3DXMatrixTranslation(&matWorld, m_vPickedPosition.x, m_vPickedPosition.y, m_vPickedPosition.z);
+
+	g_pD3DDvice->SetTransform(D3DTS_WORLD, &matWorld);
+	m_pMeshSphere->DrawSubset(0);
+	
+}
+
+void cMainGame::Setup_HeightMap()
+{
+	cHeightMap* pMap = new cHeightMap;
+	pMap->Setup("height/", "HeightMap.raw", "terrain.jpg");
+	m_pMap = pMap;
+	
 }
