@@ -146,7 +146,7 @@ void cMainGame::Setup()
 	if (m_pHexagon)
 		m_pHexagon->Setup();*/
 
-	//Setup_Obj();
+	Setup_Obj();
 	//Setup_MeshObejct();
 	SetLight();
 
@@ -212,8 +212,8 @@ void cMainGame::Update()
 	//Update_MultiTexture();
 	//Update_Particle();
 	
-	if (m_pMenuBtn)
-		m_pMenuBtn->Update();
+	/*if (m_pMenuBtn)
+		m_pMenuBtn->Update();*/
 }
 
 void cMainGame::Render()
@@ -262,8 +262,8 @@ void cMainGame::Render()
 	//m_pRootFrame->CountFPS();
 	//UI_Render(); //제일위에잇으라고 마지막에 그려줌
 
-	if (m_pMenuBtn)
-		m_pMenuBtn->Render();
+	//if (m_pMenuBtn)
+	//	m_pMenuBtn->Render();
 	g_pD3DDevice->EndScene();
 	g_pD3DDevice->Present(NULL, NULL, NULL, NULL);
 }
@@ -272,7 +272,7 @@ void cMainGame::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	if (m_pCamera)
 		m_pCamera->WndProc(hWnd, message, wParam, lParam);
-
+/*
 	if (m_pMenuBtn)
 		m_pMenuBtn->WndProc(hWnd, message, wParam, lParam);
 
@@ -289,7 +289,7 @@ void cMainGame::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		m_pMenuBtn->BtnOnOff();
 		}
 		break;
-	}
+	}*/
 }
 
 void cMainGame::Setup_Obj()
