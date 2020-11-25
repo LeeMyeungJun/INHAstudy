@@ -41,8 +41,6 @@ void cSpriteNode::Update()
 	{
 		p->Update();
 	}
-
-	
 }
 
 void cSpriteNode::Render()

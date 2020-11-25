@@ -204,12 +204,6 @@
     <ClInclude Include="cOBB.h">
       <Filter>OBB</Filter>
     </ClInclude>
-    <ClInclude Include="cMainGame.h">
-      <Filter>UI</Filter>
-    </ClInclude>
-    <ClInclude Include="cFontManager.h">
-      <Filter>UI</Filter>
-    </ClInclude>
     <ClInclude Include="cSpriteNode.h">
       <Filter>UI</Filter>
     </ClInclude>
@@ -227,6 +221,12 @@
     </ClInclude>
     <ClInclude Include="cUITextureManager.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="cMainGame.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="cFontManager.h">
+      <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -362,12 +362,6 @@
     <ClCompile Include="cOBB.cpp">
       <Filter>OBB</Filter>
     </ClCompile>
-    <ClCompile Include="cMainGame.cpp">
-      <Filter>UI</Filter>
-    </ClCompile>
-    <ClCompile Include="cFontManager.cpp">
-      <Filter>UI</Filter>
-    </ClCompile>
     <ClCompile Include="cSpriteNode.cpp">
       <Filter>UI</Filter>
     </ClCompile>
@@ -384,6 +378,12 @@
       <Filter>UI\Sprite</Filter>
     </ClCompile>
     <ClCompile Include="cUITextureManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="cMainGame.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="cFontManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

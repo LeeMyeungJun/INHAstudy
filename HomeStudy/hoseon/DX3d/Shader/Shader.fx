@@ -31,7 +31,6 @@ VS_OUTPUT VS(VS_INPUT Input)
    
    Output.mTexCoord = Input.mTexCoord;
    
-   
    return Output;
 }
 

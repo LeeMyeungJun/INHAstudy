@@ -12,7 +12,6 @@ protected:
 
 	LPDIRECT3DTEXTURE9	m_pOffTextureUI;
 	D3DXIMAGE_INFO		m_InfoOffImage;
-
 	LPDIRECT3DTEXTURE9	m_pOnTextureUI;
 	D3DXIMAGE_INFO		m_InfoOnImage;
 

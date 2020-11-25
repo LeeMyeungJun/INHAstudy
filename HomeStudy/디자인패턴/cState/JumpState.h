@@ -1,0 +1,11 @@
+#pragma once
+#include "State.h"
+class JumpState :
+	public State
+{
+public:
+	JumpState();
+	~JumpState();
+	void Update();
+};
+

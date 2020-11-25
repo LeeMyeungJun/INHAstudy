@@ -21,13 +21,15 @@ private:
 	D3DXMATRIXA16	m_matWorldTM;
 
 
-	vector<D3DXVECTOR3>		m_vecOBBBOXVertex;
+	vector<D3DXVECTOR3>		m_vecOBBBOXvertex;
+	vector<ST_PC_VERTEX>	m_vecOBBBOXindex;
+
 public:
 	void Setup(cSkinnedMesh* pSkinnedMesh);
 	void Update(D3DXMATRIXA16* pmatWorld);
 	static bool IsCollision(cOBB* pOBB1, cOBB* pOBB2);
 
 	void OBBBOX_Render(D3DCOLOR c);
-	
+	void Change_Color();
 };
 
