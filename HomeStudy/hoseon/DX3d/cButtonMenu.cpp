@@ -169,6 +169,7 @@ int cButtonMenu::ChildBtnInCheck(POINT pt)
 			&& m_vPosition.y + m_vecSprite[i].st_Position.y <= pt.y &&m_vPosition.y + m_vecSprite[i].st_Position.y + m_vecSprite[i].st_SpriteSize.y >= pt.y)
 			return i;
 	}
+
 	return 0;
 }
 
