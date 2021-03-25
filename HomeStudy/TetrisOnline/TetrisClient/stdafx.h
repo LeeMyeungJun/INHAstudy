@@ -76,7 +76,7 @@ enum RoomRequestId
 #define GAMELOSE 43
 
 typedef struct __Packet {
-	unsigned int Protocal;
+	unsigned int Protocol;
 	unsigned int size;
 	char* Buffer;
 } Packet;
